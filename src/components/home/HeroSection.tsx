@@ -53,7 +53,7 @@ const HeroSection = () => {
       
       <div className="relative">
         <div className="relative z-10 w-full aspect-4/5 bg-[#E9EDF2] rounded-[40px] overflow-hidden">
-          <img alt="Student studying" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCT1vQGyqbzBfvdWW1zlwGllRLjhowIl_B2T39vq0LqQEKwu-eL_TNSYsxLPJNtGZuHWnTp1mGiLnyfe-NUu54sHRehBTRQfENOmS8Rx6V0W6treq8wxkqGfEY_1F1qBfaK4xlfsak6vKyOWk4GWplkFM_s6M7JwkTlhUCBqny_7Wso3VRalQODMEKvvvgBlTIIovDVA4m3EiRdCbyG5_01kf7ho_aZFPsSXCpoQUN9WUP9rKqAHHanQTeBSSo_sGUVsdkqav6xHo9w" />
+          <img alt="Student studying" className="w-full h-full object-cover" src="/hero-img.png" />
         </div>
         
         <div className="absolute -top-10 -left-10 w-32 h-32 bg-[#0077BE]/20 backdrop-blur-xl rounded-full flex items-center justify-center border border-[#0077BE]/30 z-20 animate-bounce" style={{ animationDuration: '3s' }}>
