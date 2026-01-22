@@ -73,5 +73,29 @@ const coursesData: CourseData[] = [
   }
 ];
 
+export const coursesProgress = [
+  {
+    id: 1,
+    title: 'Tiếng Anh giao tiếp công sở',
+    instructor: 'Mr. Smith',
+    progress: 65,
+    thumbnail: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDRJXDI20-U07s-eLHDCCuw7MNHAYGr4DyRrBzJ5lpo8CSFuYCqDLsBdRFvXbOXiCkjnGIyCyFu1Ood0kliKWVN_9yoonNqOENiAWfhZYUNTr3K9WOlG4TNePQMKkvbMBR8KMMnvlSoD7ANoE67vx68wGcD_So8eKvPhqFOaJlH02s3AZGlQiqqIDWCF_893_KrIqT7DYxXDiNfCh4ZxE548506R2D-EdzME8rqmORu2YJt64ESMusMwv0W7jWvsI2lfqnehvmwEC23'
+  },
+  {
+    id: 2,
+    title: 'Phân tích dữ liệu với Python',
+    instructor: 'TS. Trần Văn B',
+    progress: 40,
+    thumbnail: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBIv4Qb4O3ZciS4p2H3OHbUIG205X3uwrz5-8zvsn7mi60syORC7OeXb-qFg6_iiU3amKqbpHWoFMOQE-Vz2GNprSfKUfyLIecmYPauCj1joZGn5UMyT24Xca-8Wback__O87vHcpZCE9Jf0dr3QxCGBjUN7AHAQUpn8aeYW6y-RIjgUJFyoLCt5tlzIRkBgMYtA5zXT4_SbncF2vg-Lq8cDNDXOHSiobJxco4Ic6SqGqUvdj_k-r0HJu2AlwM6ptj7FJlYEHW0jSZj'
+  },
+  {
+    id: 3,
+    title: 'Digital Marketing Fundamentals',
+    instructor: 'Ms. Phương Linh',
+    progress: 85,
+    thumbnail: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCV10xIQ2xa0Ki90CN40OYanyTMQNhw4exH-ZjImyATgwGJsMXDTTGvXXXyImpoVkleH25RpMCQ3F4f0Qd0ZLv_2BLU_8BFev0sJ3NFUKlO4DmuAyXc-XR1sczcWUaDt5Ao0pqvrzICkom3dAXRvVFzAI9QyGgmzrNHgRHuBe4UWa5GoOHHbJfOsA0HhzhuZy6-N8v_55g6M5RqLzcZYo0iHt5OPzkSh9M2wytT0q75Hqs17eP1f8SuinbFKeib5D4gVUPlNzaMaLHT'
+  }
+];
+
 
 export default coursesData;
