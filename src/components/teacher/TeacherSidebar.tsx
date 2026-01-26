@@ -1,20 +1,23 @@
 import { Link, useLocation } from 'react-router-dom';
 import { FaSignOutAlt } from 'react-icons/fa';
+import { MdDashboard, MdLibraryBooks, MdQuiz, MdReport, MdSettings } from 'react-icons/md';
+import { FaDatabase } from "react-icons/fa";
+import { IoPeople } from "react-icons/io5";
 
 interface NavItem {
   path: string;
-  icon: string;
+  icon: React.ReactNode;
   label: string;
 }
 
 const navItems: NavItem[] = [
-  { path: '/teacher/dashboard', icon: 'dashboard', label: 'Tổng quan' },
-  { path: '/teacher/courses', icon: 'book_2', label: 'Khóa học' },
-  { path: '/teacher/questions', icon: 'database', label: 'Ngân hàng câu hỏi' },
-  { path: '/teacher/exams', icon: 'description', label: 'Đề thi' },
-  { path: '/teacher/students', icon: 'group', label: 'Học viên' },
-  { path: '/teacher/reports', icon: 'analytics', label: 'Báo cáo' },
-  { path: '/teacher/settings', icon: 'settings', label: 'Cài đặt' }
+  { path: '/teacher/dashboard', icon: <MdDashboard className="text-lg" />, label: 'Tổng quan' },
+  { path: '/teacher/courses', icon: <MdLibraryBooks className="text-lg" />, label: 'Khóa học' },
+  { path: '/teacher/questions', icon: <FaDatabase className="text-lg" />, label: 'Ngân hàng câu hỏi' },
+  { path: '/teacher/exams', icon: <MdQuiz  className="text-lg" />, label: 'Đề thi' },
+  { path: '/teacher/students', icon: <IoPeople className="text-lg" />, label: 'Học viên' },
+  { path: '/teacher/reports', icon: <MdReport  className="text-lg" />, label: 'Báo cáo' },
+  { path: '/teacher/settings', icon: <MdSettings className="text-lg" />, label: 'Cài đặt' }
 ];
 
 const TeacherSidebar = () => {
@@ -45,26 +48,25 @@ const TeacherSidebar = () => {
         </div>
 
         {/* Navigation */}
-        <nav className="flex flex-col gap-1 px-3">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-md transition-all ${
-                isActive(item.path)
-                  ? 'text-[#0077BE] bg-[#0077BE]/5 border-r-4 border-[#0077BE]'
-                  : 'text-[#607b8a] hover:bg-gray-100'
-              }`}
-            >
-              <span className={`material-symbols-outlined ${isActive(item.path) ? 'FILL' : ''}`}>
-                {item.icon}
-              </span>
-              <p className={`text-sm ${isActive(item.path) ? 'font-semibold' : 'font-medium'}`}>
-                {item.label}
-              </p>
-            </Link>
-          ))}
-        </nav>
+        <nav className="flex-1 mt-6">
+                <ul className="space-y-1">
+                  {navItems.map((item) => (
+                    <li key={item.path}>
+                      <Link
+                        to={item.path}
+                        className={`flex items-center text-sm gap-3 px-6 py-3.5 transition-all ${
+                          isActive(item.path)
+                            ? 'text-[#0077BE] bg-[#0077BE]/5 border-r-4 border-[#0077BE] rounded-md font-semibold'
+                            : 'text-gray-600 hover:bg-gray-50 hover:text-[#0077BE]'
+                        }`}
+                      >
+                        {item.icon}
+                        <span>{item.label}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
       </div>
 
       <div className="px-6 flex flex-col gap-4">

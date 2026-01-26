@@ -8,6 +8,13 @@ import StudentProfilePage from '../pages/student/StudentProfilePage';
  * Protected routes for authenticated students
  * TODO: Add ProtectedRoute wrapper with role check
  */
+import StudentMyCoursesPage from '../pages/student/StudentMyCoursesPage';
+
+/**
+ * Student Routes  
+ * Protected routes for authenticated students
+ * TODO: Add ProtectedRoute wrapper with role check
+ */
 const studentRoutes: RouteObject[] = [
   {
     path: '/student/dashboard',
@@ -29,7 +36,7 @@ const studentRoutes: RouteObject[] = [
     path: '/student/my-courses',
     element: (
       <StudentLayout>
-        <div>My Courses Page - Coming Soon</div>
+        <StudentMyCoursesPage />
       </StudentLayout>
     )
   },
