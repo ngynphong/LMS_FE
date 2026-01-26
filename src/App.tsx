@@ -1,20 +1,11 @@
-import { BrowserRouter, useRoutes, useLocation } from 'react-router-dom';
-import MainLayout from './layouts/MainLayout';
-import ScrollToTop from './components/common/ScrollToTop';
-import routes, { isAuthPath } from './routes';
-import './App.css';
+import { BrowserRouter, useRoutes } from "react-router-dom";
+import ScrollToTop from "./components/common/ScrollToTop";
+import routes from "./routes";
+import "./App.css";
 
 function AppRoutes() {
   const element = useRoutes(routes);
-  const location = useLocation();
-  
-  // Check if current page should NOT have header/footer
-  if (isAuthPath(location.pathname)) {
-    return element;
-  }
-  
-  // Wrap with MainLayout for other pages
-  return <MainLayout>{element}</MainLayout>;
+  return element;
 }
 
 function App() {

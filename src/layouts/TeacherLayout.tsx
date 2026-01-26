@@ -1,8 +1,9 @@
-import type { ReactNode } from 'react';
-import TeacherSidebar from '../components/teacher/TeacherSidebar';
+import type { ReactNode } from "react";
+import { Outlet } from "react-router-dom";
+import TeacherSidebar from "../components/teacher/TeacherSidebar";
 
 interface TeacherLayoutProps {
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 const TeacherLayout = ({ children }: TeacherLayoutProps) => {
@@ -14,7 +15,7 @@ const TeacherLayout = ({ children }: TeacherLayoutProps) => {
       {/* Main Content */}
       <div className="flex-1 ml-64 flex flex-col min-h-screen overflow-y-auto">
         <main className="flex-1 p-8 max-w-6xl w-full mx-auto">
-          {children}
+          {children || <Outlet />}
         </main>
       </div>
     </div>
