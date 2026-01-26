@@ -3,6 +3,7 @@ import MainLayout from "../layouts/MainLayout";
 import Home from "../pages/home/Home";
 import CoursesPage from "../pages/courses/CoursesPage";
 import CourseDetailPage from "../pages/courses/CourseDetailPage";
+import UnauthorizedPage from "../pages/error/UnauthorizedPage";
 
 /**
  * Public Routes
@@ -32,6 +33,10 @@ const publicRoutes: RouteObject[] = [
       {
         path: "shop",
         element: <div>Shop Page - Coming Soon</div>,
+      },
+      {
+        path: "unauthorized",
+        element: <UnauthorizedPage />,
       },
     ],
   },

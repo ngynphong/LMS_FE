@@ -11,17 +11,21 @@ import ExamListPage from "../pages/teacher/ExamListPage";
 import ExamFormPage from "../pages/teacher/ExamFormPage";
 import ReportsListPage from "../pages/teacher/ReportsListPage";
 import ExamReportDetailPage from "../pages/teacher/ExamReportDetailPage";
+import ProtectedRoute from "./ProtectedRoute";
 
 /**
  * Teacher Routes
  * Protected routes for authenticated teachers
- * TODO: Add ProtectedRoute wrapper with role check
  */
 
 const finalTeacherRoutes: RouteObject[] = [
   {
     path: "/teacher",
-    element: <TeacherLayout />,
+    element: (
+      <ProtectedRoute allowedRoles={["TEACHER", "ADMIN"]}>
+        <TeacherLayout />
+      </ProtectedRoute>
+    ),
     children: [
       { path: "dashboard", element: <TeacherDashboardPage /> },
       { path: "courses", element: <CourseListPage /> },
@@ -45,11 +49,19 @@ const finalTeacherRoutes: RouteObject[] = [
   },
   {
     path: "/teacher/courses/new",
-    element: <CourseBuilderPage />,
+    element: (
+      <ProtectedRoute allowedRoles={["TEACHER", "ADMIN"]}>
+        <CourseBuilderPage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/teacher/courses/:id/edit",
-    element: <CourseBuilderPage />,
+    element: (
+      <ProtectedRoute allowedRoles={["TEACHER", "ADMIN"]}>
+        <CourseBuilderPage />
+      </ProtectedRoute>
+    ),
   },
 ];
 

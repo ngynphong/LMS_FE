@@ -3,16 +3,20 @@ import StudentLayout from "../layouts/StudentLayout";
 import StudentDashboardPage from "../pages/student/StudentDashboardPage";
 import StudentProfilePage from "../pages/student/StudentProfilePage";
 import StudentMyCoursesPage from "../pages/student/StudentMyCoursesPage";
+import ProtectedRoute from "./ProtectedRoute";
 
 /**
  * Student Routes
  * Protected routes for authenticated students
- * TODO: Add ProtectedRoute wrapper with role check
  */
 const studentRoutes: RouteObject[] = [
   {
     path: "/student",
-    element: <StudentLayout />,
+    element: (
+      <ProtectedRoute allowedRoles={["STUDENT"]}>
+        <StudentLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: "dashboard",

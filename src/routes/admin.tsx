@@ -2,6 +2,7 @@ import type { RouteObject } from "react-router-dom";
 import AdminLayout from "../layouts/AdminLayout";
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 import AdminUserManagementPage from "../pages/admin/AdminUserManagementPage";
+import ProtectedRoute from "./ProtectedRoute";
 
 /**
  * Admin Routes
@@ -10,7 +11,11 @@ import AdminUserManagementPage from "../pages/admin/AdminUserManagementPage";
 const adminRoutes: RouteObject[] = [
   {
     path: "/admin",
-    element: <AdminLayout />,
+    element: (
+      <ProtectedRoute allowedRoles={["ADMIN"]}>
+        <AdminLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: "dashboard",
