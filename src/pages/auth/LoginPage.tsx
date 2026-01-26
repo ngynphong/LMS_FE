@@ -1,34 +1,43 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { IoSchool } from 'react-icons/io5';
-import { FaEye, FaEyeSlash, FaGoogle } from 'react-icons/fa';
-import { FaFacebookF } from 'react-icons/fa6';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { IoSchool } from "react-icons/io5";
+import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
+import { FaFacebookF } from "react-icons/fa6";
+import { useAuth } from "../../hooks/useAuth";
+import { toast } from "../../components/common/Toast";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const { login, loading, user } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  const [touched, setTouched] = useState<{ email?: boolean; password?: boolean }>({});
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+    {},
+  );
+  const [touched, setTouched] = useState<{
+    email?: boolean;
+    password?: boolean;
+  }>({});
 
   const validateEmail = (email: string): string => {
-    if (!email) return 'Email không được để trống';
+    if (!email) return "Email không được để trống";
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return !emailRegex.test(email) ? 'Email không hợp lệ' : '';
+    return !emailRegex.test(email) ? "Email không hợp lệ" : "";
   };
 
   const validatePassword = (password: string): string => {
-    if (!password) return 'Mật khẩu không được để trống';
-    if (password.length < 6) return 'Mật khẩu phải có ít nhất 6 ký tự';
-    return '';
+    if (!password) return "Mật khẩu không được để trống";
+    if (password.length < 6) return "Mật khẩu phải có ít nhất 6 ký tự";
+    return "";
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setEmail(value);
     if (touched.email) {
-      setErrors(prev => ({ ...prev, email: validateEmail(value) }));
+      setErrors((prev) => ({ ...prev, email: validateEmail(value) }));
     }
   };
 
@@ -36,40 +45,86 @@ const LoginPage = () => {
     const value = e.target.value;
     setPassword(value);
     if (touched.password) {
-      setErrors(prev => ({ ...prev, password: validatePassword(value) }));
+      setErrors((prev) => ({ ...prev, password: validatePassword(value) }));
     }
   };
 
   const handleEmailBlur = () => {
-    setTouched(prev => ({ ...prev, email: true }));
-    setErrors(prev => ({ ...prev, email: validateEmail(email) }));
+    setTouched((prev) => ({ ...prev, email: true }));
+    setErrors((prev) => ({ ...prev, email: validateEmail(email) }));
   };
 
   const handlePasswordBlur = () => {
-    setTouched(prev => ({ ...prev, password: true }));
-    setErrors(prev => ({ ...prev, password: validatePassword(password) }));
+    setTouched((prev) => ({ ...prev, password: true }));
+    setErrors((prev) => ({ ...prev, password: validatePassword(password) }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Mark all fields as touched
     setTouched({ email: true, password: true });
-    
+
     // Validate all fields
     const emailError = validateEmail(email);
     const passwordError = validatePassword(password);
-    
+
     setErrors({
       email: emailError,
-      password: passwordError
+      password: passwordError,
     });
 
     // If no errors, proceed with login
     if (!emailError && !passwordError) {
-      console.log('Login attempt:', { email, password, rememberMe });
-      // TODO: Call login API
+      try {
+        const error = await login(email, password);
+
+        if (error) {
+          // Show user-friendly error message instead of technical error
+          const userFriendlyMessage = "Email hoặc mật khẩu không chính xác";
+          toast.error(userFriendlyMessage);
+          setErrors({ email: userFriendlyMessage });
+        } else {
+          toast.success("Đăng nhập thành công!");
+          // Navigate based on user role
+          // Navigate based on user role
+          setTimeout(() => {
+            const storedUser = localStorage.getItem("user");
+            const currentUser = storedUser ? JSON.parse(storedUser) : user;
+
+            if (currentUser?.role === "ADMIN") {
+              navigate("/admin/dashboard");
+            } else if (currentUser?.role === "TEACHER") {
+              navigate("/teacher/dashboard");
+            } else {
+              navigate("/");
+            }
+          }, 100);
+        }
+      } catch (err) {
+        toast.error("Email hoặc mật khẩu không chính xác");
+        setErrors({ email: "Email hoặc mật khẩu không chính xác" });
+      }
     }
+  };
+
+  const handleGoogleLogin = () => {
+    const OAuthConfig = {
+      redirectUri: import.meta.env.VITE_GOOGLE_REDIRECT_URI,
+      authUri: import.meta.env.VITE_AUTH_URI,
+      clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+    };
+
+    const callbackUrl = OAuthConfig.redirectUri;
+    const authUrl = OAuthConfig.authUri;
+    const googleClientId = OAuthConfig.clientId;
+
+    const googleAuthUrl = `${authUrl}?redirect_uri=${encodeURIComponent(
+      callbackUrl,
+    )}&response_type=code&client_id=${googleClientId}&scope=openid%20email%20profile`;
+
+    // Chuyển hướng người dùng
+    window.location.href = googleAuthUrl;
   };
 
   return (
@@ -77,13 +132,21 @@ const LoginPage = () => {
       <div className="flex w-full flex-row h-full">
         {/* Left Side - Hero Image */}
         <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-background-dark h-full">
-          <div 
-            className="absolute inset-0 bg-cover bg-center" 
-            style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBL-bY1tYY_F0tHLhwECNkQoQxSjoSenqDgVjh6zfzSJb9dfK4McqIbqfBAnE7fpOOdB1SVqzU7y3zk23LgXfCp_es6Jsg-ROjrbCo0Yo1XI9v_DWCRfiGUBdroSqlZ0cg9g94qkTVxpN7X4qkvjo0GUwdwWOp4TCUlwTDx1E4wLzWJXqTk8gTNh859n95hmrqlpTVoqzbxxpYXMxOcHpLr5c5t2b7FUr2OiDbY2Ntoh1DKxxBcOkuijJdD0kBteaEqwiUF3gnDXMdo')" }}
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage:
+                "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBL-bY1tYY_F0tHLhwECNkQoQxSjoSenqDgVjh6zfzSJb9dfK4McqIbqfBAnE7fpOOdB1SVqzU7y3zk23LgXfCp_es6Jsg-ROjrbCo0Yo1XI9v_DWCRfiGUBdroSqlZ0cg9g94qkTVxpN7X4qkvjo0GUwdwWOp4TCUlwTDx1E4wLzWJXqTk8gTNh859n95hmrqlpTVoqzbxxpYXMxOcHpLr5c5t2b7FUr2OiDbY2Ntoh1DKxxBcOkuijJdD0kBteaEqwiUF3gnDXMdo')",
+            }}
           ></div>
           <div className="absolute inset-0 bg-[#0077BE]/70 backdrop-blur-[2px] flex flex-col items-center justify-center p-12 text-center">
-            <Link to="/" className="absolute top-10 left-10 flex items-center gap-2 text-white hover:opacity-90 transition-opacity">
-              <span className="text-3xl"><IoSchool /></span>
+            <Link
+              to="/"
+              className="absolute top-10 left-10 flex items-center gap-2 text-white hover:opacity-90 transition-opacity"
+            >
+              <span className="text-3xl">
+                <IoSchool />
+              </span>
               <span className="text-xl font-bold tracking-tight">Edu LMS</span>
             </Link>
             <div className="max-w-md">
@@ -91,7 +154,8 @@ const LoginPage = () => {
                 Học tập không giới hạn cùng Edu LMS
               </h1>
               <p className="text-white/90 text-xl font-light">
-                Kiến tạo tương lai của bạn thông qua nền tảng học tập trực tuyến hiện đại nhất.
+                Kiến tạo tương lai của bạn thông qua nền tảng học tập trực tuyến
+                hiện đại nhất.
               </p>
             </div>
           </div>
@@ -101,25 +165,34 @@ const LoginPage = () => {
         <div className="w-full lg:w-1/2 flex flex-col items-center justify-center bg-white h-full overflow-y-auto p-6 md:p-12 lg:p-20">
           <div className="w-full max-w-[440px]">
             {/* Mobile Logo */}
-            <Link to="/" className="lg:hidden flex items-center gap-2 mb-10 text-[#0077BE]">
-              <span className="text-3xl"><IoSchool /></span>
+            <Link
+              to="/"
+              className="lg:hidden flex items-center gap-2 mb-10 text-[#0077BE]"
+            >
+              <span className="text-3xl">
+                <IoSchool />
+              </span>
               <span className="text-xl font-bold tracking-tight">Edu LMS</span>
             </Link>
 
             {/* Tabs */}
             <div className="mb-10">
               <div className="flex border-b border-gray-200 gap-8">
-                <Link 
-                  to="/login" 
+                <Link
+                  to="/login"
                   className="flex flex-col items-center justify-center border-b-[3px] border-b-[#0077BE] text-[#0077BE] pb-[13px] pt-4 flex-1"
                 >
-                  <p className="text-sm font-bold leading-normal tracking-[0.015em]">Đăng nhập</p>
+                  <p className="text-sm font-bold leading-normal tracking-[0.015em]">
+                    Đăng nhập
+                  </p>
                 </Link>
-                <Link 
-                  to="/register" 
+                <Link
+                  to="/register"
                   className="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-gray-500 pb-[13px] pt-4 flex-1 hover:text-[#0077BE] transition-colors"
                 >
-                  <p className="text-sm font-bold leading-normal tracking-[0.015em]">Đăng ký</p>
+                  <p className="text-sm font-bold leading-normal tracking-[0.015em]">
+                    Đăng ký
+                  </p>
                 </Link>
               </div>
             </div>
@@ -138,9 +211,11 @@ const LoginPage = () => {
             <form className="space-y-5" onSubmit={handleSubmit}>
               {/* Email Input */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-gray-900 text-sm font-medium">Email</label>
-                <input 
-                  className={`w-full h-9 px-4 rounded-lg border ${errors.email ? 'border-red-500 focus:ring-red-500/50' : 'border-gray-200 focus:ring-[#0077BE]'} focus:outline-none focus:ring-1 transition-all`}
+                <label className="text-gray-900 text-sm font-medium">
+                  Email
+                </label>
+                <input
+                  className={`w-full h-9 px-4 rounded-lg border ${errors.email ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#0077BE]"} focus:outline-none focus:ring-1 transition-all`}
                   placeholder="email@example.com"
                   type="email"
                   value={email}
@@ -155,10 +230,12 @@ const LoginPage = () => {
 
               {/* Password Input */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-gray-900 text-sm font-medium">Mật khẩu</label>
+                <label className="text-gray-900 text-sm font-medium">
+                  Mật khẩu
+                </label>
                 <div className="relative">
-                  <input 
-                    className={`w-full h-9 px-4 pr-12 rounded-lg border ${errors.password ? 'border-red-500 focus:ring-red-500/50' : 'border-gray-200 focus:ring-[#0077BE]'} focus:outline-none focus:ring-1 transition-all`}
+                  <input
+                    className={`w-full h-9 px-4 pr-12 rounded-lg border ${errors.password ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#0077BE]"} focus:outline-none focus:ring-1 transition-all`}
                     placeholder="••••••••"
                     type={showPassword ? "text" : "password"}
                     value={password}
@@ -166,41 +243,79 @@ const LoginPage = () => {
                     onBlur={handlePasswordBlur}
                     required
                   />
-                  <button 
+                  <button
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 transition-colors"
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                   >
-                    {showPassword ? <FaEyeSlash className="text-[20px]" /> : <FaEye className="text-[20px]" />}
+                    {showPassword ? (
+                      <FaEyeSlash className="text-[20px]" />
+                    ) : (
+                      <FaEye className="text-[20px]" />
+                    )}
                   </button>
                 </div>
                 {errors.password && touched.password && (
-                  <p className="text-red-500 text-xs mt-0.5">{errors.password}</p>
+                  <p className="text-red-500 text-xs mt-0.5">
+                    {errors.password}
+                  </p>
                 )}
               </div>
 
               {/* Remember Me & Forgot Password */}
               <div className="flex items-center justify-between mt-2">
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input 
+                  <input
                     className="w-4 h-4 rounded border-gray-200 text-[#0077BE] focus:ring-[#0077BE]"
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
                   />
-                  <span className="text-sm text-gray-600">Ghi nhớ đăng nhập</span>
+                  <span className="text-sm text-gray-600">
+                    Ghi nhớ đăng nhập
+                  </span>
                 </label>
-                <Link className="text-sm font-medium text-[#0077BE] hover:underline" to="/forgot-password">
+                <Link
+                  className="text-sm font-medium text-[#0077BE] hover:underline"
+                  to="/forgot-password"
+                >
                   Quên mật khẩu?
                 </Link>
               </div>
 
               {/* Submit Button */}
-              <button 
-                className="w-full h-9 bg-[#0077BE] hover:bg-[#0077BE]/90 text-white font-bold rounded-lg transition-all shadow-sm flex items-center justify-center gap-2"
+              <button
+                className="w-full h-9 bg-[#0077BE] hover:bg-[#0077BE]/90 text-white font-bold rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 type="submit"
+                disabled={loading}
               >
-                <span>Đăng nhập</span>
+                {loading ? (
+                  <>
+                    <svg
+                      className="animate-spin h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    <span>Đang đăng nhập...</span>
+                  </>
+                ) : (
+                  <span>Đăng nhập</span>
+                )}
               </button>
             </form>
 
@@ -215,19 +330,24 @@ const LoginPage = () => {
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <button 
+                <button
+                  onClick={handleGoogleLogin}
                   type="button"
                   className="flex items-center justify-center gap-3 h-11 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   <FaGoogle className="w-5 h-5 text-[#4285F4]" />
-                  <span className="text-sm font-medium text-gray-900">Google</span>
+                  <span className="text-sm font-medium text-gray-900">
+                    Google
+                  </span>
                 </button>
-                <button 
+                <button
                   type="button"
                   className="flex items-center justify-center gap-3 h-11 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   <FaFacebookF className="w-5 h-5 text-[#1877F2]" />
-                  <span className="text-sm font-medium text-gray-900">Facebook</span>
+                  <span className="text-sm font-medium text-gray-900">
+                    Facebook
+                  </span>
                 </button>
               </div>
             </div>
@@ -235,8 +355,11 @@ const LoginPage = () => {
             {/* Sign Up Link */}
             <div className="mt-10 text-center">
               <p className="text-gray-600 text-sm">
-                Chưa có tài khoản?{' '}
-                <Link className="text-[#0077BE] font-bold hover:underline" to="/register">
+                Chưa có tài khoản?{" "}
+                <Link
+                  className="text-[#0077BE] font-bold hover:underline"
+                  to="/register"
+                >
                   Đăng ký ngay
                 </Link>
               </p>

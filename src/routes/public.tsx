@@ -1,7 +1,8 @@
-import type { RouteObject } from 'react-router-dom';
-import Home from '../pages/home/Home';
-import CoursesPage from '../pages/courses/CoursesPage';
-import CourseDetailPage from '../pages/courses/CourseDetailPage';
+import type { RouteObject } from "react-router-dom";
+import MainLayout from "../layouts/MainLayout";
+import Home from "../pages/home/Home";
+import CoursesPage from "../pages/courses/CoursesPage";
+import CourseDetailPage from "../pages/courses/CourseDetailPage";
 
 /**
  * Public Routes
@@ -9,25 +10,31 @@ import CourseDetailPage from '../pages/courses/CourseDetailPage';
  */
 const publicRoutes: RouteObject[] = [
   {
-    path: '/',
-    element: <Home />
+    path: "/",
+    element: <MainLayout />,
+    children: [
+      {
+        path: "",
+        element: <Home />,
+      },
+      {
+        path: "courses",
+        element: <CoursesPage />,
+      },
+      {
+        path: "courses/:id",
+        element: <CourseDetailPage />,
+      },
+      {
+        path: "forum",
+        element: <div>Forum Page - Coming Soon</div>,
+      },
+      {
+        path: "shop",
+        element: <div>Shop Page - Coming Soon</div>,
+      },
+    ],
   },
-  {
-    path: '/courses',
-    element: <CoursesPage />
-  },
-  {
-    path: '/courses/:id',
-    element: <CourseDetailPage />
-  },
-  {
-    path: '/forum',
-    element: <div>Forum Page - Coming Soon</div>
-  },
-  {
-    path: '/shop',
-    element: <div>Shop Page - Coming Soon</div>
-  }
 ];
 
 export default publicRoutes;

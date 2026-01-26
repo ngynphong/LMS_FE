@@ -1,10 +1,14 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { IoSchool } from 'react-icons/io5';
 import { FaEye, FaEyeSlash, FaGoogle } from 'react-icons/fa';
 import { FaFacebookF } from 'react-icons/fa6';
+import { useAuth } from '../../hooks/useAuth';
+// import { toast } from '../../components/common/Toast';
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
+  const { register, loading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -25,7 +29,7 @@ const RegisterPage = () => {
   const validatePassword = (password: string): string[] => {
     const errors: string[] = [];
     if (password.length < 8) errors.push('Mật khẩu phải có ít nhất 8 ký tự');
-    if (!/[A-Z]/.test(password)) errors.push('Phải có ít nhất 1 chữ hoa');
+    // if (!/[A-Z]/.test(password)) errors.push('Phải có ít nhất 1 chữ hoa');
     if (!/[a-z]/.test(password)) errors.push('Phải có ít nhất 1 chữ thường');
     if (!/[0-9]/.test(password)) errors.push('Phải có ít nhất 1 số');
     return errors;
@@ -91,7 +95,7 @@ const RegisterPage = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate all fields
@@ -108,9 +112,30 @@ const RegisterPage = () => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      // Handle registration logic here
-      console.log('Registration attempt:', { ...formData, agreeToTerms });
-      // TODO: Call API
+      try {
+        // Send dob as string (backend expects ISO date string format like "2026-01-22")
+        await register(
+          formData.email,
+          formData.password,
+          formData.firstName,
+          formData.lastName,
+          formData.dob,
+          formData.roleName
+        );
+        
+        // Registration successful - toast is shown in auth context
+        // Navigate to login or email verification page
+        setTimeout(() => {
+          navigate('/login', { 
+            state: { 
+              message: 'Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.' 
+            } 
+          });
+        }, 1000);
+      } catch (err) {
+        // Error is already handled in auth context
+        console.error('Registration error:', err);
+      }
     }
   };
 
@@ -326,10 +351,21 @@ const RegisterPage = () => {
 
             {/* Submit Button */}
             <button 
-              className="w-full flex items-center justify-center rounded-lg h-10 px-5 bg-[#0077BE] text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#0066a3] transition-colors shadow-lg shadow-[#0077BE]/20 mt-2"
+              className="w-full flex items-center justify-center rounded-lg h-10 px-5 bg-[#0077BE] text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#0066a3] transition-colors shadow-lg shadow-[#0077BE]/20 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
               type="submit"
+              disabled={loading}
             >
-              <span>Đăng ký ngay</span>
+              {loading ? (
+                <>
+                  <svg className="animate-spin h-4 w-4 text-white mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span>Đang đăng ký...</span>
+                </>
+              ) : (
+                <span>Đăng ký ngay</span>
+              )}
             </button>
           </form>
 

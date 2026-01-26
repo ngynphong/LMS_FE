@@ -3,6 +3,8 @@ import LoginPage from '../pages/auth/LoginPage';
 import RegisterPage from '../pages/auth/RegisterPage';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from '../pages/auth/ResetPasswordPage';
+import GoogleCallbackPage from '../pages/auth/GoogleCallbackPage';
+import VerifyEmailPage from '../pages/auth/VerifyEmailPage';
 
 /**
  * Authentication Routes
@@ -24,6 +26,14 @@ const authRoutes: RouteObject[] = [
   {
     path: '/reset-password',
     element: <ResetPasswordPage />
+  },
+  {
+    path: '/google/callback',
+    element: <GoogleCallbackPage />
+  },
+  {
+    path: '/verify-email',
+    element: <VerifyEmailPage />
   }
 ];
 

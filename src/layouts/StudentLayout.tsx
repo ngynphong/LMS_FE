@@ -1,8 +1,9 @@
-import type { ReactNode } from 'react';
-import StudentSidebar from '../components/student/StudentSidebar';
+import type { ReactNode } from "react";
+import { Outlet } from "react-router-dom";
+import StudentSidebar from "../components/student/StudentSidebar";
 
 interface StudentLayoutProps {
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 const StudentLayout = ({ children }: StudentLayoutProps) => {
@@ -14,7 +15,7 @@ const StudentLayout = ({ children }: StudentLayoutProps) => {
       {/* Main Content */}
       <div className="flex-1 ml-64 flex flex-col min-h-screen">
         <main className="flex-1 p-6 md:p-10 max-w-[1440px] w-full mx-auto">
-          {children}
+          {children || <Outlet />}
         </main>
       </div>
     </div>
