@@ -15,8 +15,12 @@ import {
   MdCheckCircle,
   MdCancel,
 } from "react-icons/md";
-import { adminUsers } from "../../data/admin";
+// import { adminUsers } from "../../data/admin"; // Removed mock data import
 import type { UserRole, UserStatus } from "../../types/admin";
+import { useUsers } from "../../hooks/useUsers";
+import type { AdminUserListItem } from "../../types/user";
+import { ConfirmationModal } from "../../components/common/ConfirmationModal";
+import { UpdateRoleModal } from "../../components/admin/UpdateRoleModal";
 
 const AdminUserManagementPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -24,25 +28,113 @@ const AdminUserManagementPage = () => {
   const [statusFilter, setStatusFilter] = useState<UserStatus | "All">("All");
   const [activeTab, setActiveTab] = useState<"All" | UserRole>("All");
 
-  // Filter logic
-  const filteredUsers = adminUsers.filter((user) => {
-    // Search
-    const searchMatch =
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.id.toLowerCase().includes(searchQuery.toLowerCase());
+  // Modal state
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-    // Role Filter (Dropdown)
-    const roleMatch = roleFilter === "All" || user.role === roleFilter;
+  // Update Role Modal state
+  const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
+  const [userToUpdateRole, setUserToUpdateRole] = useState<string | null>(null);
+  const [currentRolesToUpdate, setCurrentRolesToUpdate] = useState<string[]>(
+    [],
+  );
+  const [isUpdatingRole, setIsUpdatingRole] = useState(false);
 
-    // Status Filter
-    const statusMatch = statusFilter === "All" || user.status === statusFilter;
-
-    // Tab Filter
-    const tabMatch = activeTab === "All" || user.role === activeTab;
-
-    return searchMatch && roleMatch && statusMatch && tabMatch;
+  const {
+    data,
+    loading,
+    updateParams,
+    deleteUser,
+    updateUserRoles,
+  } = useUsers({
+    pageNo: 0,
+    pageSize: 10,
+    keyword: "",
+    role: "All",
+    sorts: ["createdAt:desc"],
   });
+
+  const handleDeleteUser = (userId: string) => {
+    setUserToDelete(userId);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!userToDelete) return;
+
+    try {
+      setIsDeleting(true);
+      await deleteUser(userToDelete);
+      // toast.success("Xóa người dùng thành công");
+      setIsDeleteModalOpen(false);
+      setUserToDelete(null);
+    } catch (error) {
+      console.error("Failed to delete user", error);
+      // toast.error("Xóa người dùng thất bại");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleUpdateRole = (userId: string, currentRoles: string[]) => {
+    setUserToUpdateRole(userId);
+    setCurrentRolesToUpdate(currentRoles);
+    setIsRoleModalOpen(true);
+  };
+
+  const confirmUpdateRole = async (newRoles: string[]) => {
+    if (!userToUpdateRole) return;
+
+    try {
+      setIsUpdatingRole(true);
+      await updateUserRoles(userToUpdateRole, { roles: newRoles });
+      // toast.success("Cập nhật vai trò thành công");
+      setIsRoleModalOpen(false);
+      setUserToUpdateRole(null);
+    } catch (error) {
+      console.error("Failed to update role", error);
+      // toast.error("Cập nhật vai trò thất bại");
+    } finally {
+      setIsUpdatingRole(false);
+    }
+  };
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    // Debounce can be added here
+    updateParams({ keyword: e.target.value, pageNo: 0 });
+  };
+
+  const handleRoleChange = (role: UserRole | "All") => {
+    setRoleFilter(role);
+    // Sync tab if role matches
+    if (
+      role === "All" ||
+      role === "STUDENT" ||
+      role === "TEACHER" ||
+      role === "ADMIN"
+    ) {
+      setActiveTab(role as "All" | UserRole);
+    }
+    updateParams({ role: role, pageNo: 0 });
+  };
+
+  // Tab change handler
+  const handleTabChange = (tab: "All" | UserRole) => {
+    setActiveTab(tab);
+    setRoleFilter(tab);
+    updateParams({ role: tab, pageNo: 0 });
+  };
+
+  const handlePageChange = (newPage: number) => {
+    updateParams({ pageNo: newPage });
+  };
+
+  const filteredUsers = data?.items || [];
+  const totalElements = data?.totalElement || 0;
+  const totalPages = data?.totalPage || 0;
+  const currentPage = data?.pageNo || 0;
 
   const getRoleBadgeColor = (role: UserRole) => {
     switch (role) {
@@ -138,7 +230,7 @@ const AdminUserManagementPage = () => {
                 <input
                   type="text"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={handleSearch}
                   className="w-full pl-10 pr-4 py-2.5 bg-[#f5f7f8] border-none rounded-lg text-sm focus:ring-2 focus:ring-[#0078bd]/50 transition-all text-[#111518]"
                   placeholder="Tìm kiếm theo tên, email hoặc số điện thoại..."
                 />
@@ -151,7 +243,7 @@ const AdminUserManagementPage = () => {
               <select
                 value={roleFilter}
                 onChange={(e) =>
-                  setRoleFilter(e.target.value as UserRole | "All")
+                  handleRoleChange(e.target.value as UserRole | "All")
                 }
                 className="w-full py-2.5 bg-[#f5f7f8] border-none rounded-lg text-sm focus:ring-2 focus:ring-[#0078bd]/50 text-[#111518] cursor-pointer"
               >
@@ -182,8 +274,10 @@ const AdminUserManagementPage = () => {
               <button
                 onClick={() => {
                   setSearchQuery("");
+                  setSearchQuery("");
                   setRoleFilter("All");
                   setStatusFilter("All");
+                  updateParams({ keyword: "", role: "All", pageNo: 0 });
                 }}
                 className="px-4 py-2.5 text-slate-500 hover:text-[#0078bd] font-medium text-sm flex items-center gap-1 transition-colors"
               >
@@ -198,27 +292,28 @@ const AdminUserManagementPage = () => {
         <div className="flex items-center justify-between border-b border-slate-200">
           <div className="flex gap-8">
             <button
-              onClick={() => setActiveTab("All")}
+              onClick={() => handleTabChange("All")}
               className={`pb-4 border-b-2 font-bold text-sm tracking-wide transition-colors ${
                 activeTab === "All"
                   ? "border-[#0078bd] text-[#0078bd]"
                   : "border-transparent text-[#607b8a] hover:text-[#111518]"
               }`}
             >
-              Tất cả ({adminUsers.length})
+              Tất cả ({totalElements})
             </button>
             <button
-              onClick={() => setActiveTab("STUDENT")}
+              onClick={() => handleTabChange("STUDENT")}
               className={`pb-4 border-b-2 font-bold text-sm tracking-wide transition-colors ${
                 activeTab === "STUDENT"
                   ? "border-[#0078bd] text-[#0078bd]"
                   : "border-transparent text-[#607b8a] hover:text-[#111518]"
               }`}
             >
-              Học viên ({adminUsers.filter((u) => u.role === "STUDENT").length})
+              Học viên (
+              {data?.items.filter((u) => u.roles.includes("STUDENT")).length})
             </button>
             <button
-              onClick={() => setActiveTab("TEACHER")}
+              onClick={() => handleTabChange("TEACHER")}
               className={`pb-4 border-b-2 font-bold text-sm tracking-wide transition-colors ${
                 activeTab === "TEACHER"
                   ? "border-[#0078bd] text-[#0078bd]"
@@ -226,17 +321,18 @@ const AdminUserManagementPage = () => {
               }`}
             >
               Giảng viên (
-              {adminUsers.filter((u) => u.role === "TEACHER").length})
+              {data?.items.filter((u) => u.roles.includes("TEACHER")).length}) )
             </button>
             <button
-              onClick={() => setActiveTab("ADMIN")}
+              onClick={() => handleTabChange("ADMIN")}
               className={`pb-4 border-b-2 font-bold text-sm tracking-wide transition-colors ${
                 activeTab === "ADMIN"
                   ? "border-[#0078bd] text-[#0078bd]"
                   : "border-transparent text-[#607b8a] hover:text-[#111518]"
               }`}
             >
-              Admin ({adminUsers.filter((u) => u.role === "ADMIN").length})
+              Admin (
+              {data?.items.filter((u) => u.roles.includes("ADMIN")).length})
             </button>
           </div>
           <div className="pb-3">
@@ -259,9 +355,6 @@ const AdminUserManagementPage = () => {
                   />
                 </th>
                 <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                  ID
-                </th>
-                <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
                   Người dùng
                 </th>
                 <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -279,99 +372,126 @@ const AdminUserManagementPage = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {filteredUsers.map((user) => {
-                const statusInfo = getStatusBadge(user.status);
-                return (
-                  <tr
-                    key={user.id}
-                    className="hover:bg-slate-50 transition-colors"
-                  >
-                    <td className="p-4 w-12 text-center">
-                      <input
-                        type="checkbox"
-                        className="rounded border-slate-300 text-[#0078bd] focus:ring-[#0078bd]"
-                      />
-                    </td>
-                    <td className="p-4 text-sm font-medium text-slate-600">
-                      #{user.id.split("-")[1]}
-                    </td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-3">
-                        {user.avatar ? (
-                          <div
-                            className="w-9 h-9 rounded-full bg-cover bg-center border border-slate-200"
-                            style={{ backgroundImage: `url('${user.avatar}')` }}
-                          ></div>
-                        ) : (
-                          <div className="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 text-xs font-bold">
-                            {user.name.charAt(0)}
+              {loading ? (
+                <tr>
+                  <td colSpan={7} className="p-8 text-center text-slate-500">
+                    Đang tải...
+                  </td>
+                </tr>
+              ) : (
+                filteredUsers.map((user: AdminUserListItem) => {
+                  // Map API status if implied or use active/deleted logic
+                  // Assuming API returns 'active' implies good, deleted=true implies blocked?
+                  // Adjust as per real logic. Here defaulting to Active for now as API doesn't have status field directly?
+                  // Wait, user.ts has 'active' property in User but AdminUserListItem might not have it strictly matching?
+                  // AdminUserListItem has deleted field.
+                  const displayStatus: UserStatus = user.studentProfile?.deleted
+                    ? "Blocked"
+                    : "Active";
+                  const statusInfo = getStatusBadge(displayStatus);
+
+                  return (
+                    <tr
+                      key={user.id}
+                      className="hover:bg-slate-50 transition-colors"
+                    >
+                      <td className="p-4 w-12 text-center">
+                        <input
+                          type="checkbox"
+                          className="rounded border-slate-300 text-[#0078bd] focus:ring-[#0078bd]"
+                        />
+                      </td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-3">
+                          {user.imgUrl ? (
+                            <div
+                              className="w-9 h-9 rounded-full bg-cover bg-center border border-slate-200"
+                              style={{
+                                backgroundImage: `url('${user.imgUrl}')`,
+                              }}
+                            ></div>
+                          ) : (
+                            <div className="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 text-xs font-bold">
+                              {user.firstName?.charAt(0) ||
+                                user.email.charAt(0)}
+                            </div>
+                          )}
+                          <div>
+                            <p className="text-sm font-bold text-[#111518]">
+                              {user.firstName} {user.lastName}
+                            </p>
+                            <p className="text-xs text-[#607b8a]">
+                              {user.email}
+                            </p>
                           </div>
-                        )}
-                        <div>
-                          <p className="text-sm font-bold text-[#111518]">
-                            {user.name}
-                          </p>
-                          <p className="text-xs text-[#607b8a]">{user.email}</p>
                         </div>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <span
-                        className={`px-2 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider ${getRoleBadgeColor(user.role)}`}
-                      >
-                        {user.role === "STUDENT"
-                          ? "Học viên"
-                          : user.role === "TEACHER"
-                            ? "Giảng viên"
-                            : "Admin"}
-                      </span>
-                    </td>
-                    <td className="p-4 text-sm text-slate-600">
-                      {user.joinedDate}
-                    </td>
-                    <td className="p-4 text-center">
-                      <div className="flex items-center justify-center gap-3">
+                      </td>
+                      <td className="p-4">
                         <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${statusInfo.color}`}
+                          className={`px-2 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider ${getRoleBadgeColor(user.roles[0] as UserRole)}`}
                         >
-                          {statusInfo.label}
+                          {user.roles.includes("STUDENT")
+                            ? "Học viên"
+                            : user.roles.includes("TEACHER")
+                              ? "Giảng viên"
+                              : user.roles.includes("ADMIN")
+                                ? "Admin"
+                                : user.roles.join(", ")}
                         </span>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            className="sr-only peer"
-                            checked={user.status === "Active"}
-                            readOnly
-                          />
-                          <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#0078bd]"></div>
-                        </label>
-                      </div>
-                    </td>
-                    <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          className="p-2 text-slate-400 hover:text-[#0078bd] hover:bg-[#0078bd]/10 rounded-lg transition-all"
-                          title="Chỉnh sửa"
-                        >
-                          <MdEdit className="text-xl" />
-                        </button>
-                        <button
-                          className="p-2 text-slate-400 hover:text-orange-500 hover:bg-orange-50 rounded-lg transition-all"
-                          title="Đặt lại mật khẩu"
-                        >
-                          <MdVpnKey className="text-xl" />
-                        </button>
-                        <button
-                          className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                          title="Xóa người dùng"
-                        >
-                          <MdDelete className="text-xl" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
+                      </td>
+                      <td className="p-4 text-sm text-slate-600">
+                        {new Date(
+                          user.studentProfile?.createdAt || Date.now(),
+                        ).toLocaleDateString("vi-VN")}
+                      </td>
+                      <td className="p-4 text-center">
+                        <div className="flex items-center justify-center gap-3">
+                          <span
+                            className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${statusInfo.color}`}
+                          >
+                            {statusInfo.label}
+                          </span>
+                          <label className="relative inline-flex items-center cursor-pointer">
+                            <input
+                              type="checkbox"
+                              className="sr-only peer"
+                              checked={!user.studentProfile?.deleted}
+                              readOnly
+                            />
+                            <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#0078bd]"></div>
+                          </label>
+                        </div>
+                      </td>
+                      <td className="p-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() =>
+                              handleUpdateRole(user.id, user.roles)
+                            }
+                            className="p-2 text-slate-400 hover:text-[#0078bd] hover:bg-[#0078bd]/10 rounded-lg transition-all"
+                            title="Chỉnh sửa vai trò"
+                          >
+                            <MdEdit className="text-xl" />
+                          </button>
+                          <button
+                            className="p-2 text-slate-400 hover:text-orange-500 hover:bg-orange-50 rounded-lg transition-all"
+                            title="Đặt lại mật khẩu"
+                          >
+                            <MdVpnKey className="text-xl" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteUser(user.id)}
+                            className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                            title="Xóa người dùng"
+                          >
+                            <MdDelete className="text-xl" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
               {filteredUsers.length === 0 && (
                 <tr>
                   <td
@@ -388,30 +508,65 @@ const AdminUserManagementPage = () => {
           {/* Pagination */}
           <div className="p-4 bg-slate-50 flex items-center justify-between border-t border-slate-100">
             <p className="text-sm text-[#607b8a]">
-              Hiển thị {filteredUsers.length} trên tổng số {adminUsers.length}{" "}
-              kết quả
+              Hiển thị {filteredUsers.length} trên tổng số {totalElements} kết
+              quả
             </p>
             <div className="flex gap-2">
-              <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-[#0078bd] hover:border-[#0078bd] transition-all">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage <= 0}
+                className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-[#0078bd] hover:border-[#0078bd] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 <MdChevronLeft className="text-xl" />
               </button>
-              <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#0078bd] text-white font-bold text-sm">
-                1
-              </button>
-              <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-[#0078bd] hover:border-[#0078bd] transition-all font-bold text-sm">
-                2
-              </button>
-              <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-600 hover:text-[#0078bd] hover:border-[#0078bd] transition-all font-bold text-sm">
-                3
-              </button>
-              <span className="flex items-center px-1 text-slate-400">...</span>
-              <button className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-[#0078bd] hover:border-[#0078bd] transition-all">
+
+              {/* Simple pagination logic - can be improved for many pages */}
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                // Simplified centered pagination logic or just show first 5 for now
+                const page = i;
+                return (
+                  <button
+                    key={page}
+                    onClick={() => handlePageChange(page)}
+                    className={`w-8 h-8 flex items-center justify-center rounded-lg border transition-all font-bold text-sm
+                            ${currentPage === page ? "bg-[#0078bd] text-white border-[#0078bd]" : "bg-white border-slate-200 text-slate-600 hover:text-[#0078bd] hover:border-[#0078bd]"}`}
+                  >
+                    {page + 1}
+                  </button>
+                );
+              })}
+
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage >= totalPages - 1}
+                className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-[#0078bd] hover:border-[#0078bd] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 <MdChevronRight className="text-xl" />
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={confirmDelete}
+        title="Xóa người dùng"
+        message="Bạn có chắc chắn muốn xóa người dùng này không? Hành động này không thể hoàn tác và sẽ xóa toàn bộ dữ liệu liên quan."
+        confirmLabel="Xóa"
+        cancelLabel="Hủy"
+        isLoading={isDeleting}
+        variant="danger"
+      />
+
+      <UpdateRoleModal
+        isOpen={isRoleModalOpen}
+        onClose={() => setIsRoleModalOpen(false)}
+        onConfirm={confirmUpdateRole}
+        currentRoles={currentRolesToUpdate}
+        isLoading={isUpdatingRole}
+      />
     </div>
   );
 };

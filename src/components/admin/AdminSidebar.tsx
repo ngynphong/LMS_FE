@@ -8,6 +8,7 @@ import {
 } from "react-icons/md";
 import { IoSchool } from "react-icons/io5";
 import { FaCalendar, FaSignOutAlt } from "react-icons/fa";
+import { useAuth } from "../../hooks/useAuth";
 
 interface NavItem {
   path: string;
@@ -54,9 +55,10 @@ const AdminSidebar = () => {
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;
-
+  const { logout } = useAuth();
   const handleLogout = () => {
     // TODO: Call logout API
+    logout();
     console.log("Logging out...");
     // Redirect to login
     window.location.href = "/login";

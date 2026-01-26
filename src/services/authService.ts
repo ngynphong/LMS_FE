@@ -6,7 +6,8 @@ import type {
     EditProfileRequest,
     EditProfileResponse,
     UploadAvatarResponse,
-    ChangePasswordRequest
+    ChangePasswordRequest,
+    ProfileResponse
 } from "../types/auth";
 import axiosInstance, { publicAxios } from "../config/axios";
 import axios from "axios";
@@ -262,51 +263,99 @@ export const logoutApi = async (token: string): Promise<void> => {
     }
 };
 
+// export const getCurrentUserApi = async (): Promise<AuthResponse> => {
+//     try {
+//         const response = await axiosInstance.get('/users/me');
+
+//         if (response.data.code !== 1000) {
+//             throw new Error(response.data.message || 'Failed to fetch user profile');
+//         }
+
+//         const userData = response.data.data;
+//         if (!userData) throw new Error('Invalid user data received from API');
+
+//         // Get roles from token
+//         const currentToken = localStorage.getItem('token');
+//         let roles: string[] = [];
+
+//         if (currentToken) {
+//             const decodedToken = decodeJWT(currentToken);
+//             const tokenRoles = decodedToken?.scp || decodedToken?.scopes;
+//             if (Array.isArray(tokenRoles)) {
+//                 roles = tokenRoles;
+//             }
+//         }
+
+//         // Fallback to profile data
+//         if (roles.length === 0) {
+//             if (userData.roles && Array.isArray(userData.roles)) {
+//                 roles = userData.roles;
+//             } else if (userData.role && typeof userData.role === 'string') {
+//                 roles = [userData.role.toUpperCase()];
+//             }
+//         }
+
+//         const user: User = {
+//             id: (userData.id || '').toString(),
+//             firstName: userData.firstName || '',
+//             lastName: userData.lastName || '',
+//             email: userData.email || '',
+//             imgUrl: userData.imgUrl || '',
+//             dob: userData.dob || '',
+//             role: mapRolesToUserRole(roles),
+//             teacherProfile: userData.teacherProfile,
+//             studentProfile: userData.studentProfile,
+//         };
+
+//         return { user, token: '' };
+//     } catch (error) {
+//         return handleApiError(error, 'Failed to fetch user profile');
+//     }
+// };
+
 export const getCurrentUserApi = async (): Promise<AuthResponse> => {
     try {
-        const response = await axiosInstance.get('/users/me');
+        const response = await axiosInstance.get<ProfileResponse>('/my-profile');
 
-        if (response.data.code !== 1000) {
+        if (response.data.code !== 1000 && response.data.code !== 0) {
             throw new Error(response.data.message || 'Failed to fetch user profile');
         }
 
-        const userData = response.data.data;
-        if (!userData) throw new Error('Invalid user data received from API');
+        const profileData = response.data.data;
 
-        // Get roles from token
+        // Get roles and basic info from token
         const currentToken = localStorage.getItem('token');
         let roles: string[] = [];
+        let decodedToken: JwtPayload | null = null;
 
         if (currentToken) {
-            const decodedToken = decodeJWT(currentToken);
+            decodedToken = decodeJWT(currentToken);
             const tokenRoles = decodedToken?.scp || decodedToken?.scopes;
             if (Array.isArray(tokenRoles)) {
                 roles = tokenRoles;
             }
         }
 
-        // Fallback to profile data
-        if (roles.length === 0) {
-            if (userData.roles && Array.isArray(userData.roles)) {
-                roles = userData.roles;
-            } else if (userData.role && typeof userData.role === 'string') {
-                roles = [userData.role.toUpperCase()];
-            }
-        }
-
         const user: User = {
-            id: (userData.id || '').toString(),
-            firstName: userData.firstName || '',
-            lastName: userData.lastName || '',
-            email: userData.email || '',
-            imgUrl: userData.imgUrl || '',
-            dob: userData.dob || '',
+            id: profileData.id,
+            // If API doesn't return name/email, use from token or empty
+            firstName: decodedToken?.firstName || '',
+            lastName: decodedToken?.lastName || '',
+            email: decodedToken?.email || '',
+            imgUrl: decodedToken?.imgUrl || decodedToken?.avatar || '',
+            dob: decodedToken?.dob || '',
             role: mapRolesToUserRole(roles),
-            teacherProfile: userData.teacherProfile,
-            studentProfile: userData.studentProfile,
+            studentProfile: {
+                id: profileData.id,
+                schoolName: profileData.schoolName,
+                emergencyContact: profileData.emergencyContact,
+                parentPhone: '', // Not in profileData
+                goal: profileData.goal,
+                stats: profileData.stats
+            },
         };
 
-        return { user, token: '' };
+        return { user, token: currentToken || '' };
     } catch (error) {
         return handleApiError(error, 'Failed to fetch user profile');
     }

@@ -1,4 +1,5 @@
 import type { TeacherProfileData } from "./teacherProfile";
+import type { ProfileStats } from "./auth";
 
 export interface User {
   id: string;
@@ -19,6 +20,7 @@ export interface StudentProfile {
   emergencyContact: string;
   parentPhone: string;
   goal: string;
+  stats?: ProfileStats;
 }
 
 export interface UpdateStudentProfileRequest {
@@ -138,3 +140,55 @@ export interface TeacherListQueryParams {
   pageSize?: number;
   sorts?: string[];
 }
+// Types for GET /users (Admin)
+export interface AdminUserListItem {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  imgUrl: string;
+  dob: string;
+  roles: string[];
+  teacherProfile?: {
+    id: string;
+    qualification: string;
+    specialization: string;
+    experience: string;
+    biography: string;
+    certificateUrls: string[];
+    isVerified: boolean;
+    createdAt: string;
+    updatedAt: string;
+    deleted: boolean;
+  };
+  studentProfile?: {
+    id: string;
+    schoolName: string;
+    goal: string;
+    emergencyContact: string;
+    createdAt: string;
+    updatedAt: string;
+    deleted: boolean;
+    stats: ProfileStats;
+  };
+}
+
+export interface AdminUserPaginationData {
+  pageNo: number;
+  pageSize: number;
+  totalPage: number;
+  totalElement: number;
+  sortBy: string[];
+  items: AdminUserListItem[];
+}
+
+export interface AdminUserListResponse {
+  code: number;
+  message: string;
+  data: AdminUserPaginationData;
+}
+
+export interface UpdateUserRoleRequest {
+  roles: string[];
+}
+

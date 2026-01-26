@@ -96,3 +96,26 @@ export interface ChangePasswordRequest {
     newPassword: string;
     token: string;
 }
+
+export interface ProfileStats {
+    totalCourses: number;
+    completedCourses: number;
+    overallProgress: number;
+}
+
+export interface ProfileData {
+    id: string;
+    schoolName: string;
+    goal: string;
+    emergencyContact: string;
+    createdAt: string;
+    updatedAt: string;
+    deleted: boolean;
+    stats: ProfileStats;
+}
+
+export interface ProfileResponse {
+    code: number;
+    message: string;
+    data: ProfileData;
+}
