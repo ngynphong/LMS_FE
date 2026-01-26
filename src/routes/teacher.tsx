@@ -9,6 +9,8 @@ import QuestionBankPage from '../pages/teacher/QuestionBankPage';
 import QuestionFormPage from '../pages/teacher/QuestionFormPage';
 import ExamListPage from '../pages/teacher/ExamListPage';
 import ExamFormPage from '../pages/teacher/ExamFormPage';
+import ReportsListPage from '../pages/teacher/ReportsListPage';
+import ExamReportDetailPage from '../pages/teacher/ExamReportDetailPage';
 
 /**
  * Teacher Routes
@@ -108,7 +110,15 @@ const teacherRoutes: RouteObject[] = [
     path: '/teacher/reports',
     element: (
       <TeacherLayout>
-        <div className="text-[#111518]">Trang Báo cáo - Coming Soon</div>
+        <ReportsListPage />
+      </TeacherLayout>
+    )
+  },
+  {
+    path: '/teacher/reports/:id',
+    element: (
+      <TeacherLayout>
+        <ExamReportDetailPage />
       </TeacherLayout>
     )
   },
