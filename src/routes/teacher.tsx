@@ -5,6 +5,10 @@ import CourseListPage from '../pages/teacher/CourseListPage';
 import CourseBuilderPage from '../pages/teacher/CourseBuilderPage';
 import StudentListPage from '../pages/teacher/StudentListPage';
 import StudentDetailPage from '../pages/teacher/StudentDetailPage';
+import QuestionBankPage from '../pages/teacher/QuestionBankPage';
+import QuestionFormPage from '../pages/teacher/QuestionFormPage';
+import ExamListPage from '../pages/teacher/ExamListPage';
+import ExamFormPage from '../pages/teacher/ExamFormPage';
 
 /**
  * Teacher Routes
@@ -35,6 +39,54 @@ const teacherRoutes: RouteObject[] = [
   {
     path: '/teacher/courses/:id/edit',
     element: <CourseBuilderPage />
+  },
+  {
+    path: '/teacher/questions',
+    element: (
+      <TeacherLayout>
+        <QuestionBankPage />
+      </TeacherLayout>
+    )
+  },
+  {
+    path: '/teacher/questions/new',
+    element: (
+      <TeacherLayout>
+        <QuestionFormPage />
+      </TeacherLayout>
+    )
+  },
+  {
+    path: '/teacher/questions/:id/edit',
+    element: (
+      <TeacherLayout>
+        <QuestionFormPage />
+      </TeacherLayout>
+    )
+  },
+  {
+    path: '/teacher/exams',
+    element: (
+      <TeacherLayout>
+        <ExamListPage />
+      </TeacherLayout>
+    )
+  },
+  {
+    path: '/teacher/exams/new',
+    element: (
+      <TeacherLayout>
+        <ExamFormPage />
+      </TeacherLayout>
+    )
+  },
+  {
+    path: '/teacher/exams/:id/edit',
+    element: (
+      <TeacherLayout>
+        <ExamFormPage />
+      </TeacherLayout>
+    )
   },
   {
     path: '/teacher/students',

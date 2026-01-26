@@ -10,6 +10,8 @@ interface NavItem {
 const navItems: NavItem[] = [
   { path: '/teacher/dashboard', icon: 'dashboard', label: 'Tổng quan' },
   { path: '/teacher/courses', icon: 'book_2', label: 'Khóa học' },
+  { path: '/teacher/questions', icon: 'database', label: 'Ngân hàng câu hỏi' },
+  { path: '/teacher/exams', icon: 'description', label: 'Đề thi' },
   { path: '/teacher/students', icon: 'group', label: 'Học viên' },
   { path: '/teacher/reports', icon: 'analytics', label: 'Báo cáo' },
   { path: '/teacher/settings', icon: 'settings', label: 'Cài đặt' }
