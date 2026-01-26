@@ -25,13 +25,28 @@ const routes: RouteObject[] = [
 export default routes;
 
 /**
+ * Convert route path pattern to regex for matching
+ * e.g., '/teacher/courses/:id/edit' -> /^\/teacher\/courses\/[^/]+\/edit$/
+ */
+const pathToRegex = (path: string): RegExp => {
+  const regexPattern = path
+    .replace(/:[^/]+/g, '[^/]+') // Replace :param with regex
+    .replace(/\//g, '\\/'); // Escape slashes
+  return new RegExp(`^${regexPattern}$`);
+};
+
+/**
  * Helper to check if a path should NOT have MainLayout
  * Returns true for auth pages and dashboard pages
  */
 export const isAuthPath = (pathname: string): boolean => {
-  const authPaths = authRoutes.map(route => route.path);
-  const studentPaths = studentRoutes.map(route => route.path);
-  const teacherPaths = teacherRoutes.map(route => route.path);
+  const authPaths = authRoutes.map(route => route.path).filter(Boolean) as string[];
+  const studentPaths = studentRoutes.map(route => route.path).filter(Boolean) as string[];
+  const teacherPaths = teacherRoutes.map(route => route.path).filter(Boolean) as string[];
   const noLayoutPaths = [...authPaths, ...studentPaths, ...teacherPaths];
-  return noLayoutPaths.includes(pathname);
+  
+  return noLayoutPaths.some(routePath => {
+    const regex = pathToRegex(routePath);
+    return regex.test(pathname);
+  });
 };

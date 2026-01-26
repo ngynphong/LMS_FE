@@ -67,7 +67,7 @@ const StudentSidebar = () => {
                 to={item.path}
                 className={`flex items-center text-sm gap-3 px-6 py-3.5 transition-all ${
                   isActive(item.path)
-                    ? 'text-[#0077BE] bg-[#0077BE]/5 border-r-4 border-[#0077BE] font-semibold'
+                    ? 'text-[#0077BE] bg-[#0077BE]/5 border-r-4 border-[#0077BE] rounded-md font-semibold'
                     : 'text-gray-600 hover:bg-gray-50 hover:text-[#0077BE]'
                 }`}
               >
@@ -84,7 +84,7 @@ const StudentSidebar = () => {
         {/* Logout Button */}
         <button
           onClick={handleLogout}
-          className="flex items-center text-sm gap-3 px-6 py-3.5 text-red-500 hover:bg-red-50 transition-all w-full rounded-lg"
+          className="flex items-center text-sm gap-3 px-6 py-3.5 text-red-500 hover:bg-red-50 transition-all w-full rounded-md"
         >
           <FaSignOutAlt className="text-lg" />
           <span className="font-medium">Đăng xuất</span>

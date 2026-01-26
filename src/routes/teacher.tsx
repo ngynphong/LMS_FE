@@ -1,6 +1,10 @@
 import type { RouteObject } from 'react-router-dom';
 import TeacherLayout from '../layouts/TeacherLayout';
 import TeacherDashboardPage from '../pages/teacher/TeacherDashboardPage';
+import CourseListPage from '../pages/teacher/CourseListPage';
+import CourseBuilderPage from '../pages/teacher/CourseBuilderPage';
+import StudentListPage from '../pages/teacher/StudentListPage';
+import StudentDetailPage from '../pages/teacher/StudentDetailPage';
 
 /**
  * Teacher Routes
@@ -20,15 +24,31 @@ const teacherRoutes: RouteObject[] = [
     path: '/teacher/courses',
     element: (
       <TeacherLayout>
-        <div className="text-[#111518] dark:text-white">Trang Khóa học - Coming Soon</div>
+        <CourseListPage />
       </TeacherLayout>
     )
+  },
+  {
+    path: '/teacher/courses/new',
+    element: <CourseBuilderPage />
+  },
+  {
+    path: '/teacher/courses/:id/edit',
+    element: <CourseBuilderPage />
   },
   {
     path: '/teacher/students',
     element: (
       <TeacherLayout>
-        <div className="text-[#111518] dark:text-white">Trang Học viên - Coming Soon</div>
+        <StudentListPage />
+      </TeacherLayout>
+    )
+  },
+  {
+    path: '/teacher/students/:id',
+    element: (
+      <TeacherLayout>
+        <StudentDetailPage />
       </TeacherLayout>
     )
   },
@@ -36,7 +56,7 @@ const teacherRoutes: RouteObject[] = [
     path: '/teacher/reports',
     element: (
       <TeacherLayout>
-        <div className="text-[#111518] dark:text-white">Trang Báo cáo - Coming Soon</div>
+        <div className="text-[#111518]">Trang Báo cáo - Coming Soon</div>
       </TeacherLayout>
     )
   },
@@ -44,10 +64,12 @@ const teacherRoutes: RouteObject[] = [
     path: '/teacher/settings',
     element: (
       <TeacherLayout>
-        <div className="text-[#111518] dark:text-white">Trang Cài đặt - Coming Soon</div>
+        <div className="text-[#111518]">Trang Cài đặt - Coming Soon</div>
       </TeacherLayout>
     )
   }
 ];
 
 export default teacherRoutes;
+
+
