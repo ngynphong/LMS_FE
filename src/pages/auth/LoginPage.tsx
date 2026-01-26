@@ -1,10 +1,14 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { IoSchool } from 'react-icons/io5';
 import { FaEye, FaEyeSlash, FaGoogle } from 'react-icons/fa';
 import { FaFacebookF } from 'react-icons/fa6';
+import { useAuth } from '../../hooks/useAuth';
+import { toast } from '../../components/common/Toast';
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const { login, loading, user } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [email, setEmail] = useState('');
@@ -50,7 +54,7 @@ const LoginPage = () => {
     setErrors(prev => ({ ...prev, password: validatePassword(password) }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Mark all fields as touched
@@ -67,10 +71,52 @@ const LoginPage = () => {
 
     // If no errors, proceed with login
     if (!emailError && !passwordError) {
-      console.log('Login attempt:', { email, password, rememberMe });
-      // TODO: Call login API
+      try {
+        const error = await login(email, password);
+        
+        if (error) {
+          // Show user-friendly error message instead of technical error
+          const userFriendlyMessage = 'Email hoặc mật khẩu không chính xác';
+          toast.error(userFriendlyMessage);
+          setErrors({ email: userFriendlyMessage });
+        } else {
+          toast.success('Đăng nhập thành công!');
+          // Navigate based on user role
+          setTimeout(() => {
+            if (user?.role === 'ADMIN') {
+              navigate('/admin');
+            } else if (user?.role === 'TEACHER') {
+              navigate('/teacher');
+            } else {
+              navigate('/');
+            }
+          }, 500);
+        }
+      } catch (err) {
+        toast.error('Email hoặc mật khẩu không chính xác');
+        setErrors({ email: 'Email hoặc mật khẩu không chính xác' });
+      }
     }
   };
+
+  const handleGoogleLogin = () => {
+        const OAuthConfig = {
+            redirectUri: import.meta.env.VITE_GOOGLE_REDIRECT_URI,
+            authUri: import.meta.env.VITE_AUTH_URI,
+            clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID
+        };
+
+        const callbackUrl = OAuthConfig.redirectUri;
+        const authUrl = OAuthConfig.authUri;
+        const googleClientId = OAuthConfig.clientId;
+
+        const googleAuthUrl = `${authUrl}?redirect_uri=${encodeURIComponent(
+            callbackUrl
+        )}&response_type=code&client_id=${googleClientId}&scope=openid%20email%20profile`;
+
+        // Chuyển hướng người dùng
+        window.location.href = googleAuthUrl;
+    };
 
   return (
     <main className="flex h-screen w-full">
@@ -197,10 +243,21 @@ const LoginPage = () => {
 
               {/* Submit Button */}
               <button 
-                className="w-full h-9 bg-[#0077BE] hover:bg-[#0077BE]/90 text-white font-bold rounded-lg transition-all shadow-sm flex items-center justify-center gap-2"
+                className="w-full h-9 bg-[#0077BE] hover:bg-[#0077BE]/90 text-white font-bold rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 type="submit"
+                disabled={loading}
               >
-                <span>Đăng nhập</span>
+                {loading ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Đang đăng nhập...</span>
+                  </>
+                ) : (
+                  <span>Đăng nhập</span>
+                )}
               </button>
             </form>
 
@@ -216,6 +273,7 @@ const LoginPage = () => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <button 
+                  onClick={handleGoogleLogin}
                   type="button"
                   className="flex items-center justify-center gap-3 h-11 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >

@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { IoSchool } from 'react-icons/io5';
 import { FaArrowLeft } from 'react-icons/fa';
+import { useAuth } from '../../hooks/useAuth';
 
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const { forgotPassword } = useAuth();
 
   const validateEmail = (email: string): string => {
     if (!email) return 'Email không được để trống';
@@ -28,6 +30,13 @@ const ForgotPasswordPage = () => {
     setError('');
 
     // TODO: Call API to send OTP
+    try {
+      await forgotPassword(email);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Lỗi không xác định');
+      setIsLoading(false);
+      return;
+    }
     setTimeout(() => {
       setIsLoading(false);
       // Navigate to reset password page with email

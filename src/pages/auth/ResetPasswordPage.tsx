@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { IoSchool } from 'react-icons/io5';
 import { FaArrowLeft, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { useAuth } from '../../hooks/useAuth';
+import { toast } from 'react-toastify';
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
@@ -9,14 +11,15 @@ const ResetPasswordPage = () => {
   const email = location.state?.email || '';
 
   const [otp, setOtp] = useState('');
-  const [password, setPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState(600); // 10 phút = 600 giây
+  const { verifyOtp } = useAuth();
 
   // Redirect nếu không có email
   useEffect(() => {
@@ -60,7 +63,7 @@ const ResetPasswordPage = () => {
 
   const validateConfirmPassword = (confirmPwd: string): string => {
     if (!confirmPwd) return 'Vui lòng xác nhận mật khẩu';
-    if (password !== confirmPwd) return 'Mật khẩu không khớp';
+    if (newPassword !== confirmPwd) return 'Mật khẩu không khớp';
     return '';
   };
 
@@ -73,15 +76,15 @@ const ResetPasswordPage = () => {
   };
 
   const handlePasswordChange = (value: string) => {
-    setPassword(value);
-    if (touched.password) {
-      setErrors({ ...errors, password: validatePassword(value) });
+    setNewPassword(value);
+    if (touched.newPassword) {
+      setErrors({ ...errors, newPassword: validatePassword(value) });
     }
     // Also revalidate confirm password if it's been touched
     if (touched.confirmPassword && confirmPassword) {
       setErrors(prev => ({ 
         ...prev, 
-        password: validatePassword(value),
+        newPassword: validatePassword(value),
         confirmPassword: value !== confirmPassword ? 'Mật khẩu không khớp' : ''
       }));
     }
@@ -100,8 +103,8 @@ const ResetPasswordPage = () => {
   };
 
   const handlePasswordBlur = () => {
-    setTouched(prev => ({ ...prev, password: true }));
-    setErrors(prev => ({ ...prev, password: validatePassword(password) }));
+    setTouched(prev => ({ ...prev, newPassword: true }));
+    setErrors(prev => ({ ...prev, newPassword: validatePassword(newPassword) }));
   };
 
   const handleConfirmPasswordBlur = () => {
@@ -113,7 +116,7 @@ const ResetPasswordPage = () => {
     e.preventDefault();
 
     // Mark all as touched
-    setTouched({ otp: true, password: true, confirmPassword: true });
+    setTouched({ otp: true, newPassword: true, confirmPassword: true });
 
     const newErrors: Record<string, string> = {};
 
@@ -121,8 +124,8 @@ const ResetPasswordPage = () => {
     const otpError = validateOtp(otp);
     if (otpError) newErrors.otp = otpError;
 
-    const passwordError = validatePassword(password);
-    if (passwordError) newErrors.password = passwordError;
+    const passwordError = validatePassword(newPassword);
+    if (passwordError) newErrors.newPassword = passwordError;
 
     const confirmError = validateConfirmPassword(confirmPassword);
     if (confirmError) newErrors.confirmPassword = confirmError;
@@ -133,22 +136,26 @@ const ResetPasswordPage = () => {
       setIsLoading(true);
       
       // TODO: Call API to reset password
-      setTimeout(() => {
-        setIsLoading(false);
-        alert('Đặt lại mật khẩu thành công!');
+      try {
+        await verifyOtp(email, otp, newPassword);
+        toast.success('Đặt lại mật khẩu thành công!');
         navigate('/login');
-      }, 1500);
+      } catch (error) {
+        console.error('Error resetting password:', error);
+        setIsLoading(false);
+        toast.error('Lỗi khi đặt lại mật khẩu. Vui lòng thử lại.');
+      }
     }
   };
 
-  const handleResendOTP = () => {
-    setTimeLeft(600);
-    setOtp('');
-    setTouched({});
-    setErrors({});
-    // TODO: Call API to resend OTP
-    alert('Đã gửi lại mã OTP!');
-  };
+  // const handleResendOTP = () => {
+  //   setTimeLeft(600);
+  //   setOtp('');
+  //   setTouched({});
+  //   setErrors({});
+  //   // TODO: Call API to resend OTP
+  //   toast.success('Đã gửi lại mã OTP!');
+  // };
 
   return (
     <main className="flex h-screen w-full">
@@ -231,10 +238,10 @@ const ResetPasswordPage = () => {
                 <label className="text-gray-900 text-sm font-medium">Mật khẩu mới</label>
                 <div className="relative">
                   <input 
-                    className={`w-full h-9 px-4 pr-10 rounded-lg border ${errors.password ? 'border-red-500 focus:ring-red-500/50' : 'border-gray-200 focus:ring-[#0077BE]'} focus:outline-none focus:ring-1 transition-all`}
+                    className={`w-full h-9 px-4 pr-10 rounded-lg border ${errors.newPassword ? 'border-red-500 focus:ring-red-500/50' : 'border-gray-200 focus:ring-[#0077BE]'} focus:outline-none focus:ring-1 transition-all`}
                     placeholder="Nhập mật khẩu mới"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
+                    type={showNewPassword ? "text" : "password"}
+                    value={newPassword}
                     onChange={(e) => handlePasswordChange(e.target.value)}
                     onBlur={handlePasswordBlur}
                     required
@@ -242,13 +249,13 @@ const ResetPasswordPage = () => {
                   <button 
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 transition-colors"
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
+                    onClick={() => setShowNewPassword(!showNewPassword)}
                   >
-                    {showPassword ? <FaEyeSlash className="text-[16px]" /> : <FaEye className="text-[16px]" />}
+                    {showNewPassword ? <FaEyeSlash className="text-[16px]" /> : <FaEye className="text-[16px]" />}
                   </button>
                 </div>
-                {errors.password && touched.password && (
-                  <p className="text-red-500 text-xs mt-0.5">{errors.password}</p>
+                {errors.newPassword && touched.newPassword && (
+                  <p className="text-red-500 text-xs mt-0.5">{errors.newPassword}</p>
                 )}
               </div>
 
@@ -293,7 +300,7 @@ const ResetPasswordPage = () => {
             </form>
 
             {/* Resend OTP */}
-            <div className="mt-6 text-center">
+            {/* <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
                 Không nhận được mã?{' '}
                 <button 
@@ -304,7 +311,7 @@ const ResetPasswordPage = () => {
                   Gửi lại
                 </button>
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

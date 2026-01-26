@@ -56,7 +56,7 @@ const HeroSection = () => {
           <img alt="Student studying" className="w-full h-full object-cover" src="/hero-img.png" />
         </div>
         
-        <div className="absolute -top-10 -left-10 w-32 h-32 bg-[#0077BE]/20 backdrop-blur-xl rounded-full flex items-center justify-center border border-[#0077BE]/30 z-20 animate-bounce" style={{ animationDuration: '3s' }}>
+        <div className="absolute -top-10 -left-10 w-32 h-32 bg-[#0077BE]/20 backdrop-blur-xl rounded-full flex items-center justify-center border border-[#0077BE]/30 z-50 animate-bounce" style={{ animationDuration: '3s' }}>
           <div className="bg-[#0077BE] text-white w-24 h-24 rounded-full flex flex-col items-center justify-center text-center p-2 border-4 border-white shadow-xl">
             <span className="text-xs font-bold leading-tight">Hơn</span>
             <span className="text-lg font-black">500+</span>
