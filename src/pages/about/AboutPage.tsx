@@ -20,13 +20,7 @@ const AboutPage = () => {
 
             <h1 className="text-slate-900 text-3xl lg:text-5xl font-black leading-[1.1] tracking-tight">
               Viện Khoa Học <br />
-              <p
-                className="text-[#0077BE]"
-                style={{ textShadow: "0 0 15px rgba(0, 119, 190, 0.4)" }}
-              >
-                Sáng Tạo
-              </p>{" "}
-              &
+              <p className="text-[#0077BE]">Sáng Tạo</p> &
               <p className="px-4 py-1 rounded-2xl inline-block text-[#005a91]">
                 Khởi Nghiệp
               </p>

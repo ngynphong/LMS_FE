@@ -24,7 +24,7 @@ const Header = () => {
   return (
     <>
       {/* Top Bar */}
-      <div className="w-full bg-[#0077BE] text-white py-2 px-10 text-xs flex justify-between items-center">
+      <div className="w-full bg-[#0077BE] text-white py-2 px-10 z-50 text-xs flex justify-between items-center fixed">
         <div className="flex gap-6 items-center">
           <span className="flex items-center gap-1">
             <span className="material-symbols-outlined text-[14px]">
@@ -44,11 +44,11 @@ const Header = () => {
             {user ? (
               <Link
                 to={getDashboardLink()}
-                className="flex items-center gap-2 cursor-pointer hover:bg-white/10 p-1 rounded transition-colors group"
+                className="flex items-center gap-2 cursor-pointer hover:bg-white/10 p-1 px-2 rounded-lg transition-colors group"
               >
                 <img
                   src={
-                    user.imgUrl ||
+                    user.urlImg ||
                     `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random`
                   }
                   alt={`${user.firstName} ${user.lastName}`}
@@ -73,7 +73,7 @@ const Header = () => {
       </div>
 
       {/* Main Header */}
-      <header className="w-full px-10 mt-4 sticky top-4 z-50">
+      <header className="w-full px-10 mb-12 mt-4 sticky top-14 z-50">
         <div className="max-w-[1280px] mx-auto bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/40 px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-12">
             <div className="flex items-center gap-2">

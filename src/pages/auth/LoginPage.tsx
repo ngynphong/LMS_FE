@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { IoSchool } from "react-icons/io5";
 import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
 import { FaFacebookF } from "react-icons/fa6";
 import { useAuth } from "../../hooks/useAuth";
@@ -174,9 +173,13 @@ const LoginPage = () => {
               className="lg:hidden flex items-center gap-2 mb-10 text-[#0077BE]"
             >
               <span className="text-3xl">
-                <IoSchool />
+                <img
+                  src="/logo-edu.png"
+                  alt="ies-edu-logo"
+                  className="w-12 h-12"
+                />
               </span>
-              <span className="text-xl font-bold tracking-tight">Edu LMS</span>
+              <span className="text-xl font-bold tracking-tight">IES Edu</span>
             </Link>
 
             {/* Tabs */}

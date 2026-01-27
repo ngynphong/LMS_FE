@@ -23,7 +23,6 @@ const HeroSection = () => {
             Viện Khoa Học <br />
             <p
               className="text-[#0077BE]"
-              style={{ textShadow: "0 0 15px rgba(0, 119, 190, 0.4)" }}
             >
               Sáng Tạo
             </p>{" "}
