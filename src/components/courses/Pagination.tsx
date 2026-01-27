@@ -16,7 +16,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
       <button
         key={1}
         onClick={() => onPageChange(1)}
-        className={`flex size-10 items-center justify-center rounded-lg font-bold transition-colors ${
+        className={`flex size-7 items-center justify-center rounded-lg font-bold transition-colors ${
           currentPage === 1
             ? 'bg-[#0077BE] text-white'
             : 'border border-gray-100 hover:bg-gray-100'
@@ -78,13 +78,15 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
   };
 
   return (
-    <div className="flex items-center justify-center gap-2 py-12">
+    <div className="flex items-center justify-center gap-2 py-4">
       <button
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
-        className="flex size-10 items-center justify-center rounded-lg border border-gray-100 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex size-7 items-center justify-center rounded-lg border border-gray-100 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <span className="material-symbols-outlined"><FaArrowLeft /></span>
+        <span className="material-symbols-outlined">
+          <FaArrowLeft className="size-4" />
+        </span>
       </button>
 
       {renderPageNumbers()}
@@ -92,9 +94,11 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
       <button
         onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
         disabled={currentPage === totalPages}
-        className="flex size-10 items-center justify-center rounded-lg border border-gray-100 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex size-7 items-center justify-center rounded-lg border border-gray-100 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <span className="material-symbols-outlined"><FaArrowRight /></span>
+        <span className="material-symbols-outlined">
+          <FaArrowRight className="size-4" />
+        </span>
       </button>
     </div>
   );
