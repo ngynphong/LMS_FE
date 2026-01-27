@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
-import { IoSchool } from "react-icons/io5";
-import { IoAppsOutline } from "react-icons/io5";
+import { IoAppsOutline, IoSchool } from "react-icons/io5";
 import { CiMail } from "react-icons/ci";
 import { IoIosCall } from "react-icons/io";
 import { useAuth } from "../hooks/useAuth";
@@ -25,19 +24,19 @@ const Header = () => {
   return (
     <>
       {/* Top Bar */}
-      <div className="w-full bg-[#0077BE] text-white py-2 px-10 text-xs flex justify-between items-center">
+      <div className="w-full bg-[#0077BE] text-white py-2 px-10 z-50 text-xs flex justify-between items-center fixed">
         <div className="flex gap-6 items-center">
           <span className="flex items-center gap-1">
             <span className="material-symbols-outlined text-[14px]">
               <IoIosCall />
             </span>{" "}
-            (+84) 965 248 115
+            (+84) 096 524 8115
           </span>
           <span className="flex items-center gap-1">
             <span className="material-symbols-outlined text-[14px]">
               <CiMail />
             </span>{" "}
-            info@edubien.vn
+            infovienies@gmail.com
           </span>
         </div>
         <div className="flex gap-6 items-center">
@@ -45,11 +44,11 @@ const Header = () => {
             {user ? (
               <Link
                 to={getDashboardLink()}
-                className="flex items-center gap-2 cursor-pointer hover:bg-white/10 p-1 rounded transition-colors group"
+                className="flex items-center gap-2 cursor-pointer hover:bg-white/10 p-1 px-2 rounded-lg transition-colors group"
               >
                 <img
                   src={
-                    user.imgUrl ||
+                    user.urlImg ||
                     `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random`
                   }
                   alt={`${user.firstName} ${user.lastName}`}
@@ -74,15 +73,19 @@ const Header = () => {
       </div>
 
       {/* Main Header */}
-      <header className="w-full px-10 mt-4 sticky top-4 z-50">
+      <header className="w-full px-10 mb-12 mt-4 sticky top-14 z-50">
         <div className="max-w-[1280px] mx-auto bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/40 px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-12">
             <div className="flex items-center gap-2">
               <span className="text-[#0077BE] text-2xl">
-                <IoSchool />
+                <img
+                  src="/ies-edu-logo.png"
+                  alt="ies-edu-logo"
+                  className="w-12 h-12"
+                />
               </span>
               <h2 className="text-xl text-[#0077BE] font-bold tracking-tight">
-                Edu LMS
+                IES Edu
               </h2>
             </div>
             <nav className="hidden lg:flex items-center gap-6">
@@ -112,9 +115,9 @@ const Header = () => {
               </Link>
               <Link
                 className="font-medium hover:text-[#0077BE] transition-colors"
-                to="/shop"
+                to="/about"
               >
-                Cửa hàng
+                Về chúng tôi
               </Link>
             </nav>
           </div>

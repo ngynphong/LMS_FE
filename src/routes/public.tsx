@@ -3,6 +3,7 @@ import MainLayout from "../layouts/MainLayout";
 import Home from "../pages/home/Home";
 import CoursesPage from "../pages/courses/CoursesPage";
 import CourseDetailPage from "../pages/courses/CourseDetailPage";
+import AboutPage from "../pages/about/AboutPage";
 import UnauthorizedPage from "../pages/error/UnauthorizedPage";
 
 /**
@@ -25,6 +26,10 @@ const publicRoutes: RouteObject[] = [
       {
         path: "courses/:id",
         element: <CourseDetailPage />,
+      },
+      {
+        path: "about",
+        element: <AboutPage />,
       },
       {
         path: "forum",

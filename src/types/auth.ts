@@ -6,7 +6,7 @@ export interface User {
     firstName: string;
     lastName: string;
     email: string;
-    imgUrl: string;
+    urlImg: string;
     dob: string;
     role: 'STUDENT' | 'TEACHER' | 'ADMIN';
     teacherProfile?: TeacherProfileData;
@@ -29,7 +29,7 @@ export interface JwtPayload {
     firstName?: string;
     lastName?: string;
     email?: string;
-    imgUrl?: string;
+    urlImg?: string;
     avatar?: string;
     dob?: string;
     exp?: number;
@@ -77,7 +77,7 @@ export interface EditProfileResponse {
         firstName: string;
         lastName: string;
         email: string;
-        imgUrl: string;
+        urlImg: string;
         dob: string;
         roles: string[];
     };
@@ -87,7 +87,7 @@ export interface UploadAvatarResponse {
     code: number;
     message: string;
     data: {
-        imgUrl: string;
+        urlImg: string;
     };
 }
 
@@ -103,14 +103,28 @@ export interface ProfileStats {
     overallProgress: number;
 }
 
+// Nested user object trong ProfileData
+export interface ProfileUser {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    imgUrl: string;
+    dob: string;
+    roles: string[];
+    teacherProfile: unknown | null;
+    studentProfile: unknown | null;
+}
+
 export interface ProfileData {
     id: string;
-    schoolName: string;
-    goal: string;
-    emergencyContact: string;
+    schoolName: string | null;
+    goal: string | null;
+    emergencyContact: string | null;
     createdAt: string;
     updatedAt: string;
     deleted: boolean;
+    user: ProfileUser;
     stats: ProfileStats;
 }
 

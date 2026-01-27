@@ -1,10 +1,10 @@
-import type { RouteObject } from 'react-router-dom';
-import LoginPage from '../pages/auth/LoginPage';
-import RegisterPage from '../pages/auth/RegisterPage';
-import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
-import ResetPasswordPage from '../pages/auth/ResetPasswordPage';
-import GoogleCallbackPage from '../pages/auth/GoogleCallbackPage';
-import VerifyEmailPage from '../pages/auth/VerifyEmailPage';
+import type { RouteObject } from "react-router-dom";
+import LoginPage from "../pages/auth/LoginPage";
+import RegisterPage from "../pages/auth/RegisterPage";
+import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage";
+import ResetPasswordPage from "../pages/auth/ResetPasswordPage";
+import GoogleCallbackPage from "../pages/auth/GoogleCallbackPage";
+import VerifyEmailPage from "../pages/auth/VerifyEmailPage";
 
 /**
  * Authentication Routes
@@ -12,29 +12,29 @@ import VerifyEmailPage from '../pages/auth/VerifyEmailPage';
  */
 const authRoutes: RouteObject[] = [
   {
-    path: '/login',
-    element: <LoginPage />
+    path: "/login",
+    element: <LoginPage />,
   },
   {
-    path: '/register',
-    element: <RegisterPage />
+    path: "/register",
+    element: <RegisterPage />,
   },
   {
-    path: '/forgot-password',
-    element: <ForgotPasswordPage />
+    path: "/forgot-password",
+    element: <ForgotPasswordPage />,
   },
   {
-    path: '/reset-password',
-    element: <ResetPasswordPage />
+    path: "/reset-password",
+    element: <ResetPasswordPage />,
   },
   {
-    path: '/google/callback',
-    element: <GoogleCallbackPage />
+    path: "/google/callback",
+    element: <GoogleCallbackPage />,
   },
   {
-    path: '/verify-email',
-    element: <VerifyEmailPage />
-  }
+    path: "/verify-email",
+    element: <VerifyEmailPage />,
+  },
 ];
 
 export default authRoutes;

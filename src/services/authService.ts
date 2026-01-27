@@ -1,7 +1,6 @@
 import type {
     AuthResponse,
     LoginApiResponse,
-    JwtPayload,
     User,
     EditProfileRequest,
     EditProfileResponse,
@@ -13,21 +12,6 @@ import axiosInstance, { publicAxios } from "../config/axios";
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
-
-// Helper function to decode JWT token
-export const decodeJWT = (token: string): JwtPayload | null => {
-    try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        return JSON.parse(jsonPayload);
-    } catch (error) {
-        console.error('Error decoding JWT token:', error);
-        return null;
-    }
-};
 
 // Helper function to map API roles to User role type
 const mapRolesToUserRole = (roles: string[]): 'STUDENT' | 'TEACHER' | 'ADMIN' => {
@@ -61,18 +45,46 @@ export const loginApi = async (email: string, password: string): Promise<AuthRes
             throw new Error('Authentication failed');
         }
 
-        const decodedToken = decodeJWT(token);
-        if (!decodedToken) {
-            throw new Error('Invalid token format');
+        // Save token first to use for /my-profile call
+        localStorage.setItem('token', token);
+
+        // Fetch profile data from API
+        try {
+            const profileResponse = await axiosInstance.get<ProfileResponse>('/my-profile');
+            if (profileResponse.data.code === 1000 || profileResponse.data.code === 0) {
+                const profileData = profileResponse.data.data;
+                const userData = profileData.user;
+                const user: User = {
+                    id: userData.id,
+                    firstName: userData.firstName || '',
+                    lastName: userData.lastName || '',
+                    email: userData.email || email,
+                    urlImg: userData.imgUrl || '',
+                    dob: userData.dob || '',
+                    role: mapRolesToUserRole(userData.roles || roles),
+                    studentProfile: {
+                        id: profileData.id,
+                        schoolName: profileData.schoolName || '',
+                        emergencyContact: profileData.emergencyContact || '',
+                        goal: profileData.goal || '',
+                        stats: profileData.stats
+                    },
+                };
+                return { user, token };
+            }
+        } catch {
+            // If profile fetch fails, create minimal user from login response
+            console.warn('Failed to fetch profile after login, using minimal user data');
         }
 
+        // Fallback: create minimal user from login response only
         const user: User = {
-            id: (decodedToken.userId || decodedToken.id || '').toString(),
-            firstName: decodedToken.firstName || '',
-            lastName: decodedToken.lastName || '',
-            email: decodedToken.email || email,
-            imgUrl: decodedToken.imgUrl || decodedToken.avatar || '',
-            dob: decodedToken.dob || '',
+            id: '',
+            firstName: '',
+            lastName: '',
+            email: email,
+            urlImg: '',
+            dob: '',
             role: mapRolesToUserRole(roles),
         };
 
@@ -116,16 +128,45 @@ export const googleLoginApi = async (code: string): Promise<AuthResponse> => {
         const { token, roles } = response.data.data;
         if (!token) throw new Error('Authentication failed - no token received');
 
-        const decodedToken = decodeJWT(token);
-        if (!decodedToken) throw new Error('Invalid token format');
+        // Save token first to use for /my-profile call
+        localStorage.setItem('token', token);
 
+        // Fetch profile data from API
+        try {
+            const profileResponse = await axiosInstance.get<ProfileResponse>('/my-profile');
+            if (profileResponse.data.code === 1000 || profileResponse.data.code === 0) {
+                const profileData = profileResponse.data.data;
+                const userData = profileData.user;
+                const user: User = {
+                    id: userData.id,
+                    firstName: userData.firstName || '',
+                    lastName: userData.lastName || '',
+                    email: userData.email || '',
+                    urlImg: userData.imgUrl || '',
+                    dob: userData.dob || '',
+                    role: mapRolesToUserRole(userData.roles || roles),
+                    studentProfile: {
+                        id: profileData.id,
+                        schoolName: profileData.schoolName || '',
+                        emergencyContact: profileData.emergencyContact || '',
+                        goal: profileData.goal || '',
+                        stats: profileData.stats
+                    },
+                };
+                return { user, token };
+            }
+        } catch {
+            console.warn('Failed to fetch profile after Google login, using minimal user data');
+        }
+
+        // Fallback: create minimal user
         const user: User = {
-            id: (decodedToken.id || '').toString(),
-            firstName: decodedToken.firstName || '',
-            lastName: decodedToken.lastName || '',
-            email: decodedToken.email || '',
-            imgUrl: decodedToken.imgUrl || decodedToken.avatar || '',
-            dob: decodedToken.dob || '',
+            id: '',
+            firstName: '',
+            lastName: '',
+            email: '',
+            urlImg: '',
+            dob: '',
             role: mapRolesToUserRole(roles),
         };
 
@@ -144,24 +185,14 @@ export const updateProfileApi = async (profileData: EditProfileRequest): Promise
         }
 
         const userData = response.data.data;
-        let roles: string[] = userData.roles || [];
-
-        // Fallback to token roles if not in response
-        if (roles.length === 0) {
-            const currentToken = localStorage.getItem('token');
-            if (currentToken) {
-                const decodedToken = decodeJWT(currentToken);
-                const tokenRoles = decodedToken?.scp || decodedToken?.scopes;
-                if (Array.isArray(tokenRoles)) roles = tokenRoles;
-            }
-        }
+        const roles: string[] = userData.roles || [];
 
         return {
             id: (userData.id || '').toString(),
             firstName: userData.firstName || '',
             lastName: userData.lastName || '',
             email: userData.email || '',
-            imgUrl: userData.imgUrl || '',
+            urlImg: userData.urlImg || '',
             dob: userData.dob || '',
             role: mapRolesToUserRole(roles),
         };
@@ -190,14 +221,14 @@ export const uploadAvatarApi = async (file: File): Promise<string> => {
             throw new Error(response.data.message || 'Failed to upload avatar');
         }
 
-        const newImgUrl = response.data.data.imgUrl;
+        const newImgUrl = response.data.data.urlImg;
 
         // Update cached user
         try {
             const storedUser = localStorage.getItem('user');
             if (storedUser && storedUser !== 'undefined') {
                 const parsed = JSON.parse(storedUser);
-                localStorage.setItem('user', JSON.stringify({ ...parsed, imgUrl: newImgUrl }));
+                localStorage.setItem('user', JSON.stringify({ ...parsed, urlImg: newImgUrl }));
             }
         } catch (e) {
             console.warn('Failed to update cached user after avatar upload:', e);
@@ -236,10 +267,20 @@ export const verifyEmailApi = async (email: string, token: string): Promise<Auth
     }
 };
 
-export const verifyOtpApi = async (email: string, otp: string, newPassword: string): Promise<AuthResponse> => {
+interface VerifyOtpApiResponse {
+    code: number;
+    message: string;
+    data?: unknown;
+}
+
+export const verifyOtpApi = async (email: string, otp: string, newPassword: string): Promise<void> => {
     try {
-        const response = await publicAxios.post<AuthResponse>('/auth/verify-otp', { email, otp, newPassword });
-        return response.data;
+        const response = await publicAxios.post<VerifyOtpApiResponse>('/auth/verify-otp', { email, otp, newPassword });
+        
+        // Check response code - throw error if not success
+        if (response.data.code !== 1000 && response.data.code !== 0) {
+            throw new Error(response.data.message || 'OTP verification failed');
+        }
     } catch (error) {
         return handleApiError(error, 'OTP verification failed');
     }
@@ -263,56 +304,6 @@ export const logoutApi = async (token: string): Promise<void> => {
     }
 };
 
-// export const getCurrentUserApi = async (): Promise<AuthResponse> => {
-//     try {
-//         const response = await axiosInstance.get('/users/me');
-
-//         if (response.data.code !== 1000) {
-//             throw new Error(response.data.message || 'Failed to fetch user profile');
-//         }
-
-//         const userData = response.data.data;
-//         if (!userData) throw new Error('Invalid user data received from API');
-
-//         // Get roles from token
-//         const currentToken = localStorage.getItem('token');
-//         let roles: string[] = [];
-
-//         if (currentToken) {
-//             const decodedToken = decodeJWT(currentToken);
-//             const tokenRoles = decodedToken?.scp || decodedToken?.scopes;
-//             if (Array.isArray(tokenRoles)) {
-//                 roles = tokenRoles;
-//             }
-//         }
-
-//         // Fallback to profile data
-//         if (roles.length === 0) {
-//             if (userData.roles && Array.isArray(userData.roles)) {
-//                 roles = userData.roles;
-//             } else if (userData.role && typeof userData.role === 'string') {
-//                 roles = [userData.role.toUpperCase()];
-//             }
-//         }
-
-//         const user: User = {
-//             id: (userData.id || '').toString(),
-//             firstName: userData.firstName || '',
-//             lastName: userData.lastName || '',
-//             email: userData.email || '',
-//             imgUrl: userData.imgUrl || '',
-//             dob: userData.dob || '',
-//             role: mapRolesToUserRole(roles),
-//             teacherProfile: userData.teacherProfile,
-//             studentProfile: userData.studentProfile,
-//         };
-
-//         return { user, token: '' };
-//     } catch (error) {
-//         return handleApiError(error, 'Failed to fetch user profile');
-//     }
-// };
-
 export const getCurrentUserApi = async (): Promise<AuthResponse> => {
     try {
         const response = await axiosInstance.get<ProfileResponse>('/my-profile');
@@ -322,35 +313,25 @@ export const getCurrentUserApi = async (): Promise<AuthResponse> => {
         }
 
         const profileData = response.data.data;
-
-        // Get roles and basic info from token
         const currentToken = localStorage.getItem('token');
-        let roles: string[] = [];
-        let decodedToken: JwtPayload | null = null;
+        const userData = profileData.user;
 
-        if (currentToken) {
-            decodedToken = decodeJWT(currentToken);
-            const tokenRoles = decodedToken?.scp || decodedToken?.scopes;
-            if (Array.isArray(tokenRoles)) {
-                roles = tokenRoles;
-            }
-        }
+        // Get roles from user data (API response)
+        const roles = userData.roles || [];
 
         const user: User = {
-            id: profileData.id,
-            // If API doesn't return name/email, use from token or empty
-            firstName: decodedToken?.firstName || '',
-            lastName: decodedToken?.lastName || '',
-            email: decodedToken?.email || '',
-            imgUrl: decodedToken?.imgUrl || decodedToken?.avatar || '',
-            dob: decodedToken?.dob || '',
+            id: userData.id,
+            firstName: userData.firstName || '',
+            lastName: userData.lastName || '',
+            email: userData.email || '',
+            urlImg: userData.imgUrl || '',
+            dob: userData.dob || '',
             role: mapRolesToUserRole(roles),
             studentProfile: {
                 id: profileData.id,
-                schoolName: profileData.schoolName,
-                emergencyContact: profileData.emergencyContact,
-                parentPhone: '', // Not in profileData
-                goal: profileData.goal,
+                schoolName: profileData.schoolName || '',
+                emergencyContact: profileData.emergencyContact || '',
+                goal: profileData.goal || '',
                 stats: profileData.stats
             },
         };

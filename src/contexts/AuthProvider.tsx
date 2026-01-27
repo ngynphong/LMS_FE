@@ -9,13 +9,13 @@ import {
   refreshTokenApi,
   googleLoginApi,
   getCurrentUserApi,
-  decodeJWT,
   logoutApi,
 } from "../services/authService";
 import type { User, AuthResponse, ChangePasswordRequest } from "../types/auth";
 import { AuthContext } from "./AuthContext";
 import { toast } from "../components/common/Toast";
 import axios from "axios";
+import { decodeJWT } from "../utils/decodeJWT";
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -49,6 +49,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       if (storedToken && storedToken !== "undefined") {
         // Validate token trước khi set authenticated
         try {
+          // Double check token existence in localStorage to prevent race conditions during logout
+          if (!localStorage.getItem("token")) {
+            throw new Error("Token not found");
+          }
+
           const userProfileResponse = await getCurrentUserApi();
 
           // Token hợp lệ, set trạng thái authenticated
@@ -135,17 +140,20 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           safelyStoreUser(response.user);
         } else {
           try {
+            if (!localStorage.getItem("token")) {
+              throw new Error("No token found");
+            }
             const userProfileResponse = await getCurrentUserApi();
             setUser(userProfileResponse.user);
             safelyStoreUser(userProfileResponse.user);
           } catch (error) {
             console.error(
-              "Failed to fetch user profile, using token data instead:",
+              "Lấy thông tin người dùng thất bại, sử dụng dữ liệu từ token:",
               error,
             );
             setUser(response.user);
             safelyStoreUser(response.user);
-            console.warn("Using user data from token due to API failure");
+            console.warn("Sử dụng dữ liệu người dùng từ token do lỗi API");
           }
         }
       }
@@ -165,7 +173,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           setUser(JSON.parse(storedUser));
         } catch (error) {
           console.error(
-            "Failed to parse stored user data in updateAuthFromStorage:",
+            "Lỗi phân tích cú pháp dữ liệu người dùng đã lưu trong updateAuthFromStorage:",
             error,
           );
         }
@@ -180,7 +188,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     if (currentToken) {
       await logoutApi(currentToken);
     }
-    
 
     // Clear local state
     setUser(null);
@@ -191,21 +198,21 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const forceLogout = useCallback(() => {
-    console.log("Forcing logout due to authentication failure");
+    console.log("Buộc đăng xuất do lỗi xác thực");
     logout();
-    toast.error("Session expired. Please login again.");
-    window.location.href = "/auth";
+    toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+    window.location.href = "/login";
   }, [logout]);
 
   const refreshToken = useCallback(
     async (currentToken: string) => {
-      console.log("Attempting to refresh token...");
+      // console.log("Attempting to refresh token...");
       try {
         const response = await refreshTokenApi(currentToken);
         await handleAuthResponse(response, true);
-        console.log("Token refreshed successfully.");
+        // console.log("Token refreshed successfully.");
       } catch (err) {
-        console.error("Token refresh failed:", err);
+        console.error("Làm mới token thất bại:", err);
         throw err;
       }
     },
@@ -224,7 +231,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       const decoded = decodeJWT(currentToken);
       if (!decoded || !decoded.exp) {
         console.warn(
-          "Cannot decode token or missing exp claim. Fallback to manual refresh or logout.",
+          "Không thể giải mã token hoặc thiếu claim exp. Fallback to manual refresh or logout.",
         );
         return;
       }
@@ -236,17 +243,17 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
       if (timeUntilRefresh <= 0) {
         // Token is about to expire or already expired (within buffer), refresh immediately
-        console.log("Token is close to expiry. Refreshing now...");
+        console.log("Token sắp hết hạn. Làm mới ngay bây giờ...");
         try {
           await refreshToken(currentToken);
         } catch (error) {
-          console.error("Immediate token refresh failed:", error);
+          console.error("Làm mới token ngay lập tức thất bại:", error);
           forceLogout();
         }
       } else {
         // Schedule refresh
         refreshTimeout = setTimeout(async () => {
-          console.log("Executing scheduled token refresh...");
+          console.log("Thực hiện làm mới token theo lịch trình...");
           try {
             // Get the latest token from storage just in case
             const latestToken = localStorage.getItem("token");
@@ -254,7 +261,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
               await refreshToken(latestToken);
             }
           } catch (error) {
-            console.error("Scheduled token refresh failed:", error);
+            console.error("Làm mới token theo lịch trình thất bại:", error);
             forceLogout();
           }
         }, timeUntilRefresh);
@@ -263,7 +270,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible" && isAuthenticated) {
-        console.log("App became visible. Checking token status...");
+        console.log("Ứng dụng trở nên hiển thị. Kiểm tra trạng thái token...");
         // Clear existing timeout and reschedule/refresh immediately if needed
         if (refreshTimeout) clearTimeout(refreshTimeout);
         scheduleRefresh();
@@ -290,7 +297,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         await handleAuthResponse(response, false);
         return null;
       } catch (err: unknown) {
-        let errorMessage = "Login failed";
+        let errorMessage = "Đăng nhập thất bại";
         if (err instanceof Error) {
           errorMessage = err.message;
         }
@@ -314,7 +321,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         if (err instanceof Error) {
           setError(err.message);
         } else {
-          setError("Google login failed");
+          setError("Đăng nhập Google thất bại");
         }
         throw err;
       } finally {
@@ -338,16 +345,16 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       try {
         await registerApi(email, password, firstName, lastName, dob, roleName);
         toast.success(
-          "Registration successful! Please verify your email before logging in.",
+          "Đăng ký thành công! Vui lòng xác thực email trước khi đăng nhập.",
         );
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
         } else {
-          setError("Registration failed");
+          setError("Đăng ký thất bại");
         }
         toast.error(
-          "Registration failed. " + (err instanceof Error ? err.message : ""),
+          "Đăng ký thất bại. " + (err instanceof Error ? err.message : ""),
         );
       } finally {
         setLoading(false);
@@ -365,7 +372,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("Password reset failed");
+        setError("Quên mật khẩu thất bại");
       }
     } finally {
       setLoading(false);
@@ -382,8 +389,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         if (err instanceof Error) {
           setError(err.message);
         } else {
-          setError("Password reset failed");
+          setError("Thay đổi mật khẩu thất bại");
         }
+        throw err;
       } finally {
         setLoading(false);
       }
@@ -397,7 +405,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       await verifyEmailApi(email, token);
     } catch (err: unknown) {
-      console.error("Email verification failed:", {
+      console.error("Xác thực email thất bại:", {
         error: err,
         email,
         hasToken: !!token,
@@ -412,7 +420,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("Email verification failed");
+        setError("Xác thực email thất bại");
       }
       throw err;
     } finally {
@@ -430,8 +438,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         if (err instanceof Error) {
           setError(err.message);
         } else {
-          setError("OTP verification failed");
+          setError("Xác thực OTP thất bại");
         }
+        throw err; // Re-throw để page có thể catch
       } finally {
         setLoading(false);
       }

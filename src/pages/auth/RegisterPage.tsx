@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { IoSchool } from 'react-icons/io5';
 import { FaEye, FaEyeSlash, FaGoogle } from 'react-icons/fa';
 import { FaFacebookF } from 'react-icons/fa6';
 import { useAuth } from '../../hooks/useAuth';
@@ -143,11 +142,14 @@ const RegisterPage = () => {
     <div className="flex min-h-screen w-full flex-col md:flex-row">
       {/* Left Side - Hero Image */}
       <div className="relative hidden md:flex md:w-1/2 items-center justify-center overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center" 
-          style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuC6C2wczG0qp5mDS6ut8Q3mffFu741qqlYvH1A-YfkybMcoPgL-AdR_N60EVGU1rTpd3XQndc-ELMTpH33gG9CrgIZqPMJn5XPsHRCl8sBzSXbXqCE0UBnkfYubr3YIr9mvvZuMrDJlnzfe01A-SDHaMzuT59dGepU9qja6jWd112LqBInGRh35VnMZJAe0EHLqgFbPvNY5izJYaCOq-ST_ssqG87cEYGwoDupvm147Rb8Lrm1y87s-kYGFSIl6fOMmrA2UPoTtK43U')" }}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=1073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+          }}
         ></div>
-        <div className="absolute inset-0 bg-[#0077BE]/70 backdrop-blur-[2px]"></div>
+        <div className="absolute inset-0 backdrop-blur-[2px]"></div>
         <div className="relative z-10 p-12 text-center max-w-lg">
           <h1 className="text-white text-5xl font-black leading-tight tracking-tight mb-4">
             Khởi đầu hành trình tri thức mới
@@ -162,25 +164,38 @@ const RegisterPage = () => {
       <div className="w-full md:w-1/2 flex items-center justify-center bg-white py-6 px-4 sm:px-8 overflow-y-auto">
         <div className="w-full max-w-[420px]">
           {/* Mobile Logo */}
-          <Link to="/" className="md:hidden flex items-center gap-2 mb-6 text-[#0077BE]">
-            <span className="text-2xl"><IoSchool /></span>
-            <span className="text-lg font-bold tracking-tight">Edu LMS</span>
+          <Link
+            to="/"
+            className="md:hidden flex items-center gap-2 mb-6 text-[#0077BE]"
+          >
+            <span className="text-2xl">
+              <img
+                src="/ies-edu-logo.png"
+                alt="ies-edu-logo"
+                className="w-12 h-12"
+              />
+            </span>
+            <span className="text-lg font-bold tracking-tight">IES Edu</span>
           </Link>
 
           {/* Tabs */}
           <div className="pb-4">
             <div className="flex border-b border-gray-200 gap-8">
-              <Link 
-                to="/login" 
+              <Link
+                to="/login"
                 className="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-gray-500 pb-[13px] pt-4 transition-colors hover:text-[#0077BE]"
               >
-                <p className="text-sm font-bold leading-normal tracking-[0.015em]">Đăng nhập</p>
+                <p className="text-sm font-bold leading-normal tracking-[0.015em]">
+                  Đăng nhập
+                </p>
               </Link>
-              <Link 
-                to="/register" 
+              <Link
+                to="/register"
                 className="flex flex-col items-center justify-center border-b-[3px] border-[#0077BE] text-gray-900 pb-[13px] pt-4"
               >
-                <p className="text-sm font-bold leading-normal tracking-[0.015em]">Đăng ký</p>
+                <p className="text-sm font-bold leading-normal tracking-[0.015em]">
+                  Đăng ký
+                </p>
               </Link>
             </div>
           </div>
@@ -191,7 +206,7 @@ const RegisterPage = () => {
               Tạo tài khoản mới
             </h1>
             <p className="text-gray-600 text-sm font-normal leading-normal">
-              Tham gia cộng đồng học tập Edu LMS ngay hôm nay.
+              Tham gia cộng đồng học tập IES Edu ngay hôm nay.
             </p>
           </div>
 
@@ -203,8 +218,8 @@ const RegisterPage = () => {
                 <label className="text-gray-900 text-sm font-medium leading-normal">
                   Họ
                 </label>
-                <input 
-                  className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.lastName ? 'border-red-500 focus:ring-red-500/50' : 'border-gray-200 focus:ring-[#0077BE]/50'} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 text-sm font-normal`}
+                <input
+                  className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.lastName ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#0077BE]/50"} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 text-sm font-normal`}
                   placeholder="Họ"
                   type="text"
                   name="lastName"
@@ -214,15 +229,17 @@ const RegisterPage = () => {
                   required
                 />
                 {errors.lastName && (
-                  <p className="text-red-500 text-xs mt-0.5">{errors.lastName}</p>
+                  <p className="text-red-500 text-xs mt-0.5">
+                    {errors.lastName}
+                  </p>
                 )}
               </div>
               <div className="flex flex-col gap-1">
                 <label className="text-gray-900 text-sm font-medium leading-normal">
                   Tên
                 </label>
-                <input 
-                  className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.firstName ? 'border-red-500 focus:ring-red-500/50' : 'border-gray-200 focus:ring-[#0077BE]/50'} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 text-sm font-normal`}
+                <input
+                  className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.firstName ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#0077BE]/50"} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 text-sm font-normal`}
                   placeholder="Tên"
                   type="text"
                   name="firstName"
@@ -232,7 +249,9 @@ const RegisterPage = () => {
                   required
                 />
                 {errors.firstName && (
-                  <p className="text-red-500 text-xs mt-0.5">{errors.firstName}</p>
+                  <p className="text-red-500 text-xs mt-0.5">
+                    {errors.firstName}
+                  </p>
                 )}
               </div>
             </div>
@@ -242,8 +261,8 @@ const RegisterPage = () => {
               <label className="text-gray-900 text-sm font-medium leading-normal">
                 Email
               </label>
-              <input 
-                className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.email ? 'border-red-500 focus:ring-red-500/50' : 'border-gray-200 focus:ring-[#0077BE]/50'} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 text-sm font-normal`}
+              <input
+                className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.email ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#0077BE]/50"} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 text-sm font-normal`}
                 placeholder="example@email.com"
                 type="email"
                 name="email"
@@ -263,8 +282,8 @@ const RegisterPage = () => {
                 <label className="text-gray-900 text-sm font-medium leading-normal">
                   Ngày sinh
                 </label>
-                <input 
-                  className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.dob ? 'border-red-500 focus:ring-red-500/50' : 'border-gray-200 focus:ring-[#0077BE]/50'} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 text-sm font-normal`}
+                <input
+                  className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.dob ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#0077BE]/50"} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 text-sm font-normal`}
                   type="date"
                   name="dob"
                   value={formData.dob}
@@ -299,8 +318,8 @@ const RegisterPage = () => {
                 Mật khẩu
               </label>
               <div className="relative">
-                <input 
-                  className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.password ? 'border-red-500 focus:ring-red-500/50' : 'border-gray-200 focus:ring-[#0077BE]/50'} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 pr-10 text-sm font-normal`}
+                <input
+                  className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.password ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#0077BE]/50"} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 pr-10 text-sm font-normal`}
                   placeholder="Nhập mật khẩu"
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -309,12 +328,16 @@ const RegisterPage = () => {
                   onBlur={handleBlur}
                   required
                 />
-                <button 
+                <button
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 transition-colors"
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <FaEyeSlash className="text-[18px]" /> : <FaEye className="text-[18px]" />}
+                  {showPassword ? (
+                    <FaEyeSlash className="text-[18px]" />
+                  ) : (
+                    <FaEye className="text-[18px]" />
+                  )}
                 </button>
               </div>
               {errors.password && (
@@ -325,7 +348,7 @@ const RegisterPage = () => {
             {/* Terms Checkbox */}
             <div className="flex flex-col gap-1">
               <div className="flex items-start gap-2 py-1">
-                <input 
+                <input
                   className="h-4 w-4 mt-0.5 rounded border-gray-200 text-[#0077BE] focus:ring-[#0077BE] cursor-pointer"
                   id="terms"
                   type="checkbox"
@@ -333,13 +356,22 @@ const RegisterPage = () => {
                   onChange={(e) => setAgreeToTerms(e.target.checked)}
                   required
                 />
-                <label className="text-xs text-gray-600 leading-normal" htmlFor="terms">
-                  Tôi đồng ý với{' '}
-                  <Link className="text-[#0077BE] font-bold hover:underline" to="/terms">
+                <label
+                  className="text-xs text-gray-600 leading-normal"
+                  htmlFor="terms"
+                >
+                  Tôi đồng ý với{" "}
+                  <Link
+                    className="text-[#0077BE] font-bold hover:underline"
+                    to="/terms"
+                  >
                     Điều khoản
-                  </Link>{' '}
-                  và{' '}
-                  <Link className="text-[#0077BE] font-bold hover:underline" to="/privacy">
+                  </Link>{" "}
+                  và{" "}
+                  <Link
+                    className="text-[#0077BE] font-bold hover:underline"
+                    to="/privacy"
+                  >
                     Chính sách bảo mật
                   </Link>
                 </label>
@@ -350,16 +382,32 @@ const RegisterPage = () => {
             </div>
 
             {/* Submit Button */}
-            <button 
+            <button
               className="w-full flex items-center justify-center rounded-lg h-10 px-5 bg-[#0077BE] text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#0066a3] transition-colors shadow-lg shadow-[#0077BE]/20 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
               type="submit"
               disabled={loading}
             >
               {loading ? (
                 <>
-                  <svg className="animate-spin h-4 w-4 text-white mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin h-4 w-4 text-white mr-2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   <span>Đang đăng ký...</span>
                 </>
@@ -381,26 +429,31 @@ const RegisterPage = () => {
 
           {/* Social Buttons */}
           <div className="flex gap-3 mb-5">
-            <button 
+            <button
               type="button"
               className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-lg h-10 hover:bg-gray-50 transition-colors"
             >
               <FaGoogle className="w-4 h-4 text-[#4285F4]" />
               <span className="text-xs font-medium text-gray-900">Google</span>
             </button>
-            <button 
+            <button
               type="button"
               className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-lg h-10 hover:bg-gray-50 transition-colors"
             >
               <FaFacebookF className="w-4 h-4 text-[#1877F2]" />
-              <span className="text-xs font-medium text-gray-900">Facebook</span>
+              <span className="text-xs font-medium text-gray-900">
+                Facebook
+              </span>
             </button>
           </div>
 
           {/* Footer Link */}
           <p className="text-center text-xs text-gray-600">
-            Đã có tài khoản?{' '}
-            <Link className="text-[#0077BE] font-bold hover:underline" to="/login">
+            Đã có tài khoản?{" "}
+            <Link
+              className="text-[#0077BE] font-bold hover:underline"
+              to="/login"
+            >
               Đăng nhập
             </Link>
           </p>

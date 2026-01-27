@@ -56,7 +56,7 @@ const GoogleCallbackPage: React.FC = () => {
             sendCodeToBackend(code);
         } else if (!code) {
             console.log('GoogleCallbackPage: Không tìm thấy authorization code');
-            navigate('/auth');
+            navigate('/login');
         }
 
     }, [searchParams, navigate, handleAuthResponse]);

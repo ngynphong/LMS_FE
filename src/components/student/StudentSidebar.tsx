@@ -7,7 +7,7 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 import { MdDashboard, MdLibraryBooks } from "react-icons/md";
-import { IoSchool } from "react-icons/io5";
+import { useAuth } from "../../hooks/useAuth";
 
 interface NavItem {
   path: string;
@@ -52,11 +52,10 @@ const StudentSidebar = () => {
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
-    // TODO: Call logout API
-    console.log("Logging out...");
-    // Redirect to login
+    logout();
     window.location.href = "/login";
   };
 
@@ -64,11 +63,15 @@ const StudentSidebar = () => {
     <aside className="fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 flex flex-col z-50">
       {/* Logo */}
       <Link to="/" className="p-4 flex items-center gap-3">
-        <div className="bg-[#0077BE] size-10 rounded-lg flex items-center justify-center text-white shadow-lg shadow-[#0077BE]/20">
-          <IoSchool className="text-xl" />
+        <div className="size-10 rounded-lg flex items-center justify-center text-white">
+          <img
+            src="/ies-edu-logo.png"
+            alt="ies-edu-logo"
+            className="w-10 h-10"
+          />
         </div>
         <span className="text-xl font-black tracking-tight text-gray-900">
-          Edu-Lms
+          IES Edu
         </span>
       </Link>
 
@@ -93,22 +96,33 @@ const StudentSidebar = () => {
         </ul>
       </nav>
       {/* User Profile Card */}
-      <Link
-        to="/student/profile"
-        className="block p-4 rounded-xl hover:bg-gray-100 transition-colors"
-      >
-        <div className="flex items-center gap-3">
-          <div className="size-8 rounded-full bg-[#0077BE]/20 flex items-center justify-center text-[#0077BE] text-xs font-bold">
-            NV
+      {user && (
+        <Link
+          to="/student/profile"
+          className="block p-4 rounded-xl hover:bg-gray-100 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <img
+              src={
+                user.urlImg ||
+                `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random`
+              }
+              alt={`${user.firstName} ${user.lastName}`}
+              className="w-6 h-6 rounded-full object-cover border border-white/50"
+            />
+            <div>
+              <span className="font-medium text-sm group-hover:underline">
+                {user.firstName} {user.lastName}
+              </span>
+              <div className="flex items-center">
+                <span className="text-[10px] text-gray-500 group-hover:underline">
+                  {user.email}
+                </span>
+              </div>
+            </div>
           </div>
-          <div className="overflow-hidden">
-            <p className="text-xs font-bold truncate">Nguyễn Văn A</p>
-            <p className="text-[10px] text-gray-500 truncate">
-              Học viên Premium
-            </p>
-          </div>
-        </div>
-      </Link>
+        </Link>
+      )}
       {/* Bottom Section */}
       <div className="p-4 border-t border-gray-100 space-y-2">
         {/* Logout Button */}
