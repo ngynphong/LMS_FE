@@ -136,24 +136,28 @@ const LoginPage = () => {
             className="absolute inset-0 bg-cover bg-center"
             style={{
               backgroundImage:
-                "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBL-bY1tYY_F0tHLhwECNkQoQxSjoSenqDgVjh6zfzSJb9dfK4McqIbqfBAnE7fpOOdB1SVqzU7y3zk23LgXfCp_es6Jsg-ROjrbCo0Yo1XI9v_DWCRfiGUBdroSqlZ0cg9g94qkTVxpN7X4qkvjo0GUwdwWOp4TCUlwTDx1E4wLzWJXqTk8gTNh859n95hmrqlpTVoqzbxxpYXMxOcHpLr5c5t2b7FUr2OiDbY2Ntoh1DKxxBcOkuijJdD0kBteaEqwiUF3gnDXMdo')",
+                "url('/bg-login.png')",
             }}
           ></div>
-          <div className="absolute inset-0 bg-[#0077BE]/70 backdrop-blur-[2px] flex flex-col items-center justify-center p-12 text-center">
+          <div className="absolute inset-0  backdrop-blur-[2px] flex flex-col items-center justify-center p-12 text-center">
             <Link
               to="/"
               className="absolute top-10 left-10 flex items-center gap-2 text-white hover:opacity-90 transition-opacity"
             >
               <span className="text-3xl">
-                <IoSchool />
+                <img
+                  src="/logo-edu.png"
+                  alt="ies-edu-logo"
+                  className="w-12 h-12"
+                />
               </span>
-              <span className="text-xl font-bold tracking-tight">Edu LMS</span>
+              <span className="text-xl font-bold tracking-tight ">IES Edu</span>
             </Link>
             <div className="max-w-md">
-              <h1 className="text-white text-5xl font-bold leading-tight mb-6">
-                Học tập không giới hạn cùng Edu LMS
+              <h1 className="text-[#0077BE] text-5xl font-bold leading-tight mb-6">
+                Học tập không giới hạn cùng IES Edu
               </h1>
-              <p className="text-white/90 text-xl font-light">
+              <p className="text-[#0077BE]/90 text-xl font-light">
                 Kiến tạo tương lai của bạn thông qua nền tảng học tập trực tuyến
                 hiện đại nhất.
               </p>
