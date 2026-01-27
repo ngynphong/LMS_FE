@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { IoSchool } from 'react-icons/io5';
 import { FaEye, FaEyeSlash, FaGoogle } from 'react-icons/fa';
 import { FaFacebookF } from 'react-icons/fa6';
 import { useAuth } from '../../hooks/useAuth';
@@ -170,9 +169,13 @@ const RegisterPage = () => {
             className="md:hidden flex items-center gap-2 mb-6 text-[#0077BE]"
           >
             <span className="text-2xl">
-              <IoSchool />
+              <img
+                src="/ies-edu-logo.png"
+                alt="ies-edu-logo"
+                className="w-12 h-12"
+              />
             </span>
-            <span className="text-lg font-bold tracking-tight">Edu LMS</span>
+            <span className="text-lg font-bold tracking-tight">IES Edu</span>
           </Link>
 
           {/* Tabs */}
@@ -203,7 +206,7 @@ const RegisterPage = () => {
               Tạo tài khoản mới
             </h1>
             <p className="text-gray-600 text-sm font-normal leading-normal">
-              Tham gia cộng đồng học tập Edu LMS ngay hôm nay.
+              Tham gia cộng đồng học tập IES Edu ngay hôm nay.
             </p>
           </div>
 

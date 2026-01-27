@@ -33,10 +33,10 @@ const StudentCard = ({ student }: StudentCardProps) => {
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 hover:shadow-md transition-shadow">
       <div className="flex items-start gap-4">
         {/* Avatar */}
-        {student.avatar ? (
+        {student.urlImg ? (
           <div
             className="size-12 rounded-full bg-cover bg-center shrink-0 border-2 border-slate-100"
-            style={{ backgroundImage: `url('${student.avatar}')` }}
+            style={{ backgroundImage: `url('${student.urlImg}')` }}
           />
         ) : (
           <div className="size-12 rounded-full bg-[#0074bd]/10 flex items-center justify-center text-[#0074bd] font-bold text-sm shrink-0">

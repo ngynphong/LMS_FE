@@ -6,7 +6,7 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
-  imgUrl?: string;
+  urlImg?: string;
   dob?: string;
   roles: string[];
   active: boolean;
@@ -18,14 +18,12 @@ export interface StudentProfile {
   id: string;
   schoolName: string;
   emergencyContact: string;
-  parentPhone: string;
   goal: string;
   stats?: ProfileStats;
 }
 
 export interface UpdateStudentProfileRequest {
   schoolName: string;
-  parentPhone: string;
   emergencyContact: string;
   goal: string;
 }

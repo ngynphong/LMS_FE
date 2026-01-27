@@ -14,14 +14,13 @@ const VerifyEmailPage = () => {
         const verifyEmailToken = async () => {
             // Prevent multiple verification attempts
             if (verificationAttempted.current) {
-                console.log('Verification already attempted, skipping...');
                 return;
             }
 
             const email = searchParams.get('email');
             const token = searchParams.get('token');
 
-            console.log('VerifyEmailPage: Starting verification', {
+            console.log('Bắt đầu xác nhận email', {
                 hasEmail: !!email,
                 hasToken: !!token,
                 email,
@@ -29,7 +28,7 @@ const VerifyEmailPage = () => {
             });
 
             if (!email || !token) {
-                console.error('VerifyEmailPage: Missing email or token', { email: !!email, token: !!token });
+                console.error('Thiếu email hoặc token', { email: !!email, token: !!token });
                 setVerificationStatus('error');
                 return;
             }
@@ -39,13 +38,13 @@ const VerifyEmailPage = () => {
             try {
                 await verifyEmail(email, token);
                 setVerificationStatus('success');
-                console.log('VerifyEmailPage: Verification successful');
+                console.log('Xác nhận email thành công');
                 // Redirect to login page after 3 seconds
                 setTimeout(() => {
-                    navigate('/auth');
+                    navigate('/login');
                 }, 3000);
             } catch (error) {
-                console.error('VerifyEmailPage: Verification failed', error);
+                console.error('Xác nhận email thất bại', error);
                 setVerificationStatus('error');
             }
         };
@@ -91,7 +90,7 @@ const VerifyEmailPage = () => {
                             </p>
                             <details className="text-sm text-gray-500">
                                 <summary className="cursor-pointer hover:text-gray-700">
-                                    Technical Details
+                                    Chi tiết kỹ thuật
                                 </summary>
                                 <p className="mt-2 p-2 bg-gray-100 rounded text-xs font-mono">
                                     Status: 401 Unauthorized<br/>
@@ -101,7 +100,7 @@ const VerifyEmailPage = () => {
                             </details>
                         </div>
                         <button
-                            onClick={() => navigate('/auth')}
+                            onClick={() => navigate('/login')}
                             className="px-6 py-2 bg-backgroundColor text-white rounded-md hover:cursor-pointer hover:scale-105 transform transition-all duration-400"
                         >
                             Quay lại trang đăng nhập

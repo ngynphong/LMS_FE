@@ -120,10 +120,10 @@ const StudentListPage = () => {
                   <tr key={student.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        {student.avatar ? (
+                        {student.urlImg ? (
                           <div
                             className="size-10 rounded-full bg-cover bg-center shrink-0 border border-slate-200"
-                            style={{ backgroundImage: `url('${student.avatar}')` }}
+                            style={{ backgroundImage: `url('${student.urlImg}')` }}
                           />
                         ) : (
                           <div className="size-10 rounded-full bg-[#0074bd]/10 flex items-center justify-center text-[#0074bd] font-bold text-xs shrink-0">

@@ -1,30 +1,29 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { IoSchool } from 'react-icons/io5';
-import { FaArrowLeft, FaEye, FaEyeSlash } from 'react-icons/fa';
-import { useAuth } from '../../hooks/useAuth';
-import { toast } from 'react-toastify';
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
+import { useAuth } from "../../hooks/useAuth";
+import { toast } from "react-toastify";
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const email = location.state?.email || '';
+  const email = location.state?.email || "";
 
-  const [otp, setOtp] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [otp, setOtp] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isLoading, setIsLoading] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(600); // 10 phút = 600 giây
+  const [timeLeft, setTimeLeft] = useState(300); // 5 phút = 300 giây
   const { verifyOtp } = useAuth();
 
   // Redirect nếu không có email
   useEffect(() => {
     if (!email) {
-      navigate('/forgot-password');
+      navigate("/forgot-password");
     }
   }, [email, navigate]);
 
@@ -33,7 +32,7 @@ const ResetPasswordPage = () => {
     if (timeLeft <= 0) return;
 
     const timer = setInterval(() => {
-      setTimeLeft(prev => prev - 1);
+      setTimeLeft((prev) => prev - 1);
     }, 1000);
 
     return () => clearInterval(timer);
@@ -42,33 +41,33 @@ const ResetPasswordPage = () => {
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   const validateOtp = (otp: string): string => {
-    if (!otp) return 'Vui lòng nhập mã OTP';
-    if (otp.length !== 6) return 'Mã OTP phải có 6 chữ số';
-    if (!/^\d+$/.test(otp)) return 'Mã OTP chỉ chứa số';
-    return '';
+    if (!otp) return "Vui lòng nhập mã OTP";
+    if (otp.length !== 6) return "Mã OTP phải có 6 chữ số";
+    if (!/^\d+$/.test(otp)) return "Mã OTP chỉ chứa số";
+    return "";
   };
 
   const validatePassword = (password: string): string => {
-    if (!password) return 'Mật khẩu không được để trống';
-    if (password.length < 8) return 'Mật khẩu phải có ít nhất 8 ký tự';
-    if (!/[A-Z]/.test(password)) return 'Phải có ít nhất 1 chữ hoa';
-    if (!/[a-z]/.test(password)) return 'Phải có ít nhất 1 chữ thường';
-    if (!/[0-9]/.test(password)) return 'Phải có ít nhất 1 số';
-    return '';
+    if (!password) return "Mật khẩu không được để trống";
+    if (password.length < 8) return "Mật khẩu phải có ít nhất 8 ký tự";
+    if (!/[A-Z]/.test(password)) return "Phải có ít nhất 1 chữ hoa";
+    if (!/[a-z]/.test(password)) return "Phải có ít nhất 1 chữ thường";
+    if (!/[0-9]/.test(password)) return "Phải có ít nhất 1 số";
+    return "";
   };
 
   const validateConfirmPassword = (confirmPwd: string): string => {
-    if (!confirmPwd) return 'Vui lòng xác nhận mật khẩu';
-    if (newPassword !== confirmPwd) return 'Mật khẩu không khớp';
-    return '';
+    if (!confirmPwd) return "Vui lòng xác nhận mật khẩu";
+    if (newPassword !== confirmPwd) return "Mật khẩu không khớp";
+    return "";
   };
 
   const handleOtpChange = (value: string) => {
-    const numericValue = value.replace(/\D/g, '');
+    const numericValue = value.replace(/\D/g, "");
     setOtp(numericValue);
     if (touched.otp) {
       setErrors({ ...errors, otp: validateOtp(numericValue) });
@@ -82,10 +81,10 @@ const ResetPasswordPage = () => {
     }
     // Also revalidate confirm password if it's been touched
     if (touched.confirmPassword && confirmPassword) {
-      setErrors(prev => ({ 
-        ...prev, 
+      setErrors((prev) => ({
+        ...prev,
         newPassword: validatePassword(value),
-        confirmPassword: value !== confirmPassword ? 'Mật khẩu không khớp' : ''
+        confirmPassword: value !== confirmPassword ? "Mật khẩu không khớp" : "",
       }));
     }
   };
@@ -98,18 +97,24 @@ const ResetPasswordPage = () => {
   };
 
   const handleOtpBlur = () => {
-    setTouched(prev => ({ ...prev, otp: true }));
-    setErrors(prev => ({ ...prev, otp: validateOtp(otp) }));
+    setTouched((prev) => ({ ...prev, otp: true }));
+    setErrors((prev) => ({ ...prev, otp: validateOtp(otp) }));
   };
 
   const handlePasswordBlur = () => {
-    setTouched(prev => ({ ...prev, newPassword: true }));
-    setErrors(prev => ({ ...prev, newPassword: validatePassword(newPassword) }));
+    setTouched((prev) => ({ ...prev, newPassword: true }));
+    setErrors((prev) => ({
+      ...prev,
+      newPassword: validatePassword(newPassword),
+    }));
   };
 
   const handleConfirmPasswordBlur = () => {
-    setTouched(prev => ({ ...prev, confirmPassword: true }));
-    setErrors(prev => ({ ...prev, confirmPassword: validateConfirmPassword(confirmPassword) }));
+    setTouched((prev) => ({ ...prev, confirmPassword: true }));
+    setErrors((prev) => ({
+      ...prev,
+      confirmPassword: validateConfirmPassword(confirmPassword),
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -134,16 +139,17 @@ const ResetPasswordPage = () => {
 
     if (Object.keys(newErrors).length === 0) {
       setIsLoading(true);
-      
-      // TODO: Call API to reset password
+
       try {
         await verifyOtp(email, otp, newPassword);
-        toast.success('Đặt lại mật khẩu thành công!');
-        navigate('/login');
+        toast.success("Đặt lại mật khẩu thành công!");
+        navigate("/login");
       } catch (error) {
-        console.error('Error resetting password:', error);
+        console.error("Error resetting password:", error);
         setIsLoading(false);
-        toast.error('Lỗi khi đặt lại mật khẩu. Vui lòng thử lại.');
+        const errorMessage =
+          error instanceof Error ? error.message : "Lỗi khi đặt lại mật khẩu";
+        toast.error(errorMessage);
       }
     }
   };
@@ -162,14 +168,26 @@ const ResetPasswordPage = () => {
       <div className="flex w-full flex-row h-full">
         {/* Left Side - Hero Image */}
         <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-background-dark h-full">
-          <div 
-            className="absolute inset-0 bg-cover bg-center" 
-            style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBL-bY1tYY_F0tHLhwECNkQoQxSjoSenqDgVjh6zfzSJb9dfK4McqIbqfBAnE7fpOOdB1SVqzU7y3zk23LgXfCp_es6Jsg-ROjrbCo0Yo1XI9v_DWCRfiGUBdroSqlZ0cg9g94qkTVxpN7X4qkvjo0GUwdwWOp4TCUlwTDx1E4wLzWJXqTk8gTNh859n95hmrqlpTVoqzbxxpYXMxOcHpLr5c5t2b7FUr2OiDbY2Ntoh1DKxxBcOkuijJdD0kBteaEqwiUF3gnDXMdo')" }}
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage:
+                "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBL-bY1tYY_F0tHLhwECNkQoQxSjoSenqDgVjh6zfzSJb9dfK4McqIbqfBAnE7fpOOdB1SVqzU7y3zk23LgXfCp_es6Jsg-ROjrbCo0Yo1XI9v_DWCRfiGUBdroSqlZ0cg9g94qkTVxpN7X4qkvjo0GUwdwWOp4TCUlwTDx1E4wLzWJXqTk8gTNh859n95hmrqlpTVoqzbxxpYXMxOcHpLr5c5t2b7FUr2OiDbY2Ntoh1DKxxBcOkuijJdD0kBteaEqwiUF3gnDXMdo')",
+            }}
           ></div>
           <div className="absolute inset-0 bg-[#0077BE]/75 flex flex-col items-center justify-center p-12 text-center">
-            <Link to="/" className="absolute top-10 left-10 flex items-center gap-2 text-white hover:opacity-90 transition-opacity">
-              <span className="text-3xl"><IoSchool /></span>
-              <span className="text-xl font-bold tracking-tight">Edu LMS</span>
+            <Link
+              to="/"
+              className="absolute top-10 left-10 flex items-center gap-2 text-white hover:opacity-90 transition-opacity"
+            >
+              <span className="text-3xl">
+                <img
+                  src="/ies-edu-logo.png"
+                  alt="ies-edu-logo"
+                  className="w-12 h-12"
+                />
+              </span>
+              <span className="text-xl font-bold tracking-tight">IES Edu</span>
             </Link>
             <div className="max-w-md">
               <h1 className="text-white text-5xl font-bold leading-tight mb-6">
@@ -186,14 +204,23 @@ const ResetPasswordPage = () => {
         <div className="w-full lg:w-1/2 flex flex-col items-center justify-center bg-white h-full overflow-y-auto p-6 md:p-12 lg:p-20">
           <div className="w-full max-w-[440px]">
             {/* Mobile Logo */}
-            <Link to="/" className="lg:hidden flex items-center gap-2 mb-10 text-[#0077BE]">
-              <span className="text-3xl"><IoSchool /></span>
-              <span className="text-xl font-bold tracking-tight">Edu LMS</span>
+            <Link
+              to="/"
+              className="lg:hidden flex items-center gap-2 mb-10 text-[#0077BE]"
+            >
+              <span className="text-3xl">
+                <img
+                  src="/ies-edu-logo.png"
+                  alt="ies-edu-logo"
+                  className="w-12 h-12"
+                />
+              </span>
+              <span className="text-xl font-bold tracking-tight">IES Edu</span>
             </Link>
 
             {/* Back Button */}
-            <Link 
-              to="/forgot-password" 
+            <Link
+              to="/forgot-password"
               className="flex items-center gap-2 text-gray-600 hover:text-[#0077BE] transition-colors mb-8"
             >
               <FaArrowLeft className="text-sm" />
@@ -209,7 +236,12 @@ const ResetPasswordPage = () => {
                 Mã OTP đã được gửi đến <strong>{email}</strong>
               </p>
               <p className="text-gray-500 text-xs mt-1">
-                Thời gian còn lại: <span className={`font-bold ${timeLeft < 60 ? 'text-red-500' : 'text-[#0077BE]'}`}>{formatTime(timeLeft)}</span>
+                Thời gian còn lại:{" "}
+                <span
+                  className={`font-bold ${timeLeft < 60 ? "text-red-500" : "text-[#0077BE]"}`}
+                >
+                  {formatTime(timeLeft)}
+                </span>
               </p>
             </div>
 
@@ -217,15 +249,17 @@ const ResetPasswordPage = () => {
             <form className="space-y-3" onSubmit={handleSubmit}>
               {/* OTP Input */}
               <div className="flex flex-col gap-1">
-                <label className="text-gray-900 text-sm font-medium">Mã OTP</label>
-                <input 
-                  className={`w-full h-9 px-4 rounded-lg border ${errors.otp ? 'border-red-500 focus:ring-red-500/50' : 'border-gray-200 focus:ring-[#0077BE]'} focus:outline-none focus:ring-1 transition-all text-center text-lg tracking-widest font-mono`}
+                <label className="text-gray-900 text-sm font-medium">
+                  Mã OTP
+                </label>
+                <input
+                  className={`w-full h-9 px-4 rounded-lg border ${errors.otp ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#0077BE]"} focus:outline-none focus:ring-1 transition-all text-center text-lg tracking-widest font-mono`}
                   placeholder="000000"
                   type="text"
                   maxLength={6}
                   value={otp}
                   onChange={(e) => handleOtpChange(e.target.value)}
-                  onBlur={handleOtpBlur}
+                  onBlur={handleOtpBlur}  
                   required
                 />
                 {errors.otp && touched.otp && (
@@ -235,10 +269,12 @@ const ResetPasswordPage = () => {
 
               {/* New Password */}
               <div className="flex flex-col gap-1">
-                <label className="text-gray-900 text-sm font-medium">Mật khẩu mới</label>
+                <label className="text-gray-900 text-sm font-medium">
+                  Mật khẩu mới
+                </label>
                 <div className="relative">
-                  <input 
-                    className={`w-full h-9 px-4 pr-10 rounded-lg border ${errors.newPassword ? 'border-red-500 focus:ring-red-500/50' : 'border-gray-200 focus:ring-[#0077BE]'} focus:outline-none focus:ring-1 transition-all`}
+                  <input
+                    className={`w-full h-9 px-4 pr-10 rounded-lg border ${errors.newPassword ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#0077BE]"} focus:outline-none focus:ring-1 transition-all`}
                     placeholder="Nhập mật khẩu mới"
                     type={showNewPassword ? "text" : "password"}
                     value={newPassword}
@@ -246,47 +282,63 @@ const ResetPasswordPage = () => {
                     onBlur={handlePasswordBlur}
                     required
                   />
-                  <button 
+                  <button
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 transition-colors"
                     type="button"
                     onClick={() => setShowNewPassword(!showNewPassword)}
                   >
-                    {showNewPassword ? <FaEyeSlash className="text-[16px]" /> : <FaEye className="text-[16px]" />}
+                    {showNewPassword ? (
+                      <FaEyeSlash className="text-[16px]" />
+                    ) : (
+                      <FaEye className="text-[16px]" />
+                    )}
                   </button>
                 </div>
                 {errors.newPassword && touched.newPassword && (
-                  <p className="text-red-500 text-xs mt-0.5">{errors.newPassword}</p>
+                  <p className="text-red-500 text-xs mt-0.5">
+                    {errors.newPassword}
+                  </p>
                 )}
               </div>
 
               {/* Confirm Password */}
               <div className="flex flex-col gap-1">
-                <label className="text-gray-900 text-sm font-medium">Xác nhận mật khẩu</label>
+                <label className="text-gray-900 text-sm font-medium">
+                  Xác nhận mật khẩu
+                </label>
                 <div className="relative">
-                  <input 
-                    className={`w-full h-9 px-4 pr-10 rounded-lg border ${errors.confirmPassword ? 'border-red-500 focus:ring-red-500/50' : 'border-gray-200 focus:ring-[#0077BE]'} focus:outline-none focus:ring-1 transition-all`}
+                  <input
+                    className={`w-full h-9 px-4 pr-10 rounded-lg border ${errors.confirmPassword ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#0077BE]"} focus:outline-none focus:ring-1 transition-all`}
                     placeholder="Nhập lại mật khẩu mới"
                     type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
-                    onChange={(e) => handleConfirmPasswordChange(e.target.value)}
+                    onChange={(e) =>
+                      handleConfirmPasswordChange(e.target.value)
+                    }
                     onBlur={handleConfirmPasswordBlur}
                     required
                   />
-                  <button 
+                  <button
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 transition-colors"
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
-                    {showConfirmPassword ? <FaEyeSlash className="text-[16px]" /> : <FaEye className="text-[16px]" />}
+                    {showConfirmPassword ? (
+                      <FaEyeSlash className="text-[16px]" />
+                    ) : (
+                      <FaEye className="text-[16px]" />
+                    )}
                   </button>
                 </div>
                 {errors.confirmPassword && touched.confirmPassword && (
-                  <p className="text-red-500 text-xs mt-0.5">{errors.confirmPassword}</p>
+                  <p className="text-red-500 text-xs mt-0.5">
+                    {errors.confirmPassword}
+                  </p>
                 )}
               </div>
 
               {/* Submit Button */}
-              <button 
+              <button
                 className="w-full h-9 bg-[#0077BE] hover:bg-[#0077BE]/90 text-white font-bold rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
                 type="submit"
                 disabled={isLoading || timeLeft <= 0}
