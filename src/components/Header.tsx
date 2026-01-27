@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
-import { IoSchool } from "react-icons/io5";
-import { IoAppsOutline } from "react-icons/io5";
+import { IoAppsOutline, IoSchool } from "react-icons/io5";
 import { CiMail } from "react-icons/ci";
 import { IoIosCall } from "react-icons/io";
 import { useAuth } from "../hooks/useAuth";
@@ -31,13 +30,13 @@ const Header = () => {
             <span className="material-symbols-outlined text-[14px]">
               <IoIosCall />
             </span>{" "}
-            (+84) 965 248 115
+            (+84) 096 524 8115
           </span>
           <span className="flex items-center gap-1">
             <span className="material-symbols-outlined text-[14px]">
               <CiMail />
             </span>{" "}
-            info@edubien.vn
+            infovienies@gmail.com
           </span>
         </div>
         <div className="flex gap-6 items-center">
@@ -79,10 +78,14 @@ const Header = () => {
           <div className="flex items-center gap-12">
             <div className="flex items-center gap-2">
               <span className="text-[#0077BE] text-2xl">
-                <IoSchool />
+                <img
+                  src="/ies-edu-logo.png"
+                  alt="ies-edu-logo"
+                  className="w-12 h-12"
+                />
               </span>
               <h2 className="text-xl text-[#0077BE] font-bold tracking-tight">
-                Edu LMS
+                IES Edu
               </h2>
             </div>
             <nav className="hidden lg:flex items-center gap-6">
@@ -112,9 +115,9 @@ const Header = () => {
               </Link>
               <Link
                 className="font-medium hover:text-[#0077BE] transition-colors"
-                to="/shop"
+                to="/about"
               >
-                Cửa hàng
+                Về chúng tôi
               </Link>
             </nav>
           </div>
