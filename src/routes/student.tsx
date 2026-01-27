@@ -3,6 +3,7 @@ import StudentLayout from "../layouts/StudentLayout";
 import StudentDashboardPage from "../pages/student/StudentDashboardPage";
 import StudentProfilePage from "../pages/student/StudentProfilePage";
 import StudentMyCoursesPage from "../pages/student/StudentMyCoursesPage";
+import CourseLearningPage from "../pages/student/CourseLearningPage";
 import ProtectedRoute from "./ProtectedRoute";
 
 /**
@@ -10,6 +11,24 @@ import ProtectedRoute from "./ProtectedRoute";
  * Protected routes for authenticated students
  */
 const studentRoutes: RouteObject[] = [
+  // Course Learning Page - uses its own layout (no student sidebar)
+  {
+    path: "/student/courses/:courseId",
+    element: (
+      <ProtectedRoute allowedRoles={["STUDENT"]}>
+        <CourseLearningPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/student/courses/:courseId/lessons/:lessonId",
+    element: (
+      <ProtectedRoute allowedRoles={["STUDENT"]}>
+        <CourseLearningPage />
+      </ProtectedRoute>
+    ),
+  },
+  // Main student routes with sidebar
   {
     path: "/student",
     element: (
