@@ -132,15 +132,16 @@ const LoginPage = () => {
         {/* Left Side - Hero Image */}
         <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-background-dark h-full">
           <div
-            className="absolute inset-0 bg-cover bg-center"
+            className="absolute inset-0 bg-contain bg-no-repeat bg-center"
             style={{
-              backgroundImage: "url('/src/assets/img/bg-login.png')",
+              backgroundImage: "url('/src/assets/img/login.png')",
+              backgroundSize: "80%",
             }}
           ></div>
-          <div className="absolute inset-0  backdrop-blur-[2px] flex flex-col items-center justify-center p-12 text-center">
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-center">
             <Link
               to="/"
-              className="absolute top-10 left-10 flex items-center gap-2 text-white hover:opacity-90 transition-opacity"
+              className="absolute top-10 left-10 flex items-center gap-2 color-primary hover:opacity-90 transition-opacity"
             >
               <span className="text-3xl">
                 <img
@@ -151,7 +152,7 @@ const LoginPage = () => {
               </span>
               <span className="text-xl font-bold tracking-tight ">IES Edu</span>
             </Link>
-            <div className="max-w-md">
+            {/* <div className="absolute bottom-20 max-w-md">
               <h1 className="text-gray-800 text-5xl font-bold leading-tight mb-6">
                 Học tập không giới hạn cùng IES Edu
               </h1>
@@ -159,7 +160,7 @@ const LoginPage = () => {
                 Kiến tạo tương lai của bạn thông qua nền tảng học tập trực tuyến
                 hiện đại nhất.
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
 

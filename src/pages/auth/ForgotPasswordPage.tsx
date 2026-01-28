@@ -54,16 +54,16 @@ const ForgotPasswordPage = () => {
         {/* Left Side - Hero Image */}
         <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-background-dark h-full">
           <div
-            className="absolute inset-0 bg-cover bg-center"
+            className="absolute inset-0 bg-contain bg-no-repeat bg-center"
             style={{
-              backgroundImage:
-                "url('https://images.unsplash.com/photo-1633265486064-086b219458ec?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+              backgroundImage: "url('/src/assets/img/forgot-password.png')",
+              backgroundSize: "80%",
             }}
           ></div>
           <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-center">
             <Link
               to="/"
-              className="absolute top-10 left-10 flex items-center gap-2 text-white hover:opacity-90 transition-opacity"
+              className="absolute top-10 left-10 flex items-center gap-2 color-primary hover:opacity-90 transition-opacity"
             >
               <img
                 src="/logo-edu.png"
@@ -72,15 +72,15 @@ const ForgotPasswordPage = () => {
               />
               <span className="text-xl font-bold tracking-tight">IES Edu</span>
             </Link>
-            <div className="max-w-md">
-              <h1 className="text-white text-5xl font-bold leading-tight mb-6">
+            {/* <div className="absolute bottom-20 max-w-md">
+              <h1 className="text-black text-5xl font-bold leading-tight mb-6">
                 Đừng lo lắng!
               </h1>
-              <p className="text-white/90 text-xl font-light">
+              <p className="text-black/90 text-xl font-light">
                 Chúng tôi sẽ giúp bạn khôi phục mật khẩu và quay lại học tập
                 ngay lập tức.
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
 

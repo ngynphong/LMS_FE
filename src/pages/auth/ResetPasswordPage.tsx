@@ -169,10 +169,10 @@ const ResetPasswordPage = () => {
         {/* Left Side - Hero Image */}
         <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-background-dark h-full">
           <div
-            className="absolute inset-0 bg-cover bg-center"
+            className="absolute inset-0 bg-contain bg-no-repeat bg-center"
             style={{
-              backgroundImage:
-                "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBL-bY1tYY_F0tHLhwECNkQoQxSjoSenqDgVjh6zfzSJb9dfK4McqIbqfBAnE7fpOOdB1SVqzU7y3zk23LgXfCp_es6Jsg-ROjrbCo0Yo1XI9v_DWCRfiGUBdroSqlZ0cg9g94qkTVxpN7X4qkvjo0GUwdwWOp4TCUlwTDx1E4wLzWJXqTk8gTNh859n95hmrqlpTVoqzbxxpYXMxOcHpLr5c5t2b7FUr2OiDbY2Ntoh1DKxxBcOkuijJdD0kBteaEqwiUF3gnDXMdo')",
+              backgroundImage: "url('/src/assets/img/reset-password.png')",
+              backgroundSize: "80%", // Scale it down a bit to valid breathing room
             }}
           ></div>
           <div className="absolute inset-0 color-primary/75 flex flex-col items-center justify-center p-12 text-center">
@@ -187,16 +187,16 @@ const ResetPasswordPage = () => {
                   className="w-12 h-12"
                 />
               </span>
-              <span className="text-xl font-bold tracking-tight">IES Edu</span>
+              <span className="text-xl color-primary font-bold tracking-tight">IES Edu</span>
             </Link>
-            <div className="max-w-md">
-              <h1 className="text-white text-5xl font-bold leading-tight mb-6">
+            {/* <div className="max-w-md absolute bottom-20">
+              <h1 className="text-black text-5xl font-bold leading-tight mb-6">
                 Gần xong rồi!
               </h1>
-              <p className="text-white/90 text-xl font-light">
+              <p className="text-black/90 text-xl font-light">
                 Chỉ còn vài bước nữa để bạn có thể quay lại học tập.
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
 

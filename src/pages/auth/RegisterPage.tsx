@@ -149,19 +149,26 @@ const RegisterPage = () => {
       {/* Left Side - Hero Image */}
       <div className="relative hidden md:flex md:w-1/2 items-center justify-center overflow-hidden">
         <div
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-contain bg-no-repeat bg-center"
           style={{
-            backgroundImage: "url('/src/assets/img/bg-register.png')",
+            backgroundImage: "url('/src/assets/img/register.png')",
+            backgroundSize: "80%",
           }}
         ></div>
-        <div className="absolute inset-0 backdrop-blur-[2px]"></div>
-        <div className="relative z-10 p-12 text-center max-w-lg">
-          <h1 className="text-white text-5xl font-black leading-tight tracking-tight mb-4">
-            Khởi đầu hành trình tri thức mới
-          </h1>
-          <p className="text-white/80 text-lg">
-            Hệ thống quản lý học tập hiện đại cho tương lai của bạn.
-          </p>
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-center">
+          <Link
+            to="/"
+            className="absolute top-10 left-10 flex items-center gap-2 color-primary hover:opacity-90 transition-opacity"
+          >
+            <span className="text-3xl">
+              <img
+                src="/logo-edu.png"
+                alt="ies-edu-logo"
+                className="w-12 h-12"
+              />
+            </span>
+            <span className="text-xl font-bold tracking-tight ">IES Edu</span>
+          </Link>
         </div>
       </div>
 
