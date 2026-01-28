@@ -10,7 +10,7 @@ const CourseBuilderLayout = ({ children, sidebar }: CourseBuilderLayoutProps) =>
   return (
     <div className="min-h-screen bg-[#f5f7f8] flex">
       {/* Left Sidebar */}
-      <TeacherSidebar />
+      <TeacherSidebar isCollapsed={false} onToggle={() => {}} />
 
       {/* Main Content */}
       <div className={`flex-1 ml-64 ${sidebar ? 'mr-80' : ''} overflow-y-auto min-h-screen`}>

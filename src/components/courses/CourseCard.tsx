@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
-import { FaStar } from 'react-icons/fa';
-import type { Course } from '../../types/course';
+import { Link } from "react-router-dom";
+import { FaStar } from "react-icons/fa";
+import type { Course } from "../../types/course";
 
 // type CourseCardVariant = 'student' | 'teacher';
 
@@ -19,37 +19,39 @@ interface StudentCourseProps {
 // Props for teacher variant (uses course object)
 interface TeacherCourseProps {
   course: Course;
-  variant: 'teacher';
+  variant: "teacher";
 }
 
 // Union type for CourseCardProps
-type CourseCardProps = 
-  | (StudentCourseProps & { variant?: 'student'; course?: never })
+type CourseCardProps =
+  | (StudentCourseProps & { variant?: "student"; course?: never })
   | TeacherCourseProps;
 
 const CourseCard = (props: CourseCardProps) => {
   // Teacher variant status config
   const statusConfig = {
     published: {
-      label: 'Đang bán',
-      className: 'bg-green-100 text-green-700'
+      label: "Đang bán",
+      className: "bg-green-100 text-green-700",
     },
     draft: {
-      label: 'Bản nháp',
-      className: 'bg-amber-100 text-amber-700'
-    }
+      label: "Bản nháp",
+      className: "bg-amber-100 text-amber-700",
+    },
   };
 
-  if (props.variant === 'teacher' && props.course) {
+  if (props.variant === "teacher" && props.course) {
     const { course } = props;
     const status = statusConfig[course.status];
-    
+
     return (
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
         {/* Thumbnail */}
         <div
           className="h-40 bg-center bg-cover bg-no-repeat"
-          style={{ backgroundImage: `url('${course.thumbnail || course.image}')` }}
+          style={{
+            backgroundImage: `url('${course.thumbnail || course.image}')`,
+          }}
         />
 
         {/* Content */}
@@ -58,7 +60,9 @@ const CourseCard = (props: CourseCardProps) => {
             <h3 className="text-[#101518] text-base font-bold leading-tight line-clamp-2">
               {course.title}
             </h3>
-            <span className={`shrink-0 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${status.className}`}>
+            <span
+              className={`shrink-0 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${status.className}`}
+            >
               {status.label}
             </span>
           </div>
@@ -70,7 +74,9 @@ const CourseCard = (props: CourseCardProps) => {
               <span>{course.studentCount} học viên</span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="material-symbols-outlined text-base">play_circle</span>
+              <span className="material-symbols-outlined text-base">
+                play_circle
+              </span>
               <span>{course.lessonCount} bài học</span>
             </div>
           </div>
@@ -78,8 +84,15 @@ const CourseCard = (props: CourseCardProps) => {
           {/* Rating & Revenue */}
           <div className="flex items-center justify-between text-sm mb-4">
             <div className="flex items-center gap-1">
-              <span className="material-symbols-outlined text-amber-500 text-base" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-              <span className="font-semibold text-[#101518]">{course.rating}</span>
+              <span
+                className="material-symbols-outlined text-amber-500 text-base"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                star
+              </span>
+              <span className="font-semibold text-[#101518]">
+                {course.rating}
+              </span>
             </div>
             <span className="font-bold text-[#0074bd]">{course.revenue}</span>
           </div>
@@ -94,7 +107,9 @@ const CourseCard = (props: CourseCardProps) => {
               Chỉnh sửa
             </Link>
             <button className="p-2 rounded-lg border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 transition-colors">
-              <span className="material-symbols-outlined text-base">delete</span>
+              <span className="material-symbols-outlined text-base">
+                delete
+              </span>
             </button>
           </div>
         </div>
@@ -103,17 +118,18 @@ const CourseCard = (props: CourseCardProps) => {
   }
 
   // Student variant (default) - uses spread props
-  const { id, title, category, image, duration, rating, reviews, price } = props as StudentCourseProps;
+  const { id, title, category, image, duration, rating, reviews, price } =
+    props as StudentCourseProps;
 
   return (
     <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-all group">
       <div className="relative h-44 w-full overflow-hidden">
-        <img 
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+        <img
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           src={image}
           alt={title}
         />
-        <div className="absolute top-3 left-3 bg-[#0077BE] text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider">
+        <div className="absolute top-3 left-3 color-primary text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider">
           {category}
         </div>
       </div>
@@ -122,12 +138,19 @@ const CourseCard = (props: CourseCardProps) => {
           {title}
         </h3>
         <div className="flex items-center gap-2 text-gray-500 text-xs">
-          <span className="material-symbols-outlined text-sm">schedule</span> {duration}
-          <span className="ml-2"><FaStar className="text-yellow-500 inline" /></span> {rating} ({reviews})
+          <span className="material-symbols-outlined text-sm">schedule</span>{" "}
+          {duration}
+          <span className="ml-2">
+            <FaStar className="text-yellow-500 inline" />
+          </span>{" "}
+          {rating} ({reviews})
         </div>
         <div className="flex items-center justify-between mt-2 pt-4 border-t border-gray-100">
-          <span className="text-[#0077BE] font-bold text-lg">{price}</span>
-          <Link className="text-[#0077BE] text-sm font-bold hover:underline" to={`/courses/${id}`}>
+          <span className="color-primary font-bold text-lg">{price}</span>
+          <Link
+            className="color-primary text-sm font-bold hover:underline"
+            to={`/courses/${id}`}
+          >
             Xem chi tiết
           </Link>
         </div>

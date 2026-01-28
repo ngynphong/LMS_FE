@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import type { Student } from '../../../types/student';
+import { Link } from "react-router-dom";
+import type { Student } from "../../../types/student";
 
 interface StudentCardProps {
   student: Student;
@@ -8,24 +8,24 @@ interface StudentCardProps {
 const StudentCard = ({ student }: StudentCardProps) => {
   const statusConfig = {
     active: {
-      label: 'Đang hoạt động',
-      className: 'bg-green-100 text-green-600'
+      label: "Đang hoạt động",
+      className: "bg-green-100 text-green-600",
     },
     inactive: {
-      label: 'Không hoạt động',
-      className: 'bg-slate-100 text-slate-500'
-    }
+      label: "Không hoạt động",
+      className: "bg-slate-100 text-slate-500",
+    },
   };
 
-  const status = statusConfig[student.status];
+  const status = statusConfig[student.status || "inactive"];
 
   // Get initials from name
   const getInitials = (name: string) => {
     return name
-      .split(' ')
+      .split(" ")
       .map((n) => n[0])
       .slice(-2)
-      .join('')
+      .join("")
       .toUpperCase();
   };
 
@@ -40,7 +40,7 @@ const StudentCard = ({ student }: StudentCardProps) => {
           />
         ) : (
           <div className="size-12 rounded-full bg-[#0074bd]/10 flex items-center justify-center text-[#0074bd] font-bold text-sm shrink-0">
-            {getInitials(student.name)}
+            {getInitials(`${student.lastName} ${student.firstName}`)}
           </div>
         )}
 
@@ -48,10 +48,14 @@ const StudentCard = ({ student }: StudentCardProps) => {
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div>
-              <h3 className="text-[#101518] text-base font-bold truncate">{student.name}</h3>
+              <h3 className="text-[#101518] text-base font-bold truncate">
+                {student.lastName} {student.firstName}
+              </h3>
               <p className="text-slate-500 text-sm truncate">{student.email}</p>
             </div>
-            <span className={`shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${status.className}`}>
+            <span
+              className={`shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${status.className}`}
+            >
               {status.label}
             </span>
           </div>
@@ -59,11 +63,15 @@ const StudentCard = ({ student }: StudentCardProps) => {
           {/* Stats */}
           <div className="flex items-center gap-4 mt-3 text-sm">
             <div className="flex items-center gap-1 text-slate-500">
-              <span className="material-symbols-outlined text-base">library_books</span>
+              <span className="material-symbols-outlined text-base">
+                library_books
+              </span>
               <span>{student.enrolledCourses} khóa học</span>
             </div>
             <div className="flex items-center gap-1 text-slate-500">
-              <span className="material-symbols-outlined text-base">task_alt</span>
+              <span className="material-symbols-outlined text-base">
+                task_alt
+              </span>
               <span>{student.completionRate}% hoàn thành</span>
             </div>
           </div>
@@ -80,13 +88,17 @@ const StudentCard = ({ student }: StudentCardProps) => {
 
           {/* Footer */}
           <div className="flex items-center justify-between mt-4">
-            <p className="text-slate-400 text-xs">Truy cập: {student.lastAccess}</p>
+            <p className="text-slate-400 text-xs">
+              Truy cập: {student.lastAccess}
+            </p>
             <Link
               to={`/teacher/students/${student.id}`}
               className="flex items-center gap-1 text-[#0074bd] text-sm font-semibold hover:underline"
             >
               Chi tiết
-              <span className="material-symbols-outlined text-sm">arrow_forward</span>
+              <span className="material-symbols-outlined text-sm">
+                arrow_forward
+              </span>
             </Link>
           </div>
         </div>

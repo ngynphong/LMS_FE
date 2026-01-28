@@ -44,6 +44,7 @@ const CourseLearningPage = () => {
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const [isLoading, setIsLoading] = useState(true);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isLessonSidebarOpen, setIsLessonSidebarOpen] = useState(false);
 
   // Load initial data
   useEffect(() => {
@@ -102,6 +103,7 @@ const CourseLearningPage = () => {
       if (lesson) {
         setCurrentLesson(lesson);
         setActiveTab("overview");
+        setIsLessonSidebarOpen(false); // Close mobile sidebar on select
 
         // Load quiz for this lesson
         const quizData = await getQuizByLessonId(selectedLessonId);
@@ -162,7 +164,7 @@ const CourseLearningPage = () => {
     return (
       <div className="flex h-screen items-center justify-center bg-[#f5f7fa]">
         <div className="text-center">
-          <span className="material-symbols-outlined text-[48px] text-[#0077BE] animate-spin">
+          <span className="material-symbols-outlined text-[48px] color-primary animate-spin">
             progress_activity
           </span>
           <p className="mt-4 text-[#4A5568]">Đang tải bài học...</p>
@@ -181,7 +183,7 @@ const CourseLearningPage = () => {
           <p className="mt-4 text-[#4A5568]">Không tìm thấy khóa học</p>
           <Link
             to="/student/my-courses"
-            className="mt-4 inline-block text-[#0077BE] hover:underline"
+            className="mt-4 inline-block color-primary hover:underline"
           >
             ← Quay lại danh sách khóa học
           </Link>
@@ -193,58 +195,71 @@ const CourseLearningPage = () => {
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-white">
       {/* Header */}
-      <header className="flex h-16 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-6 py-3 shadow-sm z-10">
-        <div className="flex items-center gap-6">
+      <header className="flex h-16 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 md:px-6 py-3 shadow-sm z-10">
+        <div className="flex items-center gap-3 md:gap-6">
+          <button
+            onClick={() => setIsLessonSidebarOpen(true)}
+            className="lg:hidden text-gray-500 hover:color-primary"
+          >
+            <span className="material-symbols-outlined">menu_open</span>
+          </button>
+
           <Link
             to="/student/my-courses"
-            className="flex items-center gap-2 text-sm font-medium text-[#4A5568] hover:text-[#0077BE] transition-colors"
+            className="flex items-center gap-2 text-sm font-medium text-[#4A5568] hover:color-primary transition-colors"
           >
             <span className="material-symbols-outlined text-[18px]">
               chevron_left
             </span>
-            Quay lại
+            <span className="hidden sm:inline">Quay lại</span>
           </Link>
-          <div className="h-6 w-px bg-gray-200"></div>
-          <h2 className="text-base font-semibold leading-tight tracking-tight text-[#1A2B3C]">
+          <div className="hidden sm:block h-6 w-px bg-gray-200"></div>
+          <h2 className="text-base font-semibold leading-tight tracking-tight text-[#1A2B3C] line-clamp-1 max-w-[150px] sm:max-w-xs md:max-w-md">
             {course.name}
           </h2>
         </div>
 
         {/* Progress */}
-        <div className="hidden md:flex flex-col items-center gap-1 min-w-[200px]">
+        <div className="hidden lg:flex flex-col items-center gap-1 min-w-[200px]">
           <div className="flex w-full justify-between text-[11px] text-[#4A5568]">
             <span>Tiến độ học tập</span>
-            <span className="font-bold text-[#0077BE]">{progressPercent}%</span>
+            <span className="font-bold color-primary">{progressPercent}%</span>
           </div>
           <div className="h-1.5 w-full rounded-full bg-gray-100">
             <div
-              className="h-full rounded-full bg-[#0077BE] transition-all"
+              className="h-full rounded-full color-primary transition-all"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
         </div>
 
         {/* Navigation */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4">
           <button
             onClick={() => handleNavigateLesson("prev")}
             disabled={currentLessonIndex === 0}
-            className="flex items-center gap-1 text-sm font-medium text-[#4A5568] hover:text-[#1A2B3C] px-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-1 text-sm font-medium text-[#4A5568] hover:text-[#1A2B3C] px-2 md:px-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Bài trước
+            <span className="hidden sm:inline">Bài trước</span>
+            <span className="sm:hidden material-symbols-outlined">
+              chevron_left
+            </span>
           </button>
           <button
             onClick={() => handleNavigateLesson("next")}
             disabled={currentLessonIndex === lessons.length - 1}
-            className="flex min-w-[120px] cursor-pointer items-center justify-center rounded-lg bg-[#0077BE] px-4 py-2 text-sm font-bold text-white shadow-md hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex min-w-[40px] md:min-w-[120px] cursor-pointer items-center justify-center rounded-lg color-primary-bg px-3 md:px-4 py-2 text-sm font-bold text-white shadow-md hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span>Bài tiếp theo</span>
+            <span className="hidden sm:inline">Bài tiếp theo</span>
+            <span className="sm:hidden material-symbols-outlined">
+              chevron_right
+            </span>
           </button>
         </div>
       </header>
 
       {/* Main Content */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative">
         {/* Sidebar */}
         <LessonSidebar
           course={course}
@@ -252,11 +267,13 @@ const CourseLearningPage = () => {
           currentLessonId={currentLesson.id}
           progress={progress}
           onLessonSelect={handleLessonSelect}
+          isOpen={isLessonSidebarOpen}
+          onClose={() => setIsLessonSidebarOpen(false)}
         />
 
         {/* Content Area */}
-        <main className="flex flex-1 flex-col overflow-y-auto bg-[#f5f7fa]">
-          <div className="w-full max-w-[1100px] mx-auto p-6 flex flex-col gap-4">
+        <main className="flex flex-1 flex-col overflow-y-auto bg-[#f5f7fa] w-full">
+          <div className="w-full max-w-[1100px] mx-auto p-4 md:p-6 flex flex-col gap-4">
             {/* Video Player */}
             <VideoPlayer
               videoUrl={currentLesson.videoUrl}
@@ -265,11 +282,11 @@ const CourseLearningPage = () => {
             />
 
             {/* Action Buttons */}
-            <div className="flex items-center justify-between px-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-2">
               <div className="flex gap-4">
                 <button
                   onClick={() => setIsFavorite(!isFavorite)}
-                  className={`flex items-center gap-2 rounded-lg bg-white border border-gray-200 px-4 py-2 text-sm font-medium transition-colors shadow-sm ${
+                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 rounded-lg bg-white border border-gray-200 px-2 sm:px-4 py-2 sm:py-2 text-sm font-medium transition-colors shadow-sm ${
                     isFavorite
                       ? "text-red-500 border-red-200"
                       : "text-[#4A5568] hover:bg-gray-50 hover:text-[#1A2B3C]"
@@ -280,44 +297,43 @@ const CourseLearningPage = () => {
                   >
                     favorite
                   </span>
-                  Yêu thích
+                  <span className="sm:hidden md:inline">Yêu thích</span>
                 </button>
-                <button className="flex items-center gap-2 rounded-lg bg-white border border-gray-200 px-4 py-2 text-sm font-medium text-[#4A5568] hover:bg-gray-50 hover:text-[#1A2B3C] transition-colors shadow-sm">
+                <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 rounded-lg bg-white border border-gray-200 px-4 py-2 text-sm font-medium text-[#4A5568] hover:bg-gray-50 hover:text-[#1A2B3C] transition-colors shadow-sm">
                   <span className="material-symbols-outlined text-[20px]">
                     edit_note
                   </span>
-                  Thêm ghi chú
+                  <span className="sm:hidden md:inline">Thêm ghi chú</span>
                 </button>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 justify-center sm:justify-end">
                 <span className="text-xs text-[#4A5568] opacity-70">
-                  Đang xem bài {currentLessonIndex + 1} trên tổng số{" "}
-                  {lessons.length} bài
+                  Bài {currentLessonIndex + 1} / {lessons.length}
                 </span>
               </div>
             </div>
 
             {/* Tabs */}
-            <div className="mt-6 flex flex-col">
-              <div className="flex gap-8 border-b border-gray-200 px-2">
+            <div className="mt-4 sm:mt-6 flex flex-col">
+              <div className="flex gap-6 sm:gap-8 border-b border-gray-200  scrollbar-hide -mx-4 sm:mx-0 px-4 sm:px-2">
                 {[
-                  { id: "overview", label: "Tổng quan bài học" },
-                  { id: "materials", label: "Tài liệu đính kèm" },
-                  { id: "discussion", label: "Thảo luận Q&A" },
+                  { id: "overview", label: "Tổng quan" },
+                  { id: "materials", label: "Tài liệu" },
+                  { id: "discussion", label: "Thảo luận" },
                   { id: "quiz", label: "Bài kiểm tra" },
                 ].map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as TabType)}
-                    className={`relative pb-3 text-sm font-medium transition-colors ${
+                    className={`relative pb-3 text-sm font-medium transition-colors whitespace-nowrap shrink-0 ${
                       activeTab === tab.id
-                        ? "border-b-2 border-[#0077BE] text-[#0077BE] font-semibold"
+                        ? "border-b-2 border-b-color-primary color-primary font-semibold"
                         : "text-[#4A5568] hover:text-[#1A2B3C]"
                     }`}
                   >
                     {tab.label}
                     {tab.id === "quiz" && quiz && (
-                      <span className="ml-2 px-2 py-0.5 bg-[#0077BE]/10 text-[#0077BE] text-[10px] font-bold rounded-full">
+                      <span className="absolute ml-[-100px] mt-[-12px] px-2 py-0.5 color-primary text-[10px] font-bold rounded-full">
                         {quiz.questions.length}
                       </span>
                     )}
@@ -343,7 +359,7 @@ const CourseLearningPage = () => {
                           {currentLesson.tags.map((tag, idx) => (
                             <span
                               key={idx}
-                              className="rounded bg-[#0077BE]/10 px-3 py-1 text-[11px] font-medium text-[#0077BE]"
+                              className="rounded color-primary/10 px-3 py-1 text-[11px] font-medium color-primary"
                             >
                               {tag}
                             </span>
@@ -366,7 +382,7 @@ const CourseLearningPage = () => {
                                 className="flex items-center justify-between rounded-lg bg-white p-3 border border-gray-100 shadow-sm"
                               >
                                 <div className="flex items-center gap-3 overflow-hidden">
-                                  <span className="material-symbols-outlined text-[#0077BE]">
+                                  <span className="material-symbols-outlined color-primary">
                                     {att.type === "pdf"
                                       ? "description"
                                       : att.type === "code"
@@ -377,7 +393,7 @@ const CourseLearningPage = () => {
                                     {att.name}
                                   </span>
                                 </div>
-                                <button className="text-[#0077BE] hover:text-[#1A2B3C] transition-colors">
+                                <button className="color-primary hover:text-[#1A2B3C] transition-colors">
                                   <span className="material-symbols-outlined text-[20px]">
                                     download
                                   </span>
@@ -399,11 +415,11 @@ const CourseLearningPage = () => {
                         {currentLesson.attachments.map((att) => (
                           <div
                             key={att.id}
-                            className="flex items-center justify-between rounded-lg bg-white p-4 border border-gray-100 shadow-sm"
+                            className="flex items-center justify-between rounded-lg bg-white p-2 border border-gray-100 shadow-sm"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-[#0077BE]/10 rounded-lg flex items-center justify-center">
-                                <span className="material-symbols-outlined text-[#0077BE]">
+                              <div className="sm:w-10 sm:h-10 w-8 h-8 color-primary/10 rounded-lg flex items-center justify-center">
+                                <span className="material-symbols-outlined color-primary">
                                   {att.type === "pdf"
                                     ? "picture_as_pdf"
                                     : att.type === "code"
@@ -412,18 +428,20 @@ const CourseLearningPage = () => {
                                 </span>
                               </div>
                               <div>
-                                <p className="font-medium text-[#1A2B3C]">
+                                <p className="font-medium text-xs text-[#1A2B3C]">
                                   {att.name}
                                 </p>
                                 {att.size && (
-                                  <p className="text-xs text-gray-500">
+                                  <p className="sm:text-xs text-[8px] text-gray-500">
                                     {att.size}
                                   </p>
                                 )}
                               </div>
                             </div>
-                            <button className="px-4 py-2 text-[#0077BE] hover:bg-[#0077BE]/5 rounded-lg transition-colors font-medium text-sm">
-                              Tải xuống
+                            <button className="color-primary hover:text-[#1A2B3C] transition-colors">
+                              <span className="material-symbols-outlined text-[20px]">
+                                download
+                              </span>
                             </button>
                           </div>
                         ))}

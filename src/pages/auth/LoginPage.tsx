@@ -132,16 +132,16 @@ const LoginPage = () => {
         {/* Left Side - Hero Image */}
         <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-background-dark h-full">
           <div
-            className="absolute inset-0 bg-cover bg-center"
+            className="absolute inset-0 bg-contain bg-no-repeat bg-center"
             style={{
-              backgroundImage:
-                "url('/bg-login.png')",
+              backgroundImage: "url('/src/assets/img/login.png')",
+              backgroundSize: "80%",
             }}
           ></div>
-          <div className="absolute inset-0  backdrop-blur-[2px] flex flex-col items-center justify-center p-12 text-center">
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-12 text-center">
             <Link
               to="/"
-              className="absolute top-10 left-10 flex items-center gap-2 text-white hover:opacity-90 transition-opacity"
+              className="absolute top-10 left-10 flex items-center gap-2 color-primary hover:opacity-90 transition-opacity"
             >
               <span className="text-3xl">
                 <img
@@ -152,15 +152,15 @@ const LoginPage = () => {
               </span>
               <span className="text-xl font-bold tracking-tight ">IES Edu</span>
             </Link>
-            <div className="max-w-md">
-              <h1 className="text-[#0077BE] text-5xl font-bold leading-tight mb-6">
+            {/* <div className="absolute bottom-20 max-w-md">
+              <h1 className="text-gray-800 text-5xl font-bold leading-tight mb-6">
                 Học tập không giới hạn cùng IES Edu
               </h1>
-              <p className="text-[#0077BE]/90 text-xl font-light">
+              <p className="text-gray-800/90 text-xl font-light">
                 Kiến tạo tương lai của bạn thông qua nền tảng học tập trực tuyến
                 hiện đại nhất.
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -170,7 +170,7 @@ const LoginPage = () => {
             {/* Mobile Logo */}
             <Link
               to="/"
-              className="lg:hidden flex items-center gap-2 mb-10 text-[#0077BE]"
+              className="lg:hidden flex items-center gap-2 mb-10 text-gray-800"
             >
               <span className="text-3xl">
                 <img
@@ -187,7 +187,7 @@ const LoginPage = () => {
               <div className="flex border-b border-gray-200 gap-8">
                 <Link
                   to="/login"
-                  className="flex flex-col items-center justify-center border-b-[3px] border-b-[#0077BE] text-[#0077BE] pb-[13px] pt-4 flex-1"
+                  className="flex flex-col items-center justify-center border-b-[3px] border-b-color-primary color-primary pb-[13px] pt-4 flex-1"
                 >
                   <p className="text-sm font-bold leading-normal tracking-[0.015em]">
                     Đăng nhập
@@ -195,7 +195,7 @@ const LoginPage = () => {
                 </Link>
                 <Link
                   to="/register"
-                  className="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-gray-500 pb-[13px] pt-4 flex-1 hover:text-[#0077BE] transition-colors"
+                  className="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-gray-500 pb-[13px] pt-4 flex-1 hover:color-primary transition-colors"
                 >
                   <p className="text-sm font-bold leading-normal tracking-[0.015em]">
                     Đăng ký
@@ -222,7 +222,7 @@ const LoginPage = () => {
                   Email
                 </label>
                 <input
-                  className={`w-full h-9 px-4 rounded-lg border ${errors.email ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#0077BE]"} focus:outline-none focus:ring-1 transition-all`}
+                  className={`w-full h-9 px-4 rounded-lg border ${errors.email ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#27A4F2]"} focus:outline-none focus:ring-1 transition-all`}
                   placeholder="email@example.com"
                   type="email"
                   value={email}
@@ -242,7 +242,7 @@ const LoginPage = () => {
                 </label>
                 <div className="relative">
                   <input
-                    className={`w-full h-9 px-4 pr-12 rounded-lg border ${errors.password ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#0077BE]"} focus:outline-none focus:ring-1 transition-all`}
+                    className={`w-full h-9 px-4 pr-12 rounded-lg border ${errors.password ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#27A4F2]"} focus:outline-none focus:ring-1 transition-all`}
                     placeholder="••••••••"
                     type={showPassword ? "text" : "password"}
                     value={password}
@@ -273,7 +273,7 @@ const LoginPage = () => {
               <div className="flex items-center justify-between mt-2">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
-                    className="w-4 h-4 rounded border-gray-200 text-[#0077BE] focus:ring-[#0077BE]"
+                    className="w-4 h-4 rounded border-gray-200 color-primary focus:ring-[#0077BE]"
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
@@ -283,7 +283,7 @@ const LoginPage = () => {
                   </span>
                 </label>
                 <Link
-                  className="text-sm font-medium text-[#0077BE] hover:underline"
+                  className="text-sm font-medium color-primary hover:underline"
                   to="/forgot-password"
                 >
                   Quên mật khẩu?
@@ -292,7 +292,7 @@ const LoginPage = () => {
 
               {/* Submit Button */}
               <button
-                className="w-full h-9 bg-[#0077BE] hover:bg-[#0077BE]/90 text-white font-bold rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full h-9 color-primary-bg hover:opacity-90 text-white font-bold rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 type="submit"
                 disabled={loading}
               >
@@ -364,7 +364,7 @@ const LoginPage = () => {
               <p className="text-gray-600 text-sm">
                 Chưa có tài khoản?{" "}
                 <Link
-                  className="text-[#0077BE] font-bold hover:underline"
+                  className="color-primary font-bold hover:underline"
                   to="/register"
                 >
                   Đăng ký ngay

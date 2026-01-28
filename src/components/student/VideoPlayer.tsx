@@ -118,7 +118,7 @@ const VideoPlayer = ({
         <div className="absolute inset-0 flex items-center justify-center">
           <button
             onClick={handlePlayClick}
-            className="flex size-20 items-center justify-center rounded-full bg-[#0077BE]/90 text-white shadow-xl hover:scale-110 transition-transform"
+            className="flex size-20 items-center justify-center rounded-full color-primary/90 text-white shadow-xl hover:scale-110 transition-transform"
           >
             <span className="material-symbols-outlined FILL text-[48px]">
               play_arrow
@@ -137,7 +137,7 @@ const VideoPlayer = ({
           onClick={handleProgressClick}
         >
           <div
-            className="h-full rounded-full bg-[#0077BE] transition-all"
+            className="h-full rounded-full color-primary transition-all"
             style={{ width: `${currentProgress}%` }}
           />
           <div className="size-3 rounded-full bg-white shadow-lg border-2 border-[#0077BE] -ml-1" />

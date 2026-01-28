@@ -1,15 +1,15 @@
-import { CiMail } from 'react-icons/ci';
-import { FaFacebookF, FaInstagram, FaYoutube } from 'react-icons/fa';
-import { IoIosCall } from 'react-icons/io';
+import { CiMail } from "react-icons/ci";
+import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
+import { IoIosCall } from "react-icons/io";
 import { FaLocationDot } from "react-icons/fa6";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
     <footer className="w-full bg-[#0f172a] text-white py-16 px-10">
       <div className="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
         <div className="col-span-1 md:col-span-1 flex flex-col gap-6">
-          <div className="flex items-center gap-2 text-[#0077BE]">
+          <div className="flex items-center gap-2 color-primary">
             <span className="text-4xl">
               <img
                 src="/logo-edu.png"
@@ -25,7 +25,7 @@ const Footer = () => {
           </p>
           <div className="flex gap-4">
             <Link
-              className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-[#0077BE] transition-colors"
+              className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:color-primary transition-colors"
               to="#"
             >
               <span className="material-symbols-outlined text-sm">
@@ -33,7 +33,7 @@ const Footer = () => {
               </span>
             </Link>
             <Link
-              className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-[#0077BE] transition-colors"
+              className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:color-primary transition-colors"
               to="#"
             >
               <span className="material-symbols-outlined text-sm">
@@ -41,7 +41,7 @@ const Footer = () => {
               </span>
             </Link>
             <Link
-              className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-[#0077BE] transition-colors"
+              className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:color-primary transition-colors"
               to="#"
             >
               <span className="material-symbols-outlined text-sm">
@@ -116,19 +116,19 @@ const Footer = () => {
           <h3 className="font-bold text-lg mb-6">Liên hệ</h3>
           <ul className="flex flex-col gap-4 text-gray-400 text-sm">
             <li className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-[#0077BE]">
+              <span className="material-symbols-outlined color-primary">
                 <CiMail />
               </span>
               infovienies@gmail.com
             </li>
             <li className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-[#0077BE]">
+              <span className="material-symbols-outlined color-primary">
                 <IoIosCall />
               </span>
               0965248115
             </li>
             <li className="flex items-start gap-3">
-              <span className="material-symbols-outlined text-[#0077BE]">
+              <span className="material-symbols-outlined color-primary">
                 <FaLocationDot />
               </span>
               <span>

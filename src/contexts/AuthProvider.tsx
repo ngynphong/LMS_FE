@@ -195,6 +195,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setIsAuthenticated(false);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    window.location.href = "/login";
   }, []);
 
   const forceLogout = useCallback(() => {

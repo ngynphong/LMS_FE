@@ -92,7 +92,7 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
 
     if (!showExplanation) {
       if (selectedOption === optionId) {
-        return `${baseClass} border-[#0077BE] bg-[#0077BE]/5`;
+        return `${baseClass} border-[#0077BE] color-primary`;
       }
       return `${baseClass} border-gray-200 hover:border-[#0077BE]/50 hover:bg-gray-50`;
     }
@@ -113,7 +113,7 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
   if (currentStep === "intro") {
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
-        <span className="material-symbols-outlined text-[64px] text-[#0077BE] mb-4">
+        <span className="material-symbols-outlined text-[64px] color-primary mb-4">
           quiz
         </span>
         <h3 className="text-xl font-bold text-[#1A2B3C] mb-2">{quiz.title}</h3>
@@ -123,7 +123,7 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
         </p>
         <button
           onClick={handleStartQuiz}
-          className="px-8 py-3 bg-[#0077BE] text-white font-bold rounded-lg hover:brightness-110 transition-all"
+          className="px-8 py-3 color-primary-bg text-white font-bold rounded-lg hover:opacity-80 transition-all"
         >
           Bắt đầu làm Quiz
         </button>
@@ -161,7 +161,7 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
           </div>
           <div className="flex justify-between text-xs text-gray-500 mt-1">
             <span>0%</span>
-            <span className="text-[#0077BE] font-medium">
+            <span className="color-primary font-medium">
               Đậu: {quiz.passingScore}%
             </span>
             <span>100%</span>
@@ -171,12 +171,12 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
         <div className="flex gap-4 justify-center">
           <button
             onClick={handleStartQuiz}
-            className="px-6 py-2 border-2 border-[#0077BE] text-[#0077BE] font-medium rounded-lg hover:bg-[#0077BE]/5 transition-all"
+            className="px-6 py-2 border-2 border-[#0077BE] color-primary font-medium rounded-lg hover:opacity-80 transition-all"
           >
             Làm lại
           </button>
           {result.passed && (
-            <button className="px-6 py-2 bg-[#0077BE] text-white font-medium rounded-lg hover:brightness-110 transition-all">
+            <button className="px-6 py-2 color-primary text-white font-medium rounded-lg hover:brightness-110 transition-all">
               Tiếp tục học
             </button>
           )}
@@ -200,7 +200,7 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
                 idx < currentQuestionIndex
                   ? "bg-emerald-500"
                   : idx === currentQuestionIndex
-                    ? "bg-[#0077BE] w-6"
+                    ? "color-primary w-6"
                     : "bg-gray-300"
               }`}
             />
@@ -224,7 +224,7 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
               <span
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
                   selectedOption === option.id
-                    ? "bg-[#0077BE] text-white"
+                    ? "color-primary text-white"
                     : "bg-gray-100 text-[#4A5568]"
                 }`}
               >
@@ -251,11 +251,11 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
         {showExplanation && currentQuestion.explanation && (
           <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
             <div className="flex items-start gap-2">
-              <span className="material-symbols-outlined text-[#0077BE]">
+              <span className="material-symbols-outlined color-primary">
                 lightbulb
               </span>
               <div>
-                <p className="font-medium text-[#0077BE] text-sm">Giải thích</p>
+                <p className="font-medium color-primary text-sm">Giải thích</p>
                 <p className="text-[#4A5568] text-sm mt-1">
                   {currentQuestion.explanation}
                 </p>
@@ -270,14 +270,14 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
           <button
             onClick={handleSubmitAnswer}
             disabled={!selectedOption}
-            className="px-6 py-2 bg-[#0077BE] text-white font-medium rounded-lg hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2 color-primary-bg text-white font-medium rounded-lg hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Xác nhận
           </button>
         ) : (
           <button
             onClick={handleNextQuestion}
-            className="px-6 py-2 bg-[#0077BE] text-white font-medium rounded-lg hover:brightness-110 transition-all flex items-center gap-2"
+            className="px-6 py-2 color-primary-bg text-white font-medium rounded-lg hover:opacity-80 transition-all flex items-center gap-2"
           >
             {isLastQuestion ? "Xem kết quả" : "Câu tiếp theo"}
             <span className="material-symbols-outlined text-[18px]">

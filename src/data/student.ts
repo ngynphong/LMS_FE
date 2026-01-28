@@ -3,7 +3,8 @@ import type { Student } from "../types/student";
 export const mockStudents: Student[] = [
   {
     id: '1',
-    name: 'Nguyễn Văn A',
+    firstName: 'Văn A',
+    lastName: 'Nguyễn',
     email: 'nguyenvana@email.com',
     urlImg: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
     status: 'active',
@@ -14,7 +15,8 @@ export const mockStudents: Student[] = [
   },
   {
     id: '2',
-    name: 'Trần Thị Ngọc',
+    firstName: 'Thị Ngọc',
+    lastName: 'Trần',
     email: 'tranthingoc@email.com',
     urlImg: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
     status: 'active',
@@ -25,7 +27,8 @@ export const mockStudents: Student[] = [
   },
   {
     id: '3',
-    name: 'Lê Văn Hùng',
+    firstName: 'Văn Hùng',
+    lastName: 'Lê',
     email: 'levanhung@email.com',
     urlImg: '',
     status: 'active',
@@ -36,7 +39,8 @@ export const mockStudents: Student[] = [
   },
   {
     id: '4',
-    name: 'Phạm Minh Anh',
+    firstName: 'Minh Anh',
+    lastName: 'Phạm',
     email: 'phamminhanh@email.com',
     urlImg: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
     status: 'inactive',
@@ -47,7 +51,8 @@ export const mockStudents: Student[] = [
   },
   {
     id: '5',
-    name: 'Quách Thanh Tùng',
+    firstName: 'Thanh Tùng',
+    lastName: 'Quách',
     email: 'quachthanhtung@email.com',
     urlImg: '',
     status: 'active',
@@ -58,7 +63,8 @@ export const mockStudents: Student[] = [
   },
   {
     id: '6',
-    name: 'Hoàng Thị Mai',
+    firstName: 'Thị Mai',
+    lastName: 'Hoàng',
     email: 'hoangthimai@email.com',
     urlImg: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face',
     status: 'active',
