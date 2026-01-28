@@ -9,7 +9,7 @@ import {
   FaChevronRight,
   FaTimes,
 } from "react-icons/fa";
-import { MdDashboard, MdLibraryBooks } from "react-icons/md";
+import { MdDashboard, MdLibraryBooks, MdQuiz } from "react-icons/md";
 import { useAuth } from "../../hooks/useAuth";
 import { ConfirmationModal } from "../common/ConfirmationModal";
 import { useState, useEffect } from "react";
@@ -40,6 +40,11 @@ const navItems: NavItem[] = [
     path: "/student/messages",
     icon: <FaEnvelope className="text-xl" />,
     label: "Tin nhắn",
+  },
+  {
+    path: "/student/quizzes",
+    icon: <MdQuiz className="text-xl" />,
+    label: "Bài kiểm tra",
   },
   {
     path: "/student/certificates",
