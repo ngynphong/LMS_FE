@@ -175,7 +175,7 @@ const ResetPasswordPage = () => {
                 "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBL-bY1tYY_F0tHLhwECNkQoQxSjoSenqDgVjh6zfzSJb9dfK4McqIbqfBAnE7fpOOdB1SVqzU7y3zk23LgXfCp_es6Jsg-ROjrbCo0Yo1XI9v_DWCRfiGUBdroSqlZ0cg9g94qkTVxpN7X4qkvjo0GUwdwWOp4TCUlwTDx1E4wLzWJXqTk8gTNh859n95hmrqlpTVoqzbxxpYXMxOcHpLr5c5t2b7FUr2OiDbY2Ntoh1DKxxBcOkuijJdD0kBteaEqwiUF3gnDXMdo')",
             }}
           ></div>
-          <div className="absolute inset-0 bg-[#0077BE]/75 flex flex-col items-center justify-center p-12 text-center">
+          <div className="absolute inset-0 color-primary/75 flex flex-col items-center justify-center p-12 text-center">
             <Link
               to="/"
               className="absolute top-10 left-10 flex items-center gap-2 text-white hover:opacity-90 transition-opacity"
@@ -206,7 +206,7 @@ const ResetPasswordPage = () => {
             {/* Mobile Logo */}
             <Link
               to="/"
-              className="lg:hidden flex items-center gap-2 mb-10 text-[#0077BE]"
+              className="lg:hidden flex items-center gap-2 mb-10 color-primary"
             >
               <span className="text-3xl">
                 <img
@@ -221,7 +221,7 @@ const ResetPasswordPage = () => {
             {/* Back Button */}
             <Link
               to="/forgot-password"
-              className="flex items-center gap-2 text-gray-600 hover:text-[#0077BE] transition-colors mb-8"
+              className="flex items-center gap-2 text-gray-600 hover:color-primary transition-colors mb-8"
             >
               <FaArrowLeft className="text-sm" />
               <span className="text-sm font-medium">Quay lại</span>
@@ -238,7 +238,7 @@ const ResetPasswordPage = () => {
               <p className="text-gray-500 text-xs mt-1">
                 Thời gian còn lại:{" "}
                 <span
-                  className={`font-bold ${timeLeft < 60 ? "text-red-500" : "text-[#0077BE]"}`}
+                  className={`font-bold ${timeLeft < 60 ? "text-red-500" : "color-primary"}`}
                 >
                   {formatTime(timeLeft)}
                 </span>
@@ -259,7 +259,7 @@ const ResetPasswordPage = () => {
                   maxLength={6}
                   value={otp}
                   onChange={(e) => handleOtpChange(e.target.value)}
-                  onBlur={handleOtpBlur}  
+                  onBlur={handleOtpBlur}
                   required
                 />
                 {errors.otp && touched.otp && (
@@ -339,7 +339,7 @@ const ResetPasswordPage = () => {
 
               {/* Submit Button */}
               <button
-                className="w-full h-9 bg-[#0077BE] hover:bg-[#0077BE]/90 text-white font-bold rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+                className="w-full h-9 color-primary-bg hover:opacity-90 text-white font-bold rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
                 type="submit"
                 disabled={isLoading || timeLeft <= 0}
               >
@@ -356,7 +356,7 @@ const ResetPasswordPage = () => {
               <p className="text-sm text-gray-600">
                 Không nhận được mã?{' '}
                 <button 
-                  className="text-[#0077BE] font-bold hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="color-primary font-bold hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={handleResendOTP}
                   disabled={timeLeft > 540} // Chỉ cho phép gửi lại sau 1 phút
                 >

@@ -24,7 +24,7 @@ const UnauthorizedPage = () => {
           </Link>
           <Link
             to="/login"
-            className="px-6 py-2.5 bg-[#0077BE] rounded-lg text-white font-medium hover:bg-[#0066a3] transition-colors"
+            className="px-6 py-2.5 color-primary rounded-lg text-white font-medium hover:bg-[#0066a3] transition-colors"
           >
             Đăng nhập lại
           </Link>

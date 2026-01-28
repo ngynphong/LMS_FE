@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { MdClose, MdWarning } from "react-icons/md";
 
 interface ConfirmationModalProps {
@@ -47,8 +48,8 @@ export const ConfirmationModal = ({
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+  return createPortal(
+    <div className="fixed inset-0 z-1000 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
@@ -124,6 +125,7 @@ export const ConfirmationModal = ({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };

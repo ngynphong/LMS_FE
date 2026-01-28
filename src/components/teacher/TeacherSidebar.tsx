@@ -1,5 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
-import { FaSignOutAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import {
+  FaSignOutAlt,
+  FaChevronLeft,
+  FaChevronRight,
+  FaTimes,
+} from "react-icons/fa";
 import {
   MdDashboard,
   MdLibraryBooks,
@@ -11,7 +16,7 @@ import { FaDatabase } from "react-icons/fa";
 import { IoPeople } from "react-icons/io5";
 import { useAuth } from "../../hooks/useAuth";
 import { ConfirmationModal } from "../common/ConfirmationModal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface NavItem {
   path: string;
@@ -60,14 +65,28 @@ const navItems: NavItem[] = [
 interface TeacherSidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
+  isMobileOpen?: boolean;
+  onMobileClose?: () => void;
 }
 
-const TeacherSidebar = ({ isCollapsed, onToggle }: TeacherSidebarProps) => {
+const TeacherSidebar = ({
+  isCollapsed,
+  onToggle,
+  isMobileOpen = false,
+  onMobileClose,
+}: TeacherSidebarProps) => {
   const location = useLocation();
   const { logout } = useAuth();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
+
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    if (onMobileClose) {
+      onMobileClose();
+    }
+  }, [location.pathname, onMobileClose]);
 
   const handleLogoutClick = () => {
     setIsLogoutModalOpen(true);
@@ -79,109 +98,164 @@ const TeacherSidebar = ({ isCollapsed, onToggle }: TeacherSidebarProps) => {
   };
 
   return (
-    <aside
-      className={`fixed inset-y-0 left-0 bg-white border-r border-[#dbe2e6] flex flex-col justify-between py-6 z-50 transition-all duration-300 ${
-        isCollapsed ? "w-20" : "w-64"
-      }`}
-    >
-      <div className="flex flex-col gap-8 relative">
-        {/* Toggle Button */}
-        <button
-          onClick={onToggle}
-          className="absolute -right-3 top-1 bg-white border border-[#dbe2e6] rounded-full p-1 text-gray-500 hover:text-[#0077BE] shadow-sm z-50 text-xs"
-        >
-          {isCollapsed ? <FaChevronRight /> : <FaChevronLeft />}
-        </button>
-
-        {/* Profile Section */}
+    <>
+      {/* Mobile Overlay */}
+      {isMobileOpen && (
         <div
-          className={`px-6 flex items-center gap-3 ${isCollapsed ? "justify-center px-2" : ""}`}
-        >
-          <div
-            className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-[#0b8eda]/20 shrink-0"
-            style={{
-              backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuDxzHGBuvCbcbT7_cVmyqt_jJ7NCJw2mxPGD66bp0OtXUigvQ8TGNcmtIZ5DZtmQaCXqeSV3YtcXZnQJrjarq2RE70oBSFDMaehH6RJw-5HZMewr30nWv8Dnu8AEITbjgPtPSa129dlh7aDtMW6nkazmBKzyHiKYSEQscd5sUh4NhVAgJSkwvETf9GuI1R-0pv8qqI0dR53X2sxOIQ6h_3Itp75g0oZP4sqs63EejNd-_fsFOZxYcevr0iU2NP9F5s42xDxXBtpTKQx")`,
-            }}
-          />
-          {!isCollapsed && (
-            <div className="flex flex-col whitespace-nowrap overflow-hidden">
-              <h1 className="text-[#111518] text-base font-bold leading-tight truncate">
-                Edu-LMS
-              </h1>
-              <p className="text-[#607b8a] text-xs font-medium truncate">
-                Giảng viên
-              </p>
+          className="fixed inset-0 bg-black/50 z-50 lg:hidden backdrop-blur-sm transition-opacity"
+          onClick={onMobileClose}
+        />
+      )}
+
+      <aside
+        className={`fixed inset-y-0 left-0 bg-white border-r border-gray-200 flex flex-col z-50 transition-all duration-300 transform
+              ${isMobileOpen ? "translate-x-0 w-64 shadow-2xl" : "-translate-x-full lg:translate-x-0"}
+              ${isCollapsed ? "lg:w-20" : "lg:w-64"}
+              overflow-y-auto overflow-x-hidden
+          `}
+      >
+        <div className="flex flex-col flex-1 min-h-0">
+          <div className="flex flex-col gap-6 relative flex-1">
+            {/* Mobile Close Button */}
+            <button
+              onClick={onMobileClose}
+              className="absolute right-4 top-4 lg:hidden text-gray-500 hover:text-gray-900 z-50"
+            >
+              <FaTimes className="text-xl" />
+            </button>
+
+            {/* Toggle Button */}
+            <button
+              onClick={onToggle}
+              className={
+                !isCollapsed
+                  ? "absolute right-1 top-10 bg-white p-1 text-gray-500 hover:color-primary hover:bg-gray-100 rounded-full text-xs hidden lg:block"
+                  : "hidden"
+              }
+            >
+              {isCollapsed ? <FaChevronRight /> : <FaChevronLeft />}
+            </button>
+
+            {/* Profile Section */}
+            <div
+              className={`px-6 pt-8 flex items-center gap-3 transition-all duration-300 ${
+                isCollapsed ? "lg:justify-center lg:px-2" : ""
+              }`}
+            >
+              <div
+                className={`bg-center bg-no-repeat bg-cover rounded-full border border-gray-100 shadow-sm shrink-0 transition-all duration-300 ${
+                  isCollapsed ? "size-10" : "size-12"
+                }`}
+                style={{
+                  backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuDxzHGBuvCbcbT7_cVmyqt_jJ7NCJw2mxPGD66bp0OtXUigvQ8TGNcmtIZ5DZtmQaCXqeSV3YtcXZnQJrjarq2RE70oBSFDMaehH6RJw-5HZMewr30nWv8Dnu8AEITbjgPtPSa129dlh7aDtMW6nkazmBKzyHiKYSEQscd5sUh4NhVAgJSkwvETf9GuI1R-0pv8qqI0dR53X2sxOIQ6h_3Itp75g0oZP4sqs63EejNd-_fsFOZxYcevr0iU2NP9F5s42xDxXBtpTKQx")`,
+                }}
+              />
+              {(!isCollapsed || isMobileOpen) && (
+                <div className="whitespace-nowrap overflow-hidden lg:block hidden">
+                  <h1 className="text-slate-900 text-base font-bold leading-tight truncate">
+                    IES Edu
+                  </h1>
+                  <p className="text-slate-500 text-xs font-medium truncate mt-0.5">
+                    Giảng viên
+                  </p>
+                </div>
+              )}
+              <div className="flex flex-col whitespace-nowrap overflow-hidden lg:hidden">
+                <h1 className="text-slate-900 text-base font-bold leading-tight truncate">
+                  IES Edu
+                </h1>
+                <p className="text-slate-500 text-xs font-medium truncate mt-0.5">
+                  Giảng viên
+                </p>
+              </div>
             </div>
-          )}
+
+            {/* Navigation */}
+            <nav className="flex-1 px-4 mt-2 overflow-y-auto custom-scrollbar">
+              <ul className="space-y-1.5">
+                {navItems.map((item) => (
+                  <li key={item.path}>
+                    <Link
+                      to={item.path}
+                      className={`flex items-center text-sm gap-3 transition-all rounded-lg ${
+                        isCollapsed ? "lg:justify-center lg:p-3" : "px-4 py-3"
+                      } ${
+                        isActive(item.path)
+                          ? "bg-blue-50 color-primary font-semibold shadow-sm"
+                          : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                      }`}
+                      title={isCollapsed ? item.label : ""}
+                    >
+                      <span
+                        className={`shrink-0 ${isActive(item.path) ? "color-primary" : "text-slate-400 group-hover:text-slate-600"}`}
+                      >
+                        {item.icon}
+                      </span>
+                      {(!isCollapsed || isMobileOpen) && (
+                        <span className="truncate lg:block hidden">
+                          {item.label}
+                        </span>
+                      )}
+                      <span className="truncate lg:hidden">{item.label}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+
+          <div
+            className={`p-4 mt-auto border-t border-gray-100 flex flex-col gap-3 bg-white ${
+              isCollapsed ? "lg:px-2 lg:items-center" : ""
+            }`}
+          >
+            {/* Create Course Button */}
+            <button
+              className={`color-primary-bg hover:opacity-90 text-white text-sm font-bold rounded-lg flex items-center justify-center transition-all shadow-md shadow-blue-200 ${
+                isCollapsed ? "lg:size-10 lg:p-0" : "w-full py-3 gap-2"
+              } w-full py-3 gap-2`}
+              title={isCollapsed ? "Tạo khóa học mới" : ""}
+            >
+              <span className="material-symbols-outlined text-xl">
+                add_circle
+              </span>
+              {(!isCollapsed || isMobileOpen) && (
+                <span className="lg:block hidden">Tạo khóa học mới</span>
+              )}
+              <span className="lg:hidden">Tạo khóa học mới</span>
+            </button>
+
+            {/* Logout Button */}
+            <button
+              onClick={handleLogoutClick}
+              className={`flex items-center text-sm text-red-500 hover:bg-red-50 transition-all rounded-md ${
+                isCollapsed
+                  ? "lg:justify-center lg:w-full lg:py-3"
+                  : "gap-3 px-6 py-3.5 w-full"
+              } gap-3 px-6 py-3.5 w-full`}
+              title={isCollapsed ? "Đăng xuất" : ""}
+            >
+              <FaSignOutAlt className="text-xl" />
+              {(!isCollapsed || isMobileOpen) && (
+                <span className="font-medium lg:block hidden">Đăng xuất</span>
+              )}
+              <span className="font-medium lg:hidden">Đăng xuất</span>
+            </button>
+          </div>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 mt-2">
-          <ul className="space-y-1">
-            {navItems.map((item) => (
-              <li key={item.path}>
-                <Link
-                  to={item.path}
-                  className={`flex items-center text-sm gap-3 transition-all ${
-                    isCollapsed ? "justify-center px-2 py-3.5" : "px-6 py-3.5"
-                  } ${
-                    isActive(item.path)
-                      ? "text-[#0077BE] bg-[#0077BE]/5 border-r-4 border-[#0077BE] font-semibold"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-[#0077BE]"
-                  } ${isCollapsed && isActive(item.path) ? "border-r-0 rounded-lg" : ""}`}
-                  title={isCollapsed ? item.label : ""}
-                >
-                  <span className="shrink-0">{item.icon}</span>
-                  {!isCollapsed && (
-                    <span className="truncate">{item.label}</span>
-                  )}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
-
-      <div
-        className={`px-6 flex flex-col gap-4 ${isCollapsed ? "px-2 items-center" : ""}`}
-      >
-        {/* Create Course Button - Icon only when collapsed */}
-        <button
-          className={`bg-[#0b8eda] hover:bg-[#0b8eda]/90 text-white text-sm font-bold rounded-md flex items-center justify-center transition-all ${
-            isCollapsed ? "size-10 p-0 rounded-full" : "w-full py-3 gap-2"
-          }`}
-          title={isCollapsed ? "Tạo khóa học mới" : ""}
-        >
-          <span className="material-symbols-outlined text-lg">add_circle</span>
-          {!isCollapsed && <span>Tạo khóa học mới</span>}
-        </button>
-
-        {/* Logout Button */}
-        <button
-          onClick={handleLogoutClick}
-          className={`flex items-center text-sm text-red-500 hover:bg-red-50 transition-all rounded-md ${
-            isCollapsed
-              ? "justify-center size-10 p-0"
-              : "gap-3 px-3 py-2.5 w-full"
-          }`}
-          title={isCollapsed ? "Đăng xuất" : ""}
-        >
-          <FaSignOutAlt className="text-xl" />
-          {!isCollapsed && <span className="font-medium">Đăng xuất</span>}
-        </button>
-      </div>
-
-      <ConfirmationModal
-        isOpen={isLogoutModalOpen}
-        onClose={() => setIsLogoutModalOpen(false)}
-        onConfirm={handleLogoutConfirm}
-        title="Đăng xuất"
-        message="Bạn có chắc chắn muốn đăng xuất không?"
-        confirmLabel="Đăng xuất"
-        cancelLabel="Hủy"
-        variant="danger"
-      />
-    </aside>
+        <ConfirmationModal
+          isOpen={isLogoutModalOpen}
+          onClose={() => setIsLogoutModalOpen(false)}
+          onConfirm={handleLogoutConfirm}
+          title="Đăng xuất"
+          message="Bạn có chắc chắn muốn đăng xuất không?"
+          confirmLabel="Đăng xuất"
+          cancelLabel="Hủy"
+          variant="danger"
+        />
+      </aside>
+    </>
   );
 };
 

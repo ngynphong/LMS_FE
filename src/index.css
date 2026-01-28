@@ -24,3 +24,11 @@ body {
 .material-symbols-outlined.FILL {
   font-variation-settings: 'FILL' 1;
 }
+
+.color-primary {
+  color: #27A4F2;
+}
+
+.color-primary-bg {
+  background-color: #27A4F2;
+}

@@ -12,28 +12,34 @@ interface Testimonial {
 const testimonials: Testimonial[] = [
   {
     id: 1,
-    name: 'Nguyễn Thị C',
-    role: 'Web Developer at TechCorp',
-    content: 'Khóa học tại EduBiển thực sự chất lượng, giảng viên hỗ trợ rất nhiệt tình và giáo trình sát với thực tế.',
+    name: "Nguyễn Thị C",
+    role: "Web Developer at TechCorp",
+    content:
+      "Khóa học tại EduBiển thực sự chất lượng, giảng viên hỗ trợ rất nhiệt tình và giáo trình sát với thực tế.",
     rating: 5,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuALNti7aymXiKX0TlrB2nTKflobYTAgvBV7vLhafEAPDTv7Ghvt4T_w0tWXHuJ9FoPGA8lgU7kwYuaUr6_5nBN0T2ldahG7ffkTrI6zs85o0qFQo9OPIfiKg7iftx6SCO3H8joiSg66_aWAwbtxNFvRPJyxHxaYzp6D9qaDETaSZsM7OmsNGlUy6xvpLOIJfFfeTNDpxTMbNvgHNWF2fYsmCN8lhH8I2-rgI0pS0Y3Yk0HuoCodTTa19jG4Q0eHdiu5cChXCd8ZflRU'
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuALNti7aymXiKX0TlrB2nTKflobYTAgvBV7vLhafEAPDTv7Ghvt4T_w0tWXHuJ9FoPGA8lgU7kwYuaUr6_5nBN0T2ldahG7ffkTrI6zs85o0qFQo9OPIfiKg7iftx6SCO3H8joiSg66_aWAwbtxNFvRPJyxHxaYzp6D9qaDETaSZsM7OmsNGlUy6xvpLOIJfFfeTNDpxTMbNvgHNWF2fYsmCN8lhH8I2-rgI0pS0Y3Yk0HuoCodTTa19jG4Q0eHdiu5cChXCd8ZflRU",
   },
   {
     id: 2,
-    name: 'Trần Minh K',
-    role: 'UI/UX Designer at CreativeHub',
-    content: 'Mình đã học được rất nhiều kỹ năng mới chỉ sau 3 tháng. Lộ trình bài bản giúp mình tự tin ứng tuyển vào công ty mơ ước.',
+    name: "Trần Minh K",
+    role: "UI/UX Designer at CreativeHub",
+    content:
+      "Mình đã học được rất nhiều kỹ năng mới chỉ sau 3 tháng. Lộ trình bài bản giúp mình tự tin ứng tuyển vào công ty mơ ước.",
     rating: 5,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDEAZNdV59tM24ZyPQtutC0DsV5iPwbbVXqNSv_xHTAvjCVZ5ZlvneBg51omybsDKWkby5kUM93hspPnxHgZehh7LJNIztxRzJhFZ33vuoXXL89PyUOS_psF0zAjL18LtaBAhygZCgCH9BFwbpu2deWXzvllQaHEQCshCMdDMPKaqwEsMmwO64FfoClwOdQZxE51g6EHCdGHYeUsBBP-xTEQcppjunDu7-4caPN4YQ6hXwfETM7F-OBYT42kXI_OcLC3GDTgGw8mhWu'
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuDEAZNdV59tM24ZyPQtutC0DsV5iPwbbVXqNSv_xHTAvjCVZ5ZlvneBg51omybsDKWkby5kUM93hspPnxHgZehh7LJNIztxRzJhFZ33vuoXXL89PyUOS_psF0zAjL18LtaBAhygZCgCH9BFwbpu2deWXzvllQaHEQCshCMdDMPKaqwEsMmwO64FfoClwOdQZxE51g6EHCdGHYeUsBBP-xTEQcppjunDu7-4caPN4YQ6hXwfETM7F-OBYT42kXI_OcLC3GDTgGw8mhWu",
   },
   {
     id: 3,
-    name: 'Phạm Hoàng L',
-    role: 'Data Analyst at VinaData',
-    content: 'Kiến thức thực chiến là điều mình thích nhất. Cảm ơn đội ngũ EduBiển đã luôn đồng hành và giải đáp thắc mắc.',
+    name: "Phạm Hoàng L",
+    role: "Data Analyst at VinaData",
+    content:
+      "Kiến thức thực chiến là điều mình thích nhất. Cảm ơn đội ngũ EduBiển đã luôn đồng hành và giải đáp thắc mắc.",
     rating: 5,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuACL2nv_p5u3u_0OSk3sgjJeysdu6hQEVPgCqcWA3ciFnrjlluPPYEMFuxrN4qcAiwyF8OUqMx_D_it5UL_r2DPDnf41O3kbR6F9QJxP-13kikxWVw6gu5jwx5T0tyZnqpI5h5baqVBfmTfdEnA4Nod5EFbst2YC7sfgcNDCmKWb8suYdje-7V2tKOopl5KkcXGM6G45pM5yDajEAOFKGc_D9b3egsowk31muJvze3FCLmfNdYX1CYYRvRLDjmTS2ICHLMUpIQ0IUog'
-  }
+    image:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuACL2nv_p5u3u_0OSk3sgjJeysdu6hQEVPgCqcWA3ciFnrjlluPPYEMFuxrN4qcAiwyF8OUqMx_D_it5UL_r2DPDnf41O3kbR6F9QJxP-13kikxWVw6gu5jwx5T0tyZnqpI5h5baqVBfmTfdEnA4Nod5EFbst2YC7sfgcNDCmKWb8suYdje-7V2tKOopl5KkcXGM6G45pM5yDajEAOFKGc_D9b3egsowk31muJvze3FCLmfNdYX1CYYRvRLDjmTS2ICHLMUpIQ0IUog",
+  },
 ];
 
 const TestimonialsSection = () => {
@@ -41,34 +47,48 @@ const TestimonialsSection = () => {
     <section className="bg-[#F8F9FA] py-24">
       <div className="max-w-[1280px] mx-auto px-10">
         <div className="text-center mb-16">
-          <span className="text-[#0077BE] font-bold tracking-widest text-sm uppercase">Cảm nhận từ học viên</span>
+          <span className="color-primary font-bold tracking-widest text-sm uppercase">
+            Cảm nhận từ học viên
+          </span>
           <h2 className="text-4xl font-extrabold text-gray-900 mt-2 max-w-3xl mx-auto">
             Hơn 10,000 học viên đã thay đổi tương lai cùng Edu LMS
           </h2>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((testimonial) => (
-            <div key={testimonial.id} className="bg-white p-8 rounded-3xl shadow-sm border border-gray-50 flex flex-col items-start hover:shadow-md transition-shadow">
+            <div
+              key={testimonial.id}
+              className="bg-white p-8 rounded-3xl shadow-sm border border-gray-50 flex flex-col items-start hover:shadow-md transition-shadow"
+            >
               <div className="flex items-center gap-4 mb-6">
-                <img 
-                  alt={testimonial.name} 
-                  className="w-16 h-16 rounded-full object-cover border-2 border-[#0077BE]/10" 
-                  src={testimonial.image} 
+                <img
+                  alt={testimonial.name}
+                  className="w-16 h-16 rounded-full object-cover border-2 border-[#0077BE]/10"
+                  src={testimonial.image}
                 />
                 <div>
-                  <h4 className="font-bold text-gray-900">{testimonial.name}</h4>
+                  <h4 className="font-bold text-gray-900">
+                    {testimonial.name}
+                  </h4>
                   <p className="text-xs text-gray-500">{testimonial.role}</p>
                 </div>
               </div>
-              
+
               <div className="flex text-yellow-400 mb-4">
                 {[...Array(testimonial.rating)].map((_, index) => (
-                  <span key={index} className="material-symbols-outlined text-[20px] FILL"><FaStar/></span>
+                  <span
+                    key={index}
+                    className="material-symbols-outlined text-[20px] FILL"
+                  >
+                    <FaStar />
+                  </span>
                 ))}
               </div>
-              
-              <p className="text-gray-600 leading-relaxed italic">"{testimonial.content}"</p>
+
+              <p className="text-gray-600 leading-relaxed italic">
+                "{testimonial.content}"
+              </p>
             </div>
           ))}
         </div>

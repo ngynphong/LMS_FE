@@ -13,6 +13,8 @@ interface LessonSidebarProps {
   currentLessonId: string;
   progress: CourseProgress;
   onLessonSelect: (lessonId: string) => void;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
 const LessonSidebar = ({
@@ -20,6 +22,8 @@ const LessonSidebar = ({
   currentLessonId,
   progress,
   onLessonSelect,
+  isOpen = false,
+  onClose,
 }: LessonSidebarProps) => {
   // Calculate lesson status based on progress and order
   const lessonItems: LessonListItem[] = useMemo(() => {
@@ -87,66 +91,88 @@ const LessonSidebar = ({
   };
 
   return (
-    <aside className="w-80 flex flex-col border-r border-gray-200 bg-white overflow-hidden">
-      {/* Header */}
-      <div className="p-5 border-b border-gray-100 bg-[#f5f7fa]">
-        <h1 className="text-base font-semibold text-[#1A2B3C]">
-          Nội dung khóa học
-        </h1>
-        <p className="mt-1 text-xs text-[#4A5568]">
-          Đã hoàn thành {completedCount}/{lessons.length} bài học
-        </p>
-      </div>
+    <>
+      {/* Mobile Overlay */}
+      <div
+        className={`fixed inset-0 bg-black/50 z-20 transition-opacity lg:hidden ${
+          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={onClose}
+      />
 
-      {/* Lessons List */}
-      <div className="flex-1 overflow-y-auto p-2">
-        <div className="space-y-1">
-          {lessonItems.map((lesson) => {
-            const isCurrent = lesson.status === "current";
-            const isLocked = lesson.status === "locked";
+      {/* Sidebar Content */}
+      <aside
+        className={`
+        fixed lg:static inset-y-0 left-0 z-30
+        w-80 flex flex-col border-r border-gray-200 bg-white overflow-hidden transition-transform duration-300
+        ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+      `}
+      >
+        {/* Header */}
+        <div className="p-5 border-b border-gray-100 bg-[#f5f7fa] flex justify-between items-center">
+          <div>
+            <h1 className="text-base font-semibold text-[#1A2B3C]">
+              Nội dung khóa học
+            </h1>
+            <p className="mt-1 text-xs text-[#4A5568]">
+              Đã hoàn thành {completedCount}/{lessons.length} bài học
+            </p>
+          </div>
+          <button onClick={onClose} className="lg:hidden text-gray-500">
+            <span className="material-symbols-outlined">close</span>
+          </button>
+        </div>
 
-            return (
-              <div
-                key={lesson.id}
-                onClick={() => handleLessonClick(lesson)}
-                className={`
+        {/* Lessons List */}
+        <div className="flex-1 overflow-y-auto p-2">
+          <div className="space-y-1">
+            {lessonItems.map((lesson) => {
+              const isCurrent = lesson.status === "current";
+              const isLocked = lesson.status === "locked";
+
+              return (
+                <div
+                  key={lesson.id}
+                  onClick={() => handleLessonClick(lesson)}
+                  className={`
                   group flex items-center gap-3 rounded-lg px-3 py-3 transition-colors
                   ${
                     isCurrent
-                      ? "bg-[#0077BE] shadow-md"
+                      ? "color-primary-bg shadow-md"
                       : isLocked
                         ? "opacity-50 cursor-not-allowed"
                         : "hover:bg-[#f5f7fa] cursor-pointer"
                   }
                 `}
-              >
-                {getStatusIcon(lesson.status)}
-                <div className="flex flex-col flex-1 min-w-0">
-                  <span
-                    className={`text-sm font-medium truncate ${
-                      isCurrent
-                        ? "text-white"
-                        : isLocked
-                          ? "text-gray-500"
-                          : "text-[#4A5568]"
-                    }`}
-                  >
-                    {lesson.title}
-                  </span>
-                  <span
-                    className={`text-[10px] ${
-                      isCurrent ? "text-white/80" : "text-gray-400"
-                    }`}
-                  >
-                    {lesson.duration || "--:--"}
-                  </span>
+                >
+                  {getStatusIcon(lesson.status)}
+                  <div className="flex flex-col flex-1 min-w-0">
+                    <span
+                      className={`text-sm font-medium truncate ${
+                        isCurrent
+                          ? "text-white"
+                          : isLocked
+                            ? "text-gray-500"
+                            : "text-[#4A5568]"
+                      }`}
+                    >
+                      {lesson.title}
+                    </span>
+                    <span
+                      className={`text-[10px] ${
+                        isCurrent ? "text-white/80" : "text-gray-400"
+                      }`}
+                    >
+                      {lesson.duration || "--:--"}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 };
 

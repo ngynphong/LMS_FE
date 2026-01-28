@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { FaEye, FaEyeSlash, FaGoogle } from 'react-icons/fa';
-import { FaFacebookF } from 'react-icons/fa6';
-import { useAuth } from '../../hooks/useAuth';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
+import { FaFacebookF } from "react-icons/fa6";
+import { useAuth } from "../../hooks/useAuth";
 // import { toast } from '../../components/common/Toast';
 
 const RegisterPage = () => {
@@ -12,12 +12,12 @@ const RegisterPage = () => {
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    dob: '',
-    roleName: 'STUDENT' // Default role
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    dob: "",
+    roleName: "STUDENT", // Default role
   });
 
   const validateEmail = (email: string): boolean => {
@@ -27,10 +27,10 @@ const RegisterPage = () => {
 
   const validatePassword = (password: string): string[] => {
     const errors: string[] = [];
-    if (password.length < 8) errors.push('Mật khẩu phải có ít nhất 8 ký tự');
+    if (password.length < 8) errors.push("Mật khẩu phải có ít nhất 8 ký tự");
     // if (!/[A-Z]/.test(password)) errors.push('Phải có ít nhất 1 chữ hoa');
-    if (!/[a-z]/.test(password)) errors.push('Phải có ít nhất 1 chữ thường');
-    if (!/[0-9]/.test(password)) errors.push('Phải có ít nhất 1 số');
+    if (!/[a-z]/.test(password)) errors.push("Phải có ít nhất 1 chữ thường");
+    if (!/[0-9]/.test(password)) errors.push("Phải có ít nhất 1 số");
     return errors;
   };
 
@@ -39,8 +39,11 @@ const RegisterPage = () => {
     const today = new Date();
     const age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
-    
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
       return age - 1 >= 13;
     }
     return age >= 13;
@@ -48,37 +51,39 @@ const RegisterPage = () => {
 
   const validateField = (name: string, value: string): string => {
     switch (name) {
-      case 'firstName':
-        return value.trim().length < 2 ? 'Tên phải có ít nhất 2 ký tự' : '';
-      case 'lastName':
-        return value.trim().length < 2 ? 'Họ phải có ít nhất 2 ký tự' : '';
-      case 'email':
-        return !validateEmail(value) ? 'Email không hợp lệ' : '';
-      case 'password':
+      case "firstName":
+        return value.trim().length < 2 ? "Tên phải có ít nhất 2 ký tự" : "";
+      case "lastName":
+        return value.trim().length < 2 ? "Họ phải có ít nhất 2 ký tự" : "";
+      case "email":
+        return !validateEmail(value) ? "Email không hợp lệ" : "";
+      case "password":
         const pwdErrors = validatePassword(value);
-        return pwdErrors.length > 0 ? pwdErrors[0] : '';
-      case 'dob':
-        if (!value) return 'Vui lòng chọn ngày sinh';
+        return pwdErrors.length > 0 ? pwdErrors[0] : "";
+      case "dob":
+        if (!value) return "Vui lòng chọn ngày sinh";
         const birthDate = new Date(value);
-        if (birthDate > new Date()) return 'Ngày sinh không được là tương lai';
-        return !validateAge(value) ? 'Bạn phải từ 13 tuổi trở lên' : '';
+        if (birthDate > new Date()) return "Ngày sinh không được là tương lai";
+        return !validateAge(value) ? "Bạn phải từ 13 tuổi trở lên" : "";
       default:
-        return '';
+        return "";
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors({
         ...errors,
-        [name]: ''
+        [name]: "",
       });
     }
   };
@@ -89,14 +94,14 @@ const RegisterPage = () => {
     if (error) {
       setErrors({
         ...errors,
-        [name]: error
+        [name]: error,
       });
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validate all fields
     const newErrors: Record<string, string> = {};
     Object.keys(formData).forEach((key) => {
@@ -105,7 +110,7 @@ const RegisterPage = () => {
     });
 
     if (!agreeToTerms) {
-      newErrors.terms = 'Bạn phải đồng ý với điều khoản và chính sách';
+      newErrors.terms = "Bạn phải đồng ý với điều khoản và chính sách";
     }
 
     setErrors(newErrors);
@@ -119,21 +124,22 @@ const RegisterPage = () => {
           formData.firstName,
           formData.lastName,
           formData.dob,
-          formData.roleName
+          formData.roleName,
         );
-        
+
         // Registration successful - toast is shown in auth context
         // Navigate to login or email verification page
         setTimeout(() => {
-          navigate('/login', { 
-            state: { 
-              message: 'Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.' 
-            } 
+          navigate("/login", {
+            state: {
+              message:
+                "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.",
+            },
           });
         }, 1000);
       } catch (err) {
         // Error is already handled in auth context
-        console.error('Registration error:', err);
+        console.error("Registration error:", err);
       }
     }
   };
@@ -145,8 +151,7 @@ const RegisterPage = () => {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=1073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+            backgroundImage: "url('/src/assets/img/bg-register.png')",
           }}
         ></div>
         <div className="absolute inset-0 backdrop-blur-[2px]"></div>
@@ -166,7 +171,7 @@ const RegisterPage = () => {
           {/* Mobile Logo */}
           <Link
             to="/"
-            className="md:hidden flex items-center gap-2 mb-6 text-[#0077BE]"
+            className="md:hidden flex items-center gap-2 mb-6 color-primary"
           >
             <span className="text-2xl">
               <img
@@ -183,7 +188,7 @@ const RegisterPage = () => {
             <div className="flex border-b border-gray-200 gap-8">
               <Link
                 to="/login"
-                className="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-gray-500 pb-[13px] pt-4 transition-colors hover:text-[#0077BE]"
+                className="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-gray-500 pb-[13px] pt-4 transition-colors hover:color-primary"
               >
                 <p className="text-sm font-bold leading-normal tracking-[0.015em]">
                   Đăng nhập
@@ -191,7 +196,7 @@ const RegisterPage = () => {
               </Link>
               <Link
                 to="/register"
-                className="flex flex-col items-center justify-center border-b-[3px] border-[#0077BE] text-gray-900 pb-[13px] pt-4"
+                className="flex flex-col items-center justify-center border-b-[3px] border-b-color-primary color-primary pb-[13px] pt-4"
               >
                 <p className="text-sm font-bold leading-normal tracking-[0.015em]">
                   Đăng ký
@@ -219,7 +224,7 @@ const RegisterPage = () => {
                   Họ
                 </label>
                 <input
-                  className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.lastName ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#0077BE]/50"} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 text-sm font-normal`}
+                  className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.lastName ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#27A4F2]"} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 text-sm font-normal`}
                   placeholder="Họ"
                   type="text"
                   name="lastName"
@@ -239,7 +244,7 @@ const RegisterPage = () => {
                   Tên
                 </label>
                 <input
-                  className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.firstName ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#0077BE]/50"} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 text-sm font-normal`}
+                  className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.firstName ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#27A4F2]"} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 text-sm font-normal`}
                   placeholder="Tên"
                   type="text"
                   name="firstName"
@@ -262,7 +267,7 @@ const RegisterPage = () => {
                 Email
               </label>
               <input
-                className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.email ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#0077BE]/50"} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 text-sm font-normal`}
+                className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.email ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#27A4F2]"} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 text-sm font-normal`}
                 placeholder="example@email.com"
                 type="email"
                 name="email"
@@ -283,7 +288,7 @@ const RegisterPage = () => {
                   Ngày sinh
                 </label>
                 <input
-                  className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.dob ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#0077BE]/50"} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 text-sm font-normal`}
+                  className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.dob ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#27A4F2]"} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 text-sm font-normal`}
                   type="date"
                   name="dob"
                   value={formData.dob}
@@ -300,7 +305,7 @@ const RegisterPage = () => {
                   Vai trò
                 </label>
                 <select
-                  className="form-select flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 focus:ring-[#0077BE]/50 border border-gray-200 bg-white h-9 px-3 py-2 text-sm font-normal"
+                  className="form-select flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 focus:ring-[#27A4F2] border border-gray-200 bg-white h-9 px-3 py-2 text-sm font-normal"
                   name="roleName"
                   value={formData.roleName}
                   onChange={handleChange}
@@ -319,7 +324,7 @@ const RegisterPage = () => {
               </label>
               <div className="relative">
                 <input
-                  className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.password ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#0077BE]/50"} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 pr-10 text-sm font-normal`}
+                  className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.password ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#27A4F2]"} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 pr-10 text-sm font-normal`}
                   placeholder="Nhập mật khẩu"
                   type={showPassword ? "text" : "password"}
                   name="password"
@@ -349,7 +354,7 @@ const RegisterPage = () => {
             <div className="flex flex-col gap-1">
               <div className="flex items-start gap-2 py-1">
                 <input
-                  className="h-4 w-4 mt-0.5 rounded border-gray-200 text-[#0077BE] focus:ring-[#0077BE] cursor-pointer"
+                  className="h-4 w-4 mt-0.5 rounded border-gray-200 color-primary focus:ring-[#27A4F2] cursor-pointer"
                   id="terms"
                   type="checkbox"
                   checked={agreeToTerms}
@@ -362,14 +367,14 @@ const RegisterPage = () => {
                 >
                   Tôi đồng ý với{" "}
                   <Link
-                    className="text-[#0077BE] font-bold hover:underline"
+                    className="color-primary font-bold hover:underline"
                     to="/terms"
                   >
                     Điều khoản
                   </Link>{" "}
                   và{" "}
                   <Link
-                    className="text-[#0077BE] font-bold hover:underline"
+                    className="color-primary font-bold hover:underline"
                     to="/privacy"
                   >
                     Chính sách bảo mật
@@ -383,7 +388,7 @@ const RegisterPage = () => {
 
             {/* Submit Button */}
             <button
-              className="w-full flex items-center justify-center rounded-lg h-10 px-5 bg-[#0077BE] text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-[#0066a3] transition-colors shadow-lg shadow-[#0077BE]/20 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center rounded-lg h-10 px-5 color-primary-bg text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-colors shadow-lg shadow-[#0077BE]/20 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
               type="submit"
               disabled={loading}
             >
@@ -451,7 +456,7 @@ const RegisterPage = () => {
           <p className="text-center text-xs text-gray-600">
             Đã có tài khoản?{" "}
             <Link
-              className="text-[#0077BE] font-bold hover:underline"
+              className="color-primary font-bold hover:underline"
               to="/login"
             >
               Đăng nhập

@@ -156,7 +156,7 @@ const PasswordChangeForm = () => {
 
       <div className="flex justify-end pt-4">
         <button
-          className="flex items-center justify-center min-w-[140px] px-6 py-3 rounded-lg bg-[#0077BE] text-white font-semibold hover:bg-[#0066a3] transition-all shadow-md shadow-[#0077BE]/20 disabled:opacity-70 disabled:cursor-not-allowed"
+          className="flex items-center justify-center min-w-[140px] px-6 py-3 rounded-lg color-primary text-white font-semibold hover:bg-[#0066a3] transition-all shadow-md shadow-[#0077BE]/20 disabled:opacity-70 disabled:cursor-not-allowed"
           type="submit"
           disabled={loading}
         >
@@ -236,8 +236,8 @@ const StudentProfilePage = () => {
     {
       id: 1,
       icon: <FaBook />,
-      iconBg: "bg-[#0077BE]/10",
-      iconColor: "text-[#0077BE]",
+      iconBg: "color-primary/10",
+      iconColor: "color-primary",
       title: "Đã tham gia khóa học Lập trình Web nâng cao",
       time: "2 giờ trước • Bài giảng #1",
     },
@@ -284,7 +284,7 @@ const StudentProfilePage = () => {
               {user?.role === "STUDENT" ? "Học viên" : "Người dùng"}
             </p>
           </div>
-          {/* <button className="w-full flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-[#0077BE] text-white text-sm font-bold hover:bg-[#0066a3] transition-colors">
+          {/* <button className="w-full flex items-center justify-center gap-2 rounded-lg h-10 px-4 color-primary text-white text-sm font-bold hover:bg-[#0066a3] transition-colors">
             <FaUpload className="text-sm" />
             <span>Tải ảnh lên</span>
           </button> */}
@@ -297,7 +297,7 @@ const StudentProfilePage = () => {
               onClick={() => setActiveTab("info")}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                 activeTab === "info"
-                  ? "bg-[#0077BE]/10 text-[#0077BE] font-semibold"
+                  ? "color-primary/10 color-primary font-semibold"
                   : "text-gray-700 hover:bg-gray-50"
               }`}
             >
@@ -308,7 +308,7 @@ const StudentProfilePage = () => {
               onClick={() => setActiveTab("password")}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                 activeTab === "password"
-                  ? "bg-[#0077BE]/10 text-[#0077BE] font-semibold"
+                  ? "color-primary/10 color-primary font-semibold"
                   : "text-gray-700 hover:bg-gray-50"
               }`}
             >
@@ -319,7 +319,7 @@ const StudentProfilePage = () => {
               onClick={() => setActiveTab("payment")}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                 activeTab === "payment"
-                  ? "bg-[#0077BE]/10 text-[#0077BE] font-semibold"
+                  ? "color-primary/10 color-primary font-semibold"
                   : "text-gray-700 hover:bg-gray-50"
               }`}
             >
@@ -330,7 +330,7 @@ const StudentProfilePage = () => {
               onClick={() => setActiveTab("certificates")}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                 activeTab === "certificates"
-                  ? "bg-[#0077BE]/10 text-[#0077BE] font-semibold"
+                  ? "color-primary/10 color-primary font-semibold"
                   : "text-gray-700 hover:bg-gray-50"
               }`}
             >
@@ -455,7 +455,7 @@ const StudentProfilePage = () => {
               </div>
               <div className="flex justify-end pt-4">
                 <button
-                  className="flex items-center justify-center min-w-[140px] px-6 py-3 rounded-lg bg-[#0077BE] text-white font-semibold hover:bg-[#0066a3] transition-all shadow-md shadow-[#0077BE]/20"
+                  className="flex items-center justify-center min-w-[140px] px-6 py-3 rounded-lg color-primary text-white font-semibold hover:bg-[#0066a3] transition-all shadow-md shadow-[#0077BE]/20"
                   type="submit"
                 >
                   Lưu thay đổi
@@ -487,7 +487,7 @@ const StudentProfilePage = () => {
             </h3>
             <Link
               to="/student/dashboard"
-              className="text-[#0077BE] text-sm font-medium hover:underline"
+              className="color-primary text-sm font-medium hover:underline"
             >
               Xem tất cả
             </Link>

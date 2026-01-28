@@ -7,10 +7,14 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
+const Pagination = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: PaginationProps) => {
   const renderPageNumbers = () => {
     const pages = [];
-    
+
     // Always show first page
     pages.push(
       <button
@@ -18,42 +22,50 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
         onClick={() => onPageChange(1)}
         className={`flex size-7 items-center justify-center rounded-lg font-bold transition-colors ${
           currentPage === 1
-            ? 'bg-[#0077BE] text-white'
-            : 'border border-gray-100 hover:bg-gray-100'
+            ? "color-primary-bg text-white"
+            : "border border-gray-100 hover:bg-gray-100"
         }`}
       >
         1
-      </button>
+      </button>,
     );
 
     // Show ellipsis if needed after first page
     if (currentPage > 3) {
       pages.push(
-        <span key="ellipsis-start" className="px-2 text-gray-500">...</span>
+        <span key="ellipsis-start" className="px-2 text-gray-500">
+          ...
+        </span>,
       );
     }
 
     // Show current page and neighbors
-    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+    for (
+      let i = Math.max(2, currentPage - 1);
+      i <= Math.min(totalPages - 1, currentPage + 1);
+      i++
+    ) {
       pages.push(
         <button
           key={i}
           onClick={() => onPageChange(i)}
           className={`flex size-10 items-center justify-center rounded-lg font-bold transition-colors ${
             currentPage === i
-              ? 'bg-[#0077BE] text-white'
-              : 'border border-gray-100 hover:bg-gray-100'
+              ? "color-primary-bg text-white"
+              : "border border-gray-100 hover:bg-gray-100"
           }`}
         >
           {i}
-        </button>
+        </button>,
       );
     }
 
     // Show ellipsis if needed before last page
     if (currentPage < totalPages - 2) {
       pages.push(
-        <span key="ellipsis-end" className="px-2 text-gray-500">...</span>
+        <span key="ellipsis-end" className="px-2 text-gray-500">
+          ...
+        </span>,
       );
     }
 
@@ -65,12 +77,12 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
           onClick={() => onPageChange(totalPages)}
           className={`flex size-10 items-center justify-center rounded-lg font-bold transition-colors ${
             currentPage === totalPages
-              ? 'bg-[#0077BE] text-white'
-              : 'border border-gray-100 hover:bg-gray-100'
+              ? "color-primary-bg text-white"
+              : "border border-gray-100 hover:bg-gray-100"
           }`}
         >
           {totalPages}
-        </button>
+        </button>,
       );
     }
 

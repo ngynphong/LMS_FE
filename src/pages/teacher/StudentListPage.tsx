@@ -89,7 +89,7 @@ const StudentListPage = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-[#101518] text-2xl font-bold tracking-tight">
             Quản lý học viên
@@ -100,7 +100,7 @@ const StudentListPage = () => {
         </div>
         <button
           onClick={() => setIsImportModalOpen(true)}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#0074bd] text-white text-sm font-bold shadow-sm hover:bg-[#0074bd]/90 transition-all"
+          className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-[#0074bd] text-white text-sm font-bold shadow-sm hover:bg-[#0074bd]/90 transition-all w-full sm:w-auto"
         >
           <span className="material-symbols-outlined text-lg">upload_file</span>
           Nhập học sinh
@@ -143,7 +143,8 @@ const StudentListPage = () => {
       {/* Student Table */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left">
+          <table className="w-full text-left min-w-[800px]">
+            {/* Added min-w-[800px] to ensure table doesn't squash on mobile */}
             <thead className="bg-slate-50">
               <tr>
                 <th className="px-6 py-4 text-slate-500 text-xs font-bold uppercase tracking-wider">
@@ -173,7 +174,7 @@ const StudentListPage = () => {
               {loading ? (
                 <tr>
                   <td
-                    colSpan={5}
+                    colSpan={7}
                     className="px-6 py-8 text-center text-slate-500"
                   >
                     Loading...
@@ -245,7 +246,7 @@ const StudentListPage = () => {
               ) : (
                 <tr>
                   <td
-                    colSpan={5}
+                    colSpan={7}
                     className="px-6 py-8 text-center text-slate-500"
                   >
                     Chưa có dữ liệu học viên
@@ -257,7 +258,7 @@ const StudentListPage = () => {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-end px-6 border-t border-slate-100">
+        <div className="flex items-center justify-end px-6 border-t border-slate-100 py-4">
           <Pagination
             currentPage={page}
             totalPages={totalPages}
