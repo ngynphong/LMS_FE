@@ -191,7 +191,7 @@ const LoginPage = () => {
               <div className="flex border-b border-gray-200 gap-8">
                 <Link
                   to="/login"
-                  className="flex flex-col items-center justify-center border-b-[3px] border-b-color-primary color-primary pb-[13px] pt-4 flex-1"
+                  className="flex flex-col items-center justify-center border-b-[3px] border-[#1E90FF] color-primary pb-[13px] pt-4 flex-1"
                 >
                   <p className="text-sm font-bold leading-normal tracking-[0.015em]">
                     Đăng nhập

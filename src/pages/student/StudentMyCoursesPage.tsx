@@ -50,8 +50,8 @@ const StudentMyCoursesPage = () => {
             onClick={() => setActiveTab("in_progress")}
             className={`flex flex-col items-center justify-center pb-3 pt-4 px-2 transition-colors whitespace-nowrap ${
               activeTab === "in_progress"
-                ? "border-b-4 border-b-color-primary color-primary"
-                : "border-b-4 border-transparent text-slate-500 hover:text-[#111518]"
+                ? "border-b-4 border-[#1E90FF] color-primary"
+                : "border-b-4 border-transparent text-slate-500 hover:text-[#1E90FF]"
             }`}
           >
             <p className="text-sm font-bold tracking-wide">Đang học</p>
@@ -60,8 +60,8 @@ const StudentMyCoursesPage = () => {
             onClick={() => setActiveTab("completed")}
             className={`flex flex-col items-center justify-center pb-3 pt-4 px-2 transition-colors whitespace-nowrap ${
               activeTab === "completed"
-                ? "border-b-4 border-b-color-primary color-primary"
-                : "border-b-4 border-transparent text-slate-500 hover:text-[#111518]"
+                ? "border-b-4 border-[#1E90FF] color-primary"
+                : "border-b-4 border-transparent text-slate-500 hover:text-[#1E90FF]"
             }`}
           >
             <p className="text-sm font-bold tracking-wide">Đã hoàn thành</p>
@@ -70,8 +70,8 @@ const StudentMyCoursesPage = () => {
             onClick={() => setActiveTab("favorite")}
             className={`flex flex-col items-center justify-center pb-3 pt-4 px-2 transition-colors whitespace-nowrap ${
               activeTab === "favorite"
-                ? "border-b-4 border-b-color-primary color-primary"
-                : "border-b-4 border-transparent text-slate-500 hover:text-[#111518]"
+                ? "border-b-4 border-[#1E90FF] color-primary"
+                : "border-b-4 border-transparent text-slate-500 hover:text-[#1E90FF]"
             }`}
           >
             <p className="text-sm font-bold tracking-wide">Yêu thích</p>

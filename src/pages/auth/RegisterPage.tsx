@@ -202,7 +202,7 @@ const RegisterPage = () => {
               </Link>
               <Link
                 to="/register"
-                className="flex flex-col items-center justify-center border-b-[3px] border-b-color-primary color-primary pb-[13px] pt-4"
+                className="flex flex-col items-center justify-center border-b-[3px] border-[#1E90FF] color-primary pb-[13px] pt-4"
               >
                 <p className="text-sm font-bold leading-normal tracking-[0.015em]">
                   Đăng ký
@@ -437,7 +437,6 @@ const RegisterPage = () => {
               Hoặc đăng ký bằng
             </span>
           </div>
-
 
           {/* Footer Link */}
           <p className="text-center text-xs text-gray-600">

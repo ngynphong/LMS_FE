@@ -327,8 +327,8 @@ const CourseLearningPage = () => {
                     onClick={() => setActiveTab(tab.id as TabType)}
                     className={`relative pb-3 text-sm font-medium transition-colors whitespace-nowrap shrink-0 ${
                       activeTab === tab.id
-                        ? "border-b-2 border-b-color-primary color-primary font-semibold"
-                        : "text-[#4A5568] hover:text-[#1A2B3C]"
+                        ? "border-b-2 border-[#1E90FF] color-primary font-semibold"
+                        : "text-[#4A5568] hover:text-[#1E90FF]"
                     }`}
                   >
                     {tab.label}
