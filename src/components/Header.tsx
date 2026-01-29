@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import { IoAppsOutline, IoSchool, IoMenu, IoClose } from "react-icons/io5";
-import { CiMail } from "react-icons/ci";
-import { IoIosCall } from "react-icons/io";
 import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
+import { PhoneCall } from "./animate-ui/icons/phone-call";
+import { Mail } from "./animate-ui/icons/mail";
 
 const Header = () => {
   const { user } = useAuth();
@@ -34,13 +34,13 @@ const Header = () => {
         <div className="hidden md:flex gap-6 items-center">
           <span className="flex items-center gap-1">
             <span className="material-symbols-outlined text-[14px]">
-              <IoIosCall />
+              <PhoneCall animateOnHover size={18} />
             </span>{" "}
             (+84) 096 524 8115
           </span>
           <span className="flex items-center gap-1">
             <span className="material-symbols-outlined text-[14px]">
-              <CiMail />
+              <Mail animateOnHover animation="shake" size={18} />
             </span>{" "}
             infovienies@gmail.com
           </span>
@@ -216,7 +216,7 @@ const Header = () => {
           </div>
 
           <div className="p-4 border-t border-gray-300">
-            <button className="w-full px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-[#0077BE]/20 active:scale-95 transition-transform">
+            <button className="w-full color-primary-bg text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-[#0077BE]/20 active:scale-95 transition-transform">
               <span className="material-symbols-outlined">
                 <IoSchool />
               </span>{" "}

@@ -44,13 +44,13 @@ const StudentDashboardPage = () => {
   const getGreeting = (): string => {
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 12) {
-      return "🌄 Good Morning";
+      return "☀️ Chào buổi sáng";
     } else if (hour >= 12 && hour < 18) {
-      return "🌇 Good Afternoon";
+      return "🌇 Chào buổi chiều";
     } else if (hour >= 18 && hour < 22) {
-      return "🌆 Good Evening";
+      return "🌆 Chào buổi tối";
     } else {
-      return "🌃 Good Night";
+      return "🌕 Chúc ngủ ngon";
     }
   };
 

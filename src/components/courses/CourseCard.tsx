@@ -13,7 +13,7 @@ interface StudentCourseProps {
   duration?: string;
   rating: number;
   reviews?: number;
-  price: string;
+  instructor?: string;
 }
 
 // Props for teacher variant (uses course object)
@@ -31,7 +31,7 @@ const CourseCard = (props: CourseCardProps) => {
   // Teacher variant status config
   const statusConfig = {
     published: {
-      label: "Đang bán",
+      label: "Đã xuất bản",
       className: "bg-green-100 text-green-700",
     },
     draft: {
@@ -81,8 +81,8 @@ const CourseCard = (props: CourseCardProps) => {
             </div>
           </div>
 
-          {/* Rating & Revenue */}
-          <div className="flex items-center justify-between text-sm mb-4">
+          {/* Rating */}
+          <div className="flex items-center text-sm mb-4">
             <div className="flex items-center gap-1">
               <span
                 className="material-symbols-outlined text-amber-500 text-base"
@@ -94,7 +94,6 @@ const CourseCard = (props: CourseCardProps) => {
                 {course.rating}
               </span>
             </div>
-            <span className="font-bold text-[#0074bd]">{course.revenue}</span>
           </div>
 
           {/* Actions */}
@@ -118,7 +117,7 @@ const CourseCard = (props: CourseCardProps) => {
   }
 
   // Student variant (default) - uses spread props
-  const { id, title, category, image, duration, rating, reviews, price } =
+  const { id, title, category, image, duration, rating, reviews, instructor } =
     props as StudentCourseProps;
 
   return (
@@ -129,7 +128,7 @@ const CourseCard = (props: CourseCardProps) => {
           src={image}
           alt={title}
         />
-        <div className="absolute top-3 left-3 color-primary text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider">
+        <div className="absolute top-3 left-3 color-primary-bg text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider">
           {category}
         </div>
       </div>
@@ -146,9 +145,11 @@ const CourseCard = (props: CourseCardProps) => {
           {rating} ({reviews})
         </div>
         <div className="flex items-center justify-between mt-2 pt-4 border-t border-gray-100">
-          <span className="color-primary font-bold text-lg">{price}</span>
+          {instructor && (
+            <span className="text-gray-600 text-sm">GV: {instructor}</span>
+          )}
           <Link
-            className="color-primary text-sm font-bold hover:underline"
+            className="color-primary text-sm font-bold hover:underline ml-auto"
             to={`/courses/${id}`}
           >
             Xem chi tiết

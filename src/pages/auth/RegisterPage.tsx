@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
-import { FaFacebookF } from "react-icons/fa6";
+import { FaEye, FaEyeSlash} from "react-icons/fa";
 import { useAuth } from "../../hooks/useAuth";
 // import { toast } from '../../components/common/Toast';
 
@@ -151,7 +150,7 @@ const RegisterPage = () => {
         <div
           className="absolute inset-0 bg-contain bg-no-repeat bg-center"
           style={{
-            backgroundImage: "url('/src/assets/img/register.png')",
+            backgroundImage: "url('/img/register.png')",
             backgroundSize: "80%",
           }}
         ></div>
@@ -439,25 +438,6 @@ const RegisterPage = () => {
             </span>
           </div>
 
-          {/* Social Buttons */}
-          <div className="flex gap-3 mb-5">
-            <button
-              type="button"
-              className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-lg h-10 hover:bg-gray-50 transition-colors"
-            >
-              <FaGoogle className="w-4 h-4 text-[#4285F4]" />
-              <span className="text-xs font-medium text-gray-900">Google</span>
-            </button>
-            <button
-              type="button"
-              className="flex-1 flex items-center justify-center gap-2 border border-gray-200 rounded-lg h-10 hover:bg-gray-50 transition-colors"
-            >
-              <FaFacebookF className="w-4 h-4 text-[#1877F2]" />
-              <span className="text-xs font-medium text-gray-900">
-                Facebook
-              </span>
-            </button>
-          </div>
 
           {/* Footer Link */}
           <p className="text-center text-xs text-gray-600">

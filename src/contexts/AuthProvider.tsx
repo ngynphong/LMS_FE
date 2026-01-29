@@ -253,7 +253,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         }
       } else {
         // Schedule refresh
-        refreshTimeout = setTimeout(async () => {
+        refreshTimeout = window.setTimeout(async () => {
           console.log("Thực hiện làm mới token theo lịch trình...");
           try {
             // Get the latest token from storage just in case

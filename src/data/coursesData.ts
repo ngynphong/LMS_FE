@@ -6,7 +6,7 @@ export interface CourseData {
   duration: string;
   rating: number;
   reviews: number;
-  price: string;
+  instructor: string;
 }
 
 
@@ -19,7 +19,7 @@ const coursesData: CourseData[] = [
     duration: '24 giờ học',
     rating: 4.9,
     reviews: 1200,
-    price: '499.000đ'
+    instructor: 'ThS. Lê Thị D'
   },
   {
     id: 2,
@@ -29,7 +29,7 @@ const coursesData: CourseData[] = [
     duration: '45 giờ học',
     rating: 4.8,
     reviews: 856,
-    price: '850.000đ'
+    instructor: 'TS. Trần Văn B'
   },
   {
     id: 3,
@@ -39,7 +39,7 @@ const coursesData: CourseData[] = [
     duration: '18 giờ học',
     rating: 4.7,
     reviews: 540,
-    price: 'Miễn phí'
+    instructor: 'Ms. Phương Linh'
   },
   {
     id: 4,
@@ -49,7 +49,7 @@ const coursesData: CourseData[] = [
     duration: '32 giờ học',
     rating: 4.9,
     reviews: 432,
-    price: '550.000đ'
+    instructor: 'Kỹ sư. Nguyễn An'
   },
   {
     id: 5,
@@ -59,7 +59,7 @@ const coursesData: CourseData[] = [
     duration: '28 giờ học',
     rating: 4.6,
     reviews: 210,
-    price: '720.000đ'
+    instructor: 'TS. Phạm Minh H'
   },
   {
     id: 6,
@@ -69,7 +69,7 @@ const coursesData: CourseData[] = [
     duration: '50 giờ học',
     rating: 4.9,
     reviews: 2400,
-    price: '1.200.000đ'
+    instructor: 'Mr. Smith'
   }
 ];
 

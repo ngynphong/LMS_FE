@@ -56,7 +56,7 @@ const ForgotPasswordPage = () => {
           <div
             className="absolute inset-0 bg-contain bg-no-repeat bg-center"
             style={{
-              backgroundImage: "url('/src/assets/img/forgot-password.png')",
+              backgroundImage: "url('/img/forgot-password.png')",
               backgroundSize: "80%",
             }}
           ></div>

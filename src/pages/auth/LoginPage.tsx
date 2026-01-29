@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
-import { FaFacebookF } from "react-icons/fa6";
+import {
+  FaEye,
+  FaEyeSlash,
+  // FaGoogle
+} from "react-icons/fa";
+// import { FaFacebookF } from "react-icons/fa6";
 import { useAuth } from "../../hooks/useAuth";
 import { toast } from "../../components/common/Toast";
 
@@ -107,24 +111,24 @@ const LoginPage = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    const OAuthConfig = {
-      redirectUri: import.meta.env.VITE_GOOGLE_REDIRECT_URI,
-      authUri: import.meta.env.VITE_AUTH_URI,
-      clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-    };
+  // const handleGoogleLogin = () => {
+  //   const OAuthConfig = {
+  //     redirectUri: import.meta.env.VITE_GOOGLE_REDIRECT_URI,
+  //     authUri: import.meta.env.VITE_AUTH_URI,
+  //     clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+  //   };
 
-    const callbackUrl = OAuthConfig.redirectUri;
-    const authUrl = OAuthConfig.authUri;
-    const googleClientId = OAuthConfig.clientId;
+  //   const callbackUrl = OAuthConfig.redirectUri;
+  //   const authUrl = OAuthConfig.authUri;
+  //   const googleClientId = OAuthConfig.clientId;
 
-    const googleAuthUrl = `${authUrl}?redirect_uri=${encodeURIComponent(
-      callbackUrl,
-    )}&response_type=code&client_id=${googleClientId}&scope=openid%20email%20profile`;
+  //   const googleAuthUrl = `${authUrl}?redirect_uri=${encodeURIComponent(
+  //     callbackUrl,
+  //   )}&response_type=code&client_id=${googleClientId}&scope=openid%20email%20profile`;
 
-    // Chuyển hướng người dùng
-    window.location.href = googleAuthUrl;
-  };
+  //   // Chuyển hướng người dùng
+  //   window.location.href = googleAuthUrl;
+  // };
 
   return (
     <main className="flex h-screen w-full">
@@ -134,7 +138,7 @@ const LoginPage = () => {
           <div
             className="absolute inset-0 bg-contain bg-no-repeat bg-center"
             style={{
-              backgroundImage: "url('/src/assets/img/login.png')",
+              backgroundImage: "url('/img/login.png')",
               backgroundSize: "80%",
             }}
           ></div>
@@ -170,7 +174,7 @@ const LoginPage = () => {
             {/* Mobile Logo */}
             <Link
               to="/"
-              className="lg:hidden flex items-center gap-2 mb-10 text-gray-800"
+              className="lg:hidden flex items-center gap-2 mt-2 color-primary"
             >
               <span className="text-3xl">
                 <img
@@ -327,7 +331,7 @@ const LoginPage = () => {
             </form>
 
             {/* Social Login */}
-            <div className="mt-8">
+            {/* <div className="mt-8">
               <div className="relative flex items-center justify-center mb-6">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-gray-200"></div>
@@ -338,7 +342,7 @@ const LoginPage = () => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <button
-                  onClick={handleGoogleLogin}
+                  // onClick={handleGoogleLogin}
                   type="button"
                   className="flex items-center justify-center gap-3 h-11 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                 >
@@ -357,7 +361,7 @@ const LoginPage = () => {
                   </span>
                 </button>
               </div>
-            </div>
+            </div> */}
 
             {/* Sign Up Link */}
             <div className="mt-10 text-center">

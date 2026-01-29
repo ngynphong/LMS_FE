@@ -1,10 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import {
-  FaSignOutAlt,
-  FaChevronLeft,
-  FaChevronRight,
-  FaTimes,
-} from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
 import {
   MdDashboard,
   MdLibraryBooks,
@@ -17,6 +12,9 @@ import { IoPeople } from "react-icons/io5";
 import { useAuth } from "../../hooks/useAuth";
 import { ConfirmationModal } from "../common/ConfirmationModal";
 import { useState, useEffect } from "react";
+import { ChevronLeft } from "../animate-ui/icons/chevron-left";
+import { ChevronRight } from "../animate-ui/icons/chevron-right";
+import { LogOut } from "../animate-ui/icons/log-out";
 
 interface NavItem {
   path: string;
@@ -133,7 +131,11 @@ const TeacherSidebar = ({
                   : "hidden"
               }
             >
-              {isCollapsed ? <FaChevronRight /> : <FaChevronLeft />}
+              {isCollapsed ? (
+                <ChevronRight animateOnHover animation="path-loop" size={14} />
+              ) : (
+                <ChevronLeft animateOnHover animation="path-loop" size={14} />
+              )}
             </button>
 
             {/* Profile Section */}
@@ -228,14 +230,12 @@ const TeacherSidebar = ({
             {/* Logout Button */}
             <button
               onClick={handleLogoutClick}
-              className={`flex items-center text-sm text-red-500 hover:bg-red-50 transition-all rounded-md ${
-                isCollapsed
-                  ? "lg:justify-center lg:w-full lg:py-3"
-                  : "gap-3 px-6 py-3.5 w-full"
-              } gap-3 px-6 py-3.5 w-full`}
+              className={`flex items-center justify-center text-sm text-red-500 hover:bg-red-50 hover:text-red-600 hover:cursor-pointer transition-all rounded-lg ${
+                isCollapsed ? "lg:size-10 lg:p-0" : "gap-2 px-3 py-2.5 w-full"
+              }`}
               title={isCollapsed ? "Đăng xuất" : ""}
             >
-              <FaSignOutAlt className="text-xl" />
+              <LogOut animateOnHover size={18} />
               {(!isCollapsed || isMobileOpen) && (
                 <span className="font-medium lg:block hidden">Đăng xuất</span>
               )}

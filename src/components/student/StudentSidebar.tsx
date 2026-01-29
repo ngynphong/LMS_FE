@@ -4,15 +4,17 @@ import {
   FaCalendar,
   FaEnvelope,
   FaCog,
-  FaSignOutAlt,
-  FaChevronLeft,
-  FaChevronRight,
   FaTimes,
 } from "react-icons/fa";
-import { MdDashboard, MdLibraryBooks, MdQuiz } from "react-icons/md";
 import { useAuth } from "../../hooks/useAuth";
 import { ConfirmationModal } from "../common/ConfirmationModal";
 import { useState, useEffect } from "react";
+import { ChevronLeft } from "../animate-ui/icons/chevron-left";
+import { ChevronRight } from "../animate-ui/icons/chevron-right";
+import { LogOut } from "../animate-ui/icons/log-out";
+import { Dashboard } from "../animate-ui/icons/dashboard";
+import { LibraryBooks } from "../animate-ui/icons/library-books";
+import { Quiz } from "../animate-ui/icons/quiz";
 
 interface NavItem {
   path: string;
@@ -23,12 +25,12 @@ interface NavItem {
 const navItems: NavItem[] = [
   {
     path: "/student/dashboard",
-    icon: <MdDashboard className="text-xl" />,
+    icon: <Dashboard animateOnHover size={20} />,
     label: "Tổng quan",
   },
   {
     path: "/student/my-courses",
-    icon: <MdLibraryBooks className="text-xl" />,
+    icon: <LibraryBooks animateOnHover size={20} />,
     label: "Khóa học của tôi",
   },
   {
@@ -43,7 +45,7 @@ const navItems: NavItem[] = [
   },
   {
     path: "/student/quizzes",
-    icon: <MdQuiz className="text-xl" />,
+    icon: <Quiz animateOnHover size={20} />,
     label: "Bài kiểm tra",
   },
   {
@@ -112,9 +114,13 @@ const StudentSidebar = ({
         {/* Toggle Button - Placed outside the scrolling container so it's not clipped */}
         <button
           onClick={onToggle}
-          className="absolute -right-3 top-8 bg-white border border-gray-200 rounded-full p-1.5 text-gray-500 hover:color-primary shadow-sm z-50 text-xs hidden lg:flex items-center justify-center transition-colors"
+          className="absolute -right-3 top-8 bg-white border border-gray-200 rounded-full p-1 text-gray-500 hover:color-primary shadow-sm z-50 text-xs hidden lg:flex items-center justify-center transition-colors"
         >
-          {isCollapsed ? <FaChevronRight /> : <FaChevronLeft />}
+          {isCollapsed ? (
+            <ChevronRight animateOnHover animation="path-loop" size={14}/>
+          ) : (
+            <ChevronLeft animateOnHover animation="path-loop" size={14}/>
+          )}
         </button>
 
         {/* Inner Container for Content with Scroll */}
@@ -141,11 +147,11 @@ const StudentSidebar = ({
                 />
               </div>
               {(!isCollapsed || isMobileOpen) && (
-                <span className="text-xl font-black tracking-tight text-gray-900 whitespace-nowrap overflow-hidden lg:block hidden">
+                <span className="text-xl font-bold tracking-tight color-primary whitespace-nowrap overflow-hidden lg:block hidden">
                   IES Edu
                 </span>
               )}
-              <span className="text-xl font-black tracking-tight text-gray-900 whitespace-nowrap overflow-hidden lg:hidden">
+              <span className="text-xl font-bold tracking-tight color-primary whitespace-nowrap overflow-hidden lg:hidden">
                 IES Edu
               </span>
             </Link>
@@ -231,12 +237,12 @@ const StudentSidebar = ({
             {/* Logout Button */}
             <button
               onClick={handleLogoutClick}
-              className={`flex items-center justify-center text-sm text-red-500 hover:bg-red-50 hover:text-red-600 transition-all rounded-lg ${
+              className={`flex items-center justify-center text-sm text-red-500 hover:bg-red-50 hover:text-red-600 hover:cursor-pointer transition-all rounded-lg ${
                 isCollapsed ? "lg:size-10 lg:p-0" : "gap-2 px-3 py-2.5 w-full"
               }`}
               title={isCollapsed ? "Đăng xuất" : ""}
             >
-              <FaSignOutAlt className="text-lg" />
+              <LogOut animateOnHover size={18} />
               {(!isCollapsed || isMobileOpen) && (
                 <span className="font-medium lg:block hidden">Đăng xuất</span>
               )}
