@@ -1,4 +1,10 @@
 import { FaStar } from "react-icons/fa";
+import {
+  ScrollReveal,
+  StaggerContainer,
+  StaggerItem,
+  fadeInUp,
+} from "../ui/ScrollReveal";
 
 interface Testimonial {
   id: number;
@@ -46,52 +52,46 @@ const TestimonialsSection = () => {
   return (
     <section className="bg-[#F8F9FA] py-24">
       <div className="max-w-[1280px] mx-auto px-10">
-        <div className="text-center mb-16">
+        <ScrollReveal variant={fadeInUp} className="text-center mb-16">
           <span className="color-primary font-bold tracking-widest text-sm uppercase">
             Cảm nhận từ học viên
           </span>
           <h2 className="sm:text-4xl text-2xl font-extrabold text-gray-900 mt-2 max-w-3xl mx-auto">
             Hơn 10,000 học viên đã thay đổi tương lai cùng Edu LMS
           </h2>
-        </div>
+        </ScrollReveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((testimonial) => (
-            <div
-              key={testimonial.id}
-              className="bg-white p-8 rounded-3xl shadow-sm border border-gray-50 flex flex-col items-start hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center gap-4 mb-6">
-                <img
-                  alt={testimonial.name}
-                  className="w-16 h-16 rounded-full object-cover border-2 border-[#0077BE]/10"
-                  src={testimonial.image}
-                />
-                <div>
-                  <h4 className="font-bold text-gray-900">
-                    {testimonial.name}
-                  </h4>
-                  <p className="text-xs text-gray-500">{testimonial.role}</p>
+            <StaggerItem key={testimonial.id}>
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-50 flex flex-col items-start hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full">
+                <div className="flex items-center gap-4 mb-6">
+                  <img
+                    alt={testimonial.name}
+                    className="w-16 h-16 rounded-full object-cover border-2 border-[#0077BE]/10"
+                    src={testimonial.image}
+                  />
+                  <div>
+                    <h4 className="font-bold text-gray-900">
+                      {testimonial.name}
+                    </h4>
+                    <p className="text-xs text-gray-500">{testimonial.role}</p>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex text-yellow-400 mb-4">
-                {[...Array(testimonial.rating)].map((_, index) => (
-                  <span
-                    key={index}
-                    className="material-symbols-outlined text-[20px] FILL"
-                  >
-                    <FaStar />
-                  </span>
-                ))}
-              </div>
+                <div className="flex text-yellow-400 mb-4">
+                  {[...Array(testimonial.rating)].map((_, index) => (
+                    <FaStar key={index} className="text-[18px]" />
+                  ))}
+                </div>
 
-              <p className="text-gray-600 leading-relaxed italic">
-                "{testimonial.content}"
-              </p>
-            </div>
+                <p className="text-gray-600 leading-relaxed italic">
+                  "{testimonial.content}"
+                </p>
+              </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       </div>
     </section>
   );

@@ -6,12 +6,16 @@ import {
   FaRocket,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { ScrollReveal, fadeInLeft, fadeInRight } from "../ui/ScrollReveal";
 
 const HeroSection = () => {
   return (
     <section className="w-full bg-cyan-50/30 py-10 lg:py-16 overflow-hidden">
       <div className="max-w-[1280px] mx-auto px-4 md:px-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div className="flex flex-col gap-6 order-2 lg:order-1">
+        <ScrollReveal
+          variant={fadeInLeft}
+          className="flex flex-col gap-6 order-2 lg:order-1"
+        >
           {" "}
           <div className="inline-flex items-center gap-2 color-primary px-3 py-1 rounded-full w-fit">
             <span className="color-primary-bg text-white text-[10px] px-1.5 py-0.5 rounded-md font-bold uppercase shrink-0">
@@ -74,10 +78,13 @@ const HeroSection = () => {
               </span>
             </div>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* --- CỘT ẢNH (IMAGE WRAPPER) --- */}
-        <div className="relative order-1 lg:order-2 px-4 sm:px-0">
+        <ScrollReveal
+          variant={fadeInRight}
+          className="relative order-1 lg:order-2 px-4 sm:px-0"
+        >
           <div
             className="relative z-10 w-full bg-[#E9EDF2] rounded-[30px] sm:rounded-[40px] overflow-hidden shadow-2xl border-4 border-white"
             style={{ aspectRatio: "4/5" }}
@@ -150,7 +157,7 @@ const HeroSection = () => {
 
           {/* Background Blur Effect - Giữ nguyên nhưng đảm bảo z-index thấp */}
           <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] color-primary/5 rounded-full blur-3xl pointer-events-none"></div>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );

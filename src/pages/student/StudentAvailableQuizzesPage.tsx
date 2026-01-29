@@ -8,12 +8,15 @@ import {
   MdArrowForward,
   MdQuiz,
 } from "react-icons/md";
+import type { Quiz } from "../../types/exam";
+
+
 
 const StudentAvailableQuizzesPage = () => {
   const navigate = useNavigate();
   const [filter, setFilter] = useState("all");
 
-  const quizzes = [
+  const quizzes: Quiz[] = [
     {
       id: 1,
       category: "Lập trình Web",
@@ -22,7 +25,7 @@ const StudentAvailableQuizzesPage = () => {
       title: "Kiểm tra giữa kỳ - ReactJS",
       duration: "45 phút",
       questions: 30,
-      deadline: "20/10/2023",
+      deadline: "05/02/2026",
       isAvailable: true,
     },
     {
@@ -33,7 +36,7 @@ const StudentAvailableQuizzesPage = () => {
       title: "Quiz 5: Python Pandas & Numpy",
       duration: "20 phút",
       questions: 15,
-      deadline: "25/10/2023",
+      deadline: "10/02/2026",
       isAvailable: true,
     },
     {
@@ -44,7 +47,7 @@ const StudentAvailableQuizzesPage = () => {
       title: "Final Test: Business English",
       duration: "90 phút",
       questions: 50,
-      startDate: "01/11/2023",
+      startDate: "15/02/2026",
       isAvailable: false,
     },
     {
@@ -55,7 +58,7 @@ const StudentAvailableQuizzesPage = () => {
       title: "CCNA Module 1",
       duration: "60 phút",
       questions: 40,
-      deadline: "15/10/2023",
+      deadline: "20/01/2026",
       isAvailable: false,
     },
   ];

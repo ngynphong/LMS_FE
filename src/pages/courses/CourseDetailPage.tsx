@@ -26,8 +26,7 @@ const courseData = {
   rating: 4.8,
   reviews: 1250,
   students: 15402,
-  price: 1200000,
-  originalPrice: 2500000,
+  instructor: "TS. Nguyễn Văn A",
   category: "Lập trình",
   learningPoints: [
     "Nắm vững HTML5, CSS3, JavaScript (ES6+)",
@@ -67,7 +66,6 @@ const relatedCourses = [
     id: "2",
     title: "Thiết kế UI/UX chuyên sâu",
     instructor: "Trần Thị B",
-    price: 950000,
     rating: 4.9,
     thumbnail:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuAfXB0sRJT01IWsbEqwnAa8LY2olvOqz0KWQrK8A5jEC0tiuCdeuT6EQyKgB0WrU3qgMYNvh-PkBqPzR6QFbjBW95gn-QqOvyMMCheKyVq6b3lnDHhckfw3wW1y4uDZ_FcRBPKE_30HTzJQsqyDqTQVx5pav3KQCmqWYAikCEUqGzcBtS3Qy_vkoYBRKEWoWT93h9WiHC25OehvWHnWZRvNsEyRS0PqqbTDsxDjxaJRVIro1eBVoMBcuI-7bMHbFmQXhJagHcjA4U9B",
@@ -76,7 +74,6 @@ const relatedCourses = [
     id: "3",
     title: "Data Science cơ bản",
     instructor: "Lê Văn C",
-    price: 1500000,
     rating: 4.7,
     thumbnail:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuBUM01xgb-NDQxsaEe0JFrpbOH89-eMBvb1to2vtQ_zbRzk5COFNi3aKv9BNQJ7cAy2gOBGKrO0tp-2g3oxYo3WyVcSxbAnu2RHEQPIUgmBfMziv4qD43rNuZNu_nirhugILjQCcbDAy1E5HFTj0xvhmL3_bJkt_BOYKn8jy01693yXOxQICvLsJHJ5TrLjPx96lHCKR7miZrI195cCw9Hxnk2Rqw0FNZ8uvC7azGiaBhntc9UrZVwAO24noD_jr7QA47YtF6XNRhCj",
@@ -85,7 +82,6 @@ const relatedCourses = [
     id: "4",
     title: "Mobile App Development",
     instructor: "Phạm Minh D",
-    price: 1100000,
     rating: 4.6,
     thumbnail:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuBXTI27iXOPvdI1ImreB2it5S8pGjlI6D3sefLhZTLMZUu2s5I4GcNQNco54jsFNx2DMTA9u806pjXZqlSwPjkhhiwoL4dNBqK_S_tWG_ptJAp2ZquDLXHaXFoQvTxNCACnEVz803gxvJ2vbxAeV4eSreFv-GRvriItejT2V5ysRvRxsl-NJ9k7XDbQMU2aA8076tCM42hc7rR5T8Ma8q0LVPY9TaGtTkmP-BiS8OBynsN8kH9A226f79oCeeulXV2D0VzGcmgfWdAt",
@@ -102,13 +98,6 @@ const CourseDetailPage = () => {
     setOpenSections((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
     );
-  };
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(price);
   };
 
   return (
@@ -294,21 +283,16 @@ const CourseDetailPage = () => {
                 style={{ backgroundImage: `url('${courseData.thumbnail}')` }}
               />
               <div className="p-6 flex flex-col gap-6">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-black color-primary">
-                    {formatPrice(courseData.price)}
-                  </span>
-                  <span className="text-sm text-gray-500 line-through">
-                    {formatPrice(courseData.originalPrice)}
-                  </span>
+                <div className="text-center">
+                  <p className="text-sm text-gray-600 mb-1">Giảng viên</p>
+                  <p className="text-lg font-bold text-gray-900">
+                    {courseData.instructor}
+                  </p>
                 </div>
 
                 <div className="flex flex-col gap-3">
-                  <button className="w-full h-12 color-primary-bg text-white font-medium rounded-lg hover:opacity-80 transition-all shadow-md">
-                    Đăng ký ngay
-                  </button>
-                  <button className="w-full h-12 border-2 border-[#27A4F2] text-[#27A4F2] font-medium rounded-lg hover:bg-[#0077BE]/5 transition-all">
-                    Thêm vào giỏ hàng
+                  <button className="w-full h-12 color-primary-bg text-white font-bold rounded-lg hover:opacity-90 transition-all shadow-md">
+                    Bắt đầu học
                   </button>
                 </div>
 
@@ -327,12 +311,6 @@ const CourseDetailPage = () => {
                       </li>
                     ))}
                   </ul>
-                </div>
-
-                <div className="pt-4 border-t border-gray-200 text-center">
-                  <button className="color-primary text-sm font-bold hover:underline">
-                    Nhập mã giảm giá
-                  </button>
                 </div>
               </div>
             </div>
@@ -367,9 +345,6 @@ const CourseDetailPage = () => {
                   </h4>
                   <p className="text-xs text-gray-600">{course.instructor}</p>
                   <div className="flex items-center justify-between mt-2">
-                    <span className="color-primary font-bold">
-                      {formatPrice(course.price)}
-                    </span>
                     <div className="flex items-center gap-1 text-xs text-yellow-500">
                       <FaStar className="text-sm" />
                       {course.rating}

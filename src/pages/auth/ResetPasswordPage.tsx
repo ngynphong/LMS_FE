@@ -171,7 +171,7 @@ const ResetPasswordPage = () => {
           <div
             className="absolute inset-0 bg-contain bg-no-repeat bg-center"
             style={{
-              backgroundImage: "url('/src/assets/img/reset-password.png')",
+              backgroundImage: "url('/img/reset-password.png')",
               backgroundSize: "80%", // Scale it down a bit to valid breathing room
             }}
           ></div>

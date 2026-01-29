@@ -8,14 +8,14 @@ import {
 } from "react-icons/md";
 import {
   FaCalendar,
-  FaSignOutAlt,
-  FaChevronLeft,
-  FaChevronRight,
   FaTimes,
 } from "react-icons/fa";
 import { useAuth } from "../../hooks/useAuth";
 import { ConfirmationModal } from "../common/ConfirmationModal";
 import { useState, useEffect } from "react";
+import { ChevronRight } from "../animate-ui/icons/chevron-right";
+import { ChevronLeft } from "../animate-ui/icons/chevron-left";
+import { LogOut } from "../animate-ui/icons/log-out";
 
 interface NavItem {
   path: string;
@@ -122,7 +122,11 @@ const AdminSidebar = ({
             onClick={onToggle}
             className="absolute -right-3 top-8 bg-white border border-gray-200 rounded-full p-1.5 text-gray-500 hover:color-primary shadow-sm z-50 text-xs hidden lg:flex items-center justify-center transition-colors"
           >
-            {isCollapsed ? <FaChevronRight /> : <FaChevronLeft />}
+            {isCollapsed ? (
+              <ChevronRight animateOnHover animation="path-loop" size={14} />
+            ) : (
+              <ChevronLeft animateOnHover animation="path-loop" size={14} />
+            )}
           </button>
 
           <div className={`px-6 pt-8 pb-4 ${isCollapsed ? "lg:px-2" : ""}`}>
@@ -228,14 +232,12 @@ const AdminSidebar = ({
             {/* Logout Button */}
             <button
               onClick={handleLogoutClick}
-              className={`flex items-center text-sm text-red-500 hover:bg-red-50 transition-all rounded-md ${
-                isCollapsed
-                  ? "lg:justify-center lg:w-full lg:py-3"
-                  : "gap-3 px-6 py-3.5 w-full"
-              } gap-3 px-6 py-3.5 w-full`}
+              className={`flex items-center justify-center text-sm text-red-500 hover:bg-red-50 hover:text-red-600 hover:cursor-pointer transition-all rounded-lg ${
+                isCollapsed ? "lg:size-10 lg:p-0" : "gap-2 px-3 py-2.5 w-full"
+              }`}
               title={isCollapsed ? "Đăng xuất" : ""}
             >
-              <FaSignOutAlt className="text-xl" />
+              <LogOut animateOnHover size={18} />
               {(!isCollapsed || isMobileOpen) && (
                 <span className="font-medium lg:block hidden">Đăng xuất</span>
               )}

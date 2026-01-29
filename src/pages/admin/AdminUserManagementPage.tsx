@@ -207,7 +207,7 @@ const AdminUserManagementPage = () => {
               <MdFileDownload className="text-xl" />
               Xuất báo cáo
             </button>
-            <button className="px-5 py-2.5 bg-[#0078bd] text-white font-semibold text-sm rounded-lg flex items-center gap-2 hover:bg-[#0078bd]/90 shadow-lg shadow-[#0078bd]/20 transition-all">
+            <button className="px-5 py-2.5 color-primary-bg text-white font-semibold text-sm rounded-lg flex items-center gap-2 hover:bg-[#1E90FF]/90 shadow-lg shadow-[#1E90FF]/20 transition-all">
               <MdPersonAdd className="text-xl" />
               Thêm thành viên
             </button>
@@ -231,7 +231,7 @@ const AdminUserManagementPage = () => {
                   type="text"
                   value={searchQuery}
                   onChange={handleSearch}
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#f5f7f8] border-none rounded-lg text-sm focus:ring-2 focus:ring-[#0078bd]/50 transition-all text-[#111518]"
+                  className="w-full pl-10 pr-4 py-2.5 bg-[#f5f7f8] border-none rounded-lg text-sm focus:ring-2 focus:ring-[#1E90FF] outline-none transition-all text-[#111518]"
                   placeholder="Tìm kiếm theo tên, email hoặc số điện thoại..."
                 />
               </div>
@@ -245,7 +245,7 @@ const AdminUserManagementPage = () => {
                 onChange={(e) =>
                   handleRoleChange(e.target.value as UserRole | "All")
                 }
-                className="w-full py-2.5 bg-[#f5f7f8] border-none rounded-lg text-sm focus:ring-2 focus:ring-[#0078bd]/50 text-[#111518] cursor-pointer"
+                className="w-full py-2.5 bg-[#f5f7f8] border-none rounded-lg text-sm focus:ring-2 focus:ring-[#1E90FF] outline-none transition-all text-[#111518] cursor-pointer"
               >
                 <option value="All">Tất cả vai trò</option>
                 <option value="Student">Học viên</option>
@@ -262,7 +262,7 @@ const AdminUserManagementPage = () => {
                 onChange={(e) =>
                   setStatusFilter(e.target.value as UserStatus | "All")
                 }
-                className="w-full py-2.5 bg-[#f5f7f8] border-none rounded-lg text-sm focus:ring-2 focus:ring-[#0078bd]/50 text-[#111518] cursor-pointer"
+                className="w-full py-2.5 bg-[#f5f7f8] border-none rounded-lg text-sm focus:ring-2 focus:ring-[#1E90FF] outline-none transition-all text-[#111518] cursor-pointer"
               >
                 <option value="All">Tất cả trạng thái</option>
                 <option value="Active">Đang hoạt động</option>
@@ -279,7 +279,7 @@ const AdminUserManagementPage = () => {
                   setStatusFilter("All");
                   updateParams({ keyword: "", role: "All", pageNo: 0 });
                 }}
-                className="px-4 py-2.5 text-slate-500 hover:text-[#0078bd] font-medium text-sm flex items-center gap-1 transition-colors"
+                className="px-4 py-2.5 text-slate-500 hover:text-[#1E90FF] font-medium text-sm flex items-center gap-1 transition-colors"
               >
                 <MdRestartAlt className="text-xl" />
                 Đặt lại
@@ -295,7 +295,7 @@ const AdminUserManagementPage = () => {
               onClick={() => handleTabChange("All")}
               className={`pb-4 border-b-2 font-bold text-sm tracking-wide transition-colors ${
                 activeTab === "All"
-                  ? "border-[#0078bd] text-[#0078bd]"
+                  ? "border-[#1E90FF] text-[#1E90FF]"
                   : "border-transparent text-[#607b8a] hover:text-[#111518]"
               }`}
             >
@@ -305,7 +305,7 @@ const AdminUserManagementPage = () => {
               onClick={() => handleTabChange("STUDENT")}
               className={`pb-4 border-b-2 font-bold text-sm tracking-wide transition-colors ${
                 activeTab === "STUDENT"
-                  ? "border-[#0078bd] text-[#0078bd]"
+                  ? "border-[#1E90FF] text-[#1E90FF]"
                   : "border-transparent text-[#607b8a] hover:text-[#111518]"
               }`}
             >
@@ -316,7 +316,7 @@ const AdminUserManagementPage = () => {
               onClick={() => handleTabChange("TEACHER")}
               className={`pb-4 border-b-2 font-bold text-sm tracking-wide transition-colors ${
                 activeTab === "TEACHER"
-                  ? "border-[#0078bd] text-[#0078bd]"
+                  ? "border-[#1E90FF] text-[#1E90FF]"
                   : "border-transparent text-[#607b8a] hover:text-[#111518]"
               }`}
             >
@@ -327,7 +327,7 @@ const AdminUserManagementPage = () => {
               onClick={() => handleTabChange("ADMIN")}
               className={`pb-4 border-b-2 font-bold text-sm tracking-wide transition-colors ${
                 activeTab === "ADMIN"
-                  ? "border-[#0078bd] text-[#0078bd]"
+                  ? "border-[#1E90FF] text-[#1E90FF]"
                   : "border-transparent text-[#607b8a] hover:text-[#111518]"
               }`}
             >
@@ -351,7 +351,7 @@ const AdminUserManagementPage = () => {
                 <th className="p-4 w-12 text-center">
                   <input
                     type="checkbox"
-                    className="rounded border-slate-300 text-[#0078bd] focus:ring-[#0078bd]"
+                    className="rounded border-slate-300 text-[#1E90FF] focus:ring-[#1E90FF]"
                   />
                 </th>
                 <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider">

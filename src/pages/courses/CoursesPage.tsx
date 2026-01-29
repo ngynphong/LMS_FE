@@ -31,11 +31,11 @@ const CoursesPage = () => {
         <div className="py-6">
           <div className="max-w-3xl mx-auto">
             <label className="flex flex-col w-full h-14 relative group">
-              <div className="flex w-full flex-1 items-stretch rounded-xl h-full shadow-sm group-focus-within:ring-2 ring-[#0077BE]/30 transition-all">
+              <div className="flex w-full flex-1 items-stretch rounded-xl h-full shadow-sm group-focus-within:ring-2 ring-[#1E90FF] transition-all">
                 <div className="text-gray-500 flex border-none bg-white items-center justify-center pl-5 rounded-l-xl border-r-0">
                   <FaSearch />
                 </div>
-                <input 
+                <input
                   className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-gray-900 focus:outline-0 focus:ring-0 border-none bg-white placeholder:text-gray-500 px-4 rounded-l-none border-l-0 text-base font-normal leading-normal"
                   placeholder="Tìm kiếm khóa học bạn quan tâm..."
                   value={searchQuery}
@@ -53,8 +53,12 @@ const CoursesPage = () => {
           {/* Content Grid */}
           <div className="flex-1">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-gray-900 text-2xl font-bold">Danh sách khóa học</h2>
-              <span className="text-sm text-gray-500">Tìm thấy {coursesData.length} khóa học</span>
+              <h2 className="text-gray-900 text-2xl font-bold">
+                Danh sách khóa học
+              </h2>
+              <span className="text-sm text-gray-500">
+                Tìm thấy {coursesData.length} khóa học
+              </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -64,7 +68,7 @@ const CoursesPage = () => {
             </div>
 
             {/* Pagination */}
-            <Pagination 
+            <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={handlePageChange}

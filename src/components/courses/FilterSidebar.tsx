@@ -2,28 +2,18 @@ import { useState } from "react";
 import { IoFilter } from "react-icons/io5";
 import { BiCategory } from "react-icons/bi";
 import { FaSignal } from "react-icons/fa";
-import { FaMoneyBillWave } from "react-icons/fa";
 
 const FilterSidebar = () => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([
     "Công nghệ thông tin",
   ]);
   const [selectedLevel, setSelectedLevel] = useState<string>("");
-  const [selectedPricing, setSelectedPricing] = useState<string[]>([]);
 
   const handleCategoryChange = (category: string) => {
     if (selectedCategories.includes(category)) {
       setSelectedCategories(selectedCategories.filter((c) => c !== category));
     } else {
       setSelectedCategories([...selectedCategories, category]);
-    }
-  };
-
-  const handlePricingChange = (pricing: string) => {
-    if (selectedPricing.includes(pricing)) {
-      setSelectedPricing(selectedPricing.filter((p) => p !== pricing));
-    } else {
-      setSelectedPricing([...selectedPricing, pricing]);
     }
   };
 
@@ -48,10 +38,16 @@ const FilterSidebar = () => {
             </div>
             <div className="flex flex-col gap-2 pl-2">
               {[
-                "Công nghệ thông tin",
-                "Kinh doanh",
-                "Marketing",
-                "Ngoại ngữ",
+                "Tiếng Việt",
+                "Toán",
+                "Tự nhiên và Xã hội",
+                "Khoa học",
+                "Lịch sử và Địa lí",
+                "Đạo đức",
+                "Âm nhạc",
+                "Mỹ thuật",
+                "Tiếng Anh",
+                "Tin học",
               ].map((category) => (
                 <label
                   key={category}
@@ -98,33 +94,7 @@ const FilterSidebar = () => {
             </div>
           </div>
 
-          {/* Price Filter */}
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2 color-primary">
-              <span className="material-symbols-outlined text-[20px]">
-                <FaMoneyBillWave />
-              </span>
-              <p className="text-sm font-bold">Giá</p>
-            </div>
-            <div className="flex flex-col gap-2 pl-2">
-              {["Miễn phí", "Có phí"].map((pricing) => (
-                <label
-                  key={pricing}
-                  className="flex items-center gap-2 cursor-pointer"
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedPricing.includes(pricing)}
-                    onChange={() => handlePricingChange(pricing)}
-                    className="rounded color-primary focus:ring-[#0077BE] h-4 w-4"
-                  />
-                  <span className="text-sm text-gray-700">{pricing}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <button className="w-full flex items-center justify-center rounded-lg h-11 color-primary text-white text-sm font-bold shadow-md hover:color-primary/90 transition-all mt-4">
+          <button className="w-full flex items-center justify-center rounded-lg h-11 color-primary-bg text-white text-sm font-bold shadow-md hover:color-primary/90 transition-all mt-4">
             <span>Áp dụng</span>
           </button>
         </div>

@@ -1,8 +1,8 @@
-import { CiMail } from "react-icons/ci";
 import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
-import { IoIosCall } from "react-icons/io";
 import { FaLocationDot } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { PhoneCall } from "./animate-ui/icons/phone-call";
+import { Mail } from "./animate-ui/icons/mail";
 
 const Footer = () => {
   return (
@@ -28,7 +28,7 @@ const Footer = () => {
               className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:color-primary transition-colors"
               to="#"
             >
-              <span className="material-symbols-outlined text-sm">
+              <span className="text-sm">
                 <FaFacebookF />
               </span>
             </Link>
@@ -36,7 +36,7 @@ const Footer = () => {
               className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:color-primary transition-colors"
               to="#"
             >
-              <span className="material-symbols-outlined text-sm">
+              <span className="text-sm">
                 <FaYoutube />
               </span>
             </Link>
@@ -44,7 +44,7 @@ const Footer = () => {
               className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:color-primary transition-colors"
               to="#"
             >
-              <span className="material-symbols-outlined text-sm">
+              <span className="text-sm">
                 <FaInstagram />
               </span>
             </Link>
@@ -63,10 +63,7 @@ const Footer = () => {
               </Link>
             </li>
             <li>
-              <Link
-                className="hover:text-white transition-colors"
-                to="/become-instructor"
-              >
+              <Link className="hover:text-white transition-colors" to="/">
                 Trở thành giảng viên
               </Link>
             </li>
@@ -76,7 +73,7 @@ const Footer = () => {
               </Link>
             </li>
             <li>
-              <Link className="hover:text-white transition-colors" to="/news">
+              <Link className="hover:text-white transition-colors" to="/">
                 Tin tức công nghệ
               </Link>
             </li>
@@ -87,25 +84,22 @@ const Footer = () => {
           <h3 className="font-bold text-lg mb-6">Chính sách</h3>
           <ul className="flex flex-col gap-3 text-gray-400 text-sm">
             <li>
-              <Link className="hover:text-white transition-colors" to="/terms">
+              <Link className="hover:text-white transition-colors" to="/">
                 Điều khoản dịch vụ
               </Link>
             </li>
             <li>
-              <Link
-                className="hover:text-white transition-colors"
-                to="/privacy"
-              >
+              <Link className="hover:text-white transition-colors" to="/">
                 Chính sách bảo mật
               </Link>
             </li>
             <li>
-              <Link className="hover:text-white transition-colors" to="/refund">
+              <Link className="hover:text-white transition-colors" to="/">
                 Chính sách hoàn tiền
               </Link>
             </li>
             <li>
-              <Link className="hover:text-white transition-colors" to="/faq">
+              <Link className="hover:text-white transition-colors" to="/">
                 Câu hỏi thường gặp
               </Link>
             </li>
@@ -117,19 +111,19 @@ const Footer = () => {
           <ul className="flex flex-col gap-4 text-gray-400 text-sm">
             <li className="flex items-center gap-3">
               <span className="material-symbols-outlined color-primary">
-                <CiMail />
+                <Mail animateOnHover animation="shake" size={18} />
               </span>
               infovienies@gmail.com
             </li>
             <li className="flex items-center gap-3">
               <span className="material-symbols-outlined color-primary">
-                <IoIosCall />
+                <PhoneCall animateOnHover size={18} />
               </span>
               0965248115
             </li>
             <li className="flex items-start gap-3">
               <span className="material-symbols-outlined color-primary">
-                <FaLocationDot />
+                <FaLocationDot className="hover:animate-bounce"/>
               </span>
               <span>
                 Số 3 Công Trường Quốc Tế , Phường Xuân Hoà, Thành phố Hồ Chí

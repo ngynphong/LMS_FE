@@ -14,3 +14,16 @@ export interface Exam {
   status: 'draft' | 'published' | 'closed';
   createdAt: string;
 }
+
+export interface Quiz {
+  id: number;
+  category: string;
+  status: "open" | "upcoming" | "closed";
+  statusLabel: string;
+  title: string;
+  duration: string;
+  questions: number;
+  deadline?: string;
+  startDate?: string;
+  isAvailable: boolean;
+}

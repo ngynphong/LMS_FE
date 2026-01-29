@@ -1,5 +1,11 @@
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import {
+  ScrollReveal,
+  StaggerContainer,
+  StaggerItem,
+  fadeInUp,
+} from "../ui/ScrollReveal";
 
 interface Instructor {
   id: number;
@@ -53,7 +59,10 @@ const InstructorsSection = () => {
   return (
     <section className="w-full bg-white py-24">
       <div className="max-w-[1280px] mx-auto px-10">
-        <div className="flex items-end justify-between mb-16">
+        <ScrollReveal
+          variant={fadeInUp}
+          className="flex items-end justify-between mb-16"
+        >
           <div className="flex flex-col gap-2">
             <span className="color-primary font-bold tracking-widest text-sm uppercase">
               Chuyên gia
@@ -65,48 +74,47 @@ const InstructorsSection = () => {
           <button className="sm:px-6 px-3 py-2 sm:py-3 rounded-xl border-2 sm:text-base text-sm border-gray-100 font-bold text-gray-600 hover:bg-gray-50 transition-colors">
             Xem thêm
           </button>
-        </div>
+        </ScrollReveal>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {instructors.map((instructor) => (
-            <div
-              key={instructor.id}
-              className="bg-white p-8 rounded-[32px] border border-gray-100 text-center hover:shadow-xl transition-all group"
-            >
-              <div className="relative w-32 h-32 mx-auto mb-6">
-                <div className="absolute inset-0 color-primary/5 rounded-full scale-110 group-hover:scale-125 transition-transform duration-500"></div>
-                <img
-                  alt={instructor.name}
-                  className="w-full h-full object-cover rounded-full border-4 border-white shadow-lg relative z-10"
-                  src={instructor.image}
-                />
+            <StaggerItem key={instructor.id}>
+              <div className="bg-white p-8 rounded-[32px] border border-gray-100 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full">
+                <div className="relative w-32 h-32 mx-auto mb-6">
+                  <div className="absolute inset-0 color-primary/5 rounded-full scale-110 group-hover:scale-125 transition-transform duration-500"></div>
+                  <img
+                    alt={instructor.name}
+                    className="w-full h-full object-cover rounded-full border-4 border-white shadow-lg relative z-10"
+                    src={instructor.image}
+                  />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-1">
+                  {instructor.name}
+                </h3>
+                <p className="color-primary font-semibold text-sm mb-3">
+                  {instructor.title}
+                </p>
+                <div className="flex items-center justify-center gap-1 mb-6">
+                  <span className="text-yellow-400 text-sm">
+                    <FaStar />
+                  </span>
+                  <span className="text-gray-700 font-bold text-sm">
+                    {instructor.rating}/5
+                  </span>
+                  <span className="text-gray-400 text-xs">
+                    ({instructor.reviews} đánh giá)
+                  </span>
+                </div>
+                <Link
+                  className="inline-block color-primary font-bold text-sm hover:underline"
+                  to={`/instructor/${instructor.id}`}
+                >
+                  Xem hồ sơ
+                </Link>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-1">
-                {instructor.name}
-              </h3>
-              <p className="color-primary font-semibold text-sm mb-3">
-                {instructor.title}
-              </p>
-              <div className="flex items-center justify-center gap-1 mb-6">
-                <span className="material-symbols-outlined text-yellow-400 text-sm FILL">
-                  <FaStar />
-                </span>
-                <span className="text-gray-700 font-bold text-sm">
-                  {instructor.rating}/5
-                </span>
-                <span className="text-gray-400 text-xs">
-                  ({instructor.reviews} đánh giá)
-                </span>
-              </div>
-              <Link
-                className="inline-block color-primary font-bold text-sm hover:underline"
-                to={`/instructor/${instructor.id}`}
-              >
-                Xem hồ sơ
-              </Link>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       </div>
     </section>
   );
