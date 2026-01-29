@@ -170,7 +170,7 @@ const LoginPage = () => {
             {/* Mobile Logo */}
             <Link
               to="/"
-              className="lg:hidden flex items-center gap-2 mb-10 text-gray-800"
+              className="lg:hidden flex items-center gap-2 mt-2 color-primary"
             >
               <span className="text-3xl">
                 <img

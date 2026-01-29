@@ -162,7 +162,7 @@ const StudentMyCoursesPage = () => {
               </div>
 
               <Link
-                to={`/student/courses/${course.id}`}
+                to={`/student/courses/${course.id}/learn`}
                 className="w-full py-2.5 md:py-3 color-primary-bg text-white text-sm font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
               >
                 Tiếp tục học

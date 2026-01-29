@@ -216,7 +216,7 @@ const Header = () => {
           </div>
 
           <div className="p-4 border-t border-gray-300">
-            <button className="w-full px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-[#0077BE]/20 active:scale-95 transition-transform">
+            <button className="w-full color-primary-bg text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-[#0077BE]/20 active:scale-95 transition-transform">
               <span className="material-symbols-outlined">
                 <IoSchool />
               </span>{" "}

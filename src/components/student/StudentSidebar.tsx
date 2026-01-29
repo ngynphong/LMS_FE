@@ -141,11 +141,11 @@ const StudentSidebar = ({
                 />
               </div>
               {(!isCollapsed || isMobileOpen) && (
-                <span className="text-xl font-black tracking-tight text-gray-900 whitespace-nowrap overflow-hidden lg:block hidden">
+                <span className="text-xl font-bold tracking-tight color-primary whitespace-nowrap overflow-hidden lg:block hidden">
                   IES Edu
                 </span>
               )}
-              <span className="text-xl font-black tracking-tight text-gray-900 whitespace-nowrap overflow-hidden lg:hidden">
+              <span className="text-xl font-bold tracking-tight color-primary whitespace-nowrap overflow-hidden lg:hidden">
                 IES Edu
               </span>
             </Link>

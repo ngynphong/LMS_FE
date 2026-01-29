@@ -50,7 +50,7 @@ const TestimonialsSection = () => {
           <span className="color-primary font-bold tracking-widest text-sm uppercase">
             Cảm nhận từ học viên
           </span>
-          <h2 className="text-4xl font-extrabold text-gray-900 mt-2 max-w-3xl mx-auto">
+          <h2 className="sm:text-4xl text-2xl font-extrabold text-gray-900 mt-2 max-w-3xl mx-auto">
             Hơn 10,000 học viên đã thay đổi tương lai cùng Edu LMS
           </h2>
         </div>

@@ -30,7 +30,7 @@ const StudentLayout = ({ children }: StudentLayoutProps) => {
           >
             <FaBars className="text-xl" />
           </button>
-          <span className="font-bold text-lg text-[#111518]">IES Edu</span>
+          <span className="font-bold text-lg color-primary">IES Edu</span>
         </div>
         {user && (
           <img
@@ -39,7 +39,7 @@ const StudentLayout = ({ children }: StudentLayoutProps) => {
               `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random`
             }
             alt={`${user.firstName} ${user.lastName}`}
-            className="size-8 rounded-full object-cover border border-gray-200"
+            className="size-8 rounded-full object-cover mr-4 border border-gray-200"
           />
         )}
       </div>

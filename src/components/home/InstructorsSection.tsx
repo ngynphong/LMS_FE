@@ -58,12 +58,12 @@ const InstructorsSection = () => {
             <span className="color-primary font-bold tracking-widest text-sm uppercase">
               Chuyên gia
             </span>
-            <h2 className="text-4xl font-extrabold text-gray-900">
+            <h2 className="sm:text-4xl text-2xl font-extrabold text-gray-900">
               Đội ngũ Giảng viên hàng đầu
             </h2>
           </div>
-          <button className="px-6 py-3 rounded-xl border-2 border-gray-100 font-bold text-gray-600 hover:bg-gray-50 transition-colors">
-            Tất cả giảng viên
+          <button className="sm:px-6 px-3 py-2 sm:py-3 rounded-xl border-2 sm:text-base text-sm border-gray-100 font-bold text-gray-600 hover:bg-gray-50 transition-colors">
+            Xem thêm
           </button>
         </div>
 

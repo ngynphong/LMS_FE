@@ -24,12 +24,8 @@ const HeroSection = () => {
               <FaArrowRight />
             </span>
           </div>
-          <h1 className="text-slate-900 text-3xl sm:text-4xl lg:text-5xl font-black leading-[1.2] lg:leading-[1.1] tracking-tight">
-            Viện Khoa Học <br />
-            <span>Sáng Tạo</span> &{" "}
-            <span className="px-3 py-1 rounded-2xl inline-block bg-white/50">
-              Khởi Nghiệp
-            </span>
+          <h1 className="text-slate-900 text-start text-3xl sm:text-4xl lg:text-5xl font-black leading-[1.2] lg:leading-[1.1] tracking-tight">
+            Viện Khoa Học Sáng Tạo Khởi Nghiệp
           </h1>
           <p className="text-base sm:text-xl text-slate-600 leading-relaxed max-w-xl">
             Kiến tạo tương lai thông qua giáo dục khai phóng và ứng dụng công
@@ -99,15 +95,15 @@ const HeroSection = () => {
 
           {/* Badge tròn góc trên trái */}
           <div
-            className="absolute -top-6 -left-2 sm:-top-10 sm:-left-10 w-20 h-20 sm:w-32 sm:h-32 color-primary/20 backdrop-blur-xl rounded-full flex items-center justify-center border border-[#0077BE]/30 z-20 animate-bounce"
-            style={{ animationDuration: "3s" }}
+            className="absolute -top-4 -left-2 sm:-top-8 sm:-left-10 w-16 h-16 sm:w-26 sm:h-26 color-primary/20 backdrop-blur-xl rounded-full flex items-center justify-center border border-[#0077BE]/30 z-20 animate-bounce"
+            style={{ animationDuration: "4s" }}
           >
-            <div className="color-primary-bg text-white w-14 h-14 sm:w-24 sm:h-24 rounded-full flex flex-col items-center justify-center text-center p-1 sm:p-2 border-4 border-white shadow-xl">
+            <div className="color-primary-bg text-white w-14 h-14 sm:w-22 sm:h-22 rounded-full flex flex-col items-center justify-center text-center p-1 sm:p-2 border-4 border-white shadow-xl">
               <span className="text-[8px] sm:text-xs font-bold leading-tight">
                 Hơn
               </span>
               <span className="text-xs sm:text-sm font-black">500+</span>
-              <span className="text-[6px] sm:text-[8px] uppercase tracking-widest font-bold">
+              <span className="text-[5px] sm:text-[8px] uppercase tracking-widest font-bold">
                 Khóa học
               </span>
             </div>

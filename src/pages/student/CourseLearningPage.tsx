@@ -195,7 +195,7 @@ const CourseLearningPage = () => {
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-white">
       {/* Header */}
-      <header className="flex h-16 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 md:px-6 py-3 shadow-sm z-10">
+      <header className="flex h-16 shrink-0 items-center justify-between border-b rounded-lg border-gray-200 bg-white px-4 md:px-6 py-3 shadow-sm z-10">
         <div className="flex items-center gap-3 md:gap-6">
           <button
             onClick={() => setIsLessonSidebarOpen(true)}
@@ -286,7 +286,7 @@ const CourseLearningPage = () => {
               <div className="flex gap-4">
                 <button
                   onClick={() => setIsFavorite(!isFavorite)}
-                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 rounded-lg bg-white border border-gray-200 px-2 sm:px-4 py-2 sm:py-2 text-sm font-medium transition-colors shadow-sm ${
+                  className={`flex-1 sm:flex-none flex items-center justify-center gap-2 rounded-lg bg-white border border-gray-200 px-1 sm:px-4 py-2 sm:py-2 text-sm font-medium transition-colors shadow-sm ${
                     isFavorite
                       ? "text-red-500 border-red-200"
                       : "text-[#4A5568] hover:bg-gray-50 hover:text-[#1A2B3C]"
@@ -299,7 +299,7 @@ const CourseLearningPage = () => {
                   </span>
                   <span className="sm:hidden md:inline">Yêu thích</span>
                 </button>
-                <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 rounded-lg bg-white border border-gray-200 px-4 py-2 text-sm font-medium text-[#4A5568] hover:bg-gray-50 hover:text-[#1A2B3C] transition-colors shadow-sm">
+                <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 rounded-lg bg-white border border-gray-200 px-1 sm:px-4 py-2 sm:py-2 text-sm font-medium text-[#4A5568] hover:bg-gray-50 hover:text-[#1A2B3C] transition-colors shadow-sm">
                   <span className="material-symbols-outlined text-[20px]">
                     edit_note
                   </span>
@@ -315,7 +315,7 @@ const CourseLearningPage = () => {
 
             {/* Tabs */}
             <div className="mt-4 sm:mt-6 flex flex-col">
-              <div className="flex gap-6 sm:gap-8 border-b border-gray-200  scrollbar-hide -mx-4 sm:mx-0 px-4 sm:px-2">
+              <div className="flex gap-6 sm:gap-8 border-b border-gray-200  scrollbar-hide -mx-4 sm:mx-0 px-0 sm:px-2">
                 {[
                   { id: "overview", label: "Tổng quan" },
                   { id: "materials", label: "Tài liệu" },

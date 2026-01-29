@@ -21,22 +21,18 @@ const AboutPage = () => {
               Chào mừng đến với IES Edu
             </div>
 
-            <h1 className="text-slate-900 text-3xl sm:text-4xl lg:text-5xl font-black leading-[1.2] lg:leading-[1.1] tracking-tight">
-              Viện Khoa Học <br />
-              <span className="text-slate-900">Sáng Tạo</span> &{" "}
-              <span className="px-3 py-1 lg:px-4 rounded-2xl inline-block text-slate-900 border border-blue-100 bg-white/50 lg:border-none lg:bg-transparent">
-                Khởi Nghiệp
-              </span>
+            <h1 className="text-slate-900 text-start text-3xl sm:text-4xl lg:text-5xl font-black leading-[1.2] lg:leading-[1.1] tracking-tight">
+              Viện Khoa Học Sáng Tạo Khởi Nghiệp
             </h1>
 
-            <p className="text-base lg:text-xl text-slate-600 leading-relaxed max-w-xl">
+            <p className="text-base lg:text-xl text-start text-slate-600 leading-relaxed max-w-xl">
               Kiến tạo tương lai thông qua giáo dục khai phóng và ứng dụng công
               nghệ đột phá. Chúng tôi đồng hành cùng bạn trên con đường chinh
               phục đỉnh cao tri thức.
             </p>
           </div>
 
-          <div className="relative hidden lg:block">
+          <div className="relative hidden lg:block -mt-10">
             <div className="relative rounded-[3rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] border-12 border-white/10">
               <div
                 className="w-full aspect-4/5 bg-cover bg-center transition-transform duration-700 hover:scale-105"
