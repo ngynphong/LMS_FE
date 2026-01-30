@@ -12,11 +12,13 @@ import type {
 } from "../../types/learningTypes";
 import {
   getCourseById,
-  getLessonsByCourseId,
-  getQuizByLessonId,
   getCourseProgress,
   updateLessonProgress,
 } from "../../services/courseService";
+import {
+  getLessonsByCourseId,
+  getQuizByLessonId,
+} from "../../services/lessonService";
 
 type TabType = "overview" | "materials" | "discussion" | "quiz";
 
@@ -277,7 +279,7 @@ const CourseLearningPage = () => {
             {/* Video Player */}
             <VideoPlayer
               videoUrl={currentLesson.videoUrl}
-              thumbnailUrl={course.thumbnail}
+              thumbnailUrl={course.thumbnailUrl}
               duration={currentLesson.duration}
             />
 

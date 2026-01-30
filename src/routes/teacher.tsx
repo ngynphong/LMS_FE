@@ -3,6 +3,7 @@ import TeacherLayout from "../layouts/TeacherLayout";
 import TeacherDashboardPage from "../pages/teacher/TeacherDashboardPage";
 import CourseListPage from "../pages/teacher/CourseListPage";
 import CourseBuilderPage from "../pages/teacher/CourseBuilderPage";
+import TeacherCourseDetailPage from "../pages/teacher/TeacherCourseDetailPage";
 import StudentListPage from "../pages/teacher/StudentListPage";
 import StudentDetailPage from "../pages/teacher/StudentDetailPage";
 import QuestionBankPage from "../pages/teacher/QuestionBankPage";
@@ -29,6 +30,7 @@ const finalTeacherRoutes: RouteObject[] = [
     children: [
       { path: "dashboard", element: <TeacherDashboardPage /> },
       { path: "courses", element: <CourseListPage /> },
+      { path: "courses/:id", element: <TeacherCourseDetailPage /> },
       { path: "questions", element: <QuestionBankPage /> },
       { path: "questions/new", element: <QuestionFormPage /> },
       { path: "questions/:id/edit", element: <QuestionFormPage /> },

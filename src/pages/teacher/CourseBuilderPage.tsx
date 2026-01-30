@@ -1,170 +1,555 @@
-import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import CourseBuilderLayout from '../../layouts/CourseBuilderLayout';
-import ChapterItem from '../../components/teacher/courses/ChapterItem';
-import CourseBuilderSidebar from '../../components/teacher/courses/CourseBuilderSidebar';
-import type { Chapter } from '../../components/teacher/courses/ChapterItem';
-import type { Lesson } from '../../components/teacher/courses/LessonItem';
-
-// Mock data
-const mockChapters: Chapter[] = [
-  {
-    id: '1',
-    title: 'Chương 1: Giới thiệu về Web Development',
-    lessons: [
-      {
-        id: '1-1',
-        title: '1.1 Lộ trình trở thành Fullstack Developer',
-        type: 'video',
-        duration: '12:45',
-        status: 'completed'
-      },
-      {
-        id: '1-2',
-        title: '1.2 Cài đặt môi trường phát triển (VS Code, Node.js)',
-        type: 'document',
-        pageCount: 5,
-        status: 'completed'
-      }
-    ]
-  },
-  {
-    id: '2',
-    title: 'Chương 2: Cơ bản về HTML & CSS',
-    lessons: [
-      {
-        id: '2-1',
-        title: 'Kiểm tra kiến thức: HTML Elements',
-        type: 'quiz',
-        status: 'editing'
-      }
-    ]
-  }
-];
+import { useState, useEffect, useCallback } from "react";
+import { Link, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import TeacherSidebar from "../../components/teacher/TeacherSidebar";
+import CourseOutline, {
+  type OutlineItem,
+} from "../../components/teacher/courses/CourseOutline";
+import CourseForm from "../../components/teacher/courses/CourseForm";
+import LessonForm from "../../components/teacher/courses/LessonForm";
+import LessonItemForm from "../../components/teacher/courses/LessonItemForm";
+import {
+  useCreateCourse,
+  useUpdateCourse,
+  useCourseDetail,
+  useApproveCourse,
+} from "../../hooks/useCourses";
+import {
+  useCreateLesson,
+  useUpdateLesson,
+  useDeleteLesson,
+  useCreateLessonItem,
+  useUpdateLessonItem,
+  useDeleteLessonItem,
+} from "../../hooks/useLessons";
+import { getLessonById, getLessonItemById } from "../../services/lessonService";
+import type {
+  ApiCourse,
+  ApiLesson,
+  LessonItem,
+} from "../../types/learningTypes";
 
 const CourseBuilderPage = () => {
   const { id } = useParams();
-  const isNew = !id;
+  const isEditMode = !!id;
 
-  const [activeLessonId, setActiveLessonId] = useState<string | null>('2-1');
-  const [chapters] = useState<Chapter[]>(mockChapters);
+  // Course State
+  const [course, setCourse] = useState<ApiCourse | null>(null);
+  const [courseId, setCourseId] = useState<string | null>(id || null);
+  const [lessons, setLessons] = useState<ApiLesson[]>([]);
+  const [selectedItem, setSelectedItem] = useState<OutlineItem | null>({
+    type: "course",
+    id: "new",
+    title: "Khóa học mới",
+  });
+  const [pendingLessonId, setPendingLessonId] = useState<string | null>(null);
+  const [deleteModal, setDeleteModal] = useState<{
+    open: boolean;
+    type: "lesson" | "item";
+    title: string;
+  }>({ open: false, type: "lesson", title: "" });
+  const [itemDetail, setItemDetail] = useState<LessonItem | null>(null);
 
-  // Find active lesson to determine sidebar type
-  const getActiveLessonType = (): Lesson['type'] | null => {
-    if (!activeLessonId) return null;
-    for (const chapter of chapters) {
-      const lesson = chapter.lessons.find(l => l.id === activeLessonId);
-      if (lesson) return lesson.type;
+  // Fetch item detail when selected
+  useEffect(() => {
+    const fetchItemDetail = async () => {
+      if (selectedItem?.type === "item" && selectedItem.id !== "new") {
+        const detail = await getLessonItemById(selectedItem.id);
+        setItemDetail(detail);
+      } else {
+        setItemDetail(null);
+      }
+    };
+    fetchItemDetail();
+  }, [selectedItem]);
+
+  // Hooks
+  const { create: createCourse, loading: creatingCourse } = useCreateCourse();
+  const { update: updateCourse, loading: updatingCourse } = useUpdateCourse();
+  const {
+    data: courseData,
+    loading: loadingCourse,
+    refetch: refetchCourse,
+  } = useCourseDetail(id);
+  const { create: createLesson, loading: creatingLesson } = useCreateLesson();
+  const { update: updateLesson, loading: updatingLesson } = useUpdateLesson();
+  const { remove: deleteLesson, loading: deletingLesson } = useDeleteLesson();
+  const { create: createLessonItem, loading: creatingItem } =
+    useCreateLessonItem();
+  const { update: updateLessonItem, loading: updatingItem } =
+    useUpdateLessonItem();
+  const { remove: deleteLessonItem, loading: deletingItem } =
+    useDeleteLessonItem();
+  const { approve: approveCourse, loading: publishLoading } =
+    useApproveCourse();
+
+  // Publish handler
+  const handlePublish = async () => {
+    if (!courseId) return;
+    try {
+      await approveCourse(courseId, "PUBLISHED");
+      toast.success("Khóa học đã được xuất bản!");
+      refetchCourse();
+    } catch (error) {
+      toast.error("Xuất bản thất bại. Vui lòng thử lại.");
     }
-    return null;
   };
 
-  const getActiveChapterId = (): string | null => {
-    if (!activeLessonId) return null;
-    for (const chapter of chapters) {
-      if (chapter.lessons.some(l => l.id === activeLessonId)) {
-        return chapter.id;
+  // Load course data in edit mode
+  useEffect(() => {
+    if (courseData) {
+      setCourse(courseData);
+      setCourseId(courseData.id);
+      // Get lessons from course detail response
+      if (courseData.lessons && Array.isArray(courseData.lessons)) {
+        // Fetch lesson details to get lessonItems
+        const fetchLessonDetails = async () => {
+          const lessonsWithItems = await Promise.all(
+            courseData.lessons!.map(async (lesson) => {
+              try {
+                const detail = await getLessonById(lesson.id);
+                return detail || lesson;
+              } catch {
+                return lesson;
+              }
+            }),
+          );
+          setLessons(lessonsWithItems);
+        };
+        fetchLessonDetails();
       }
     }
-    return null;
+  }, [courseData]);
+
+  // Reload lessons - refetch course detail to get updated lessons
+  const loadLessons = useCallback(async () => {
+    if (!courseId) return;
+    // Refetch course detail to get updated lessons
+    refetchCourse();
+  }, [courseId, refetchCourse]);
+
+  // Handlers
+  const handleCourseSubmit = async (data: {
+    name: string;
+    description: string;
+    thumbnailUrl: string;
+    visibility: "PUBLIC" | "PRIVATE";
+  }) => {
+    try {
+      if (isEditMode && courseId) {
+        await updateCourse(courseId, data);
+        setCourse((prev) => (prev ? { ...prev, ...data } : null));
+        toast.success("Đã cập nhật khóa học!");
+      } else {
+        const newCourse = await createCourse(data);
+        setCourse(newCourse);
+        setCourseId(newCourse.id);
+        setLessons(newCourse.lessons || []);
+        toast.success("Đã tạo khóa học! Bạn có thể thêm bài học.");
+        // Update URL without page reload
+        window.history.replaceState(
+          null,
+          "",
+          `/teacher/courses/${newCourse.id}/edit`,
+        );
+      }
+    } catch (error) {
+      toast.error("Có lỗi xảy ra. Vui lòng thử lại.");
+    }
   };
 
-  const activeLessonType = getActiveLessonType();
-  const activeChapterId = getActiveChapterId();
+  const handleAddLesson = () => {
+    setSelectedItem({ type: "lesson", id: "new", title: "Bài học mới" });
+  };
+
+  const handleLessonSubmit = async (data: { title: string }) => {
+    try {
+      if (selectedItem?.id === "new") {
+        // Create new lesson
+        if (!courseId) return;
+        const newLesson = await createLesson(courseId, data);
+        setLessons((prev) => [...prev, newLesson]);
+        setSelectedItem({
+          type: "lesson",
+          id: newLesson.id,
+          title: newLesson.title,
+        });
+        toast.success("Đã thêm bài học!");
+      } else if (selectedItem?.id) {
+        // Update existing lesson
+        await updateLesson(selectedItem.id, data.title);
+        setLessons((prev) =>
+          prev.map((l) =>
+            l.id === selectedItem.id ? { ...l, title: data.title } : l,
+          ),
+        );
+        toast.success("Đã cập nhật bài học!");
+      }
+    } catch (error) {
+      toast.error("Có lỗi xảy ra. Vui lòng thử lại.");
+    }
+  };
+
+  const handleDeleteLesson = async () => {
+    if (!selectedItem?.id || selectedItem.id === "new") return;
+    setDeleteModal({
+      open: true,
+      type: "lesson",
+      title: selectedItem.title || "bài học này",
+    });
+  };
+
+  const confirmDeleteLesson = async () => {
+    if (!selectedItem?.id || selectedItem.id === "new") return;
+    try {
+      await deleteLesson(selectedItem.id);
+      setLessons((prev) => prev.filter((l) => l.id !== selectedItem.id));
+      setSelectedItem({
+        type: "course",
+        id: courseId || "new",
+        title: course?.name || "Khóa học",
+      });
+      toast.success("Đã xóa bài học!");
+    } catch (error) {
+      toast.error("Không thể xóa bài học.");
+    } finally {
+      setDeleteModal({ open: false, type: "lesson", title: "" });
+    }
+  };
+
+  const handleAddItem = (lessonId: string) => {
+    setPendingLessonId(lessonId);
+    setSelectedItem({
+      type: "item",
+      id: "new",
+      title: "Nội dung mới",
+      lessonId,
+      itemType: "VIDEO",
+    });
+  };
+
+  const handleItemSubmit = async (data: {
+    title: string;
+    description: string;
+    type: "VIDEO" | "TEXT" | "PDF";
+    textContent: string;
+    file: File | null;
+  }) => {
+    const lessonId = selectedItem?.lessonId || pendingLessonId;
+    if (!lessonId) return;
+
+    try {
+      if (selectedItem?.id === "new") {
+        // Create new item
+        await createLessonItem(lessonId, {
+          title: data.title,
+          description: data.description,
+          type: data.type,
+          textContent: data.textContent,
+          file: data.file,
+        });
+        // Fetch lesson detail to get updated items
+        const updatedLesson = await getLessonById(lessonId);
+        if (updatedLesson) {
+          setLessons((prev) =>
+            prev.map((l) => (l.id === lessonId ? updatedLesson : l)),
+          );
+        }
+        toast.success("Đã thêm nội dung!");
+      } else if (selectedItem?.id) {
+        // Update existing item
+        await updateLessonItem(selectedItem.id, {
+          title: data.title,
+          description: data.description,
+          textContent: data.textContent,
+        });
+        // Fetch lesson detail to get updated items
+        const updatedLesson = await getLessonById(lessonId);
+        if (updatedLesson) {
+          setLessons((prev) =>
+            prev.map((l) => (l.id === lessonId ? updatedLesson : l)),
+          );
+        }
+        toast.success("Đã cập nhật nội dung!");
+      }
+    } catch (error) {
+      toast.error("Có lỗi xảy ra. Vui lòng thử lại.");
+    }
+  };
+
+  const handleDeleteItem = async () => {
+    if (!selectedItem?.id || selectedItem.id === "new") return;
+    setDeleteModal({
+      open: true,
+      type: "item",
+      title: selectedItem.title || "nội dung này",
+    });
+  };
+
+  const confirmDeleteItem = async () => {
+    if (!selectedItem?.id || selectedItem.id === "new") return;
+    try {
+      await deleteLessonItem(selectedItem.id);
+      await loadLessons();
+      const lessonId = selectedItem.lessonId;
+      if (lessonId) {
+        const lesson = lessons.find((l) => l.id === lessonId);
+        setSelectedItem({
+          type: "lesson",
+          id: lessonId,
+          title: lesson?.title || "Bài học",
+        });
+      }
+      toast.success("Đã xóa nội dung!");
+    } catch (error) {
+      toast.error("Không thể xóa nội dung.");
+    } finally {
+      setDeleteModal({ open: false, type: "item", title: "" });
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteModal.type === "lesson") {
+      await confirmDeleteLesson();
+    } else {
+      await confirmDeleteItem();
+    }
+  };
+
+  // Get current lesson for item form
+  const getCurrentLesson = () => {
+    const lessonId = selectedItem?.lessonId || pendingLessonId;
+    return lessons.find((l) => l.id === lessonId);
+  };
+
+  // Get lesson index
+  const getLessonIndex = (lessonId: string) => {
+    return lessons.findIndex((l) => l.id === lessonId) + 1;
+  };
+
+  // Render Form based on selection
+  const renderForm = () => {
+    if (!selectedItem) return null;
+
+    switch (selectedItem.type) {
+      case "course":
+        return (
+          <CourseForm
+            initialData={
+              course
+                ? {
+                    name: course.name,
+                    description: course.description,
+                    thumbnailUrl: course.thumbnailUrl || "",
+                    visibility:
+                      (course.visibility as "PUBLIC" | "PRIVATE") || "PUBLIC",
+                  }
+                : undefined
+            }
+            onSubmit={handleCourseSubmit}
+            loading={creatingCourse || updatingCourse}
+            isEdit={isEditMode && !!course}
+          />
+        );
+
+      case "lesson":
+        const lesson = lessons.find((l) => l.id === selectedItem.id);
+        return (
+          <LessonForm
+            initialData={lesson ? { title: lesson.title } : undefined}
+            lessonNumber={
+              lesson ? getLessonIndex(lesson.id) : lessons.length + 1
+            }
+            onSubmit={handleLessonSubmit}
+            onDelete={
+              selectedItem.id !== "new" ? handleDeleteLesson : undefined
+            }
+            loading={creatingLesson || updatingLesson || deletingLesson}
+            isEdit={selectedItem.id !== "new"}
+          />
+        );
+
+      case "item":
+        const currentLesson = getCurrentLesson();
+        const currentItem = currentLesson?.lessonItems?.find(
+          (i: LessonItem) => i.id === selectedItem.id,
+        );
+
+        // Use detailed item if available and matches selection
+        const displayItem =
+          itemDetail && itemDetail.id === selectedItem.id
+            ? itemDetail
+            : currentItem;
+
+        return (
+          <LessonItemForm
+            initialData={
+              displayItem
+                ? {
+                    title: displayItem.title,
+                    description: displayItem.description,
+                    type: displayItem.type as "VIDEO" | "TEXT" | "PDF",
+                    textContent: displayItem.content?.textContent || "",
+                  }
+                : undefined
+            }
+            lessonTitle={currentLesson?.title}
+            onSubmit={handleItemSubmit}
+            onDelete={selectedItem.id !== "new" ? handleDeleteItem : undefined}
+            loading={creatingItem || updatingItem || deletingItem}
+            isEdit={selectedItem.id !== "new"}
+          />
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  if (loadingCourse && isEditMode) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="flex items-center gap-3">
+          <span className="material-symbols-outlined animate-spin text-2xl text-blue-600">
+            progress_activity
+          </span>
+          <span className="text-slate-600">Đang tải...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <CourseBuilderLayout sidebar={<CourseBuilderSidebar lessonType={activeLessonType} />}>
-      {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 mb-4 text-[#5e7b8d]">
-        <Link to="/teacher/courses" className="text-sm font-medium hover:text-[#0074bd] transition-colors">
-          Khóa học
-        </Link>
-        <span className="material-symbols-outlined text-sm">chevron_right</span>
-        <span className="text-sm font-medium text-slate-900">
-          {isNew ? 'Tạo mới' : 'Trình xây dựng'}
-        </span>
-      </div>
+    <div className="min-h-screen bg-slate-50 flex">
+      {/* Left Navigation Sidebar */}
+      <TeacherSidebar isCollapsed={false} onToggle={() => {}} />
 
-      {/* Page Heading */}
-      <div className="flex items-start justify-between gap-4 mb-8">
-        <h2 className="text-[#101518] text-3xl font-black leading-tight tracking-tight max-w-xl">
-          {isNew ? 'Tạo khóa học mới' : 'Tạo lộ trình học: Lập trình Web Fullstack'}
-        </h2>
-        <div className="flex gap-2 shrink-0">
-          <button className="flex items-center justify-center rounded-lg h-10 px-5 bg-white border border-slate-200 text-slate-700 text-sm font-bold shadow-sm hover:bg-slate-50 transition-all">
-            Xem trước
-          </button>
-          <button className="flex items-center justify-center rounded-lg h-10 px-5 bg-[#0074bd] text-white text-sm font-bold shadow-sm hover:bg-[#0074bd]/90 transition-all">
-            Lưu thay đổi
-          </button>
+      {/* Main Content */}
+      <div className="flex-1 ml-64">
+        {/* Header */}
+        <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
+          <div className="px-8 py-4">
+            {/* Breadcrumbs */}
+            <div className="flex items-center gap-2 mb-2 text-slate-500">
+              <Link
+                to="/teacher/courses"
+                className="text-sm font-medium hover:text-blue-600 transition-colors"
+              >
+                Khóa học
+              </Link>
+              <span className="material-symbols-outlined text-sm">
+                chevron_right
+              </span>
+              <span className="text-sm font-medium text-slate-900">
+                {isEditMode ? "Chỉnh sửa" : "Tạo mới"}
+              </span>
+            </div>
+
+            {/* Title & Actions */}
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-bold text-slate-900">
+                {course?.name || "Khóa học mới"}
+              </h1>
+              <div className="flex gap-2">
+                {courseId && (
+                  <button
+                    onClick={handlePublish}
+                    disabled={publishLoading}
+                    className="flex items-center gap-2 px-4 h-10 bg-green-600 rounded-lg text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {publishLoading ? (
+                      <span className="material-symbols-outlined text-lg animate-spin">
+                        progress_activity
+                      </span>
+                    ) : (
+                      <span className="material-symbols-outlined text-lg">
+                        publish
+                      </span>
+                    )}
+                    Xuất bản
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Split View Content */}
+        <div className="p-8">
+          <div className="grid grid-cols-12 gap-6 max-w-7xl mx-auto">
+            {/* Left Column - Course Outline */}
+            <div className="col-span-4">
+              <div className="sticky top-28">
+                <CourseOutline
+                  course={course}
+                  lessons={lessons}
+                  selectedItem={selectedItem}
+                  onSelectItem={setSelectedItem}
+                  onAddLesson={handleAddLesson}
+                  onAddItem={handleAddItem}
+                  courseCreated={!!courseId}
+                />
+              </div>
+            </div>
+
+            {/* Right Column - Form Editor */}
+            <div className="col-span-8">{renderForm()}</div>
+          </div>
         </div>
       </div>
 
-      {/* Course Info (for new courses) */}
-      {isNew && (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 mb-6">
-          <h3 className="text-lg font-bold text-[#101518] mb-4">Thông tin khóa học</h3>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Tên khóa học</label>
-              <input
-                type="text"
-                placeholder="Nhập tên khóa học..."
-                className="w-full rounded-lg border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Mô tả ngắn</label>
-              <textarea
-                rows={3}
-                placeholder="Mô tả ngắn gọn về khóa học..."
-                className="w-full rounded-lg border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd] resize-none"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Giá khóa học</label>
-                <input
-                  type="text"
-                  placeholder="VD: 500.000đ"
-                  className="w-full rounded-lg border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
-                />
+      {/* Delete Confirmation Modal */}
+      {deleteModal.open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() =>
+              setDeleteModal({ open: false, type: "lesson", title: "" })
+            }
+          />
+          <div className="relative bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="size-12 rounded-full bg-red-100 flex items-center justify-center">
+                <span className="material-symbols-outlined text-red-600 text-2xl">
+                  delete
+                </span>
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Danh mục</label>
-                <select className="w-full rounded-lg border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]">
-                  <option>Lập trình</option>
-                  <option>Thiết kế</option>
-                  <option>Marketing</option>
-                  <option>Kinh doanh</option>
-                </select>
+                <h3 className="text-lg font-bold text-slate-900">
+                  Xác nhận xóa
+                </h3>
+                <p className="text-sm text-slate-500">
+                  Bạn có chắc muốn xóa{" "}
+                  {deleteModal.type === "lesson" ? "bài học" : "nội dung"} "
+                  {deleteModal.title}"?
+                </p>
               </div>
+            </div>
+            <p className="text-sm text-slate-600 mb-6">
+              Hành động này không thể hoàn tác. Tất cả dữ liệu liên quan sẽ bị
+              xóa vĩnh viễn.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() =>
+                  setDeleteModal({ open: false, type: "lesson", title: "" })
+                }
+                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                disabled={deletingLesson || deletingItem}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 transition-colors"
+              >
+                {deletingLesson || deletingItem ? "Đang xóa..." : "Xóa"}
+              </button>
             </div>
           </div>
         </div>
       )}
-
-      {/* Builder Area */}
-      <div className="flex flex-col gap-6">
-        {chapters.map((chapter) => (
-          <ChapterItem
-            key={chapter.id}
-            chapter={chapter}
-            isActive={activeChapterId === chapter.id}
-            activeLessonId={activeLessonId || undefined}
-            onLessonClick={(lessonId) => setActiveLessonId(lessonId)}
-          />
-        ))}
-
-        {/* Add New Chapter */}
-        <button className="flex flex-col items-center justify-center gap-3 py-10 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50/50 text-slate-500 hover:bg-slate-100 hover:border-[#0074bd] transition-all group">
-          <div className="size-12 rounded-full bg-white border border-slate-200 flex items-center justify-center group-hover:scale-110 transition-transform">
-            <span className="material-symbols-outlined text-3xl">add_circle</span>
-          </div>
-          <span className="text-base font-bold">Thêm chương mới</span>
-        </button>
-      </div>
-    </CourseBuilderLayout>
+    </div>
   );
 };
 
