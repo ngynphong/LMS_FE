@@ -4,21 +4,55 @@
 // ==================== API Response Types ====================
 // These match the backend API structure
 
+export interface ApiTeacher {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  imgUrl?: string | null;
+  dob?: string;
+  roles: string[];
+}
+
 export interface ApiCourse {
   id: string;
   name: string;
   description: string;
-  published: boolean;
-  active: boolean;
-  schoolId: string;
-  teacherId: string;
-  teacherName: string;
-  lessonCount: number;
+  thumbnailUrl?: string;
+  status?: string; // DRAFT, PUBLISHED, etc.
+  visibility?: string; // PUBLIC, PRIVATE
+  published?: boolean; // Legacy support
+  active?: boolean;
+  schoolId?: string;
+  teacherId?: string;
+  teacherName?: string;
+  teacher?: ApiTeacher;
+  school?: { id: string; name: string } | null;
+  lessonCount?: number;
   createdAt: string;
   updatedAt: string;
-  // Extended fields (may come from API later)
-  thumbnail?: string;
   progress?: number; // 0-100
+  lessons?: ApiLesson[]; // Lessons included in course detail response
+}
+
+export interface LessonItemContent {
+  id: string;
+  resourceUrl: string;
+  textContent: string;
+  fileSize: number;
+  mimeType: string;
+  updatedAt: string;
+}
+
+export interface LessonItem {
+  id: string;
+  title: string;
+  description: string;
+  type: 'VIDEO' | 'TEXT' | 'QUIZ' | 'PDF' | 'PPT';
+  orderIndex: number;
+  createdAt: string;
+  updatedAt: string;
+  content: LessonItemContent;
 }
 
 export interface ApiLesson {
@@ -26,6 +60,7 @@ export interface ApiLesson {
   title: string;
   orderIndex: number;
   courseId: string;
+  lessonItems?: LessonItem[];
   // Extended fields (may come from API later or use mock)
   duration?: string;
   videoUrl?: string;

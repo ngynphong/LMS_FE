@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   FaPlay,
   FaStar,
   FaCheck,
-  FaChevronDown,
+  
   FaPlayCircle,
+  FaChevronDown,
 } from "react-icons/fa";
 import {
   MdDescription,
@@ -14,52 +15,9 @@ import {
   MdAllInclusive,
   MdDevices,
 } from "react-icons/md";
-
-// Mock data - replace with API call
-const courseData = {
-  id: "1",
-  title: "Lập trình Web Fullstack từ con số 0",
-  description:
-    "Khóa học này được thiết kế để đưa bạn từ một người mới bắt đầu hoàn toàn trở thành một nhà phát triển Fullstack thực thụ. Bạn sẽ học cách xây dựng các ứng dụng web hiện đại từ giao diện người dùng đến hệ thống phía máy chủ.",
-  thumbnail:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuBTnu7tEadFCucDTlaAYiK551HnOiunBrzBEvJvjSAiH44h1-8cIlJ0zQWt1js5roKSbrku9jF1Yu6uDmgceEeVAZLHSSdB2jY1UP1QghqTBHex_Jb0mNvP-ZMM4yivUdNWXLGrvRZu9aFV8zDdwNPUyu1deOWn4fPafTJIIjwePvbzS3GAJrwG8JppgRC-tTGiytn-NeR-z5aUuIb8v-PWmeBsK3-LlvB8-XDv__U9sVQKeLNblrSArbJLXjCVFasNsjbc0gcdOsFB",
-  rating: 4.8,
-  reviews: 1250,
-  students: 15402,
-  instructor: "TS. Nguyễn Văn A",
-  category: "Lập trình",
-  learningPoints: [
-    "Nắm vững HTML5, CSS3, JavaScript (ES6+)",
-    "Làm chủ ReactJS và các thư viện UI hiện đại",
-    "Xây dựng Backend với Node.js và Express",
-    "Quản lý cơ sở dữ liệu MongoDB và SQL",
-  ],
-  includes: [
-    { icon: <MdDescription />, text: "30 bài giảng" },
-    { icon: <MdSchedule />, text: "20 giờ video chất lượng cao" },
-    { icon: <MdWorkspacePremium />, text: "Chứng chỉ hoàn tất khóa học" },
-    { icon: <MdAllInclusive />, text: "Truy cập trọn đời" },
-    { icon: <MdDevices />, text: "Học trên mọi thiết bị" },
-  ],
-  curriculum: [
-    {
-      title: "Tổng quan & Cơ bản về Web",
-      lessons: [
-        { title: "Cách Web hoạt động", duration: "12:45" },
-        { title: "Cấu trúc một trang HTML5", duration: "15:20" },
-        { title: "Selectors trong CSS", duration: "10:30" },
-      ],
-    },
-    {
-      title: "Lập trình JavaScript nâng cao",
-      lessons: [
-        { title: "Closures & Scopes", duration: "20:15" },
-        { title: "Promises & Async/Await", duration: "18:30" },
-        { title: "DOM Manipulation", duration: "16:45" },
-      ],
-    },
-  ],
-};
+import { useCourseDetail } from "../../hooks/useCourses";
+import { getLessonById } from "../../services/lessonService";
+import type { ApiLesson, LessonItem } from "../../types/learningTypes";
 
 const relatedCourses = [
   {
@@ -89,16 +47,100 @@ const relatedCourses = [
 ];
 
 const CourseDetailPage = () => {
+  const { id } = useParams<{ id: string }>();
+  const { data: course, loading, error } = useCourseDetail(id);
+
   const [activeTab, setActiveTab] = useState<"intro" | "content" | "reviews">(
     "intro",
   );
-  const [openSections, setOpenSections] = useState<number[]>([0]);
+  const [openSections, setOpenSections] = useState<number[]>([]);
+  const [lessonItemsMap, setLessonItemsMap] = useState<
+    Record<string, LessonItem[]>
+  >({});
+  const [loadingItems, setLoadingItems] = useState<Record<string, boolean>>({});
 
-  const toggleSection = (index: number) => {
-    setOpenSections((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
-    );
+  const toggleSection = async (index: number) => {
+    const isOpen = openSections.includes(index);
+    if (isOpen) {
+      setOpenSections((prev) => prev.filter((i) => i !== index));
+    } else {
+      setOpenSections((prev) => [...prev, index]);
+      // Fetch items if not already present
+      const lesson = course?.lessons?.[index];
+      if (lesson && !lessonItemsMap[lesson.id]) {
+        setLoadingItems((prev) => ({ ...prev, [lesson.id]: true }));
+        try {
+          // Use getLessonById to fetch full lesson details including items
+          const lessonDetail = await getLessonById(lesson.id);
+          if (lessonDetail && lessonDetail.lessonItems) {
+            setLessonItemsMap((prev) => ({
+              ...prev,
+              [lesson.id]: lessonDetail.lessonItems || [],
+            }));
+          }
+        } catch (err) {
+          console.error("Failed to fetch items for lesson", lesson.id, err);
+        } finally {
+          setLoadingItems((prev) => ({ ...prev, [lesson.id]: false }));
+        }
+      }
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <span className="material-symbols-outlined animate-spin text-4xl text-blue-600">
+          progress_activity
+        </span>
+      </div>
+    );
+  }
+
+  if (error || !course) {
+    return (
+      <div className="min-h-screen flex items-center justify-center flex-col gap-4">
+        <span className="material-symbols-outlined text-4xl text-red-500">
+          error
+        </span>
+        <p className="text-gray-600">
+          {error?.message || "Không tìm thấy khóa học"}
+        </p>
+        <Link to="/courses" className="text-blue-600 hover:underline">
+          Quay lại danh sách
+        </Link>
+      </div>
+    );
+  }
+
+  // Derived data
+  const teacherName =
+    course.teacherName ||
+    (course.teacher
+      ? `${course.teacher.firstName} ${course.teacher.lastName}`
+      : "Giảng viên");
+  const rating = 5.0; // Placeholder
+  const reviewCount = 0; // Placeholder
+  const studentCount = 0; // Placeholder
+  const schoolName = course.school?.name || "LMS Platform";
+
+  const includes = [
+    {
+      icon: <MdDescription />,
+      text: `${course?.lessons?.length || 0} chương học`,
+    },
+    { icon: <MdSchedule />, text: "Truy cập mọi lúc" },
+    { icon: <MdWorkspacePremium />, text: "Chứng chỉ hoàn tất" },
+    { icon: <MdAllInclusive />, text: "Truy cập trọn đời" },
+    { icon: <MdDevices />, text: "Học trên mọi thiết bị" },
+  ];
+
+  const learningPoints = [
+    "Nắm vững kiến thức nền tảng và nâng cao",
+    "Làm chủ các công cụ và kỹ thuật mới nhất",
+    "Xây dựng dự án thực tế",
+    "Phát triển tư duy giải quyết vấn đề",
+  ];
 
   return (
     <div className="min-h-screen bg-[#f8fafc]">
@@ -111,12 +153,10 @@ const CourseDetailPage = () => {
             </Link>
             <span className="mx-2">/</span>
             <Link to="/courses" className="hover:color-primary">
-              {courseData.category}
+              {schoolName}
             </Link>
             <span className="mx-2">/</span>
-            <span className="font-medium text-gray-900">
-              {courseData.title}
-            </span>
+            <span className="font-medium text-gray-900">{course.name}</span>
           </nav>
         </div>
       </div>
@@ -128,8 +168,8 @@ const CourseDetailPage = () => {
             {/* Video Player */}
             <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-black shadow-xl">
               <img
-                src={courseData.thumbnail}
-                alt="Course Preview"
+                src={course.thumbnailUrl || ""}
+                alt={course.name}
                 className="w-full h-full object-cover opacity-60"
               />
               <div className="absolute inset-0 flex items-center justify-center group cursor-pointer hover:bg-black/20 transition-colors">
@@ -179,31 +219,31 @@ const CourseDetailPage = () => {
                 {activeTab === "intro" && (
                   <div className="flex flex-col gap-6">
                     <h1 className="text-3xl font-bold tracking-tight">
-                      {courseData.title}
+                      {course.name}
                     </h1>
 
                     <div className="flex items-center gap-4 flex-wrap">
                       <div className="flex items-center gap-1 text-yellow-500">
                         <FaStar className="text-lg" />
                         <span className="font-bold text-gray-900">
-                          {courseData.rating}
+                          {rating}
                         </span>
                       </div>
                       <span className="text-gray-600 text-sm">
-                        ({courseData.reviews.toLocaleString("vi-VN")} đánh giá)
+                        ({reviewCount} đánh giá)
                       </span>
                       <span className="text-gray-400">•</span>
                       <span className="text-gray-600 text-sm">
-                        {courseData.students.toLocaleString("vi-VN")} học viên
+                        {studentCount} học viên
                       </span>
                     </div>
 
                     <p className="text-gray-700 leading-relaxed">
-                      {courseData.description}
+                      {course.description || "Chưa có mô tả chi tiết."}
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
-                      {courseData.learningPoints.map((point, index) => (
+                      {learningPoints.map((point, index) => (
                         <div key={index} className="flex items-start gap-2">
                           <FaCheck className="text-green-500 text-sm mt-1 shrink-0" />
                           <span className="text-gray-700">{point}</span>
@@ -217,51 +257,84 @@ const CourseDetailPage = () => {
                   <div className="flex flex-col gap-4">
                     <h3 className="text-xl font-bold">Nội dung khóa học</h3>
                     <div className="flex flex-col gap-2">
-                      {courseData.curriculum.map((section, index) => (
-                        <div
-                          key={index}
-                          className="border border-gray-200 rounded-xl overflow-hidden"
-                        >
-                          <button
-                            className="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition-colors"
-                            onClick={() => toggleSection(index)}
-                          >
-                            <div className="flex items-center gap-3">
-                              <span className="font-bold color-primary">
-                                Phần {index + 1}:
-                              </span>
-                              <span className="font-bold text-gray-900">
-                                {section.title}
-                              </span>
-                            </div>
-                            <FaChevronDown
-                              className={`text-gray-600 transition-transform ${
-                                openSections.includes(index) ? "rotate-180" : ""
-                              }`}
-                            />
-                          </button>
-                          {openSections.includes(index) && (
-                            <div className="p-5 border-t border-gray-200 flex flex-col gap-4">
-                              {section.lessons.map((lesson, lessonIndex) => (
-                                <div
-                                  key={lessonIndex}
-                                  className="flex items-center justify-between text-sm"
+                      {course.lessons && course.lessons.length > 0 ? (
+                        course.lessons.map(
+                          (lesson: ApiLesson, index: number) => {
+                            const items =
+                              lessonItemsMap[lesson.id] ||
+                              lesson.lessonItems ||
+                              [];
+                            const isLoading = loadingItems[lesson.id];
+
+                            return (
+                              <div
+                                key={lesson.id}
+                                className="border border-gray-200 rounded-xl overflow-hidden"
+                              >
+                                <button
+                                  className="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition-colors"
+                                  onClick={() => toggleSection(index)}
                                 >
                                   <div className="flex items-center gap-3">
-                                    <FaPlayCircle className="text-gray-400" />
-                                    <span className="text-gray-700">
-                                      {lessonIndex + 1}. {lesson.title}
+                                    <span className="font-bold color-primary">
+                                      Phần {index + 1}:
+                                    </span>
+                                    <span className="font-bold text-gray-900">
+                                      {lesson.title}
                                     </span>
                                   </div>
-                                  <span className="text-gray-600">
-                                    {lesson.duration}
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      ))}
+                                  <FaChevronDown
+                                    className={`text-gray-600 transition-transform ${
+                                      openSections.includes(index)
+                                        ? "rotate-180"
+                                        : ""
+                                    }`}
+                                  />
+                                </button>
+                                {openSections.includes(index) && (
+                                  <div className="p-5 border-t border-gray-200 flex flex-col gap-4">
+                                    {isLoading ? (
+                                      <div className="flex justify-center p-2">
+                                        <span className="material-symbols-outlined animate-spin text-2xl text-blue-600">
+                                          progress_activity
+                                        </span>
+                                      </div>
+                                    ) : items && items.length > 0 ? (
+                                      items.map(
+                                        (
+                                          item: LessonItem,
+                                          itemIndex: number,
+                                        ) => (
+                                          <div
+                                            key={item.id}
+                                            className="flex items-center justify-between text-sm"
+                                          >
+                                            <div className="flex items-center gap-3">
+                                              <FaPlayCircle className="text-gray-400" />
+                                              <span className="text-gray-700">
+                                                {itemIndex + 1}. {item.title}
+                                              </span>
+                                            </div>
+                                            <span className="text-gray-600">
+                                              {item.type}
+                                            </span>
+                                          </div>
+                                        ),
+                                      )
+                                    ) : (
+                                      <p className="text-sm text-gray-500 italic">
+                                        Chưa có nội dung cho phần này.
+                                      </p>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          },
+                        )
+                      ) : (
+                        <p className="text-gray-500">Chưa có nội dung.</p>
+                      )}
                     </div>
                   </div>
                 )}
@@ -280,18 +353,20 @@ const CourseDetailPage = () => {
             <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
               <div
                 className="aspect-video w-full bg-cover bg-center"
-                style={{ backgroundImage: `url('${courseData.thumbnail}')` }}
+                style={{
+                  backgroundImage: `url('${course.thumbnailUrl || ""}')`,
+                }}
               />
               <div className="p-6 flex flex-col gap-6">
                 <div className="text-center">
                   <p className="text-sm text-gray-600 mb-1">Giảng viên</p>
                   <p className="text-lg font-bold text-gray-900">
-                    {courseData.instructor}
+                    {teacherName}
                   </p>
                 </div>
 
                 <div className="flex flex-col gap-3">
-                  <button className="w-full h-12 color-primary-bg text-white font-bold rounded-lg hover:opacity-90 transition-all shadow-md">
+                  <button className="w-full h-12 color-primary-bg text-white font-bold rounded-lg hover:cursor-pointer hover:translate-y-[-2px] duration-300 transition-all shadow-md">
                     Bắt đầu học
                   </button>
                 </div>
@@ -299,7 +374,7 @@ const CourseDetailPage = () => {
                 <div className="flex flex-col gap-4 pt-2">
                   <p className="font-bold text-sm">Khóa học này bao gồm:</p>
                   <ul className="flex flex-col gap-3">
-                    {courseData.includes.map((item, index) => (
+                    {includes.map((item, index) => (
                       <li
                         key={index}
                         className="flex items-center gap-3 text-sm text-gray-700"
@@ -332,7 +407,7 @@ const CourseDetailPage = () => {
             {relatedCourses.map((course) => (
               <Link
                 key={course.id}
-                to={`/courses/${course.id}`}
+                to={`/courses/${course.id}`} // Mock link since these are fake related courses
                 className="flex flex-col bg-white rounded-xl overflow-hidden border border-gray-200 transition-all hover:-translate-y-1 hover:shadow-lg group"
               >
                 <div

@@ -109,7 +109,7 @@ const TeacherSidebar = ({
         className={`fixed inset-y-0 left-0 bg-white border-r border-gray-200 flex flex-col z-50 transition-all duration-300 transform
               ${isMobileOpen ? "translate-x-0 w-64 shadow-2xl" : "-translate-x-full lg:translate-x-0"}
               ${isCollapsed ? "lg:w-20" : "lg:w-64"}
-              overflow-y-auto overflow-x-hidden
+              overflow-visible
           `}
       >
         <div className="flex flex-col flex-1 min-h-0">
@@ -125,11 +125,7 @@ const TeacherSidebar = ({
             {/* Toggle Button */}
             <button
               onClick={onToggle}
-              className={
-                !isCollapsed
-                  ? "absolute right-1 top-10 bg-white p-1 text-gray-500 hover:color-primary hover:bg-gray-100 rounded-full text-xs hidden lg:block"
-                  : "hidden"
-              }
+              className="absolute -right-3 top-8 bg-white border border-gray-200 rounded-full p-1 text-gray-500 hover:color-primary shadow-sm z-50 text-xs hidden lg:flex items-center justify-center transition-colors"
             >
               {isCollapsed ? (
                 <ChevronRight animateOnHover animation="path-loop" size={14} />

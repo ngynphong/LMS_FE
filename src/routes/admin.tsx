@@ -3,6 +3,8 @@ import AdminLayout from "../layouts/AdminLayout";
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 import AdminUserManagementPage from "../pages/admin/AdminUserManagementPage";
 import ProtectedRoute from "./ProtectedRoute";
+import AdminCourseListPage from "../pages/admin/AdminCourseListPage";
+import AdminCourseDetailPage from "../pages/admin/AdminCourseDetailPage";
 
 /**
  * Admin Routes
@@ -27,11 +29,11 @@ const adminRoutes: RouteObject[] = [
       },
       {
         path: "courses",
-        element: (
-          <div className="p-8 text-[#101518]">
-            Trang Quản lý khóa học - Coming Soon
-          </div>
-        ),
+        element: <AdminCourseListPage />,
+      },
+      {
+        path: "courses/:id",
+        element: <AdminCourseDetailPage />,
       },
       {
         path: "transactions",

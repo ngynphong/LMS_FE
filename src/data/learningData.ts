@@ -18,7 +18,7 @@ export const mockCourses: ApiCourse[] = [
     lessonCount: 12,
     createdAt: '2024-01-15T00:00:00Z',
     updatedAt: '2024-01-20T00:00:00Z',
-    thumbnail: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80',
     progress: 40
   },
   {
@@ -33,7 +33,7 @@ export const mockCourses: ApiCourse[] = [
     lessonCount: 8,
     createdAt: '2024-02-01T00:00:00Z',
     updatedAt: '2024-02-10T00:00:00Z',
-    thumbnail: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=800&q=80',
+    thumbnailUrl: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=800&q=80',
     progress: 20
   }
 ];

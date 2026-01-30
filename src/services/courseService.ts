@@ -1,82 +1,128 @@
-// Course Learning Service
-// Uses mock data for now, ready for API integration
-// Simply replace mock functions with API calls when backend is ready
-
+import { mockQuizzes } from '@/data/learningData';
+import axiosInstance from '../config/axios';
+import type { CourseListResponse, GetCoursesParams, CreateCourseRequest, UpdateCourseRequest } from '../types/courseApi';
 import type { 
   ApiCourse, 
-  ApiLesson, 
-  LessonQuiz,
-  CourseProgress
+  CourseProgress,
+  LessonQuiz
 } from '../types/learningTypes';
-import { mockCourses, mockLessons, mockQuizzes } from '../data/learningData';
-// Uncomment below when API is ready:
-// import axiosInstance from '../config/axios';
+import { getLessonsByCourseId } from './lessonService';
 
-// ==================== Course APIs ====================
+export const getCourses = async (params: GetCoursesParams): Promise<CourseListResponse> => {
+    try {
+        const response = await axiosInstance.get<CourseListResponse>('/courses', {
+            params: {
+                pageNo: params.pageNo || 0,
+                pageSize: params.pageSize || 10,
+                sorts: params.sorts,
+                keyword: params.keyword
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getAdminCourses = async (params: GetCoursesParams): Promise<CourseListResponse> => {
+    try {
+        const response = await axiosInstance.get<CourseListResponse>('/courses/admin', {
+            params: {
+                pageNo: params.pageNo || 0,
+                pageSize: params.pageSize || 10,
+                sorts: params.sorts,
+                keyword: params.keyword,
+                status: params.status,
+                visibility: params.visibility
+            }
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const approveCourse = async (id: string, status: string): Promise<void> => {
+    try {
+        await axiosInstance.patch(`/courses/${id}/approval`, { status });
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const banCourse = async (id: string): Promise<void> => {
+    try {
+    await axiosInstance.patch(`/courses/${id}/ban`, { status: "BANNED" });
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const reorderLessons = async (courseId: string, lessonIds: string[]): Promise<void> => {
+    try {
+        await axiosInstance.put(`/courses/${courseId}/lessons/reorder`, { lessonIds });
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const createCourse = async (data: CreateCourseRequest): Promise<ApiCourse> => {
+    try {
+        const res = await axiosInstance.post<{ code: number; message: string; data: ApiCourse }>(`/courses`, data);
+        return res.data.data;
+    } catch (error) {
+        throw error;
+    }
+};
 
 export const getCourseById = async (courseId: string): Promise<ApiCourse | null> => {
-  // TODO: Replace with API call when ready
-  // const response = await axiosInstance.get<ApiCourse>(`/courses/${courseId}`);
-  // return response.data;
-  
-  // Mock implementation
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const course = mockCourses.find((c: ApiCourse) => c.id === courseId);
-      resolve(course || null);
-    }, 300);
-  });
+  const response = await axiosInstance.get<{ code: number; message: string; data: ApiCourse }>(`/courses/${courseId}`);
+  return response.data.data;
 };
 
-export const getMyCourses = async (): Promise<ApiCourse[]> => {
-  // TODO: Replace with API call when ready
-  // const response = await axiosInstance.get<ApiCourse[]>('/my-courses');
-  // return response.data;
-  
-  // Mock implementation
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(mockCourses);
-    }, 300);
+export const getMyCourses = async (params?: {
+  pageNo?: number;
+  pageSize?: number;
+  sorts?: string;
+  keyword?: string;
+  status?: string;
+  visibility?: string;
+}): Promise<{ items: ApiCourse[]; totalElement: number; totalPage: number }> => {
+  const response = await axiosInstance.get<{ code: number; message: string; data: { items: ApiCourse[]; totalElement: number; totalPage: number } }>('/courses/my-courses', {
+    params: {
+      pageNo: params?.pageNo || 0,
+      pageSize: params?.pageSize || 10,
+      sorts: params?.sorts || 'createdAt:desc',
+      keyword: params?.keyword,
+      status: params?.status,
+      visibility: params?.visibility
+    }
   });
+  return response.data.data;
 };
 
-// ==================== Lesson APIs ====================
-
-export const getLessonsByCourseId = async (courseId: string): Promise<ApiLesson[]> => {
-  // TODO: Replace with API call when ready
-  // const response = await axiosInstance.get<ApiLesson[]>(`/courses/${courseId}/lessons`);
-  // return response.data;
-  
-  // Mock implementation
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const lessons = mockLessons.filter((l: ApiLesson) => l.courseId === courseId);
-      resolve(lessons.sort((a: ApiLesson, b: ApiLesson) => a.orderIndex - b.orderIndex));
-    }, 300);
-  });
+export const deleteCourse = async (courseId: string): Promise<void> => {
+    try {
+        await axiosInstance.delete(`/courses/${courseId}`);
+    } catch (error) {
+        throw error;
+    }
 };
 
-export const getLessonById = async (lessonId: string): Promise<ApiLesson | null> => {
-  // TODO: Replace with API call when ready
-  // const response = await axiosInstance.get<ApiLesson>(`/lessons/${lessonId}`);
-  // return response.data;
-  
-  // Mock implementation
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const lesson = mockLessons.find((l: ApiLesson) => l.id === lessonId);
-      resolve(lesson || null);
-    }, 200);
-  });
+export const updateCourse = async (courseId: string, data: UpdateCourseRequest): Promise<ApiCourse> => {
+    try {
+        const res = await axiosInstance.put<{ code: number; message: string; data: ApiCourse }>(`/courses/${courseId}`, data);
+        return res.data.data;
+    } catch (error) {
+        throw error;
+    }
 };
 
 // ==================== Quiz APIs ====================
 
 export const getQuizByLessonId = async (lessonId: string): Promise<LessonQuiz | null> => {
-  // TODO: Replace with API call when ready
-  // const response = await axiosInstance.get<LessonQuiz>(`/lessons/${lessonId}/quiz`);
-  // return response.data;
+  const response = await axiosInstance.get<LessonQuiz>(`/lessons/${lessonId}/quiz`);
+  return response.data;
   
   // Mock implementation
   return new Promise((resolve) => {
