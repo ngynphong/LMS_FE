@@ -81,7 +81,7 @@ const CourseListPage = () => {
         </div>
         <Link
           to="/teacher/courses/new"
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#0074bd] text-white text-sm font-bold shadow-sm hover:bg-[#0074bd]/90 transition-all"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-lg color-primary-bg text-white text-sm font-bold shadow-sm hover:translate-y-[-2px] duration-300 transition-all"
         >
           <span className="material-symbols-outlined text-lg">add</span>
           Tạo khóa học mới
@@ -222,7 +222,7 @@ const CourseListPage = () => {
                 <div className="flex gap-2">
                   <Link
                     to={`/teacher/courses/${course.id}/edit`}
-                    className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-100 hover:translate-y-[-2px] duration-300 transition-all"
                   >
                     <span className="material-symbols-outlined text-sm">
                       edit
@@ -231,7 +231,8 @@ const CourseListPage = () => {
                   </Link>
                   <Link
                     to={`/teacher/courses/${course.id}`}
-                    className="flex items-center justify-center px-3 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-200 transition-colors"
+                    className="flex items-center justify-center px-3 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-200 hover:translate-y-[-2px] duration-300 transition-all"
+                    title="Xem khóa học"
                   >
                     <span className="material-symbols-outlined text-sm">
                       visibility

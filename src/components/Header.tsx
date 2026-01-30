@@ -79,7 +79,7 @@ const Header = () => {
       </div>
 
       {/* Main Header */}
-      <header className="w-full px-4 md:px-10 mb-8 md:mb-12 mt-2 sticky top-12 z-40">
+      <header className="w-full px-4 md:px-10 mb-8 md:mb-12 mt-2 sticky top-14 z-40">
         <div className="max-w-[1280px] mx-auto bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/40 px-4 md:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4 lg:gap-12">
             {/* Mobile Menu Button */}
@@ -137,12 +137,12 @@ const Header = () => {
               </Link>
             </nav>
           </div>
-          <button className="hidden lg:flex color-primary-bg text-white px-6 py-2.5 rounded-xl font-bold items-center gap-2 shadow-lg shadow-[#0077BE]/20 hover:scale-105 transition-transform">
+          <Link to="/courses" className="hidden lg:flex color-primary-bg text-white px-6 py-2.5 rounded-xl font-bold items-center gap-2 shadow-lg shadow-[#0077BE]/20 hover:cursor-pointer hover:translate-y-[-2px] duration-300 transition-all">
             <span className="material-symbols-outlined">
               <IoSchool />
             </span>{" "}
             Bắt đầu học
-          </button>
+          </Link>
         </div>
       </header>
 

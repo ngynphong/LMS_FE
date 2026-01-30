@@ -2,6 +2,7 @@ export interface CourseItem {
     id: string;
     name: string;
     thumbnailUrl: string;
+    description: string;
     status: string; // e.g., "DRAFT", "PUBLISHED", etc.
     visibility: string; // e.g., "PUBLIC", "PRIVATE"
     teacherName: string;
@@ -65,7 +66,6 @@ export interface UpdateLessonRequest {
 export interface CreateLessonItemValues {
     title?: string;
     description?: string;
-    type?: string;
     textContent?: string;
     file?: File | null;
 }

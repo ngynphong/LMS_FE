@@ -1,5 +1,6 @@
 import { createPortal } from "react-dom";
-import { MdClose, MdWarning } from "react-icons/md";
+import { MdClose, MdDangerous, MdWarning } from "react-icons/md";
+import { FaInfoCircle } from "react-icons/fa";
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -29,11 +30,11 @@ export const ConfirmationModal = ({
   const getIcon = () => {
     switch (variant) {
       case "danger":
-        return <MdWarning className="text-red-600 text-3xl" />;
+        return <MdDangerous className="text-red-600 text-3xl" />;
       case "warning":
         return <MdWarning className="text-orange-500 text-3xl" />;
       default:
-        return <MdWarning className="text-blue-500 text-3xl" />;
+        return <FaInfoCircle className="text-blue-500 text-3xl" />;
     }
   };
 

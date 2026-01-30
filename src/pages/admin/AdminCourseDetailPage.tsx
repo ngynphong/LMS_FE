@@ -1,16 +1,41 @@
 import { useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import { useCourseDetail } from "../../hooks/useCourses";
+import { useParams, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import {
+  useCourseDetail,
+  useApproveCourse,
+  useBanCourse,
+} from "../../hooks/useCourses";
 import { getLessonById, getLessonItemById } from "../../services/lessonService";
 import type { LessonItem, ApiLesson } from "../../types/learningTypes";
+import { ConfirmationModal } from "../../components/common/ConfirmationModal";
+import LoadingOverlay from "../../components/common/LoadingOverlay";
 
-const TeacherCourseDetailPage = () => {
+const AdminCourseDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { data: course, loading, error, refetch } = useCourseDetail(id);
   const [lessonsWithItems, setLessonsWithItems] = useState<ApiLesson[]>([]);
   const [viewItem, setViewItem] = useState<LessonItem | null>(null);
   const [loadingView, setLoadingView] = useState(false);
+
+  // Modal State
+  const [modalConfig, setModalConfig] = useState<{
+    isOpen: boolean;
+    type: "APPROVE" | "BAN" | null;
+    title: string;
+    message: string;
+    variant: "info" | "danger";
+  }>({
+    isOpen: false,
+    type: null,
+    title: "",
+    message: "",
+    variant: "info",
+  });
+
+  const { approve, loading: approveLoading } = useApproveCourse();
+  const { ban, loading: banLoading } = useBanCourse();
 
   useEffect(() => {
     if (course?.lessons) {
@@ -93,7 +118,6 @@ const TeacherCourseDetailPage = () => {
 
   const handleViewItem = async (item: LessonItem) => {
     setLoadingView(true);
-    // Show modal immediately with loading/existing data
     setViewItem(item);
     try {
       const detail = await getLessonItemById(item.id);
@@ -111,13 +135,50 @@ const TeacherCourseDetailPage = () => {
     setViewItem(null);
   };
 
+  const openBanModal = () => {
+    setModalConfig({
+      isOpen: true,
+      type: "BAN",
+      title: "Khóa/Từ chối khóa học",
+      message: `Bạn có chắc chắn muốn khóa/từ chối khóa học "${course.name}"? Hành động này sẽ ẩn khóa học khỏi hệ thống.`,
+      variant: "danger",
+    });
+  };
+
+  const handleConfirmAction = async () => {
+    if (!id || !modalConfig.type) return;
+
+    try {
+      if (modalConfig.type === "APPROVE") {
+        await approve(id, "PUBLISHED");
+        toast.success("Đã phê duyệt khóa học thành công");
+      } else if (modalConfig.type === "BAN") {
+        await ban(id);
+        toast.success("Đã khóa khóa học thành công");
+      }
+      refetch();
+      setModalConfig((prev) => ({ ...prev, isOpen: false }));
+    } catch (error) {
+      toast.error(
+        modalConfig.type === "APPROVE"
+          ? "Phê duyệt thất bại"
+          : "Khóa khóa học thất bại",
+      );
+    }
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-[#101518] p-8">
+      <LoadingOverlay
+        isLoading={approveLoading || banLoading}
+        message="Đang xử lý..."
+      />
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => navigate("/teacher/courses")}
+            onClick={() => navigate("/admin/courses")}
             className="p-2 hover:bg-slate-200 rounded-lg transition-colors"
           >
             <span className="material-symbols-outlined text-slate-600">
@@ -129,13 +190,17 @@ const TeacherCourseDetailPage = () => {
             <p className="text-sm text-slate-500 mt-1">Chi tiết khóa học</p>
           </div>
         </div>
-        <Link
-          to={`/teacher/courses/${id}/edit`}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 transition-colors"
-        >
-          <span className="material-symbols-outlined text-lg">edit</span>
-          Chỉnh sửa
-        </Link>
+        <div className="flex gap-2">
+          {course.status !== "BANNED" && (
+            <button
+              onClick={openBanModal}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-red-600 text-white text-sm font-bold hover:translate-y-[-2px] transition-all duration-300 cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-lg">block</span>
+              Khóa / Từ chối
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Course Info Card */}
@@ -165,10 +230,16 @@ const TeacherCourseDetailPage = () => {
                 className={`px-3 py-1 rounded-full text-xs font-medium ${
                   course.status === "PUBLISHED"
                     ? "bg-green-100 text-green-700"
-                    : "bg-amber-100 text-amber-700"
+                    : course.status === "BANNED"
+                      ? "bg-red-100 text-red-700"
+                      : "bg-amber-100 text-amber-700"
                 }`}
               >
-                {course.status === "PUBLISHED" ? "Đã xuất bản" : "Bản nháp"}
+                {course.status === "PUBLISHED"
+                  ? "Đang hoạt động"
+                  : course.status === "BANNED"
+                    ? "Đã khóa"
+                    : "Nháp"}
               </span>
               <span
                 className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -203,8 +274,8 @@ const TeacherCourseDetailPage = () => {
               <div className="bg-slate-50 rounded-lg p-3">
                 <p className="text-xs text-slate-500">Cập nhật</p>
                 <p className="text-sm font-medium text-slate-900">
-                  {course.updatedAt
-                    ? new Date(course.updatedAt).toLocaleDateString("vi-VN")
+                  {course.createdAt
+                    ? new Date(course.createdAt).toLocaleDateString("vi-VN")
                     : "N/A"}
                 </p>
               </div>
@@ -219,13 +290,6 @@ const TeacherCourseDetailPage = () => {
           <h2 className="text-lg font-bold text-slate-900">
             Nội dung khóa học
           </h2>
-          <Link
-            to={`/teacher/courses/${id}/edit`}
-            className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 font-medium"
-          >
-            <span className="material-symbols-outlined text-sm">add</span>
-            Thêm bài học
-          </Link>
         </div>
 
         {lessonsWithItems && lessonsWithItems.length > 0 ? (
@@ -295,20 +359,13 @@ const TeacherCourseDetailPage = () => {
               Chưa có bài học nào
             </h3>
             <p className="text-sm text-slate-500 mb-4">
-              Bắt đầu thêm bài học cho khóa học này
+              Khóa học này chưa có nội dung nào được thêm vào.
             </p>
-            <Link
-              to={`/teacher/courses/${id}/edit`}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold"
-            >
-              <span className="material-symbols-outlined text-lg">add</span>
-              Thêm bài học
-            </Link>
           </div>
         )}
       </div>
 
-      {/* View Item Modal */}
+      {/* View Item Modal - REUSED from TeacherCourseDetailPage */}
       {viewItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
@@ -406,7 +463,6 @@ const TeacherCourseDetailPage = () => {
                                   </span>
                                 </a>
                               </div>
-
                               {viewItem.type === "PDF" && (
                                 <div className="flex flex-col gap-3">
                                   <div className="border border-slate-200 rounded-lg overflow-hidden bg-slate-900 h-[800px] shadow-sm">
@@ -416,37 +472,6 @@ const TeacherCourseDetailPage = () => {
                                       title="PDF Preview"
                                     />
                                   </div>
-                                </div>
-                              )}
-
-                              {viewItem.type === "PPT" && (
-                                <div className="border border-slate-200 rounded-lg bg-slate-50 h-[300px] flex flex-col items-center justify-center gap-4 text-center p-6">
-                                  <div className="size-16 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
-                                    <span className="material-symbols-outlined text-3xl">
-                                      co_present
-                                    </span>
-                                  </div>
-                                  <div>
-                                    <p className="font-semibold text-slate-900">
-                                      Không thể xem xem trước file PPT
-                                    </p>
-                                    <p className="text-slate-500 text-sm mt-1 max-w-md">
-                                      Trình xem trực tuyến không hỗ trợ file này
-                                      (do định dạng hoặc bảo mật). Vui lòng tải
-                                      về để xem.
-                                    </p>
-                                  </div>
-                                  <a
-                                    href={viewItem.content.resourceUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
-                                  >
-                                    <span className="material-symbols-outlined text-lg">
-                                      download
-                                    </span>
-                                    Tải xuống file
-                                  </a>
                                 </div>
                               )}
                             </div>
@@ -474,8 +499,19 @@ const TeacherCourseDetailPage = () => {
           </div>
         </div>
       )}
+
+      <ConfirmationModal
+        isOpen={modalConfig.isOpen}
+        onClose={() => setModalConfig((prev) => ({ ...prev, isOpen: false }))}
+        onConfirm={handleConfirmAction}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        variant={modalConfig.variant}
+        isLoading={banLoading || approveLoading}
+        confirmLabel={modalConfig.type === "APPROVE" ? "Phê duyệt" : "Khóa"}
+      />
     </div>
   );
 };
 
-export default TeacherCourseDetailPage;
+export default AdminCourseDetailPage;

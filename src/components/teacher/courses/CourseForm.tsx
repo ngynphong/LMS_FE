@@ -14,6 +14,8 @@ interface CourseFormProps {
   isEdit?: boolean;
 }
 
+import LoadingOverlay from "../../common/LoadingOverlay";
+
 const CourseForm = ({
   initialData,
   onSubmit,
@@ -42,7 +44,13 @@ const CourseForm = ({
   };
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 relative overflow-hidden">
+      <LoadingOverlay
+        isLoading={loading}
+        message="Đang xử lý..."
+        iconColor="text-blue-600"
+      />
+
       <div className="flex items-center gap-3 mb-6">
         <div className="size-10 rounded-lg bg-blue-100 flex items-center justify-center">
           <span className="material-symbols-outlined text-blue-600">
@@ -71,12 +79,12 @@ const CourseForm = ({
               setFormData((prev) => ({ ...prev, name: e.target.value }))
             }
             placeholder="VD: Lập trình Web Fullstack với React & Node.js"
-            className={`w-full rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500 ${
+            className={`w-full rounded-sm p-1 text-sm border border-gray-200 focus:ring-1 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF] ${
               (formData.name?.length || 0) > 0 &&
               ((formData.name?.length || 0) < 5 ||
                 (formData.name?.length || 0) > 255)
                 ? "border-red-300 focus:ring-red-500 focus:border-red-500"
-                : "border-slate-200"
+                : "border-gray-200"
             }`}
             minLength={5}
             maxLength={255}
@@ -109,7 +117,7 @@ const CourseForm = ({
               setFormData((prev) => ({ ...prev, description: e.target.value }))
             }
             placeholder="Mô tả ngắn gọn về nội dung và mục tiêu của khóa học..."
-            className="w-full rounded-lg border-slate-200 text-sm focus:ring-blue-500 focus:border-blue-500 resize-none"
+            className="w-full rounded-sm p-1 border border-gray-200 focus:ring-1 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF] resize-none"
           />
         </div>
 
@@ -124,7 +132,7 @@ const CourseForm = ({
               setFormData((prev) => ({ ...prev, thumbnailUrl: e.target.value }))
             }
             placeholder="https://example.com/image.jpg"
-            className="w-full rounded-lg border-slate-200 text-sm focus:ring-blue-500 focus:border-blue-500"
+            className="w-full rounded-sm p-1 border border-gray-200 focus:ring-1 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF]"
           />
           <p className="text-xs text-slate-400 mt-1">
             Để trống nếu chưa có ảnh thumbnail

@@ -100,7 +100,7 @@ const StudentListPage = () => {
         </div>
         <button
           onClick={() => setIsImportModalOpen(true)}
-          className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-[#0074bd] text-white text-sm font-bold shadow-sm hover:bg-[#0074bd]/90 transition-all w-full sm:w-auto"
+          className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg color-primary-bg text-white text-sm font-bold shadow-sm hover:bg-[#0074bd]/90 transition-all w-full sm:w-auto"
         >
           <span className="material-symbols-outlined text-lg">upload_file</span>
           Nhập học sinh

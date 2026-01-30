@@ -49,6 +49,7 @@ const CourseBuilderPage = () => {
     title: string;
   }>({ open: false, type: "lesson", title: "" });
   const [itemDetail, setItemDetail] = useState<LessonItem | null>(null);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   // Fetch item detail when selected
   useEffect(() => {
@@ -231,7 +232,6 @@ const CourseBuilderPage = () => {
   const handleItemSubmit = async (data: {
     title: string;
     description: string;
-    type: "VIDEO" | "TEXT" | "PDF";
     textContent: string;
     file: File | null;
   }) => {
@@ -244,7 +244,6 @@ const CourseBuilderPage = () => {
         await createLessonItem(lessonId, {
           title: data.title,
           description: data.description,
-          type: data.type,
           textContent: data.textContent,
           file: data.file,
         });
@@ -388,8 +387,10 @@ const CourseBuilderPage = () => {
                 ? {
                     title: displayItem.title,
                     description: displayItem.description,
-                    type: displayItem.type as "VIDEO" | "TEXT" | "PDF",
+                    type: displayItem.type as "VIDEO" | "TEXT" | "PDF" | "PPT",
                     textContent: displayItem.content?.textContent || "",
+                    currentFileUrl: displayItem.content?.resourceUrl || "",
+                    currentFileName: displayItem.title,
                   }
                 : undefined
             }
@@ -422,10 +423,15 @@ const CourseBuilderPage = () => {
   return (
     <div className="min-h-screen bg-slate-50 flex">
       {/* Left Navigation Sidebar */}
-      <TeacherSidebar isCollapsed={false} onToggle={() => {}} />
+      <TeacherSidebar
+        isCollapsed={isSidebarCollapsed}
+        onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+      />
 
       {/* Main Content */}
-      <div className="flex-1 ml-64">
+      <div
+        className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? "ml-20" : "ml-64"}`}
+      >
         {/* Header */}
         <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
           <div className="px-8 py-4">

@@ -13,6 +13,8 @@ interface LessonFormProps {
   isEdit?: boolean;
 }
 
+import LoadingOverlay from "../../common/LoadingOverlay";
+
 const LessonForm = ({
   initialData,
   lessonNumber,
@@ -37,7 +39,13 @@ const LessonForm = ({
   };
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 relative overflow-hidden">
+      <LoadingOverlay
+        isLoading={loading}
+        message="Đang lưu bài học..."
+        iconColor="text-green-600"
+      />
+
       <div className="flex items-center gap-3 mb-6">
         <div className="size-10 rounded-lg bg-green-100 flex items-center justify-center">
           <span className="material-symbols-outlined text-green-600">
@@ -70,7 +78,7 @@ const LessonForm = ({
               setFormData((prev) => ({ ...prev, title: e.target.value }))
             }
             placeholder="VD: Giới thiệu về React Components"
-            className="w-full rounded-lg border-slate-200 text-sm focus:ring-green-500 focus:border-green-500"
+            className="w-full rounded-sm p-1 border border-gray-200 focus:ring-1 focus:outline-none text-sm focus:ring-green-500 focus:border-green-500"
             required
           />
         </div>

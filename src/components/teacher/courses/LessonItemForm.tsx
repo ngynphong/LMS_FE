@@ -3,19 +3,23 @@ import { useState, useEffect, useRef } from "react";
 interface LessonItemFormData {
   title: string;
   description: string;
-  type: "VIDEO" | "TEXT" | "PDF";
+  type: "VIDEO" | "TEXT" | "PDF" | "PPT";
   textContent: string;
   file: File | null;
+  currentFileUrl?: string;
+  currentFileName?: string;
 }
 
 interface LessonItemFormProps {
   initialData?: Partial<LessonItemFormData>;
   lessonTitle?: string;
-  onSubmit: (data: LessonItemFormData) => Promise<void>;
+  onSubmit: (data: Omit<LessonItemFormData, "type">) => Promise<void>;
   onDelete?: () => Promise<void>;
   loading?: boolean;
   isEdit?: boolean;
 }
+
+import LoadingOverlay from "../../common/LoadingOverlay";
 
 // Max file size in bytes (1MB for now - server limit)
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
@@ -34,6 +38,8 @@ const LessonItemForm = ({
     type: "VIDEO",
     textContent: "",
     file: null,
+    currentFileUrl: "",
+    currentFileName: "",
   });
   const [fileError, setFileError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -46,6 +52,9 @@ const LessonItemForm = ({
         description: initialData.description || "",
         type: initialData.type || "VIDEO",
         textContent: initialData.textContent || "",
+        file: initialData.file || null,
+        currentFileUrl: initialData.currentFileUrl || "",
+        currentFileName: initialData.currentFileName || "",
       }));
     }
   }, [initialData]);
@@ -53,35 +62,33 @@ const LessonItemForm = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (fileError) return;
-    await onSubmit(formData);
+    if (
+      (formData.type === "VIDEO" ||
+        formData.type === "PDF" ||
+        formData.type === "PPT") &&
+      !formData.file &&
+      !formData.currentFileUrl &&
+      !isEdit
+    ) {
+      setFileError("Vui lòng chọn file");
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { type, ...dataWithoutType } = formData;
+    await onSubmit(dataWithoutType);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
+    const file = e.target.files?.[0];
     setFileError(null);
 
     if (file) {
       if (file.size > MAX_FILE_SIZE) {
-        setFileError(
-          `File quá lớn (${(file.size / 1024 / 1024).toFixed(2)} MB). Giới hạn tối đa là ${MAX_FILE_SIZE / 1024 / 1024} MB.`,
-        );
-        setFormData((prev) => ({ ...prev, file: null }));
+        setFileError("File quá lớn. Vui lòng chọn file dưới 50MB");
         return;
       }
-    }
-    setFormData((prev) => ({ ...prev, file }));
-  };
-
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case "VIDEO":
-        return "play_circle";
-      case "TEXT":
-        return "article";
-      case "PDF":
-        return "picture_as_pdf";
-      default:
-        return "description";
+      setFormData((prev) => ({ ...prev, file }));
     }
   };
 
@@ -93,15 +100,38 @@ const LessonItemForm = ({
         return "blue";
       case "PDF":
         return "red";
+      case "PPT":
+        return "orange";
       default:
         return "slate";
+    }
+  };
+
+  const getTypeIcon = (type: string) => {
+    switch (type) {
+      case "VIDEO":
+        return "play_circle";
+      case "TEXT":
+        return "article";
+      case "PDF":
+        return "picture_as_pdf";
+      case "PPT":
+        return "description";
+      default:
+        return "description";
     }
   };
 
   const color = getTypeColor(formData.type);
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 relative overflow-hidden">
+      <LoadingOverlay
+        isLoading={loading}
+        message="Đang xử lý nội dung..."
+        iconColor="text-purple-600"
+      />
+
       <div className="flex items-center gap-3 mb-6">
         <div
           className={`size-10 rounded-lg bg-${color}-100 flex items-center justify-center`}
@@ -111,7 +141,9 @@ const LessonItemForm = ({
                 ? "#f3e8ff"
                 : formData.type === "TEXT"
                   ? "#dbeafe"
-                  : "#fee2e2",
+                  : formData.type === "PPT"
+                    ? "#fff7ed"
+                    : "#fee2e2",
           }}
         >
           <span
@@ -122,7 +154,9 @@ const LessonItemForm = ({
                   ? "#9333ea"
                   : formData.type === "TEXT"
                     ? "#2563eb"
-                    : "#dc2626",
+                    : formData.type === "PPT"
+                      ? "#ea580c"
+                      : "#dc2626",
             }}
           >
             {getTypeIcon(formData.type)}
@@ -146,8 +180,8 @@ const LessonItemForm = ({
           <label className="block text-sm font-semibold text-slate-700 mb-3">
             Loại nội dung
           </label>
-          <div className="grid grid-cols-3 gap-3">
-            {(["VIDEO", "TEXT", "PDF"] as const).map((type) => (
+          <div className="grid grid-cols-4 gap-3">
+            {(["VIDEO", "TEXT", "PDF", "PPT"] as const).map((type) => (
               <button
                 key={type}
                 type="button"
@@ -175,7 +209,9 @@ const LessonItemForm = ({
                     ? "Video"
                     : type === "TEXT"
                       ? "Văn bản"
-                      : "PDF"}
+                      : type === "PDF"
+                        ? "PDF"
+                        : "PPT"}
                 </span>
               </button>
             ))}
@@ -194,7 +230,7 @@ const LessonItemForm = ({
               setFormData((prev) => ({ ...prev, title: e.target.value }))
             }
             placeholder="VD: Giới thiệu về React Hooks"
-            className="w-full rounded-lg border-slate-200 text-sm focus:ring-blue-500 focus:border-blue-500"
+            className="w-full rounded-sm p-1 border border-gray-200 focus:ring-1 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF]"
             required
           />
         </div>
@@ -211,7 +247,7 @@ const LessonItemForm = ({
               setFormData((prev) => ({ ...prev, description: e.target.value }))
             }
             placeholder="Mô tả ngắn về nội dung này..."
-            className="w-full rounded-lg border-slate-200 text-sm focus:ring-blue-500 focus:border-blue-500 resize-none"
+            className="w-full rounded-sm p-1 border border-gray-200 focus:ring-1 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF] resize-none"
           />
         </div>
 
@@ -231,39 +267,53 @@ const LessonItemForm = ({
                 }))
               }
               placeholder="Nhập nội dung văn bản cho bài học..."
-              className="w-full rounded-lg border-slate-200 text-sm focus:ring-blue-500 focus:border-blue-500 resize-none font-mono"
+              className="w-full rounded-sm p-1 border border-gray-200 focus:ring-1 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF] resize-none font-mono"
             />
           </div>
         )}
 
         {/* File Upload (for VIDEO and PDF) */}
-        {(formData.type === "VIDEO" || formData.type === "PDF") && (
+        {(formData.type === "VIDEO" ||
+          formData.type === "PDF" ||
+          formData.type === "PPT") && (
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-2">
-              {formData.type === "VIDEO" ? "File Video" : "File PDF"}
+              {formData.type === "VIDEO"
+                ? "File Video"
+                : formData.type === "PDF"
+                  ? "File PDF"
+                  : "File PPT"}
             </label>
             <div
               onClick={() => fileInputRef.current?.click()}
               className="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition-all"
             >
-              {formData.file ? (
+              {formData.file || formData.currentFileUrl ? (
                 <div className="flex items-center justify-center gap-3">
                   <span className="material-symbols-outlined text-2xl text-green-600">
                     check_circle
                   </span>
                   <div className="text-left">
                     <p className="text-sm font-medium text-slate-900">
-                      {formData.file.name}
+                      {formData.file
+                        ? formData.file.name
+                        : formData.currentFileName || "File hiện tại"}
                     </p>
                     <p className="text-xs text-slate-500">
-                      {(formData.file.size / 1024 / 1024).toFixed(2)} MB
+                      {formData.file
+                        ? (formData.file.size / 1024 / 1024).toFixed(2) + " MB"
+                        : "Đã tải lên"}
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setFormData((prev) => ({ ...prev, file: null }));
+                      setFormData((prev) => ({
+                        ...prev,
+                        file: null,
+                        currentFileUrl: "",
+                      }));
                     }}
                     className="ml-auto p-1 hover:bg-slate-200 rounded"
                   >
@@ -283,8 +333,10 @@ const LessonItemForm = ({
                   </p>
                   <p className="text-xs text-slate-400 mt-1">
                     {formData.type === "VIDEO"
-                      ? "MP4, WebM, MOV (tối đa 1MB)"
-                      : "PDF (tối đa 1MB)"}
+                      ? "MP4, WebM, MOV (tối đa 50MB)"
+                      : formData.type === "PPT"
+                        ? "PPT (tối đa 50MB)"
+                        : "PDF (tối đa 50MB)"}
                   </p>
                 </>
               )}
@@ -292,7 +344,13 @@ const LessonItemForm = ({
             <input
               ref={fileInputRef}
               type="file"
-              accept={formData.type === "VIDEO" ? "video/*" : "application/pdf"}
+              accept={
+                formData.type === "VIDEO"
+                  ? "video/*"
+                  : formData.type === "PDF"
+                    ? "application/pdf"
+                    : "application/vnd.ms-powerpoint, application/vnd.openxmlformats-officedocument.presentationml.presentation"
+              }
               onChange={handleFileChange}
               className="hidden"
             />

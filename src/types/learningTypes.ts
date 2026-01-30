@@ -48,7 +48,7 @@ export interface LessonItem {
   id: string;
   title: string;
   description: string;
-  type: 'VIDEO' | 'TEXT' | 'QUIZ' | 'PDF';
+  type: 'VIDEO' | 'TEXT' | 'QUIZ' | 'PDF' | 'PPT';
   orderIndex: number;
   createdAt: string;
   updatedAt: string;

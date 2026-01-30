@@ -41,7 +41,7 @@ const ExamListPage = () => {
         </div>
         <Link
           to="/teacher/exams/new"
-          className="bg-[#0074bd] hover:bg-[#0074bd]/90 text-white px-5 py-2.5 rounded-lg flex items-center gap-2 font-bold transition-all shadow-md"
+          className="color-primary-bg hover:translate-y-[-2px] duration-300 text-white px-5 py-2.5 rounded-lg flex items-center gap-2 font-bold transition-all shadow-md"
         >
           <span className="material-symbols-outlined text-lg">add_circle</span>
           Tạo đề thi mới
