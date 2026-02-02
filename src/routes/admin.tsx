@@ -1,10 +1,20 @@
+import React from "react";
 import type { RouteObject } from "react-router-dom";
-import AdminLayout from "../layouts/AdminLayout";
-import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
-import AdminUserManagementPage from "../pages/admin/AdminUserManagementPage";
 import ProtectedRoute from "./ProtectedRoute";
-import AdminCourseListPage from "../pages/admin/AdminCourseListPage";
-import AdminCourseDetailPage from "../pages/admin/AdminCourseDetailPage";
+
+const AdminLayout = React.lazy(() => import("../layouts/AdminLayout"));
+const AdminDashboardPage = React.lazy(
+  () => import("../pages/admin/AdminDashboardPage"),
+);
+const AdminUserManagementPage = React.lazy(
+  () => import("../pages/admin/AdminUserManagementPage"),
+);
+const AdminCourseListPage = React.lazy(
+  () => import("../pages/admin/AdminCourseListPage"),
+);
+const AdminCourseDetailPage = React.lazy(
+  () => import("../pages/admin/AdminCourseDetailPage"),
+);
 
 /**
  * Admin Routes
