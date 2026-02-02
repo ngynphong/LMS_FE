@@ -93,7 +93,7 @@ const Header = () => {
             <Link to="/" className="flex items-center">
               <span className="color-primary text-2xl">
                 <img
-                  src="public/img/logo-app.png"
+                  src="/img/logo-app.png"
                   alt="ies-edu-logo"
                   className="h-12 md:w-30 md:h-16"
                 />
