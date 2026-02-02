@@ -264,9 +264,37 @@ const StudentMyCoursesPage = () => {
                 )}
               </div>
 
-              {/* Date Info */}
-              <div className="text-xs text-slate-400 mb-4 mt-auto">
-                Cập nhật: {formatDate(course.updatedAt)}
+              {/* Progress & Dates */}
+              <div className="flex flex-col gap-2 mb-4 mt-auto">
+                {course.progressPercent !== undefined && (
+                  <div className="w-full">
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-slate-500">Tiến độ</span>
+                      <span className="font-medium color-primary">
+                        {course.progressPercent}%
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full color-primary-bg rounded-full transition-all duration-500"
+                        style={{ width: `${course.progressPercent}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <div className="text-xs text-slate-400 flex items-center gap-1">
+                  <span className="material-symbols-outlined text-[14px]">
+                    calendar_month
+                  </span>
+                  {course.completedAt ? (
+                    <span>Hoàn thành: {formatDate(course.completedAt)}</span>
+                  ) : course.enrolledAt ? (
+                    <span>Tham gia: {formatDate(course.enrolledAt)}</span>
+                  ) : (
+                    <span>Cập nhật: {formatDate(course.updatedAt)}</span>
+                  )}
+                </div>
               </div>
 
               <Link

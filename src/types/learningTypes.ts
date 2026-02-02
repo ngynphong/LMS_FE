@@ -42,6 +42,14 @@ export interface ApiCourse {
   updatedAt: string;
   progress?: number; // 0-100
   lessons?: ApiLesson[]; // Lessons included in course detail response
+  
+  // New fields for student course list
+  completed?: boolean;
+  progressPercent?: number;
+  completedItemsCount?: number;
+  lastAccessedItem?: any; // Define a more specific type if known, e.g. { id: string, title: string }
+  enrolledAt?: string | null;
+  completedAt?: string | null;
 }
 
 export interface LessonItemContent {
@@ -59,6 +67,7 @@ export interface LessonItem {
   description: string;
   type: 'VIDEO' | 'TEXT' | 'QUIZ' | 'PDF' | 'PPT';
   orderIndex: number;
+  completed: boolean;
   createdAt: string;
   updatedAt: string;
   content: LessonItemContent;
@@ -78,6 +87,14 @@ export interface ApiLesson {
   attachments?: LessonAttachment[];
   isCompleted?: boolean;
   isLocked?: boolean;
+  
+  // New fields from API
+  completed: boolean;
+  progressPercent: number;
+  completedItemsCount: number;
+  totalItemsCount: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface LessonAttachment {

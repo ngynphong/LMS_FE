@@ -13,16 +13,10 @@ import {
   trackVideoHeartbeat,
   markLessonItemComplete,
 } from "../../services/lessonService";
-import {
-  getCourseProgress,
-  updateLessonProgress,
-} from "../../services/courseService";
 import type {
   ApiLesson,
   LessonItem,
   LessonQuiz as LessonQuizType,
-  CourseProgress,
-  QuizResult,
 } from "../../types/learningTypes";
 
 type TabType = "overview" | "quiz";
@@ -47,13 +41,6 @@ const CourseLearningPage = () => {
   const [currentItem, setCurrentItem] = useState<LessonItem | null>(null);
   const [loadingItem, setLoadingItem] = useState(false);
   const [quiz, setQuiz] = useState<LessonQuizType | null>(null);
-  const [progress, setProgress] = useState<CourseProgress>({
-    courseId: courseId || "",
-    completedLessons: 0,
-    totalLessons: 0,
-    progressPercent: 0,
-    lessonProgress: {},
-  });
 
   // Progress tracking states
   const [completedItemIds, setCompletedItemIds] = useState<Set<string>>(
@@ -66,7 +53,6 @@ const CourseLearningPage = () => {
   // UI states
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const [isLoading, setIsLoading] = useState(true);
-  const [isFavorite, setIsFavorite] = useState(false);
   const [isLessonSidebarOpen, setIsLessonSidebarOpen] = useState(false);
 
   // Handle lesson item selection
@@ -108,6 +94,17 @@ const CourseLearningPage = () => {
         );
         setLessonsWithItems(updatedLessons);
 
+        // Initialize completed items from fetched data
+        const initialCompletedIds = new Set<string>();
+        updatedLessons.forEach((lesson) => {
+          lesson.lessonItems?.forEach((item) => {
+            if (item.completed) {
+              initialCompletedIds.add(item.id);
+            }
+          });
+        });
+        setCompletedItemIds(initialCompletedIds);
+
         // Set current lesson
         let targetLesson: ApiLesson | undefined;
         if (lessonId) {
@@ -123,14 +120,6 @@ const CourseLearningPage = () => {
 
           if (targetLesson.lessonItems && targetLesson.lessonItems.length > 0) {
             handleItemSelect(targetLesson.lessonItems[0]);
-          }
-        }
-
-        if (courseId) {
-          const progressData = await getCourseProgress(courseId);
-          if (progressData) {
-            progressData.totalLessons = updatedLessons.length;
-            setProgress(progressData);
           }
         }
       } catch (error) {
@@ -160,28 +149,12 @@ const CourseLearningPage = () => {
           setCurrentItem(null);
         }
 
-        const quizData = await getQuizByLessonId(selectedLessonId);
-        setQuiz(quizData);
-
         navigate(`/student/courses/${courseId}/lessons/${selectedLessonId}`, {
           replace: true,
         });
       }
     },
     [lessonsWithItems, courseId, navigate, handleItemSelect],
-  );
-
-  // Handle quiz completion
-  const handleQuizComplete = useCallback(
-    async (result: QuizResult) => {
-      if (result.passed && currentLesson && courseId) {
-        await updateLessonProgress(courseId, currentLesson.id, true);
-        const updatedProgress = await getCourseProgress(courseId);
-        updatedProgress.totalLessons = lessonsWithItems.length;
-        setProgress(updatedProgress);
-      }
-    },
-    [currentLesson, courseId, lessonsWithItems.length],
   );
 
   // Handle mark item complete (for TEXT, PDF, PPT)
@@ -192,13 +165,6 @@ const CourseLearningPage = () => {
     try {
       await markLessonItemComplete(currentItem.id);
       setCompletedItemIds((prev) => new Set(prev).add(currentItem.id));
-
-      // Refresh progress
-      if (courseId) {
-        const updatedProgress = await getCourseProgress(courseId);
-        updatedProgress.totalLessons = lessonsWithItems.length;
-        setProgress(updatedProgress);
-      }
     } catch (error) {
       console.error("Failed to mark item complete:", error);
     } finally {
@@ -238,13 +204,6 @@ const CourseLearningPage = () => {
       try {
         await markLessonItemComplete(currentItem.id);
         setCompletedItemIds((prev) => new Set(prev).add(currentItem.id));
-
-        // Refresh progress
-        if (courseId) {
-          const updatedProgress = await getCourseProgress(courseId);
-          updatedProgress.totalLessons = lessonsWithItems.length;
-          setProgress(updatedProgress);
-        }
       } catch (error) {
         console.error("Failed to mark video complete:", error);
       }
@@ -284,15 +243,12 @@ const CourseLearningPage = () => {
   const currentLessonIndex = currentLesson
     ? lessonsWithItems.findIndex((l) => l.id === currentLesson.id)
     : 0;
+  const totalItems = lessonsWithItems.reduce(
+    (acc, lesson) => acc + (lesson.lessonItems?.length || 0),
+    0,
+  );
   const progressPercent =
-    lessonsWithItems.length > 0
-      ? Math.round(
-          (Object.values(progress.lessonProgress).filter((p) => p.isCompleted)
-            .length /
-            lessonsWithItems.length) *
-            100,
-        )
-      : 0;
+    totalItems > 0 ? Math.round((completedItemIds.size / totalItems) * 100) : 0;
 
   // Loading state
   if (courseLoading || isLoading) {
@@ -395,7 +351,7 @@ const CourseLearningPage = () => {
             {isCompleted && (
               <div className="absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1.5 bg-green-500/90 text-white rounded-full text-sm font-medium">
                 <span className="material-symbols-outlined text-sm">
-                  verified
+                  check
                 </span>
                 Đã xem
               </div>
@@ -450,7 +406,7 @@ const CourseLearningPage = () => {
           {isCompleted && (
             <div className="flex items-center justify-center gap-2 py-3 bg-green-100 text-green-700 rounded-lg font-medium">
               <span className="material-symbols-outlined text-lg">
-                verified
+                check
               </span>
               Đã hoàn thành
             </div>
@@ -517,7 +473,7 @@ const CourseLearningPage = () => {
           {isCompleted && (
             <div className="flex items-center justify-center gap-2 py-3 bg-green-100 text-green-700 rounded-lg font-medium">
               <span className="material-symbols-outlined text-lg">
-                verified
+                check
               </span>
               Đã hoàn thành
             </div>
@@ -560,7 +516,7 @@ const CourseLearningPage = () => {
           {isCompleted && (
             <div className="flex items-center justify-center gap-2 py-3 bg-green-100 text-green-700 rounded-lg font-medium">
               <span className="material-symbols-outlined text-lg">
-                verified
+                check
               </span>
               Đã hoàn thành
             </div>
@@ -616,7 +572,7 @@ const CourseLearningPage = () => {
           </div>
           <div className="h-1.5 w-full rounded-full bg-gray-100">
             <div
-              className="h-full rounded-full color-primary transition-all"
+              className="h-full rounded-full color-primary-bg transition-all"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
@@ -684,23 +640,6 @@ const CourseLearningPage = () => {
                     </h3>
                     <p className="text-xs text-slate-500">{currentItem.type}</p>
                   </div>
-                </div>
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => setIsFavorite(!isFavorite)}
-                    className={`flex items-center justify-center gap-2 rounded-lg bg-white border border-gray-200 px-4 py-2 text-sm font-medium transition-colors shadow-sm ${
-                      isFavorite
-                        ? "text-red-500 border-red-200"
-                        : "text-[#4A5568] hover:bg-gray-50"
-                    }`}
-                  >
-                    <span
-                      className={`material-symbols-outlined text-[20px] ${isFavorite ? "FILL" : ""}`}
-                    >
-                      favorite
-                    </span>
-                    Yêu thích
-                  </button>
                 </div>
               </div>
             )}
@@ -805,7 +744,7 @@ const CourseLearningPage = () => {
                 {activeTab === "quiz" && (
                   <div className="max-w-2xl">
                     {quiz ? (
-                      <LessonQuiz quiz={quiz} onComplete={handleQuizComplete} />
+                      <LessonQuiz quiz={quiz} />
                     ) : (
                       <div className="text-center py-12 text-gray-500">
                         <span className="material-symbols-outlined text-4xl mb-2">

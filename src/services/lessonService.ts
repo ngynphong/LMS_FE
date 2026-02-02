@@ -1,7 +1,6 @@
 import axiosInstance from '../config/axios';
 import type { CreateLessonRequest } from '../types/courseApi';
 import type { ApiLesson, LessonQuiz, LessonItem, VideoHeartbeatRequest } from '../types/learningTypes';
-import { mockQuizzes } from '../data/learningData';
 
 // ==================== Lesson APIs ====================
 
@@ -27,19 +26,7 @@ export const getLessonsByCourseId = async (courseId: string): Promise<ApiLesson[
 
 export const getLessonById = async (lessonId: string): Promise<ApiLesson | null> => {
   const response = await axiosInstance.get<ApiLesson>(`/lessons/${lessonId}`);
-  // According to the new schema, response.data has { code, message, data: ApiLesson } structure usually?
-  // But wait, the screenshot GET /lessons/{id} example values show { code, message, data: { ... } }
-  // So we might need to access response.data.data if axiosInstance doesn't unwrap it.
-  // HOWEVER, looking at previously implemented getLessonsByCourseId, it returns response.data directly.
-  // We need to be consistent. If getLessonsByCourseId returns ApiLesson[], then it works.
-  // For getLessonById, the screenshot clearly shows a wrapper.
-  // I will check if response.data has 'data' property.
-  
-  // NOTE: If axiosInstance has an interceptor that returns 'data' from the response, then 'response' here IS the data.
-  // But usually axios methods return AxiosResponse. 
-  // Let's assume standard axios usage with no auto-unwrapping interceptor (based on previous code).
-  // I will use 'any' to interact with the wrapper safely or cast strictly.
-  
+
   const res = response.data as any; 
   if (res && res.data && typeof res.code === 'number') {
       return res.data;
@@ -64,10 +51,6 @@ export const createLessonItem = async (lessonId: string, data: {
     textContent?: string;
     file?: File | null;
 }): Promise<any> => { 
-    // API: POST /lessons/{lessonId}/items
-    // Query params: title, description, type, textContent
-    // Body: multipart/form-data with file
-    
     // Build query params
     const params = new URLSearchParams();
     if (data.title) params.append('title', data.title);
@@ -161,14 +144,11 @@ export const markLessonItemComplete = async (lessonItemId: string): Promise<void
 
 
 export const getQuizByLessonId = async (lessonId: string): Promise<LessonQuiz | null> => {
-  const response = await axiosInstance.get<LessonQuiz>(`/lessons/${lessonId}/quiz`);
-  return response.data;
-  
-  // Mock implementation
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const quiz = mockQuizzes.find((q: LessonQuiz) => q.lessonId === lessonId);
-      resolve(quiz || null);
-    }, 200);
-  });
+  try {
+    const response = await axiosInstance.get<LessonQuiz>(`/lessons/${lessonId}/quiz`);
+    return response.data;
+  } catch (error) {
+    // Suppress error if quiz not found or other API error
+    return null;
+  }
 };

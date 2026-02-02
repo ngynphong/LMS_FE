@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import type { ApiLesson, LessonItem } from "../../types/learningTypes";
 
 interface LessonSidebarProps {
@@ -103,6 +104,34 @@ const LessonSidebar = ({
       .length;
   };
 
+  // State for expanded lessons
+  const [expandedLessonIds, setExpandedLessonIds] = useState<Set<string>>(
+    new Set(),
+  );
+
+  // Auto-expand current lesson
+  useEffect(() => {
+    if (currentLesson?.id) {
+      setExpandedLessonIds((prev) => {
+        const newSet = new Set(prev);
+        newSet.add(currentLesson.id);
+        return newSet;
+      });
+    }
+  }, [currentLesson?.id]);
+
+  const toggleLesson = (lessonId: string) => {
+    setExpandedLessonIds((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(lessonId)) {
+        newSet.delete(lessonId);
+      } else {
+        newSet.add(lessonId);
+      }
+      return newSet;
+    });
+  };
+
   return (
     <>
       {/* Mobile Overlay */}
@@ -144,13 +173,21 @@ const LessonSidebar = ({
             const completedCount = getCompletedCount(lesson);
             const totalItems = lesson.lessonItems?.length || 0;
             const isLessonComplete =
-              totalItems > 0 && completedCount === totalItems;
+              lesson.completed ||
+              (totalItems > 0 && completedCount === totalItems);
+            const isExpanded = expandedLessonIds.has(lesson.id);
 
             return (
               <div key={lesson.id} className="border-b border-gray-100">
                 {/* Lesson Header */}
                 <div
-                  onClick={() => lessonAccessible && onLessonSelect(lesson.id)}
+                  onClick={() => {
+                    if (lessonAccessible) {
+                      onLessonSelect(lesson.id);
+                      // Ensure it expands when selected
+                      if (!isExpanded) toggleLesson(lesson.id);
+                    }
+                  }}
                   className={`px-4 py-3 flex items-center gap-3 transition-colors ${
                     !lessonAccessible
                       ? "cursor-not-allowed opacity-60"
@@ -161,7 +198,7 @@ const LessonSidebar = ({
                       : lessonAccessible
                         ? "hover:bg-gray-50"
                         : ""
-                  }`}
+                  } ${isLessonComplete ? "border-green-500 bg-green-50" : ""}`}
                 >
                   <div
                     className={`size-7 rounded-lg flex items-center justify-center text-xs font-bold ${
@@ -202,10 +239,26 @@ const LessonSidebar = ({
                       {completedCount}/{totalItems} hoàn thành
                     </p>
                   </div>
+                  {/* Toggle Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleLesson(lesson.id);
+                    }}
+                    className="size-6 flex items-center justify-center rounded-full hover:bg-black/5 text-slate-400"
+                  >
+                    <span
+                      className={`material-symbols-outlined text-xl transition-transform duration-400 ${
+                        isExpanded ? "rotate-180" : ""
+                      }`}
+                    >
+                      expand_more
+                    </span>
+                  </button>
                 </div>
 
                 {/* Lesson Items */}
-                {isCurrentLesson &&
+                {isExpanded &&
                   lesson.lessonItems &&
                   lesson.lessonItems.length > 0 && (
                     <div className="bg-gray-50 py-1">
@@ -231,12 +284,18 @@ const LessonSidebar = ({
                                 : itemAccessible
                                   ? "border-transparent hover:bg-gray-100"
                                   : "border-transparent"
+                            }
+                              ${
+                                isItemComplete
+                                  ? "border-green-500 bg-green-50"
+                                  : ""
+                              }
                             }`}
                           >
                             <div
                               className={`size-6 rounded flex items-center justify-center ${
                                 isItemComplete
-                                  ? "bg-green-100 text-green-600"
+                                  ? getItemTypeColor(item.type)
                                   : !itemAccessible
                                     ? "bg-slate-200 text-slate-400"
                                     : getItemTypeColor(item.type)
@@ -244,7 +303,7 @@ const LessonSidebar = ({
                             >
                               <span className="material-symbols-outlined text-sm">
                                 {isItemComplete
-                                  ? "check_circle"
+                                  ? getItemTypeIcon(item.type)
                                   : !itemAccessible
                                     ? "lock"
                                     : getItemTypeIcon(item.type)}
@@ -265,7 +324,7 @@ const LessonSidebar = ({
                             </span>
                             {isItemComplete && (
                               <span className="material-symbols-outlined text-green-500 text-sm">
-                                verified
+                                check
                               </span>
                             )}
                           </div>

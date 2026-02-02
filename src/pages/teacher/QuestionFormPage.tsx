@@ -148,14 +148,14 @@ const QuestionFormPage = () => {
         <div className="flex gap-3">
           <Link
             to="/teacher/questions"
-            className="px-5 py-2 text-sm font-semibold border border-slate-200 rounded-lg hover:bg-slate-50 transition-all"
+            className="px-5 py-2 text-sm font-semibold border color-primary border-slate-200 rounded-lg hover:translate-y-[-2px] transition-all duration-300 shadow-sm"
           >
             Hủy
           </Link>
           <button
             onClick={handleSubmit}
             disabled={isLoading}
-            className="px-5 py-2 text-sm font-bold bg-[#0074bd] hover:bg-[#0074bd]/90 text-white rounded-lg shadow-sm transition-all disabled:opacity-50"
+            className="px-5 py-2 text-sm font-bold color-primary-bg hover:translate-y-[-2px] text-white rounded-lg shadow-sm transition-all duration-300 disabled:opacity-50 cursor-pointer"
           >
             {isLoading ? "Đang lưu..." : "Lưu câu hỏi"}
           </button>
@@ -181,7 +181,7 @@ const QuestionFormPage = () => {
                         difficulty: e.target.value as QuestionDifficulty,
                       })
                     }
-                    className="w-full appearance-none px-4 py-2.5 bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-[#0074bd] text-sm pr-10"
+                    className="w-full appearance-none px-4 py-2.5 bg-slate-50 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm pr-10"
                     required
                   >
                     <option value="EASY">Dễ</option>
@@ -207,7 +207,7 @@ const QuestionFormPage = () => {
                         type: e.target.value as QuestionType,
                       })
                     }
-                    className="w-full appearance-none px-4 py-2.5 bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-[#0074bd] text-sm pr-10"
+                    className="w-full appearance-none px-4 py-2.5 bg-slate-50 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm pr-10"
                     required
                   >
                     <option value="SINGLE_CHOICE">Một đáp án đúng</option>
@@ -233,7 +233,7 @@ const QuestionFormPage = () => {
                       defaultScore: Number(e.target.value),
                     })
                   }
-                  className="w-full px-4 py-2.5 bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-[#0074bd] text-sm"
+                  className="w-full px-4 py-2.5 bg-slate-50 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm"
                 />
               </div>
             </div>
@@ -259,7 +259,7 @@ const QuestionFormPage = () => {
                         setSelectedCourseId(e.target.value);
                         setFormData((prev) => ({ ...prev, lessonId: "" })); // Reset lesson when course changes
                       }}
-                      className="w-full appearance-none px-4 py-2.5 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#0074bd] text-sm pr-10"
+                      className="w-full appearance-none px-4 py-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm pr-10"
                     >
                       <option value="">-- Chọn khóa học --</option>
                       {courses &&
@@ -287,7 +287,7 @@ const QuestionFormPage = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, lessonId: e.target.value })
                       }
-                      className="w-full appearance-none px-4 py-2.5 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#0074bd] text-sm pr-10 disabled:bg-slate-100 disabled:text-slate-400"
+                      className="w-full appearance-none px-4 py-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm pr-10 disabled:bg-slate-100 disabled:text-slate-400"
                     >
                       <option value="">
                         {lessonsLoading
@@ -318,53 +318,13 @@ const QuestionFormPage = () => {
               <label className="text-sm font-bold text-[#111518]">
                 Nội dung câu hỏi <span className="text-red-500">*</span>
               </label>
-              <div className="border border-slate-200 rounded-lg overflow-hidden">
-                {/* Simple toolbar */}
-                <div className="bg-slate-50 border-b border-slate-200 p-2 flex gap-1">
-                  <button
-                    type="button"
-                    className="p-1.5 hover:bg-slate-200 rounded transition-colors"
-                    title="In đậm"
-                  >
-                    <span className="material-symbols-outlined text-xl">
-                      format_bold
-                    </span>
-                  </button>
-                  <button
-                    type="button"
-                    className="p-1.5 hover:bg-slate-200 rounded transition-colors"
-                    title="In nghiêng"
-                  >
-                    <span className="material-symbols-outlined text-xl">
-                      format_italic
-                    </span>
-                  </button>
-                  <div className="w-px h-6 bg-slate-300 mx-1 self-center"></div>
-                  <button
-                    type="button"
-                    className="p-1.5 hover:bg-slate-200 rounded transition-colors"
-                    title="Danh sách"
-                  >
-                    <span className="material-symbols-outlined text-xl">
-                      format_list_bulleted
-                    </span>
-                  </button>
-                  <button
-                    type="button"
-                    className="p-1.5 hover:bg-slate-200 rounded transition-colors"
-                    title="Chèn ảnh"
-                  >
-                    <span className="material-symbols-outlined text-xl">
-                      image
-                    </span>
-                  </button>
-                </div>
+              <div className="">
                 <textarea
                   value={formData.content}
                   onChange={(e) =>
                     setFormData({ ...formData, content: e.target.value })
                   }
-                  className="w-full p-4 bg-transparent border-none focus:ring-0 text-sm min-h-[160px] resize-y"
+                  className="w-full p-4 bg-transparent border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] text-sm min-h-[160px] resize-y"
                   placeholder="Nhập nội dung câu hỏi tại đây..."
                   required
                 />
@@ -403,7 +363,7 @@ const QuestionFormPage = () => {
                             correctAnswerIndex: index,
                           })
                         }
-                        className="w-5 h-5 text-[#0074bd] border-slate-300 focus:ring-[#0074bd]"
+                        className="w-5 h-5 color-primary border-slate-300 focus:ring-[#1E90FF]"
                       />
                     </div>
                     <span className="flex-none font-bold text-sm text-slate-500">
@@ -415,7 +375,7 @@ const QuestionFormPage = () => {
                       onChange={(e) =>
                         handleOptionChange(index, e.target.value)
                       }
-                      className="flex-1 bg-transparent border-none focus:ring-0 text-sm p-0"
+                      className="flex-1 bg-transparent border-none focus:outline-none focus:ring-0 text-sm p-0"
                       placeholder={`Nhập nội dung đáp án ${letter}`}
                       required={index < 2} // At least 2 options required
                     />
