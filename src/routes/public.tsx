@@ -1,10 +1,16 @@
+import React from "react";
 import type { RouteObject } from "react-router-dom";
-import MainLayout from "../layouts/MainLayout";
-import Home from "../pages/home/Home";
-import CoursesPage from "../pages/courses/CoursesPage";
-import CourseDetailPage from "../pages/courses/CourseDetailPage";
-import AboutPage from "../pages/about/AboutPage";
-import UnauthorizedPage from "../pages/error/UnauthorizedPage";
+
+const MainLayout = React.lazy(() => import("../layouts/MainLayout"));
+const Home = React.lazy(() => import("../pages/home/Home"));
+const CoursesPage = React.lazy(() => import("../pages/courses/CoursesPage"));
+const CourseDetailPage = React.lazy(
+  () => import("../pages/courses/CourseDetailPage"),
+);
+const AboutPage = React.lazy(() => import("../pages/about/AboutPage"));
+const UnauthorizedPage = React.lazy(
+  () => import("../pages/error/UnauthorizedPage"),
+);
 
 /**
  * Public Routes

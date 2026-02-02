@@ -1,19 +1,43 @@
+import React from "react";
 import type { RouteObject } from "react-router-dom";
-import TeacherLayout from "../layouts/TeacherLayout";
-import TeacherDashboardPage from "../pages/teacher/TeacherDashboardPage";
-import CourseListPage from "../pages/teacher/CourseListPage";
-import CourseBuilderPage from "../pages/teacher/CourseBuilderPage";
-import TeacherCourseDetailPage from "../pages/teacher/TeacherCourseDetailPage";
-import StudentListPage from "../pages/teacher/StudentListPage";
-import StudentDetailPage from "../pages/teacher/StudentDetailPage";
-import QuestionBankPage from "../pages/teacher/QuestionBankPage";
-import QuestionFormPage from "../pages/teacher/QuestionFormPage";
-import ExamListPage from "../pages/teacher/ExamListPage";
-import ExamFormPage from "../pages/teacher/ExamFormPage";
-import ReportsListPage from "../pages/teacher/ReportsListPage";
-import ExamReportDetailPage from "../pages/teacher/ExamReportDetailPage";
-import TeacherLessonItemPreviewPage from "../pages/teacher/TeacherLessonItemPreviewPage";
 import ProtectedRoute from "./ProtectedRoute";
+
+const TeacherLayout = React.lazy(() => import("../layouts/TeacherLayout"));
+const TeacherDashboardPage = React.lazy(
+  () => import("../pages/teacher/TeacherDashboardPage"),
+);
+const CourseListPage = React.lazy(
+  () => import("../pages/teacher/CourseListPage"),
+);
+const CourseBuilderPage = React.lazy(
+  () => import("../pages/teacher/CourseBuilderPage"),
+);
+const TeacherCourseDetailPage = React.lazy(
+  () => import("../pages/teacher/TeacherCourseDetailPage"),
+);
+const StudentListPage = React.lazy(
+  () => import("../pages/teacher/StudentListPage"),
+);
+const StudentDetailPage = React.lazy(
+  () => import("../pages/teacher/StudentDetailPage"),
+);
+const QuestionBankPage = React.lazy(
+  () => import("../pages/teacher/QuestionBankPage"),
+);
+const QuestionFormPage = React.lazy(
+  () => import("../pages/teacher/QuestionFormPage"),
+);
+const ExamListPage = React.lazy(() => import("../pages/teacher/ExamListPage"));
+const ExamFormPage = React.lazy(() => import("../pages/teacher/ExamFormPage"));
+const ReportsListPage = React.lazy(
+  () => import("../pages/teacher/ReportsListPage"),
+);
+const ExamReportDetailPage = React.lazy(
+  () => import("../pages/teacher/ExamReportDetailPage"),
+);
+const TeacherLessonItemPreviewPage = React.lazy(
+  () => import("../pages/teacher/TeacherLessonItemPreviewPage"),
+);
 
 /**
  * Teacher Routes

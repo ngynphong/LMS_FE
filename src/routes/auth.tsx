@@ -1,10 +1,20 @@
+import React from "react";
 import type { RouteObject } from "react-router-dom";
-import LoginPage from "../pages/auth/LoginPage";
-import RegisterPage from "../pages/auth/RegisterPage";
-import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage";
-import ResetPasswordPage from "../pages/auth/ResetPasswordPage";
-import GoogleCallbackPage from "../pages/auth/GoogleCallbackPage";
-import VerifyEmailPage from "../pages/auth/VerifyEmailPage";
+
+const LoginPage = React.lazy(() => import("../pages/auth/LoginPage"));
+const RegisterPage = React.lazy(() => import("../pages/auth/RegisterPage"));
+const ForgotPasswordPage = React.lazy(
+  () => import("../pages/auth/ForgotPasswordPage"),
+);
+const ResetPasswordPage = React.lazy(
+  () => import("../pages/auth/ResetPasswordPage"),
+);
+const GoogleCallbackPage = React.lazy(
+  () => import("../pages/auth/GoogleCallbackPage"),
+);
+const VerifyEmailPage = React.lazy(
+  () => import("../pages/auth/VerifyEmailPage"),
+);
 
 /**
  * Authentication Routes
