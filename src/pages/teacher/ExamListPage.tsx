@@ -108,10 +108,8 @@ const ExamListPage = () => {
                   </span>
                   Chỉnh sửa
                 </Link>
-                <button className="p-2 rounded-lg border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 transition-colors">
-                  <span className="material-symbols-outlined text-base">
-                    delete
-                  </span>
+                <button className="flex items-center justify-center p-2 rounded-lg border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 transition-colors">
+                  <span className="material-symbols-outlined">delete</span>
                 </button>
               </div>
             </div>

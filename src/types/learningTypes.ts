@@ -59,6 +59,7 @@ export interface LessonItemContent {
   fileSize: number;
   mimeType: string;
   updatedAt: string;
+  lastWatchedSecond?: number;
 }
 
 export interface LessonItem {

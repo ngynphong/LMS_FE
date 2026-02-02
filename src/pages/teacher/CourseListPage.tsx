@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useMyCourses, useCreateInviteCode } from "../../hooks/useCourses";
+import {
+  useMyCourses,
+  useCreateInviteCode,
+  useDeleteCourse,
+} from "../../hooks/useCourses";
 import { toast } from "@/components/common/Toast";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 
 const CourseListPage = () => {
   const [filters, setFilters] = useState({
@@ -29,6 +34,11 @@ const CourseListPage = () => {
   const [createdCode, setCreatedCode] = useState<string | null>(null);
   const { createCode, loading: creatingCode } = useCreateInviteCode();
 
+  // Delete course state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [courseToDelete, setCourseToDelete] = useState<string | null>(null);
+  const { remove: deleteCourse, loading: deletingCourse } = useDeleteCourse();
+
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({
       ...prev,
@@ -54,6 +64,25 @@ const CourseListPage = () => {
     setSelectedCourseId(courseId);
     setCreatedCode(null);
     setShowInviteModal(true);
+  };
+
+  const openDeleteModal = (courseId: string) => {
+    setCourseToDelete(courseId);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteCourse = async () => {
+    if (!courseToDelete) return;
+
+    try {
+      await deleteCourse(courseToDelete);
+      toast.success("Xóa khóa học thành công");
+      setShowDeleteModal(false);
+      setCourseToDelete(null);
+      refetch();
+    } catch (error) {
+      toast.error("Không thể xóa khóa học. Vui lòng thử lại sau.");
+    }
   };
 
   if (loading) {
@@ -124,7 +153,7 @@ const CourseListPage = () => {
             placeholder="Tìm kiếm khóa học..."
             value={filters.keyword}
             onChange={(e) => handleFilterChange("keyword", e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
+            className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-[#0074bd] focus:border-[#0074bd]"
           />
         </div>
         <select
@@ -252,7 +281,7 @@ const CourseListPage = () => {
                     <span className="material-symbols-outlined text-sm">
                       edit
                     </span>
-                    Chỉnh sửa
+                    Sửa
                   </Link>
                   <button
                     onClick={() => openInviteModal(course.id)}
@@ -272,6 +301,15 @@ const CourseListPage = () => {
                       visibility
                     </span>
                   </Link>
+                  <button
+                    onClick={() => openDeleteModal(course.id)}
+                    className="flex items-center justify-center px-3 py-2 bg-red-50 text-red-600 rounded-lg text-sm font-medium hover:bg-red-100 hover:translate-y-[-2px] duration-300 transition-all"
+                    title="Xóa khóa học"
+                  >
+                    <span className="material-symbols-outlined text-sm">
+                      delete
+                    </span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -362,6 +400,19 @@ const CourseListPage = () => {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDeleteCourse}
+        title="Xóa khóa học"
+        message="Bạn có chắc chắn muốn xóa khóa học này? Hành động này không thể hoàn tác và tất cả dữ liệu liên quan sẽ bị mất."
+        confirmLabel="Xóa khóa học"
+        cancelLabel="Hủy bỏ"
+        isLoading={deletingCourse}
+        variant="danger"
+      />
     </div>
   );
 };

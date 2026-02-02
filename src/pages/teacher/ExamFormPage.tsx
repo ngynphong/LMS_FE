@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCreateQuiz } from "../../hooks/useQuizzes";
 import { useMyCourses, useCourseDetail } from "../../hooks/useCourses";
+import { getLessonById } from "../../services/lessonService";
 import type { CreateQuizRequest, DynamicConfig } from "../../types/quiz";
 import { toast } from "@/components/common/Toast";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
-
 
 const ExamFormPage = () => {
   const { id } = useParams();
@@ -28,6 +28,7 @@ const ExamFormPage = () => {
   // Course & Lesson Selection state
   const [selectedCourseId, setSelectedCourseId] = useState<string>("");
   const [selectedLessonId, setSelectedLessonId] = useState<string>("");
+  const [selectedLessonItemId, setSelectedLessonItemId] = useState<string>("");
 
   // Dynamic Config State
   const [dynamicConfig, setDynamicConfig] = useState<DynamicConfig>({
@@ -42,18 +43,42 @@ const ExamFormPage = () => {
   const { data: courseDetail } = useCourseDetail(selectedCourseId || undefined);
   const lessons = courseDetail?.lessons || [];
 
+  // Fetch lesson items when lesson changes
+  useEffect(() => {
+    const fetchLessonItems = async () => {
+      if (selectedLessonId) {
+        try {
+          const lessonData = await getLessonById(selectedLessonId);
+          if (lessonData && lessonData.lessonItems) {
+            setLessonItems(lessonData.lessonItems);
+          } else {
+            setLessonItems([]);
+          }
+        } catch (error) {
+          console.error("Failed to fetch lesson items", error);
+          setLessonItems([]);
+        }
+      } else {
+        setLessonItems([]);
+      }
+    };
+    fetchLessonItems();
+  }, [selectedLessonId]);
+
+  const [lessonItems, setLessonItems] = useState<any[]>([]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!selectedCourseId || !selectedLessonId) {
-      toast.error("Vui lòng chọn khóa học và bài học");
+    if (!selectedCourseId || !selectedLessonId || !selectedLessonItemId) {
+      toast.error("Vui lòng chọn khóa học, bài học và nội dung bài học");
       return;
     }
 
     const quizData: CreateQuizRequest = {
       title: formData.title,
       description: formData.description,
-      lessonItemId: selectedLessonId, // Assuming quiz belongs to this lesson
+      lessonItemId: selectedLessonItemId,
       courseId: selectedCourseId,
       durationInMinutes: formData.duration,
       passScore: formData.passingScore,
@@ -85,7 +110,7 @@ const ExamFormPage = () => {
 
   return (
     <div className="space-y-6 pb-24">
-      <LoadingOverlay isLoading={createLoading} message="Đang tạo bài thi..."/>
+      <LoadingOverlay isLoading={createLoading} message="Đang tạo bài thi..." />
       {/* Breadcrumbs */}
       <nav className="flex items-center gap-2 text-sm font-medium">
         <Link
@@ -149,7 +174,7 @@ const ExamFormPage = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label className="block text-sm font-semibold text-[#111518] mb-2">
                   Khóa học <span className="text-red-500">*</span>
@@ -160,6 +185,7 @@ const ExamFormPage = () => {
                   onChange={(e) => {
                     setSelectedCourseId(e.target.value);
                     setSelectedLessonId("");
+                    setSelectedLessonItemId("");
                   }}
                   required
                 >
@@ -178,7 +204,10 @@ const ExamFormPage = () => {
                 <select
                   className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none transition-all"
                   value={selectedLessonId}
-                  onChange={(e) => setSelectedLessonId(e.target.value)}
+                  onChange={(e) => {
+                    setSelectedLessonId(e.target.value);
+                    setSelectedLessonItemId("");
+                  }}
                   disabled={!selectedCourseId}
                   required
                 >
@@ -186,6 +215,25 @@ const ExamFormPage = () => {
                   {lessons.map((l) => (
                     <option key={l.id} value={l.id}>
                       {l.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-[#111518] mb-2">
+                  Nội dung (Quiz) <span className="text-red-500">*</span>
+                </label>
+                <select
+                  className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none transition-all"
+                  value={selectedLessonItemId}
+                  onChange={(e) => setSelectedLessonItemId(e.target.value)}
+                  disabled={!selectedLessonId}
+                  required
+                >
+                  <option value="">-- Chọn nội dung --</option>
+                  {lessonItems.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.title} ({item.type})
                     </option>
                   ))}
                 </select>

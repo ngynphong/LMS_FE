@@ -10,6 +10,8 @@ interface LessonSidebarProps {
   onLessonSelect: (lessonId: string) => void;
   onItemSelect: (item: LessonItem) => void;
   completedItemIds?: Set<string>;
+  isDesktopOpen?: boolean;
+  onDesktopToggle?: () => void;
 }
 
 // Helper functions
@@ -52,6 +54,8 @@ const LessonSidebar = ({
   onLessonSelect,
   onItemSelect,
   completedItemIds = new Set(),
+  isDesktopOpen = true,
+  onDesktopToggle,
 }: LessonSidebarProps) => {
   // Check if a lesson item is accessible (previous items in ALL lessons must be completed)
   const isItemAccessible = (
@@ -146,12 +150,13 @@ const LessonSidebar = ({
       <aside
         className={`
           fixed lg:static inset-y-0 left-0 z-30
-          w-80 flex flex-col border-r border-gray-200 bg-white overflow-hidden transition-transform duration-300
+          flex flex-col border-r border-gray-200 bg-white overflow-hidden transition-all duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+          ${isDesktopOpen ? "lg:w-80" : "lg:w-0 lg:border-r-0"}
         `}
       >
         {/* Sidebar Header */}
-        <div className="p-5 border-b border-gray-100 bg-[#f5f7fa] flex justify-between items-center">
+        <div className="p-5 border-b border-gray-100 bg-[#f5f7fa] flex justify-between items-center whitespace-nowrap">
           <div>
             <h1 className="text-base font-semibold text-[#1A2B3C]">
               Nội dung khóa học
@@ -162,6 +167,13 @@ const LessonSidebar = ({
           </div>
           <button onClick={onClose} className="lg:hidden text-gray-500">
             <span className="material-symbols-outlined">close</span>
+          </button>
+          <button
+            onClick={onDesktopToggle}
+            className="hidden lg:block text-gray-500 hover:text-[#1E90FF]"
+            title="Thu gọn"
+          >
+            <span className="material-symbols-outlined">menu_open</span>
           </button>
         </div>
 

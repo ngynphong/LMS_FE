@@ -123,7 +123,7 @@ const QuestionBankPage = () => {
         <div className="flex gap-2">
           <button
             onClick={() => setShowImportModal(true)}
-            className="bg-white hover:bg-slate-50 color-primary border hover:translate-y-[-2px] px-5 py-2.5 rounded-lg flex items-center gap-2 font-bold transition-all duration-300 shadow-sm"
+            className="bg-white hover:bg-slate-50 color-primary border hover:translate-y-[-2px] px-5 py-2.5 rounded-lg flex items-center gap-2 font-bold transition-all duration-300 shadow-sm cursor-pointer"
           >
             <span className="material-symbols-outlined text-lg">
               upload_file

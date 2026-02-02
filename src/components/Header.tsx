@@ -80,7 +80,7 @@ const Header = () => {
 
       {/* Main Header */}
       <header className="w-full px-4 md:px-10 mb-8 md:mb-12 mt-2 sticky top-14 z-40">
-        <div className="max-w-[1280px] mx-auto bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/40 px-4 md:px-8 py-4 flex items-center justify-between">
+        <div className="max-w-[1280px] mx-auto bg-white  rounded-2xl shadow-lg border border-white/40 px-4 md:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4 lg:gap-12">
             {/* Mobile Menu Button */}
             <button
@@ -90,17 +90,14 @@ const Header = () => {
               <IoMenu />
             </button>
 
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/" className="flex items-center">
               <span className="color-primary text-2xl">
                 <img
-                  src="/ies-edu-logo.png"
+                  src="public/img/logo-app.png"
                   alt="ies-edu-logo"
-                  className="w-10 h-10 md:w-12 md:h-12"
+                  className="h-12 md:w-30 md:h-16"
                 />
               </span>
-              <h2 className="text-lg md:text-xl color-primary font-bold tracking-tight">
-                IES Edu
-              </h2>
             </Link>
 
             {/* Desktop Navigation */}

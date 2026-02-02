@@ -18,6 +18,7 @@ import type {
   LessonItem,
   LessonQuiz as LessonQuizType,
 } from "../../types/learningTypes";
+import PdfSlideshow from "@/components/common/PdfSlideshow";
 
 type TabType = "overview" | "quiz";
 
@@ -49,11 +50,13 @@ const CourseLearningPage = () => {
   const [markingComplete, setMarkingComplete] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const heartbeatIntervalRef = useRef<number | null>(null);
+  const lastValidTimeRef = useRef<number>(0);
 
   // UI states
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const [isLoading, setIsLoading] = useState(true);
   const [isLessonSidebarOpen, setIsLessonSidebarOpen] = useState(false);
+  const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
 
   // Handle lesson item selection
   const handleItemSelect = useCallback(async (item: LessonItem) => {
@@ -223,6 +226,48 @@ const CourseLearningPage = () => {
     };
   }, [currentItem, stopVideoHeartbeat]);
 
+  // Video handlers
+  const handleVideoLoadedMetadata = useCallback(
+    (e: React.SyntheticEvent<HTMLVideoElement>) => {
+      const video = e.currentTarget;
+      if (
+        currentItem?.type === "VIDEO" &&
+        currentItem.content?.lastWatchedSecond
+      ) {
+        video.currentTime = currentItem.content.lastWatchedSecond;
+        lastValidTimeRef.current = currentItem.content.lastWatchedSecond;
+      } else {
+        lastValidTimeRef.current = 0;
+      }
+    },
+    [currentItem],
+  );
+
+  const handleVideoSeeking = useCallback(
+    (e: React.SyntheticEvent<HTMLVideoElement>) => {
+      const video = e.currentTarget;
+      // Skip check if item is completed
+      if (currentItem && completedItemIds.has(currentItem.id)) return;
+
+      // If user tries to seek forward beyond what they've watched + buffer, reset to last valid position
+      if (video.currentTime > lastValidTimeRef.current + 2) {
+        video.currentTime = lastValidTimeRef.current;
+      }
+    },
+    [currentItem, completedItemIds],
+  );
+
+  const handleVideoTimeUpdate = useCallback(
+    (e: React.SyntheticEvent<HTMLVideoElement>) => {
+      const video = e.currentTarget;
+      // Only update lastValidTime if current time is greater (moving forward naturally)
+      if (video.currentTime > lastValidTimeRef.current) {
+        lastValidTimeRef.current = video.currentTime;
+      }
+    },
+    [],
+  );
+
   // Navigate to next/previous lesson
   const handleNavigateLesson = (direction: "prev" | "next") => {
     if (!currentLesson) return;
@@ -313,25 +358,6 @@ const CourseLearningPage = () => {
     const isCompleted = completedItemIds.has(currentItem.id);
 
     if (currentItem.type === "VIDEO" && content?.resourceUrl) {
-      // Store last valid time to prevent seeking
-      let lastValidTime = 0;
-
-      const handleSeeking = (e: React.SyntheticEvent<HTMLVideoElement>) => {
-        const video = e.currentTarget;
-        // If user tries to seek forward beyond what they've watched, reset to last valid position
-        if (video.currentTime > lastValidTime + 1) {
-          video.currentTime = lastValidTime;
-        }
-      };
-
-      const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
-        const video = e.currentTarget;
-        // Only update lastValidTime if current time is greater (moving forward naturally)
-        if (video.currentTime > lastValidTime) {
-          lastValidTime = video.currentTime;
-        }
-      };
-
       return (
         <div className="space-y-4">
           <div className="rounded-xl overflow-hidden bg-black relative">
@@ -345,14 +371,13 @@ const CourseLearningPage = () => {
               onPlay={startVideoHeartbeat}
               onPause={stopVideoHeartbeat}
               onEnded={handleVideoEnded}
-              onSeeking={handleSeeking}
-              onTimeUpdate={handleTimeUpdate}
+              onSeeking={handleVideoSeeking}
+              onTimeUpdate={handleVideoTimeUpdate}
+              onLoadedMetadata={handleVideoLoadedMetadata}
             />
             {isCompleted && (
               <div className="absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1.5 bg-green-500/90 text-white rounded-full text-sm font-medium">
-                <span className="material-symbols-outlined text-sm">
-                  check
-                </span>
+                <span className="material-symbols-outlined text-sm">check</span>
                 Đã xem
               </div>
             )}
@@ -374,11 +399,7 @@ const CourseLearningPage = () => {
       return (
         <div className="space-y-4">
           <div className="rounded-xl overflow-hidden border border-slate-200">
-            <iframe
-              src={content.resourceUrl}
-              className="w-full h-[600px]"
-              title="PDF Preview"
-            />
+            <PdfSlideshow fileUrl={content.resourceUrl} />
           </div>
           {!isCompleted && (
             <button
@@ -405,9 +426,7 @@ const CourseLearningPage = () => {
           )}
           {isCompleted && (
             <div className="flex items-center justify-center gap-2 py-3 bg-green-100 text-green-700 rounded-lg font-medium">
-              <span className="material-symbols-outlined text-lg">
-                check
-              </span>
+              <span className="material-symbols-outlined text-lg">check</span>
               Đã hoàn thành
             </div>
           )}
@@ -415,37 +434,11 @@ const CourseLearningPage = () => {
       );
     }
 
-    if (currentItem.type === "PPT") {
+    if (currentItem.type === "PPT" && content?.resourceUrl) {
       return (
         <div className="space-y-4">
-          <div className="border border-slate-200 rounded-xl bg-slate-50 h-[300px] flex flex-col items-center justify-center gap-4 text-center p-6">
-            <div className="size-16 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
-              <span className="material-symbols-outlined text-3xl">
-                co_present
-              </span>
-            </div>
-            <div>
-              <p className="font-semibold text-slate-900">
-                Không thể xem trước file PPT
-              </p>
-              <p className="text-slate-500 text-sm mt-1 max-w-md">
-                Trình xem trực tuyến không hỗ trợ file này. Vui lòng tải về để
-                xem.
-              </p>
-            </div>
-            {content?.resourceUrl && (
-              <a
-                href={content.resourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
-              >
-                <span className="material-symbols-outlined text-lg">
-                  download
-                </span>
-                Tải xuống file
-              </a>
-            )}
+          <div className="rounded-xl overflow-hidden border border-slate-200">
+            <PdfSlideshow fileUrl={content.resourceUrl} />
           </div>
           {!isCompleted && (
             <button
@@ -472,9 +465,7 @@ const CourseLearningPage = () => {
           )}
           {isCompleted && (
             <div className="flex items-center justify-center gap-2 py-3 bg-green-100 text-green-700 rounded-lg font-medium">
-              <span className="material-symbols-outlined text-lg">
-                check
-              </span>
+              <span className="material-symbols-outlined text-lg">check</span>
               Đã hoàn thành
             </div>
           )}
@@ -515,9 +506,7 @@ const CourseLearningPage = () => {
           )}
           {isCompleted && (
             <div className="flex items-center justify-center gap-2 py-3 bg-green-100 text-green-700 rounded-lg font-medium">
-              <span className="material-symbols-outlined text-lg">
-                check
-              </span>
+              <span className="material-symbols-outlined text-lg">check</span>
               Đã hoàn thành
             </div>
           )}
@@ -548,6 +537,16 @@ const CourseLearningPage = () => {
           >
             <span className="material-symbols-outlined">menu_open</span>
           </button>
+
+          {!isDesktopSidebarOpen && (
+            <button
+              onClick={() => setIsDesktopSidebarOpen(true)}
+              className="hidden lg:block text-gray-500 hover:color-primary transition-colors mr-2"
+              title="Mở rộng nội dung"
+            >
+              <span className="material-symbols-outlined">menu</span>
+            </button>
+          )}
 
           <Link
             to="/student/my-courses"
@@ -615,6 +614,8 @@ const CourseLearningPage = () => {
           onLessonSelect={handleLessonSelect}
           onItemSelect={handleItemSelect}
           completedItemIds={completedItemIds}
+          isDesktopOpen={isDesktopSidebarOpen}
+          onDesktopToggle={() => setIsDesktopSidebarOpen(!isDesktopSidebarOpen)}
         />
 
         {/* Content Area */}
