@@ -11,6 +11,7 @@ import {
   useQuestions,
 } from "../../hooks/useQuestions";
 import { useMyCourses, useCourseDetail } from "../../hooks/useCourses";
+import LoadingOverlay from "../../components/common/LoadingOverlay";
 
 const QuestionFormPage = () => {
   const { id } = useParams();
@@ -130,6 +131,7 @@ const QuestionFormPage = () => {
 
   return (
     <div className="min-h-screen">
+      <LoadingOverlay isLoading={isLoading} message="Đang lưu câu hỏi..." />
       {/* Header */}
       <header className=" border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-0 z-10 bg-white/80 backdrop-blur-md">
         <div className="flex items-center gap-4">
