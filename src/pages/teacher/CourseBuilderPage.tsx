@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import TeacherSidebar from "../../components/teacher/TeacherSidebar";
 import CourseOutline, {
   type OutlineItem,
@@ -21,6 +23,8 @@ import {
   useCreateLessonItem,
   useUpdateLessonItem,
   useDeleteLessonItem,
+  useReorderLessons,
+  useReorderLessonItems,
 } from "../../hooks/useLessons";
 import { getLessonById, getLessonItemById } from "../../services/lessonService";
 import type {
@@ -83,6 +87,8 @@ const CourseBuilderPage = () => {
     useDeleteLessonItem();
   const { approve: approveCourse, loading: publishLoading } =
     useApproveCourse();
+  const { reorder: reorderLessons } = useReorderLessons();
+  const { reorder: reorderItems } = useReorderLessonItems();
 
   // Publish handler
   const handlePublish = async () => {
@@ -117,7 +123,7 @@ const CourseBuilderPage = () => {
           );
           setLessons(lessonsWithItems);
         };
-        fetchLessonDetails();
+       fetchLessonDetails();
       }
     }
   }, [courseData]);
@@ -128,6 +134,80 @@ const CourseBuilderPage = () => {
     // Refetch course detail to get updated lessons
     refetchCourse();
   }, [courseId, refetchCourse]);
+
+  // DnD Handlers
+  const handleMoveLesson = useCallback(
+    (dragIndex: number, hoverIndex: number) => {
+      setLessons((prevLessons) => {
+        const result = [...prevLessons];
+        const [removed] = result.splice(dragIndex, 1);
+        result.splice(hoverIndex, 0, removed);
+        return result;
+      });
+    },
+    [],
+  );
+
+  const handleMoveItem = useCallback(
+    (lessonId: string, dragIndex: number, hoverIndex: number) => {
+      setLessons((prevLessons) => {
+        return prevLessons.map((lesson) => {
+          if (lesson.id === lessonId && lesson.lessonItems) {
+            const updatedItems = [...lesson.lessonItems];
+            const [removed] = updatedItems.splice(dragIndex, 1);
+            updatedItems.splice(hoverIndex, 0, removed);
+            return { ...lesson, lessonItems: updatedItems };
+          }
+          return lesson;
+        });
+      });
+    },
+    [],
+  );
+
+  const saveReorderLessons = async (currentLessons: ApiLesson[]) => {
+    if (!courseId) return;
+    const lessonIds = currentLessons.map((l) => l.id);
+    try {
+      await reorderLessons(courseId, lessonIds);
+      // toast.success("Đã cập nhật thứ tự bài học"); // Optional, maybe too noisy
+    } catch (e) {
+      toast.error("Lỗi cập nhật thứ tự bài học");
+    }
+  };
+
+  const saveReorderItems = async (
+    lessonId: string,
+    currentItems: LessonItem[],
+  ) => {
+    const itemIds = currentItems.map((i) => i.id);
+    try {
+      await reorderItems(lessonId, itemIds);
+      // toast.success("Đã cập nhật thứ tự nội dung");
+    } catch (e) {
+      toast.error("Lỗi cập nhật thứ tự nội dung");
+    }
+  };
+
+  // Refined Drop Handlers
+  const handleDropLessonReal = useCallback(() => {
+    // use a ref to get latest lessons? Or just rely on component state?
+    // Since this is called FROM the child component event,
+    // and the child component receives this function as a prop...
+    // if 'lessons' updates, 'handleDropLessonReal' updates, child gets new prop.
+    // So it should work.
+    saveReorderLessons(lessons);
+  }, [lessons, courseId, reorderLessons]);
+
+  const handleDropItemReal = useCallback(
+    (lessonId: string) => {
+      const lesson = lessons.find((l) => l.id === lessonId);
+      if (lesson && lesson.lessonItems) {
+        saveReorderItems(lessonId, lesson.lessonItems);
+      }
+    },
+    [lessons, reorderItems],
+  );
 
   // Handlers
   const handleCourseSubmit = async (data: {
@@ -421,141 +501,147 @@ const CourseBuilderPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
-      {/* Left Navigation Sidebar */}
-      <TeacherSidebar
-        isCollapsed={isSidebarCollapsed}
-        onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-      />
+    <DndProvider backend={HTML5Backend}>
+      <div className="min-h-screen bg-slate-50 flex">
+        {/* Left Navigation Sidebar */}
+        <TeacherSidebar
+          isCollapsed={isSidebarCollapsed}
+          onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        />
 
-      {/* Main Content */}
-      <div
-        className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? "ml-20" : "ml-64"}`}
-      >
-        {/* Header */}
-        <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
-          <div className="px-8 py-4">
-            {/* Breadcrumbs */}
-            <div className="flex items-center gap-2 mb-2 text-slate-500">
-              <Link
-                to="/teacher/courses"
-                className="text-sm font-medium hover:text-blue-600 transition-colors"
-              >
-                Khóa học
-              </Link>
-              <span className="material-symbols-outlined text-sm">
-                chevron_right
-              </span>
-              <span className="text-sm font-medium text-slate-900">
-                {isEditMode ? "Chỉnh sửa" : "Tạo mới"}
-              </span>
-            </div>
-
-            {/* Title & Actions */}
-            <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold text-slate-900">
-                {course?.name || "Khóa học mới"}
-              </h1>
-              <div className="flex gap-2">
-                {courseId && (
-                  <button
-                    onClick={handlePublish}
-                    disabled={publishLoading}
-                    className="flex items-center gap-2 px-4 h-10 bg-green-600 rounded-lg text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {publishLoading ? (
-                      <span className="material-symbols-outlined text-lg animate-spin">
-                        progress_activity
-                      </span>
-                    ) : (
-                      <span className="material-symbols-outlined text-lg">
-                        publish
-                      </span>
-                    )}
-                    Xuất bản
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        </header>
-
-        {/* Split View Content */}
-        <div className="p-8">
-          <div className="grid grid-cols-12 gap-6 max-w-7xl mx-auto">
-            {/* Left Column - Course Outline */}
-            <div className="col-span-4">
-              <div className="sticky top-28">
-                <CourseOutline
-                  course={course}
-                  lessons={lessons}
-                  selectedItem={selectedItem}
-                  onSelectItem={setSelectedItem}
-                  onAddLesson={handleAddLesson}
-                  onAddItem={handleAddItem}
-                  courseCreated={!!courseId}
-                />
-              </div>
-            </div>
-
-            {/* Right Column - Form Editor */}
-            <div className="col-span-8">{renderForm()}</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Delete Confirmation Modal */}
-      {deleteModal.open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div
-            className="absolute inset-0 bg-black/50"
-            onClick={() =>
-              setDeleteModal({ open: false, type: "lesson", title: "" })
-            }
-          />
-          <div className="relative bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="size-12 rounded-full bg-red-100 flex items-center justify-center">
-                <span className="material-symbols-outlined text-red-600 text-2xl">
-                  delete
+        {/* Main Content */}
+        <div
+          className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? "ml-20" : "ml-64"}`}
+        >
+          {/* Header */}
+          <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
+            <div className="px-8 py-4">
+              {/* Breadcrumbs */}
+              <div className="flex items-center gap-2 mb-2 text-slate-500">
+                <Link
+                  to="/teacher/courses"
+                  className="text-sm font-medium hover:text-blue-600 transition-colors"
+                >
+                  Khóa học
+                </Link>
+                <span className="material-symbols-outlined text-sm">
+                  chevron_right
+                </span>
+                <span className="text-sm font-medium text-slate-900">
+                  {isEditMode ? "Chỉnh sửa" : "Tạo mới"}
                 </span>
               </div>
-              <div>
-                <h3 className="text-lg font-bold text-slate-900">
-                  Xác nhận xóa
-                </h3>
-                <p className="text-sm text-slate-500">
-                  Bạn có chắc muốn xóa{" "}
-                  {deleteModal.type === "lesson" ? "bài học" : "nội dung"} "
-                  {deleteModal.title}"?
-                </p>
+
+              {/* Title & Actions */}
+              <div className="flex items-center justify-between">
+                <h1 className="text-2xl font-bold text-slate-900">
+                  {course?.name || "Khóa học mới"}
+                </h1>
+                <div className="flex gap-2">
+                  {courseId && (
+                    <button
+                      onClick={handlePublish}
+                      disabled={publishLoading}
+                      className="flex items-center gap-2 px-4 h-10 bg-green-600 rounded-lg text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {publishLoading ? (
+                        <span className="material-symbols-outlined text-lg animate-spin">
+                          progress_activity
+                        </span>
+                      ) : (
+                        <span className="material-symbols-outlined text-lg">
+                          publish
+                        </span>
+                      )}
+                      Xuất bản
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-            <p className="text-sm text-slate-600 mb-6">
-              Hành động này không thể hoàn tác. Tất cả dữ liệu liên quan sẽ bị
-              xóa vĩnh viễn.
-            </p>
-            <div className="flex gap-3 justify-end">
-              <button
-                onClick={() =>
-                  setDeleteModal({ open: false, type: "lesson", title: "" })
-                }
-                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors"
-              >
-                Hủy
-              </button>
-              <button
-                onClick={handleConfirmDelete}
-                disabled={deletingLesson || deletingItem}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 transition-colors"
-              >
-                {deletingLesson || deletingItem ? "Đang xóa..." : "Xóa"}
-              </button>
+          </header>
+
+          {/* Split View Content */}
+          <div className="p-8">
+            <div className="grid grid-cols-12 gap-6 max-w-7xl mx-auto">
+              {/* Left Column - Course Outline */}
+              <div className="col-span-4">
+                <div className="sticky top-28">
+                  <CourseOutline
+                    course={course}
+                    lessons={lessons}
+                    selectedItem={selectedItem}
+                    onSelectItem={setSelectedItem}
+                    onAddLesson={handleAddLesson}
+                    onAddItem={handleAddItem}
+                    courseCreated={!!courseId}
+                    moveLesson={handleMoveLesson}
+                    onDropLesson={handleDropLessonReal}
+                    moveItem={handleMoveItem}
+                    onDropItem={handleDropItemReal}
+                  />
+                </div>
+              </div>
+
+              {/* Right Column - Form Editor */}
+              <div className="col-span-8">{renderForm()}</div>
             </div>
           </div>
         </div>
-      )}
-    </div>
+
+        {/* Delete Confirmation Modal */}
+        {deleteModal.open && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div
+              className="absolute inset-0 bg-black/50"
+              onClick={() =>
+                setDeleteModal({ open: false, type: "lesson", title: "" })
+              }
+            />
+            <div className="relative bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="size-12 rounded-full bg-red-100 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-red-600 text-2xl">
+                    delete
+                  </span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900">
+                    Xác nhận xóa
+                  </h3>
+                  <p className="text-sm text-slate-500">
+                    Bạn có chắc muốn xóa{" "}
+                    {deleteModal.type === "lesson" ? "bài học" : "nội dung"} "
+                    {deleteModal.title}"?
+                  </p>
+                </div>
+              </div>
+              <p className="text-sm text-slate-600 mb-6">
+                Hành động này không thể hoàn tác. Tất cả dữ liệu liên quan sẽ bị
+                xóa vĩnh viễn.
+              </p>
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() =>
+                    setDeleteModal({ open: false, type: "lesson", title: "" })
+                  }
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors"
+                >
+                  Hủy
+                </button>
+                <button
+                  onClick={handleConfirmDelete}
+                  disabled={deletingLesson || deletingItem}
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 transition-colors"
+                >
+                  {deletingLesson || deletingItem ? "Đang xóa..." : "Xóa"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </DndProvider>
   );
 };
 
