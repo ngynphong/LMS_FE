@@ -1,7 +1,7 @@
 // Mock data for Course Learning feature
 // This file will be removed when API is fully integrated
 
-import type { ApiCourse, ApiLesson, LessonQuiz } from '../types/learningTypes';
+import type { ApiCourse, LessonQuiz } from '../types/learningTypes';
 
 // ==================== Mock Courses ====================
 
@@ -35,108 +35,6 @@ export const mockCourses: ApiCourse[] = [
     updatedAt: '2024-02-10T00:00:00Z',
     thumbnailUrl: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=800&q=80',
     progress: 20
-  }
-];
-
-// ==================== Mock Lessons ====================
-
-export const mockLessons: ApiLesson[] = [
-  // Course SC-001 lessons
-  {
-    id: 'lesson-001',
-    title: 'Giới thiệu HTML',
-    orderIndex: 1,
-    courseId: 'SC-001',
-    duration: '05:20',
-    videoUrl: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4',
-    description: 'Trong bài học này, bạn sẽ học các khái niệm cơ bản về HTML, cấu trúc trang web và các thẻ HTML phổ biến.',
-    tags: ['HTML', 'Web Basics'],
-    isCompleted: true,
-    isLocked: false,
-    attachments: [
-      { id: 'att-001', name: 'HTML_Cheatsheet.pdf', type: 'pdf', url: '#' }
-    ]
-  },
-  {
-    id: 'lesson-002',
-    title: 'Căn bản CSS',
-    orderIndex: 2,
-    courseId: 'SC-001',
-    duration: '12:45',
-    videoUrl: '',
-    description: 'Học cách sử dụng CSS để tạo kiểu cho trang web của bạn.',
-    tags: ['CSS', 'Styling'],
-    isCompleted: true,
-    isLocked: false,
-    attachments: []
-  },
-  {
-    id: 'lesson-003',
-    title: 'Flexbox nâng cao',
-    orderIndex: 3,
-    courseId: 'SC-001',
-    duration: '15:10',
-    videoUrl: '',
-    description: 'Làm chủ CSS Flexbox để tạo layout linh hoạt.',
-    tags: ['CSS', 'Flexbox', 'Layout'],
-    isCompleted: true,
-    isLocked: false,
-    attachments: []
-  },
-  {
-    id: 'lesson-004',
-    title: 'Grid Layout',
-    orderIndex: 4,
-    courseId: 'SC-001',
-    duration: '10:30',
-    videoUrl: '',
-    description: 'Sử dụng CSS Grid để tạo layout phức tạp.',
-    tags: ['CSS', 'Grid', 'Layout'],
-    isCompleted: true,
-    isLocked: false,
-    attachments: []
-  },
-  {
-    id: 'lesson-005',
-    title: 'Xây dựng giao diện responsive',
-    orderIndex: 5,
-    courseId: 'SC-001',
-    duration: '08:45',
-    videoUrl: '',
-    description: 'Trong bài học này, chúng ta sẽ học cách sử dụng Media Queries và Flexbox/Grid để tạo ra các giao diện có thể thích ứng với mọi kích thước màn hình từ điện thoại di động đến máy tính để bàn.',
-    tags: ['Responsive Design', 'Media Queries', 'Mobile First'],
-    isCompleted: false,
-    isLocked: false,
-    attachments: [
-      { id: 'att-002', name: 'UI_Design_Guide.pdf', type: 'pdf', url: '#' },
-      { id: 'att-003', name: 'Responsive_Code_Starter.zip', type: 'code', url: '#' }
-    ]
-  },
-  {
-    id: 'lesson-006',
-    title: 'JavaScript cơ bản',
-    orderIndex: 6,
-    courseId: 'SC-001',
-    duration: '20:00',
-    videoUrl: '',
-    description: 'Học JavaScript từ căn bản.',
-    tags: ['JavaScript', 'Programming'],
-    isCompleted: false,
-    isLocked: true,
-    attachments: []
-  },
-  {
-    id: 'lesson-007',
-    title: 'DOM Manipulation',
-    orderIndex: 7,
-    courseId: 'SC-001',
-    duration: '18:15',
-    videoUrl: '',
-    description: 'Học cách thao tác với DOM bằng JavaScript.',
-    tags: ['JavaScript', 'DOM'],
-    isCompleted: false,
-    isLocked: true,
-    attachments: []
   }
 ];
 

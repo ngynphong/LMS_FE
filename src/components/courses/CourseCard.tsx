@@ -2,8 +2,6 @@ import { Link } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
 import type { Course } from "../../types/course";
 
-// type CourseCardVariant = 'student' | 'teacher';
-
 // Props for student variant (can be spread from CourseData)
 interface StudentCourseProps {
   id: string | number;
@@ -14,6 +12,8 @@ interface StudentCourseProps {
   rating: number;
   reviews?: number;
   instructor?: string;
+  onClick?: () => void;
+  isEnrolled?: boolean;
 }
 
 // Props for teacher variant (uses course object)
@@ -117,12 +117,25 @@ const CourseCard = (props: CourseCardProps) => {
   }
 
   // Student variant (default) - uses spread props
-  const { id, title, category, image, duration, rating, reviews, instructor } =
-    props as StudentCourseProps;
+  const {
+    id,
+    title,
+    category,
+    image,
+    duration,
+    rating,
+    reviews,
+    instructor,
+    onClick,
+    isEnrolled,
+  } = props as StudentCourseProps;
 
   return (
     <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-all group">
-      <div className="relative h-44 w-full overflow-hidden">
+      <div
+        className="relative h-44 w-full overflow-hidden cursor-pointer"
+        onClick={onClick}
+      >
         <img
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           src={image}
@@ -131,9 +144,17 @@ const CourseCard = (props: CourseCardProps) => {
         <div className="absolute top-3 left-3 color-primary-bg text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider">
           {category}
         </div>
+        {isEnrolled && (
+          <div className="absolute top-3 right-3 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider shadow-md">
+            Đã tham gia
+          </div>
+        )}
       </div>
       <div className="p-5 flex flex-col gap-3">
-        <h3 className="text-gray-900 font-bold text-base leading-snug line-clamp-2 h-12">
+        <h3
+          className="text-gray-900 font-bold text-base leading-snug line-clamp-2 h-12 cursor-pointer"
+          onClick={onClick}
+        >
           {title}
         </h3>
         <div className="flex items-center gap-2 text-gray-500 text-xs">
@@ -148,12 +169,24 @@ const CourseCard = (props: CourseCardProps) => {
           {instructor && (
             <span className="text-gray-600 text-sm">GV: {instructor}</span>
           )}
-          <Link
-            className="color-primary text-sm font-bold hover:underline ml-auto"
-            to={`/courses/${id}`}
-          >
-            Xem chi tiết
-          </Link>
+          {onClick ? (
+            <button
+              className="color-primary text-sm font-bold hover:underline ml-auto"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClick();
+              }}
+            >
+              Nhập mã tham gia
+            </button>
+          ) : (
+            <Link
+              className="color-primary text-sm font-bold hover:underline ml-auto"
+              to={`/courses/${id}`}
+            >
+              Xem chi tiết
+            </Link>
+          )}
         </div>
       </div>
     </div>

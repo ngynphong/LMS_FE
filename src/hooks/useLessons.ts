@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { createLesson, reorderLessons, getLessonById, updateLesson, deleteLesson, createLessonItem, reorderLessonItems, getLessonItemById, updateLessonItem, deleteLessonItem } from '../services/lessonService';
+import { createLesson, reorderLessons, getLessonById, updateLesson, deleteLesson, createLessonItem, reorderLessonItems, getLessonItemById, updateLessonItem, deleteLessonItem, trackVideoHeartbeat, markLessonItemComplete } from '../services/lessonService';
 import type { CreateLessonRequest, CreateLessonItemValues } from '../types/courseApi';
+import type { VideoHeartbeatRequest } from '../types/learningTypes';
 
 export const useCreateLesson = () => {
     const [loading, setLoading] = useState(false);
@@ -232,3 +233,44 @@ export const useDeleteLessonItem = () => {
     return { remove, loading, error };
 };
 
+
+
+export const useVideoHeartbeat = () => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
+
+    const track = async (data: VideoHeartbeatRequest) => {
+        setLoading(true);
+        setError(null);
+        try {
+            await trackVideoHeartbeat(data);
+        } catch (err) {
+            setError(err instanceof Error ? err : new Error('Failed to track video heartbeat'));
+            // Optionally suppress error for heartbeat to avoid disrupting user experience
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { track, loading, error };
+};
+
+export const useMarkLessonItemComplete = () => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
+
+    const markComplete = async (lessonItemId: string) => {
+        setLoading(true);
+        setError(null);
+        try {
+            await markLessonItemComplete(lessonItemId);
+        } catch (err) {
+            setError(err instanceof Error ? err : new Error('Failed to mark item complete'));
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { markComplete, loading, error };
+};

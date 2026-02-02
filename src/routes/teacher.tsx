@@ -12,6 +12,7 @@ import ExamListPage from "../pages/teacher/ExamListPage";
 import ExamFormPage from "../pages/teacher/ExamFormPage";
 import ReportsListPage from "../pages/teacher/ReportsListPage";
 import ExamReportDetailPage from "../pages/teacher/ExamReportDetailPage";
+import TeacherLessonItemPreviewPage from "../pages/teacher/TeacherLessonItemPreviewPage";
 import ProtectedRoute from "./ProtectedRoute";
 
 /**
@@ -62,6 +63,14 @@ const finalTeacherRoutes: RouteObject[] = [
     element: (
       <ProtectedRoute allowedRoles={["TEACHER", "ADMIN"]}>
         <CourseBuilderPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/teacher/courses/:courseId/lessons/:lessonId/items/:itemId",
+    element: (
+      <ProtectedRoute allowedRoles={["TEACHER", "ADMIN"]}>
+        <TeacherLessonItemPreviewPage />
       </ProtectedRoute>
     ),
   },

@@ -1,80 +1,147 @@
-import { useState, useMemo } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useCreateQuiz } from "../../hooks/useQuizzes";
+import { useMyCourses, useCourseDetail } from "../../hooks/useCourses";
+import { getLessonById } from "../../services/lessonService";
+import type { CreateQuizRequest, DynamicConfig } from "../../types/quiz";
+import { toast } from "@/components/common/Toast";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 const ExamFormPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditMode = !!id;
 
+  const { create, loading: createLoading } = useCreateQuiz();
+
+  // Basic Form Data
   const [formData, setFormData] = useState({
-    title: isEditMode ? 'Kiểm tra cuối kỳ Lập trình Web' : '',
-    description: isEditMode ? 'Bài thi đánh giá kiến thức về HTML, CSS và JavaScript nâng cao.' : '',
-    startDate: '',
-    endDate: '',
+    title: "",
+    description: "",
     duration: 60,
     maxAttempts: 1,
     passingScore: 50,
-    shuffleQuestions: true
+    shuffleQuestions: true,
+    isDynamic: true, // Default to dynamic
   });
 
-  // Get today's date in YYYY-MM-DD format for min attribute
-  const today = useMemo(() => {
-    const now = new Date();
-    return now.toISOString().split('T')[0];
-  }, []);
+  // Course & Lesson Selection state
+  const [selectedCourseId, setSelectedCourseId] = useState<string>("");
+  const [selectedLessonId, setSelectedLessonId] = useState<string>("");
+  const [selectedLessonItemId, setSelectedLessonItemId] = useState<string>("");
 
-  // Validation errors
-  const dateErrors = useMemo(() => {
-    const errors: { startDate?: string; endDate?: string } = {};
-    
-    if (formData.startDate && formData.startDate < today) {
-      errors.startDate = 'Ngày bắt đầu không thể là ngày trong quá khứ';
-    }
-    
-    if (formData.endDate && formData.startDate && formData.endDate < formData.startDate) {
-      errors.endDate = 'Ngày kết thúc không thể trước ngày bắt đầu';
-    }
-    
-    return errors;
-  }, [formData.startDate, formData.endDate, today]);
+  // Dynamic Config State
+  const [dynamicConfig, setDynamicConfig] = useState<DynamicConfig>({
+    targetLessonId: "",
+    difficulty: "EASY",
+    quantity: 10,
+    scorePerQuestion: 1,
+  });
 
-  const hasErrors = Object.keys(dateErrors).length > 0;
+  // Fetch courses
+  const { data: courses } = useMyCourses({ pageSize: 100 });
+  const { data: courseDetail } = useCourseDetail(selectedCourseId || undefined);
+  const lessons = courseDetail?.lessons || [];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Fetch lesson items when lesson changes
+  useEffect(() => {
+    const fetchLessonItems = async () => {
+      if (selectedLessonId) {
+        try {
+          const lessonData = await getLessonById(selectedLessonId);
+          if (lessonData && lessonData.lessonItems) {
+            setLessonItems(lessonData.lessonItems);
+          } else {
+            setLessonItems([]);
+          }
+        } catch (error) {
+          console.error("Failed to fetch lesson items", error);
+          setLessonItems([]);
+        }
+      } else {
+        setLessonItems([]);
+      }
+    };
+    fetchLessonItems();
+  }, [selectedLessonId]);
+
+  const [lessonItems, setLessonItems] = useState<any[]>([]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (hasErrors) {
-      alert('Vui lòng sửa các lỗi trước khi lưu');
+
+    if (!selectedCourseId || !selectedLessonId || !selectedLessonItemId) {
+      toast.error("Vui lòng chọn khóa học, bài học và nội dung bài học");
       return;
     }
-    
-    // TODO: API call to save exam
-    console.log('Saving exam:', formData);
-    navigate('/teacher/exams');
+
+    const quizData: CreateQuizRequest = {
+      title: formData.title,
+      description: formData.description,
+      lessonItemId: selectedLessonItemId,
+      courseId: selectedCourseId,
+      durationInMinutes: formData.duration,
+      passScore: formData.passingScore,
+      maxAttempts: formData.maxAttempts,
+      shuffleQuestions: formData.shuffleQuestions,
+      isDynamic: formData.isDynamic,
+      dynamicConfigs: formData.isDynamic
+        ? [
+            {
+              targetLessonId: dynamicConfig.targetLessonId || selectedLessonId, // Default to current lesson if not chosen
+              difficulty: dynamicConfig.difficulty,
+              quantity: dynamicConfig.quantity,
+              scorePerQuestion: dynamicConfig.scorePerQuestion,
+            },
+          ]
+        : [],
+      staticQuestions: [], // Static not implemented in this MVP step
+    };
+
+    try {
+      await create(quizData);
+      toast.success("Tạo đề thi thành công!");
+      navigate("/teacher/exams");
+    } catch (error) {
+      console.error(error);
+      toast.error("Tạo đề thi thất bại");
+    }
   };
 
   return (
     <div className="space-y-6 pb-24">
+      <LoadingOverlay isLoading={createLoading} message="Đang tạo bài thi..." />
       {/* Breadcrumbs */}
       <nav className="flex items-center gap-2 text-sm font-medium">
-        <Link to="/teacher/exams" className="text-slate-500 hover:text-[#0074bd] transition-colors">Đề thi</Link>
+        <Link
+          to="/teacher/exams"
+          className="text-slate-500 hover:text-[#0074bd] transition-colors"
+        >
+          Đề thi
+        </Link>
         <span className="text-slate-400">/</span>
-        <span className="text-[#111518]">{isEditMode ? 'Chỉnh sửa' : 'Tạo mới'}</span>
+        <span className="text-[#111518]">
+          {isEditMode ? "Chỉnh sửa" : "Tạo mới"}
+        </span>
       </nav>
 
       {/* Page Heading */}
       <div>
         <h2 className="text-3xl font-black text-[#111518] tracking-tight">
-          {isEditMode ? 'Chỉnh sửa đề thi' : 'Thiết lập bài thi'}
+          {isEditMode ? "Chỉnh sửa đề thi" : "Thiết lập bài thi"}
         </h2>
-        <p className="text-slate-500 mt-2">Cấu hình các thông số và câu hỏi cho bài kiểm tra của bạn.</p>
+        <p className="text-slate-500 mt-2">
+          Cấu hình các thông số và câu hỏi cho bài kiểm tra của bạn.
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Section 1: Thông tin chung */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-            <h3 className="text-lg font-bold text-[#111518]">Thông tin chung</h3>
+            <h3 className="text-lg font-bold text-[#111518]">
+              Thông tin chung
+            </h3>
           </div>
           <div className="p-6 space-y-4">
             <div className="max-w-2xl">
@@ -84,178 +151,312 @@ const ExamFormPage = () => {
               <input
                 type="text"
                 value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:ring-2 focus:ring-[#0074bd]/20 focus:border-[#0074bd] outline-none transition-all"
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
+                className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none transition-all"
                 placeholder="Nhập tên bài thi..."
                 required
               />
             </div>
             <div className="max-w-2xl">
-              <label className="block text-sm font-semibold text-[#111518] mb-2">Mô tả ngắn</label>
+              <label className="block text-sm font-semibold text-[#111518] mb-2">
+                Mô tả ngắn
+              </label>
               <textarea
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 focus:ring-2 focus:ring-[#0074bd]/20 focus:border-[#0074bd] outline-none transition-all"
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
+                className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none transition-all"
                 placeholder="Nhập mô tả cho sinh viên..."
                 rows={3}
               />
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-sm font-semibold text-[#111518] mb-2">
+                  Khóa học <span className="text-red-500">*</span>
+                </label>
+                <select
+                  className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none transition-all"
+                  value={selectedCourseId}
+                  onChange={(e) => {
+                    setSelectedCourseId(e.target.value);
+                    setSelectedLessonId("");
+                    setSelectedLessonItemId("");
+                  }}
+                  required
+                >
+                  <option value="">-- Chọn khóa học --</option>
+                  {courses?.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-[#111518] mb-2">
+                  Bài học (Module) <span className="text-red-500">*</span>
+                </label>
+                <select
+                  className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none transition-all"
+                  value={selectedLessonId}
+                  onChange={(e) => {
+                    setSelectedLessonId(e.target.value);
+                    setSelectedLessonItemId("");
+                  }}
+                  disabled={!selectedCourseId}
+                  required
+                >
+                  <option value="">-- Chọn bài học --</option>
+                  {lessons.map((l) => (
+                    <option key={l.id} value={l.id}>
+                      {l.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-[#111518] mb-2">
+                  Nội dung (Quiz) <span className="text-red-500">*</span>
+                </label>
+                <select
+                  className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none transition-all"
+                  value={selectedLessonItemId}
+                  onChange={(e) => setSelectedLessonItemId(e.target.value)}
+                  disabled={!selectedLessonId}
+                  required
+                >
+                  <option value="">-- Chọn nội dung --</option>
+                  {lessonItems.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.title} ({item.type})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Section 2: Cấu hình thời gian */}
+        {/* Section 2: Cấu hình */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-            <h3 className="text-lg font-bold text-[#111518]">Cấu hình thời gian</h3>
+            <h3 className="text-lg font-bold text-[#111518]">Cấu hình</h3>
           </div>
           <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label className="block text-sm font-semibold text-[#111518] mb-2">
-                  Ngày bắt đầu <span className="text-red-500">*</span>
+                  Thời gian làm bài (phút)
                 </label>
-                <div className="relative">
-                  <input
-                    type="date"
-                    value={formData.startDate}
-                    min={today}
-                    onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                    className={`w-full h-12 rounded-lg border bg-white px-4 pr-10 focus:ring-2 focus:ring-[#0074bd]/20 focus:border-[#0074bd] outline-none ${
-                      dateErrors.startDate ? 'border-red-500' : 'border-slate-200'
-                    }`}
-                    required
-                  />
-                </div>
-                {dateErrors.startDate && (
-                  <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
-                    <span className="material-symbols-outlined text-sm">error</span>
-                    {dateErrors.startDate}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-[#111518] mb-2">
-                  Ngày kết thúc <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type="date"
-                    value={formData.endDate}
-                    min={formData.startDate || today}
-                    onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                    className={`w-full h-12 rounded-lg border bg-white px-4 pr-10 focus:ring-2 focus:ring-[#0074bd]/20 focus:border-[#0074bd] outline-none ${
-                      dateErrors.endDate ? 'border-red-500' : 'border-slate-200'
-                    }`}
-                    required
-                  />
-                </div>
-                {dateErrors.endDate && (
-                  <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
-                    <span className="material-symbols-outlined text-sm">error</span>
-                    {dateErrors.endDate}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-[#111518] mb-2">Thời gian làm bài (phút)</label>
                 <input
                   type="number"
                   value={formData.duration}
-                  onChange={(e) => setFormData({ ...formData, duration: parseInt(e.target.value) })}
-                  className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:ring-2 focus:ring-[#0074bd]/20 focus:border-[#0074bd] outline-none"
-                  placeholder="60"
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      duration: parseInt(e.target.value),
+                    })
+                  }
+                  className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none"
                   min={1}
                 />
               </div>
+              <div>
+                <label className="block text-sm font-semibold text-[#111518] mb-2">
+                  Số lần thử tối đa
+                </label>
+                <select
+                  value={formData.maxAttempts}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      maxAttempts: parseInt(e.target.value),
+                    })
+                  }
+                  className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none"
+                >
+                  <option value={1}>1 lần</option>
+                  <option value={2}>2 lần</option>
+                  <option value={3}>3 lần</option>
+                  <option value={-1}>Không giới hạn</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-[#111518] mb-2">
+                  Điểm chuẩn (%)
+                </label>
+                <input
+                  type="number"
+                  value={formData.passingScore}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      passingScore: parseInt(e.target.value),
+                    })
+                  }
+                  className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none"
+                  min={0}
+                  max={100}
+                />
+              </div>
+            </div>
+            <div className="mt-4 flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+              <div>
+                <p className="font-bold text-[#111518]">Xáo trộn câu hỏi</p>
+                <p className="text-xs text-slate-500 mt-1">
+                  Thay đổi thứ tự hiển thị câu hỏi cho mỗi sinh viên
+                </p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.shuffleQuestions}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      shuffleQuestions: e.target.checked,
+                    })
+                  }
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#1E90FF]"></div>
+              </label>
             </div>
           </div>
         </div>
 
-        {/* Section 3: Quy tắc làm bài */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-            <h3 className="text-lg font-bold text-[#111518]">Quy tắc làm bài</h3>
-          </div>
-          <div className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-semibold text-[#111518] mb-2">Số lần thử tối đa</label>
-                  <select
-                    value={formData.maxAttempts}
-                    onChange={(e) => setFormData({ ...formData, maxAttempts: parseInt(e.target.value) })}
-                    className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:ring-2 focus:ring-[#0074bd]/20 focus:border-[#0074bd] outline-none appearance-none"
-                  >
-                    <option value={1}>1 lần</option>
-                    <option value={2}>2 lần</option>
-                    <option value={3}>3 lần</option>
-                    <option value={-1}>Không giới hạn</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-[#111518] mb-2">Điểm chuẩn để đạt (%)</label>
-                  <input
-                    type="number"
-                    value={formData.passingScore}
-                    onChange={(e) => setFormData({ ...formData, passingScore: parseInt(e.target.value) })}
-                    className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:ring-2 focus:ring-[#0074bd]/20 focus:border-[#0074bd] outline-none"
-                    min={0}
-                    max={100}
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col justify-center">
-                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-                  <div>
-                    <p className="font-bold text-[#111518]">Xáo trộn câu hỏi</p>
-                    <p className="text-xs text-slate-500 mt-1">Thay đổi thứ tự hiển thị câu hỏi cho mỗi sinh viên</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={formData.shuffleQuestions}
-                      onChange={(e) => setFormData({ ...formData, shuffleQuestions: e.target.checked })}
-                      className="sr-only peer"
-                    />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0074bd]"></div>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Section 4: Chọn câu hỏi */}
+        {/* Section 3: Chọn câu hỏi */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-            <h3 className="text-lg font-bold text-[#111518]">Chọn câu hỏi</h3>
+            <h3 className="text-lg font-bold text-[#111518]">
+              Cấu hình câu hỏi
+            </h3>
+            <div className="flex items-center gap-2">
+              <span
+                className={`text-sm font-bold ${!formData.isDynamic ? "text-[#0074bd]" : "text-slate-400"}`}
+              >
+                Thủ công
+              </span>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.isDynamic}
+                  onChange={(e) =>
+                    setFormData({ ...formData, isDynamic: e.target.checked })
+                  }
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#1E90FF]"></div>
+              </label>
+              <span
+                className={`text-sm font-bold ${formData.isDynamic ? "text-[#1E90FF]" : "text-slate-400"}`}
+              >
+                Tự động (Dynamic)
+              </span>
+            </div>
           </div>
-          <div className="p-6 flex flex-col items-center justify-center text-center py-10">
-            <div className="bg-[#0074bd]/10 rounded-full p-4 mb-4">
-              <span className="material-symbols-outlined text-[#0074bd] text-3xl">quiz</span>
-            </div>
-            <p className="text-xl font-bold text-[#111518]">
-              Số lượng câu hỏi hiện tại: <span className="text-[#0074bd]">0</span>
-            </p>
-            <p className="text-slate-500 text-sm mt-2 max-w-sm">
-              Bạn có thể thêm câu hỏi trực tiếp hoặc nhập từ ngân hàng câu hỏi có sẵn.
-            </p>
-            <div className="flex gap-4 mt-8">
-              <Link
-                to="/teacher/questions"
-                className="flex items-center gap-2 px-6 py-3 bg-[#0074bd] hover:bg-[#0074bd]/90 text-white font-bold rounded-lg transition-all shadow-md"
-              >
-                <span className="material-symbols-outlined">library_add</span>
-                Thêm từ ngân hàng câu hỏi
-              </Link>
-              <Link
-                to="/teacher/questions/new"
-                className="flex items-center gap-2 px-6 py-3 border border-[#0074bd] text-[#0074bd] hover:bg-[#0074bd]/5 font-bold rounded-lg transition-all"
-              >
-                <span className="material-symbols-outlined">add</span>
-                Tạo câu hỏi mới
-              </Link>
-            </div>
+          <div className="p-6">
+            {formData.isDynamic ? (
+              <div className="space-y-4">
+                <p className="text-sm text-slate-500 mb-4">
+                  Hệ thống sẽ tự động chọn câu hỏi ngẫu nhiên dựa trên cấu hình
+                  dưới đây.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 mb-1">
+                      Độ khó
+                    </label>
+                    <select
+                      value={dynamicConfig.difficulty}
+                      onChange={(e) =>
+                        setDynamicConfig({
+                          ...dynamicConfig,
+                          difficulty: e.target.value as any,
+                        })
+                      }
+                      className="w-full h-10 rounded border border-slate-200 px-3 text-sm"
+                    >
+                      <option value="EASY">Dễ</option>
+                      <option value="MEDIUM">Vừa</option>
+                      <option value="HARD">Khó</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 mb-1">
+                      Số lượng câu
+                    </label>
+                    <input
+                      type="number"
+                      value={dynamicConfig.quantity}
+                      onChange={(e) =>
+                        setDynamicConfig({
+                          ...dynamicConfig,
+                          quantity: parseInt(e.target.value),
+                        })
+                      }
+                      className="w-full h-10 rounded border border-slate-200 px-3 text-sm"
+                      min={1}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 mb-1">
+                      Điểm mỗi câu
+                    </label>
+                    <input
+                      type="number"
+                      value={dynamicConfig.scorePerQuestion}
+                      onChange={(e) =>
+                        setDynamicConfig({
+                          ...dynamicConfig,
+                          scorePerQuestion: parseInt(e.target.value),
+                        })
+                      }
+                      className="w-full h-10 rounded border border-slate-200 px-3 text-sm"
+                      min={0.5}
+                      step={0.5}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 mb-1">
+                      Nguồn câu hỏi (Bài học)
+                    </label>
+                    <select
+                      value={dynamicConfig.targetLessonId || ""}
+                      onChange={(e) =>
+                        setDynamicConfig({
+                          ...dynamicConfig,
+                          targetLessonId: e.target.value,
+                        })
+                      }
+                      className="w-full h-10 rounded border border-slate-200 px-3 text-sm"
+                    >
+                      <option value="">(Tự động theo bài thi)</option>
+                      {lessons.map((l) => (
+                        <option key={l.id} value={l.id}>
+                          {l.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-10 text-slate-500 bg-slate-50 rounded-lg border border-dashed border-slate-300">
+                <span className="material-symbols-outlined text-4xl mb-2">
+                  construction
+                </span>
+                <p>Chế độ chọn câu hỏi thủ công đang được phát triển.</p>
+                <p className="text-xs mt-1">
+                  Vui lòng sử dụng chế độ Tự động (Dynamic) tạm thời.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </form>
@@ -271,8 +472,14 @@ const ExamFormPage = () => {
           </Link>
           <button
             onClick={handleSubmit}
-            className="px-8 py-3 bg-[#0074bd] hover:bg-[#0074bd]/90 text-white font-bold rounded-lg shadow-lg shadow-[#0074bd]/20 transition-all"
+            disabled={createLoading}
+            className="px-8 py-3 bg-[#0074bd] hover:bg-[#0074bd]/90 text-white font-bold rounded-lg shadow-lg shadow-[#0074bd]/20 transition-all disabled:opacity-50 flex items-center gap-2"
           >
+            {createLoading && (
+              <span className="material-symbols-outlined animate-spin text-sm">
+                progress_activity
+              </span>
+            )}
             Lưu thiết lập
           </button>
         </div>

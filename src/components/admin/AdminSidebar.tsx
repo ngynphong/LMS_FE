@@ -6,10 +6,7 @@ import {
   MdAnalytics,
   MdSettings,
 } from "react-icons/md";
-import {
-  FaCalendar,
-  FaTimes,
-} from "react-icons/fa";
+import { FaCalendar, FaTimes } from "react-icons/fa";
 import { useAuth } from "../../hooks/useAuth";
 import { ConfirmationModal } from "../common/ConfirmationModal";
 import { useState, useEffect } from "react";
@@ -72,7 +69,7 @@ const AdminSidebar = ({
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   // Close mobile sidebar on route change
@@ -213,7 +210,7 @@ const AdminSidebar = ({
                     Admin User
                   </p>
                   <p className="text-[10px] text-slate-500 truncate mt-0.5">
-                    admin@ies.edu.vn
+                    {user?.email}
                   </p>
                 </div>
               )}

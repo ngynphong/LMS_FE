@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getCourses, getAdminCourses, createCourse, updateCourse, deleteCourse, approveCourse, banCourse, getMyCourses, getCourseById } from '../services/courseService';
+import { getCourses, getAdminCourses, createCourse, updateCourse, deleteCourse, approveCourse, banCourse, getMyCourses, getCourseById, enrollCourse, createInviteCode, getStudentCourses } from '../services/courseService';
 import type { CourseListResponse, GetCoursesParams, CreateCourseRequest, UpdateCourseRequest } from '../types/courseApi';
-import type { ApiCourse } from '../types/learningTypes';
+import type { ApiCourse, EnrollCourseRequest, CreateInviteCodeRequest } from '../types/learningTypes';
 
 interface UseCoursesReturn {
     data: CourseListResponse | null;
@@ -211,6 +211,48 @@ export const useMyCourses = (params?: {
     return { data, loading, error, refetch, totalElements, totalPages };
 };
 
+
+export const useStudentCourses = (params?: {
+    pageNo?: number;
+    pageSize?: number;
+    sorts?: string;
+    keyword?: string;
+    status?: string;
+    visibility?: string;
+}) => {
+    const [data, setData] = useState<ApiCourse[] | null>(null);
+    const [totalElements, setTotalElements] = useState<number>(0);
+    const [totalPages, setTotalPages] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<Error | null>(null);
+    const [trigger, setTrigger] = useState<number>(0);
+
+    const refetch = useCallback(() => {
+        setTrigger(prev => prev + 1);
+    }, []);
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const response = await getStudentCourses(params);
+                setData(response.items);
+                setTotalElements(response.totalElement);
+                setTotalPages(response.totalPage);
+            } catch (err) {
+                setError(err instanceof Error ? err : new Error('Failed to fetch my courses'));
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCourses();
+    }, [trigger, JSON.stringify(params)]);
+
+    return { data, loading, error, refetch, totalElements, totalPages };
+};
+
 export const useCourseDetail = (courseId: string | undefined) => {
     const [data, setData] = useState<ApiCourse | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -245,3 +287,44 @@ export const useCourseDetail = (courseId: string | undefined) => {
 
     return { data, loading, error, refetch };
 };
+
+export const useEnrollCourse = () => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
+
+    const enroll = async (courseId: string, data: EnrollCourseRequest) => {
+        setLoading(true);
+        setError(null);
+        try {
+            await enrollCourse(courseId, data);
+        } catch (err) {
+            setError(err instanceof Error ? err : new Error('Failed to enroll course'));
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { enroll, loading, error };
+};
+
+export const useCreateInviteCode = () => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
+
+    const createCode = async (courseId: string, data: CreateInviteCodeRequest) => {
+        setLoading(true);
+        setError(null);
+        try {
+            return await createInviteCode(courseId, data);
+        } catch (err) {
+            setError(err instanceof Error ? err : new Error('Failed to create invite code'));
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { createCode, loading, error };
+};
+

@@ -1,6 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useMyCourses } from "../../hooks/useCourses";
+import {
+  useMyCourses,
+  useCreateInviteCode,
+  useDeleteCourse,
+} from "../../hooks/useCourses";
+import { toast } from "@/components/common/Toast";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 
 const CourseListPage = () => {
   const [filters, setFilters] = useState({
@@ -11,6 +17,16 @@ const CourseListPage = () => {
     status: "",
     visibility: "",
   });
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setFilters((prev) => ({ ...prev, keyword: searchTerm, pageNo: 0 }));
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
 
   const {
     data: courses,
@@ -23,6 +39,16 @@ const CourseListPage = () => {
     visibility: filters.visibility === "all" ? undefined : filters.visibility,
   });
 
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  const [createdCode, setCreatedCode] = useState<string | null>(null);
+  const { createCode, loading: creatingCode } = useCreateInviteCode();
+
+  // Delete course state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [courseToDelete, setCourseToDelete] = useState<string | null>(null);
+  const { remove: deleteCourse, loading: deletingCourse } = useDeleteCourse();
+
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({
       ...prev,
@@ -31,7 +57,45 @@ const CourseListPage = () => {
     }));
   };
 
-  if (loading) {
+  const handleCreateCode = async () => {
+    if (!selectedCourseId) return;
+    try {
+      const code = await createCode(selectedCourseId, {
+        expirationInMinutes: 60 * 24 * 1,
+      }); // Default 7 days
+      setCreatedCode(code);
+      toast.success("Tạo mã mời thành công!");
+    } catch (err) {
+      toast.error("Tạo mã mời thất bại");
+    }
+  };
+
+  const openInviteModal = (courseId: string) => {
+    setSelectedCourseId(courseId);
+    setCreatedCode(null);
+    setShowInviteModal(true);
+  };
+
+  const openDeleteModal = (courseId: string) => {
+    setCourseToDelete(courseId);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteCourse = async () => {
+    if (!courseToDelete) return;
+
+    try {
+      await deleteCourse(courseToDelete);
+      toast.success("Xóa khóa học thành công");
+      setShowDeleteModal(false);
+      setCourseToDelete(null);
+      refetch();
+    } catch (error) {
+      toast.error("Không thể xóa khóa học. Vui lòng thử lại sau.");
+    }
+  };
+
+  if (loading && !courses) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="flex items-center gap-3">
@@ -68,7 +132,7 @@ const CourseListPage = () => {
   const draftCount = courseList.filter((c) => c.status === "DRAFT").length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -97,15 +161,15 @@ const CourseListPage = () => {
           <input
             type="text"
             placeholder="Tìm kiếm khóa học..."
-            value={filters.keyword}
-            onChange={(e) => handleFilterChange("keyword", e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF]"
           />
         </div>
         <select
           value={filters.status}
           onChange={(e) => handleFilterChange("status", e.target.value)}
-          className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
+          className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
         >
           <option value="all">Tất cả trạng thái</option>
           <option value="PUBLISHED">Đã xuất bản</option>
@@ -114,7 +178,7 @@ const CourseListPage = () => {
         <select
           value={filters.visibility}
           onChange={(e) => handleFilterChange("visibility", e.target.value)}
-          className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
+          className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
         >
           <option value="all">Tất cả quyền</option>
           <option value="PUBLIC">Công khai</option>
@@ -123,7 +187,7 @@ const CourseListPage = () => {
         <select
           value={filters.sorts}
           onChange={(e) => handleFilterChange("sorts", e.target.value)}
-          className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
+          className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
         >
           <option value="createdAt:desc">Mới nhất</option>
           <option value="createdAt:asc">Cũ nhất</option>
@@ -150,7 +214,7 @@ const CourseListPage = () => {
         </div>
         <div className="bg-white p-4 rounded-xl border border-slate-200">
           <p className="text-[#5e7b8d] text-xs font-medium">Tổng bài học</p>
-          <p className="text-[#0074bd] text-2xl font-bold mt-1">
+          <p className="text-[#1E90FF] text-2xl font-bold mt-1">
             {courseList.reduce((sum, c) => sum + (c.lessonCount || 0), 0)}
           </p>
         </div>
@@ -227,8 +291,17 @@ const CourseListPage = () => {
                     <span className="material-symbols-outlined text-sm">
                       edit
                     </span>
-                    Chỉnh sửa
+                    Sửa
                   </Link>
+                  <button
+                    onClick={() => openInviteModal(course.id)}
+                    className="flex items-center justify-center px-3 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-200 hover:translate-y-[-2px] duration-300 transition-all"
+                    title="Tạo mã mời"
+                  >
+                    <span className="material-symbols-outlined text-sm">
+                      key
+                    </span>
+                  </button>
                   <Link
                     to={`/teacher/courses/${course.id}`}
                     className="flex items-center justify-center px-3 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-200 hover:translate-y-[-2px] duration-300 transition-all"
@@ -238,12 +311,118 @@ const CourseListPage = () => {
                       visibility
                     </span>
                   </Link>
+                  <button
+                    onClick={() => openDeleteModal(course.id)}
+                    className="flex items-center justify-center px-3 py-2 bg-red-50 text-red-600 rounded-lg text-sm font-medium hover:bg-red-100 hover:translate-y-[-2px] duration-300 transition-all"
+                    title="Xóa khóa học"
+                  >
+                    <span className="material-symbols-outlined text-sm">
+                      delete
+                    </span>
+                  </button>
                 </div>
               </div>
             </div>
           ))}
         </div>
       )}
+
+      {/* Invite Code Modal */}
+      {showInviteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-900">
+                Tạo mã tham gia
+              </h3>
+              <button
+                onClick={() => setShowInviteModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+
+            <p className="text-sm text-gray-600 mb-6">
+              Mã tham gia cho phép học viên tự ghi danh vào khóa học này. Mã mặc
+              định có hiệu lực trong 1 ngày.
+            </p>
+
+            {createdCode ? (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                <p className="text-xs text-green-700 font-medium mb-1">
+                  Mã tham gia của bạn:
+                </p>
+                <div className="flex items-center justify-between">
+                  <span className="text-2xl font-mono font-bold text-green-800 tracking-wider">
+                    {createdCode}
+                  </span>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(createdCode);
+                      toast.success("Đã sao chép mã!");
+                    }}
+                    className="p-2 hover:bg-green-100 rounded-full text-green-700"
+                    title="Sao chép"
+                  >
+                    <span className="material-symbols-outlined text-sm">
+                      content_copy
+                    </span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-blue-600">
+                  <span className="material-symbols-outlined text-3xl">
+                    vpn_key
+                  </span>
+                </div>
+              </div>
+            )}
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowInviteModal(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg"
+              >
+                Đóng
+              </button>
+              {!createdCode && (
+                <button
+                  onClick={handleCreateCode}
+                  disabled={creatingCode}
+                  className="px-4 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg disabled:opacity-50 flex items-center gap-2"
+                >
+                  {creatingCode ? (
+                    <span className="material-symbols-outlined animate-spin text-sm">
+                      progress_activity
+                    </span>
+                  ) : (
+                    <span className="material-symbols-outlined text-sm">
+                      add_circle
+                    </span>
+                  )}
+                  Tạo mã mới
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDeleteCourse}
+        title="Xóa khóa học"
+        message="Bạn có chắc chắn muốn xóa khóa học này? Hành động này không thể hoàn tác và tất cả dữ liệu liên quan sẽ bị mất."
+        confirmLabel="Xóa khóa học"
+        cancelLabel="Hủy bỏ"
+        isLoading={deletingCourse}
+        variant="danger"
+      />
     </div>
   );
 };

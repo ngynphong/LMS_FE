@@ -4,6 +4,14 @@
 // ==================== API Response Types ====================
 // These match the backend API structure
 
+export interface EnrollCourseRequest {
+  enrollmentCode: string;
+}
+
+export interface CreateInviteCodeRequest {
+  expirationInMinutes: number;
+}
+
 export interface ApiTeacher {
   id: string;
   email: string;
@@ -17,7 +25,7 @@ export interface ApiTeacher {
 export interface ApiCourse {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   thumbnailUrl?: string;
   status?: string; // DRAFT, PUBLISHED, etc.
   visibility?: string; // PUBLIC, PRIVATE
@@ -26,6 +34,7 @@ export interface ApiCourse {
   schoolId?: string;
   teacherId?: string;
   teacherName?: string;
+  schoolName?: string | null;
   teacher?: ApiTeacher;
   school?: { id: string; name: string } | null;
   lessonCount?: number;
@@ -33,6 +42,14 @@ export interface ApiCourse {
   updatedAt: string;
   progress?: number; // 0-100
   lessons?: ApiLesson[]; // Lessons included in course detail response
+  
+  // New fields for student course list
+  completed?: boolean;
+  progressPercent?: number;
+  completedItemsCount?: number;
+  lastAccessedItem?: any; // Define a more specific type if known, e.g. { id: string, title: string }
+  enrolledAt?: string | null;
+  completedAt?: string | null;
 }
 
 export interface LessonItemContent {
@@ -42,6 +59,7 @@ export interface LessonItemContent {
   fileSize: number;
   mimeType: string;
   updatedAt: string;
+  lastWatchedSecond?: number;
 }
 
 export interface LessonItem {
@@ -50,6 +68,7 @@ export interface LessonItem {
   description: string;
   type: 'VIDEO' | 'TEXT' | 'QUIZ' | 'PDF' | 'PPT';
   orderIndex: number;
+  completed: boolean;
   createdAt: string;
   updatedAt: string;
   content: LessonItemContent;
@@ -69,6 +88,14 @@ export interface ApiLesson {
   attachments?: LessonAttachment[];
   isCompleted?: boolean;
   isLocked?: boolean;
+  
+  // New fields from API
+  completed: boolean;
+  progressPercent: number;
+  completedItemsCount: number;
+  totalItemsCount: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface LessonAttachment {
@@ -143,4 +170,10 @@ export type LessonStatus = 'completed' | 'current' | 'locked' | 'available';
 
 export interface LessonListItem extends ApiLesson {
   status: LessonStatus;
+}
+
+export interface VideoHeartbeatRequest {
+  lessonItemId: string;
+  currentSecond: number;
+  totalDuration: number;
 }
