@@ -4,7 +4,9 @@ import type { CourseListResponse, GetCoursesParams, CreateCourseRequest, UpdateC
 import type { 
   ApiCourse, 
   CourseProgress,
-  LessonQuiz
+  LessonQuiz,
+  EnrollCourseRequest,
+  CreateInviteCodeRequest
 } from '../types/learningTypes';
 import { getLessonsByCourseId } from './lessonService';
 
@@ -101,6 +103,28 @@ export const getMyCourses = async (params?: {
   return response.data.data;
 };
 
+
+export const getStudentCourses = async (params?: {
+  pageNo?: number;
+  pageSize?: number;
+  sorts?: string;
+  keyword?: string;
+  status?: string;
+  visibility?: string;
+}): Promise<{ items: ApiCourse[]; totalElement: number; totalPage: number }> => {
+  const response = await axiosInstance.get<{ code: number; message: string; data: { items: ApiCourse[]; totalElement: number; totalPage: number } }>('/courses/students/my-courses', {
+    params: {
+      pageNo: params?.pageNo || 0,
+      pageSize: params?.pageSize || 10,
+      sorts: params?.sorts || 'createdAt:desc',
+      keyword: params?.keyword,
+      status: params?.status,
+      visibility: params?.visibility
+    }
+  });
+  return response.data.data;
+};
+
 export const deleteCourse = async (courseId: string): Promise<void> => {
     try {
         await axiosInstance.delete(`/courses/${courseId}`);
@@ -112,6 +136,23 @@ export const deleteCourse = async (courseId: string): Promise<void> => {
 export const updateCourse = async (courseId: string, data: UpdateCourseRequest): Promise<ApiCourse> => {
     try {
         const res = await axiosInstance.put<{ code: number; message: string; data: ApiCourse }>(`/courses/${courseId}`, data);
+        return res.data.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const enrollCourse = async (courseId: string, data: EnrollCourseRequest): Promise<void> => {
+    try {
+        await axiosInstance.post<{ code: number; message: string; data: any }>(`/courses/${courseId}/enroll`, data);
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const createInviteCode = async (courseId: string, data: CreateInviteCodeRequest): Promise<string> => {
+    try {
+        const res = await axiosInstance.post<{ code: number; message: string; data: string }>(`/courses/${courseId}/invite-code`, data);
         return res.data.data;
     } catch (error) {
         throw error;

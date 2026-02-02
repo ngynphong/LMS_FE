@@ -1,10 +1,9 @@
-import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   FaPlay,
   FaStar,
   FaCheck,
-  
   FaPlayCircle,
   FaChevronDown,
 } from "react-icons/fa";
@@ -15,7 +14,7 @@ import {
   MdAllInclusive,
   MdDevices,
 } from "react-icons/md";
-import { useCourseDetail } from "../../hooks/useCourses";
+import { useCourseDetail, useStudentCourses } from "../../hooks/useCourses";
 import { getLessonById } from "../../services/lessonService";
 import type { ApiLesson, LessonItem } from "../../types/learningTypes";
 
@@ -49,6 +48,20 @@ const relatedCourses = [
 const CourseDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const { data: course, loading, error } = useCourseDetail(id);
+  const navigate = useNavigate();
+
+  // Enrollment Check
+  const { data: enrolledCourses, loading: loadingEnrolled } = useStudentCourses(
+    { pageSize: 1000 },
+  ); // Fetch all to check
+  const [isEnrolled, setIsEnrolled] = useState(false);
+
+  useEffect(() => {
+    if (enrolledCourses && id) {
+      const enrolled = enrolledCourses.some((c) => c.id === id);
+      setIsEnrolled(enrolled);
+    }
+  }, [enrolledCourses, id]);
 
   const [activeTab, setActiveTab] = useState<"intro" | "content" | "reviews">(
     "intro",
@@ -60,6 +73,12 @@ const CourseDetailPage = () => {
   const [loadingItems, setLoadingItems] = useState<Record<string, boolean>>({});
 
   const toggleSection = async (index: number) => {
+    // If not enrolled, prevent expanding content? or simple show locked?
+    // User requested "nhập code thì mới có thể xem chi tiết".
+    // So if not enrolled, maybe we shouldn't even show the content tab active,
+    // or show it but locked. For now, let's keep it visible but maybe control access in backend or similar.
+    // The requirement is mostly about the "Start Learning" button triggering the Enroll flow.
+
     const isOpen = openSections.includes(index);
     if (isOpen) {
       setOpenSections((prev) => prev.filter((i) => i !== index));
@@ -87,7 +106,7 @@ const CourseDetailPage = () => {
     }
   };
 
-  if (loading) {
+  if (loading || loadingEnrolled) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <span className="material-symbols-outlined animate-spin text-4xl text-blue-600">
@@ -182,6 +201,7 @@ const CourseDetailPage = () => {
             {/* Tabs */}
             <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
               <div className="flex border-b border-gray-200">
+                {/* ... Tabs Headers ... reusing existing styles */}
                 <button
                   className={`px-6 py-4 text-sm font-bold border-b-2 transition-colors ${
                     activeTab === "intro"
@@ -256,86 +276,103 @@ const CourseDetailPage = () => {
                 {activeTab === "content" && (
                   <div className="flex flex-col gap-4">
                     <h3 className="text-xl font-bold">Nội dung khóa học</h3>
-                    <div className="flex flex-col gap-2">
-                      {course.lessons && course.lessons.length > 0 ? (
-                        course.lessons.map(
-                          (lesson: ApiLesson, index: number) => {
-                            const items =
-                              lessonItemsMap[lesson.id] ||
-                              lesson.lessonItems ||
-                              [];
-                            const isLoading = loadingItems[lesson.id];
+                    {!isEnrolled ? (
+                      <div className="flex flex-col items-center justify-center py-12 bg-gray-50 rounded-xl border border-gray-200 border-dashed">
+                        <span className="material-symbols-outlined text-4xl text-gray-400 mb-2">
+                          lock
+                        </span>
+                        <p className="text-gray-500 mb-4">
+                          Bạn cần tham gia khóa học để xem nội dung chi tiết
+                        </p>
+                        <Link
+                          to="/courses"
+                          className="px-6 py-2 bg-[#0074bd] text-white rounded-lg font-bold hover:bg-[#0063a1]"
+                        >
+                          Quay lại danh sách để đăng ký
+                        </Link>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-2">
+                        {course.lessons && course.lessons.length > 0 ? (
+                          course.lessons.map(
+                            (lesson: ApiLesson, index: number) => {
+                              const items =
+                                lessonItemsMap[lesson.id] ||
+                                lesson.lessonItems ||
+                                [];
+                              const isLoading = loadingItems[lesson.id];
 
-                            return (
-                              <div
-                                key={lesson.id}
-                                className="border border-gray-200 rounded-xl overflow-hidden"
-                              >
-                                <button
-                                  className="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition-colors"
-                                  onClick={() => toggleSection(index)}
+                              return (
+                                <div
+                                  key={lesson.id}
+                                  className="border border-gray-200 rounded-xl overflow-hidden"
                                 >
-                                  <div className="flex items-center gap-3">
-                                    <span className="font-bold color-primary">
-                                      Phần {index + 1}:
-                                    </span>
-                                    <span className="font-bold text-gray-900">
-                                      {lesson.title}
-                                    </span>
-                                  </div>
-                                  <FaChevronDown
-                                    className={`text-gray-600 transition-transform ${
-                                      openSections.includes(index)
-                                        ? "rotate-180"
-                                        : ""
-                                    }`}
-                                  />
-                                </button>
-                                {openSections.includes(index) && (
-                                  <div className="p-5 border-t border-gray-200 flex flex-col gap-4">
-                                    {isLoading ? (
-                                      <div className="flex justify-center p-2">
-                                        <span className="material-symbols-outlined animate-spin text-2xl text-blue-600">
-                                          progress_activity
-                                        </span>
-                                      </div>
-                                    ) : items && items.length > 0 ? (
-                                      items.map(
-                                        (
-                                          item: LessonItem,
-                                          itemIndex: number,
-                                        ) => (
-                                          <div
-                                            key={item.id}
-                                            className="flex items-center justify-between text-sm"
-                                          >
-                                            <div className="flex items-center gap-3">
-                                              <FaPlayCircle className="text-gray-400" />
-                                              <span className="text-gray-700">
-                                                {itemIndex + 1}. {item.title}
+                                  <button
+                                    className="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition-colors"
+                                    onClick={() => toggleSection(index)}
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <span className="font-bold color-primary">
+                                        Phần {index + 1}:
+                                      </span>
+                                      <span className="font-bold text-gray-900">
+                                        {lesson.title}
+                                      </span>
+                                    </div>
+                                    <FaChevronDown
+                                      className={`text-gray-600 transition-transform ${
+                                        openSections.includes(index)
+                                          ? "rotate-180"
+                                          : ""
+                                      }`}
+                                    />
+                                  </button>
+                                  {openSections.includes(index) && (
+                                    <div className="p-5 border-t border-gray-200 flex flex-col gap-4">
+                                      {isLoading ? (
+                                        <div className="flex justify-center p-2">
+                                          <span className="material-symbols-outlined animate-spin text-2xl text-blue-600">
+                                            progress_activity
+                                          </span>
+                                        </div>
+                                      ) : items && items.length > 0 ? (
+                                        items.map(
+                                          (
+                                            item: LessonItem,
+                                            itemIndex: number,
+                                          ) => (
+                                            <div
+                                              key={item.id}
+                                              className="flex items-center justify-between text-sm"
+                                            >
+                                              <div className="flex items-center gap-3">
+                                                <FaPlayCircle className="text-gray-400" />
+                                                <span className="text-gray-700">
+                                                  {itemIndex + 1}. {item.title}
+                                                </span>
+                                              </div>
+                                              <span className="text-gray-600">
+                                                {item.type}
                                               </span>
                                             </div>
-                                            <span className="text-gray-600">
-                                              {item.type}
-                                            </span>
-                                          </div>
-                                        ),
-                                      )
-                                    ) : (
-                                      <p className="text-sm text-gray-500 italic">
-                                        Chưa có nội dung cho phần này.
-                                      </p>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          },
-                        )
-                      ) : (
-                        <p className="text-gray-500">Chưa có nội dung.</p>
-                      )}
-                    </div>
+                                          ),
+                                        )
+                                      ) : (
+                                        <p className="text-sm text-gray-500 italic">
+                                          Chưa có nội dung cho phần này.
+                                        </p>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            },
+                          )
+                        ) : (
+                          <p className="text-gray-500">Chưa có nội dung.</p>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -366,9 +403,24 @@ const CourseDetailPage = () => {
                 </div>
 
                 <div className="flex flex-col gap-3">
-                  <button className="w-full h-12 color-primary-bg text-white font-bold rounded-lg hover:cursor-pointer hover:translate-y-[-2px] duration-300 transition-all shadow-md">
-                    Bắt đầu học
-                  </button>
+                  {isEnrolled ? (
+                    <button
+                      onClick={() => navigate(`/student/courses/${course.id}/learn`)}
+                      className="w-full h-12 color-primary-bg text-white font-bold rounded-lg hover:cursor-pointer hover:translate-y-[-2px] duration-300 transition-all shadow-md"
+                    >
+                      Tiếp tục học
+                    </button>
+                  ) : (
+                    <div className="w-full text-center text-sm text-gray-500">
+                      <p>Bạn chưa tham gia khóa học này.</p>
+                      <Link
+                        to="/courses"
+                        className="text-blue-600 hover:underline"
+                      >
+                        Quay lại danh sách
+                      </Link>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex flex-col gap-4 pt-2">

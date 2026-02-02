@@ -1,6 +1,6 @@
 import axiosInstance from '../config/axios';
 import type { CreateLessonRequest } from '../types/courseApi';
-import type { ApiLesson, LessonQuiz, LessonItem } from '../types/learningTypes';
+import type { ApiLesson, LessonQuiz, LessonItem, VideoHeartbeatRequest } from '../types/learningTypes';
 import { mockQuizzes } from '../data/learningData';
 
 // ==================== Lesson APIs ====================
@@ -135,6 +135,22 @@ export const createLesson = async (courseId: string, data: CreateLessonRequest):
 export const reorderLessons = async (courseId: string, lessonIds: string[]): Promise<void> => {
     try {
         await axiosInstance.put(`/courses/${courseId}/lessons/reorder`, { lessonIds });
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const trackVideoHeartbeat = async (data: VideoHeartbeatRequest): Promise<void> => {
+    try {
+        await axiosInstance.post(`/lesson-items/progress/video/heartbeat`, data);
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const markLessonItemComplete = async (lessonItemId: string): Promise<void> => {
+    try {
+        await axiosInstance.patch(`/lesson-items/progress/${lessonItemId}/complete`);
     } catch (error) {
         throw error;
     }

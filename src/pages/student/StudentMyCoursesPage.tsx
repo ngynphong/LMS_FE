@@ -1,38 +1,110 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { studentCourses } from "../../data/studentCourses";
+import { useStudentCourses } from "../../hooks/useCourses";
 
 const StudentMyCoursesPage = () => {
   const [activeTab, setActiveTab] = useState<
-    "in_progress" | "completed" | "favorite"
-  >("in_progress");
+    "all" | "in_progress" | "completed"
+  >("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("recent");
 
-  const getFilteredCourses = () => {
-    let filtered = studentCourses;
+  // Call API with useStudentCourses hook
+  const {
+    data: courses,
+    loading,
+    error,
+    refetch,
+  } = useStudentCourses({
+    pageNo: 0,
+    pageSize: 100,
+    sorts: "createdAt:desc",
+  });
 
-    // Filter by tab
-    if (activeTab === "in_progress") {
-      filtered = filtered.filter((c) => c.status === "in_progress");
-    } else if (activeTab === "completed") {
-      filtered = filtered.filter((c) => c.status === "completed");
-    } else if (activeTab === "favorite") {
-      // Assuming 'favorite' is a property or status, here using status for simplicity based on provided data
-      filtered = filtered.filter((c) => c.status === "favorite");
-    }
+  // Filter and sort courses
+  const filteredCourses = useMemo(() => {
+    if (!courses) return [];
 
-    // Filter by search
-    if (searchQuery) {
-      filtered = filtered.filter((c) =>
-        c.title.toLowerCase().includes(searchQuery.toLowerCase()),
+    let filtered = [...courses];
+
+    // Search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (c) =>
+          c.name.toLowerCase().includes(query) ||
+          c.teacherName?.toLowerCase().includes(query) ||
+          c.schoolName?.toLowerCase().includes(query),
       );
     }
 
+    // Filter by tab
+    if (activeTab === "in_progress") {
+      filtered = filtered.filter(
+        (c) => (c.progress ?? 0) > 0 && (c.progress ?? 0) < 100,
+      );
+    } else if (activeTab === "completed") {
+      filtered = filtered.filter((c) => (c.progress ?? 0) === 100);
+    }
+
+    // Sort
+    if (sortOption === "recent") {
+      filtered.sort(
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+      );
+    } else if (sortOption === "name_asc") {
+      filtered.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortOption === "name_desc") {
+      filtered.sort((a, b) => b.name.localeCompare(a.name));
+    }
+
     return filtered;
+  }, [courses, activeTab, sortOption, searchQuery]);
+
+  // Format date helper
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
   };
 
-  const courses = getFilteredCourses();
+  if (loading) {
+    return (
+      <div className="max-w-6xl mx-auto px-0 md:px-8 py-4">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="flex items-center gap-3">
+            <span className="material-symbols-outlined animate-spin text-2xl text-blue-600">
+              progress_activity
+            </span>
+            <span className="text-slate-600">Đang tải khóa học...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-6xl mx-auto px-0 md:px-8 py-4">
+        <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+          <span className="material-symbols-outlined text-4xl text-red-500">
+            error
+          </span>
+          <p className="text-slate-600">Không thể tải danh sách khóa học</p>
+          <button
+            onClick={refetch}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
+          >
+            Thử lại
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-0 md:px-8 py-4">
@@ -41,11 +113,24 @@ const StudentMyCoursesPage = () => {
         <h2 className="text-[#111518] text-xl md:text-3xl lg:text-4xl font-black tracking-tight">
           Khóa học của tôi
         </h2>
+        <span className="text-sm text-slate-500">
+          {courses?.length || 0} khóa học
+        </span>
       </div>
 
       {/* Tabs */}
       <div className="mb-6 md:mb-8 border-b border-slate-200">
         <div className="flex flex-wrap gap-2 md:gap-8">
+          <button
+            onClick={() => setActiveTab("all")}
+            className={`flex flex-col items-center justify-center pb-3 pt-4 px-2 transition-colors whitespace-nowrap ${
+              activeTab === "all"
+                ? "border-b-4 border-[#1E90FF] color-primary"
+                : "border-b-4 border-transparent text-slate-500 hover:text-[#1E90FF]"
+            }`}
+          >
+            <p className="text-sm font-bold tracking-wide">Tất cả</p>
+          </button>
           <button
             onClick={() => setActiveTab("in_progress")}
             className={`flex flex-col items-center justify-center pb-3 pt-4 px-2 transition-colors whitespace-nowrap ${
@@ -65,16 +150,6 @@ const StudentMyCoursesPage = () => {
             }`}
           >
             <p className="text-sm font-bold tracking-wide">Đã hoàn thành</p>
-          </button>
-          <button
-            onClick={() => setActiveTab("favorite")}
-            className={`flex flex-col items-center justify-center pb-3 pt-4 px-2 transition-colors whitespace-nowrap ${
-              activeTab === "favorite"
-                ? "border-b-4 border-[#1E90FF] color-primary"
-                : "border-b-4 border-transparent text-slate-500 hover:text-[#1E90FF]"
-            }`}
-          >
-            <p className="text-sm font-bold tracking-wide">Yêu thích</p>
           </button>
         </div>
       </div>
@@ -96,7 +171,7 @@ const StudentMyCoursesPage = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-[#111518] focus:ring-2 focus:ring-[#27A4F2] focus:border-[#27A4F2] outline-none transition-all text-sm"
-              placeholder="Tìm kiếm khóa học..."
+              placeholder="Tìm kiếm theo tên khóa học, giảng viên..."
             />
           </div>
         </div>
@@ -113,8 +188,8 @@ const StudentMyCoursesPage = () => {
               className="w-full appearance-none pl-3 pr-10 py-2.5 rounded-xl border border-slate-200 bg-white text-[#111518] focus:ring-2 focus:ring-[#27A4F2] focus:border-[#27A4F2] outline-none transition-all cursor-pointer text-sm"
             >
               <option value="recent">Gần đây nhất</option>
-              <option value="progress_desc">Tiến độ: Cao đến thấp</option>
-              <option value="progress_asc">Tiến độ: Thấp đến cao</option>
+              <option value="name_asc">Tên A-Z</option>
+              <option value="name_desc">Tên Z-A</option>
             </select>
             <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[20px]">
               expand_more
@@ -125,47 +200,80 @@ const StudentMyCoursesPage = () => {
 
       {/* Course Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-        {courses.map((course) => (
+        {filteredCourses.map((course) => (
           <div
             key={course.id}
             className="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition-shadow flex flex-col"
           >
             <div className="relative aspect-video">
               <div
-                className="w-full h-full bg-center bg-cover"
-                style={{ backgroundImage: `url("${course.thumbnail}")` }}
-              ></div>
-              <span className="absolute top-3 left-3 color-primary-bg text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded">
-                {course.category}
+                className="w-full h-full bg-center bg-cover bg-slate-100"
+                style={{
+                  backgroundImage: course.thumbnailUrl
+                    ? `url("${course.thumbnailUrl}")`
+                    : undefined,
+                }}
+              >
+                {!course.thumbnailUrl && (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="material-symbols-outlined text-4xl text-slate-300">
+                      image
+                    </span>
+                  </div>
+                )}
+              </div>
+              {/* Status Badge */}
+              <span
+                className={`absolute top-3 left-3 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded ${
+                  course.status === "PUBLISHED"
+                    ? "bg-green-500"
+                    : course.status === "DRAFT"
+                      ? "bg-yellow-500"
+                      : "bg-slate-500"
+                }`}
+              >
+                {course.status === "PUBLISHED"
+                  ? "Đang mở"
+                  : course.status === "DRAFT"
+                    ? "Bản nháp"
+                    : course.status || "Khóa học"}
               </span>
             </div>
             <div className="p-4 md:p-5 flex flex-col flex-1">
-              <h3 className="text-[#111518] text-base font-bold leading-tight mb-3 line-clamp-2">
-                {course.title}
+              <h3 className="text-[#111518] text-base font-bold leading-tight mb-2 line-clamp-2">
+                {course.name}
               </h3>
 
-              <div className="mb-4 mt-auto">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-slate-500 text-xs font-medium">
-                    Tiến độ hoàn thành
-                  </span>
-                  <span className="color-primary text-xs font-bold">
-                    {course.progress}%
-                  </span>
-                </div>
-                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                  <div
-                    className="color-primary-bg h-full transition-all duration-300"
-                    style={{ width: `${course.progress}%` }}
-                  ></div>
-                </div>
+              {/* Teacher & School Info */}
+              <div className="flex flex-col gap-1 mb-3 text-sm text-slate-500">
+                {course.teacherName && (
+                  <div className="flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[16px]">
+                      person
+                    </span>
+                    <span>{course.teacherName}</span>
+                  </div>
+                )}
+                {course.schoolName && (
+                  <div className="flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-[16px]">
+                      school
+                    </span>
+                    <span>{course.schoolName}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Date Info */}
+              <div className="text-xs text-slate-400 mb-4 mt-auto">
+                Cập nhật: {formatDate(course.updatedAt)}
               </div>
 
               <Link
                 to={`/student/courses/${course.id}/learn`}
-                className="w-full py-2.5 md:py-3 color-primary-bg text-white text-sm font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
+                className="w-full py-2.5 md:py-3 color-primary-bg text-white text-sm font-bold rounded-lg transition-colors flex items-center justify-center gap-2 hover:opacity-90"
               >
-                Tiếp tục học
+                Vào học
                 <span className="material-symbols-outlined text-sm">
                   play_circle
                 </span>
@@ -173,12 +281,20 @@ const StudentMyCoursesPage = () => {
             </div>
           </div>
         ))}
-        {courses.length === 0 && (
+        {filteredCourses.length === 0 && (
           <div className="col-span-full py-12 text-center text-slate-500">
             <span className="material-symbols-outlined text-4xl mb-2">
               school
             </span>
             <p>Không tìm thấy khóa học nào</p>
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="mt-2 text-blue-600 hover:underline text-sm"
+              >
+                Xóa bộ lọc
+              </button>
+            )}
           </div>
         )}
       </div>

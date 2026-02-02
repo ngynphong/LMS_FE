@@ -1,93 +1,106 @@
-import { useMemo } from "react";
-import type {
-  ApiCourse,
-  ApiLesson,
-  LessonListItem,
-  LessonStatus,
-  CourseProgress,
-} from "../../types/learningTypes";
+import type { ApiLesson, LessonItem } from "../../types/learningTypes";
 
 interface LessonSidebarProps {
-  course: ApiCourse;
   lessons: ApiLesson[];
-  currentLessonId: string;
-  progress: CourseProgress;
+  currentLesson: ApiLesson | null;
+  currentItem: LessonItem | null;
+  isOpen: boolean;
+  onClose: () => void;
   onLessonSelect: (lessonId: string) => void;
-  isOpen?: boolean;
-  onClose?: () => void;
+  onItemSelect: (item: LessonItem) => void;
+  completedItemIds?: Set<string>;
 }
+
+// Helper functions
+const getItemTypeIcon = (type: string) => {
+  switch (type) {
+    case "VIDEO":
+      return "play_circle";
+    case "TEXT":
+      return "article";
+    case "PDF":
+      return "picture_as_pdf";
+    case "PPT":
+      return "co_present";
+    default:
+      return "description";
+  }
+};
+
+const getItemTypeColor = (type: string) => {
+  switch (type) {
+    case "VIDEO":
+      return "text-purple-600 bg-purple-100";
+    case "TEXT":
+      return "text-blue-600 bg-blue-100";
+    case "PDF":
+      return "text-red-600 bg-red-100";
+    case "PPT":
+      return "text-orange-600 bg-orange-100";
+    default:
+      return "text-slate-600 bg-slate-100";
+  }
+};
 
 const LessonSidebar = ({
   lessons,
-  currentLessonId,
-  progress,
-  onLessonSelect,
-  isOpen = false,
+  currentLesson,
+  currentItem,
+  isOpen,
   onClose,
+  onLessonSelect,
+  onItemSelect,
+  completedItemIds = new Set(),
 }: LessonSidebarProps) => {
-  // Calculate lesson status based on progress and order
-  const lessonItems: LessonListItem[] = useMemo(() => {
-    return lessons.map((lesson, index) => {
-      let status: LessonStatus = "available";
-
-      const lessonProgress = progress.lessonProgress[lesson.id];
-
-      if (lessonProgress?.isCompleted || lesson.isCompleted) {
-        status = "completed";
-      } else if (lesson.id === currentLessonId) {
-        status = "current";
-      } else if (lesson.isLocked) {
-        // Unlock logic: previous lesson must be completed
-        const prevLesson = lessons[index - 1];
-        if (prevLesson) {
-          const prevProgress = progress.lessonProgress[prevLesson.id];
-          if (!prevProgress?.isCompleted && !prevLesson.isCompleted) {
-            status = "locked";
-          }
+  // Check if a lesson item is accessible (previous items in ALL lessons must be completed)
+  const isItemAccessible = (
+    lessonIndex: number,
+    itemIndex: number,
+  ): boolean => {
+    // Check all previous lessons are fully completed
+    for (let i = 0; i < lessonIndex; i++) {
+      const lesson = lessons[i];
+      const items = lesson.lessonItems || [];
+      for (const item of items) {
+        if (!completedItemIds.has(item.id)) {
+          return false;
         }
       }
-
-      return { ...lesson, status };
-    });
-  }, [lessons, currentLessonId, progress]);
-
-  const completedCount = lessonItems.filter(
-    (l) => l.status === "completed",
-  ).length;
-
-  const handleLessonClick = (lesson: LessonListItem) => {
-    if (lesson.status !== "locked") {
-      onLessonSelect(lesson.id);
     }
+
+    // Check previous items in current lesson
+    const currentLessonItems = lessons[lessonIndex]?.lessonItems || [];
+    for (let i = 0; i < itemIndex; i++) {
+      if (!completedItemIds.has(currentLessonItems[i].id)) {
+        return false;
+      }
+    }
+
+    return true;
   };
 
-  const getStatusIcon = (status: LessonStatus) => {
-    switch (status) {
-      case "completed":
-        return (
-          <span className="material-symbols-outlined FILL text-emerald-500 text-[20px]">
-            check_circle
-          </span>
-        );
-      case "current":
-        return (
-          <span className="material-symbols-outlined FILL text-white text-[20px]">
-            play_circle
-          </span>
-        );
-      case "locked":
-        return (
-          <span className="material-symbols-outlined text-gray-400 text-[20px]">
-            lock
-          </span>
-        );
-      default:
-        return (
-          <span className="material-symbols-outlined text-gray-400 text-[20px]">
-            radio_button_unchecked
-          </span>
-        );
+  // Check if a lesson is accessible
+  const isLessonAccessible = (lessonIndex: number): boolean => {
+    if (lessonIndex === 0) return true;
+
+    // All items in previous lessons must be completed
+    for (let i = 0; i < lessonIndex; i++) {
+      const lesson = lessons[i];
+      const items = lesson.lessonItems || [];
+      for (const item of items) {
+        if (!completedItemIds.has(item.id)) {
+          return false;
+        }
+      }
     }
+    return true;
+  };
+
+  // Count completed items in a lesson
+  const getCompletedCount = (lesson: ApiLesson): number => {
+    if (!lesson.lessonItems) return 0;
+    return lesson.lessonItems.filter((item) => completedItemIds.has(item.id))
+      .length;
   };
 
   return (
@@ -100,22 +113,22 @@ const LessonSidebar = ({
         onClick={onClose}
       />
 
-      {/* Sidebar Content */}
+      {/* Sidebar */}
       <aside
         className={`
-        fixed lg:static inset-y-0 left-0 z-30
-        w-80 flex flex-col border-r border-gray-200 bg-white overflow-hidden transition-transform duration-300
-        ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-      `}
+          fixed lg:static inset-y-0 left-0 z-30
+          w-80 flex flex-col border-r border-gray-200 bg-white overflow-hidden transition-transform duration-300
+          ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+        `}
       >
-        {/* Header */}
+        {/* Sidebar Header */}
         <div className="p-5 border-b border-gray-100 bg-[#f5f7fa] flex justify-between items-center">
           <div>
             <h1 className="text-base font-semibold text-[#1A2B3C]">
               Nội dung khóa học
             </h1>
             <p className="mt-1 text-xs text-[#4A5568]">
-              Đã hoàn thành {completedCount}/{lessons.length} bài học
+              {lessons.length} bài học
             </p>
           </div>
           <button onClick={onClose} className="lg:hidden text-gray-500">
@@ -123,53 +136,146 @@ const LessonSidebar = ({
           </button>
         </div>
 
-        {/* Lessons List */}
-        <div className="flex-1 overflow-y-auto p-2">
-          <div className="space-y-1">
-            {lessonItems.map((lesson) => {
-              const isCurrent = lesson.status === "current";
-              const isLocked = lesson.status === "locked";
+        {/* Lessons List with Items */}
+        <div className="flex-1 overflow-y-auto">
+          {lessons.map((lesson, lessonIndex) => {
+            const isCurrentLesson = currentLesson?.id === lesson.id;
+            const lessonAccessible = isLessonAccessible(lessonIndex);
+            const completedCount = getCompletedCount(lesson);
+            const totalItems = lesson.lessonItems?.length || 0;
+            const isLessonComplete =
+              totalItems > 0 && completedCount === totalItems;
 
-              return (
+            return (
+              <div key={lesson.id} className="border-b border-gray-100">
+                {/* Lesson Header */}
                 <div
-                  key={lesson.id}
-                  onClick={() => handleLessonClick(lesson)}
-                  className={`
-                  group flex items-center gap-3 rounded-lg px-3 py-3 transition-colors
-                  ${
-                    isCurrent
-                      ? "color-primary-bg shadow-md"
-                      : isLocked
-                        ? "opacity-50 cursor-not-allowed"
-                        : "hover:bg-[#f5f7fa] cursor-pointer"
-                  }
-                `}
+                  onClick={() => lessonAccessible && onLessonSelect(lesson.id)}
+                  className={`px-4 py-3 flex items-center gap-3 transition-colors ${
+                    !lessonAccessible
+                      ? "cursor-not-allowed opacity-60"
+                      : "cursor-pointer"
+                  } ${
+                    isCurrentLesson
+                      ? "bg-blue-50 border-l-4 border-blue-600"
+                      : lessonAccessible
+                        ? "hover:bg-gray-50"
+                        : ""
+                  }`}
                 >
-                  {getStatusIcon(lesson.status)}
-                  <div className="flex flex-col flex-1 min-w-0">
-                    <span
+                  <div
+                    className={`size-7 rounded-lg flex items-center justify-center text-xs font-bold ${
+                      isLessonComplete
+                        ? "bg-green-500 text-white"
+                        : isCurrentLesson
+                          ? "bg-blue-600 text-white"
+                          : !lessonAccessible
+                            ? "bg-slate-300 text-slate-500"
+                            : "bg-slate-200 text-slate-600"
+                    }`}
+                  >
+                    {isLessonComplete ? (
+                      <span className="material-symbols-outlined text-sm">
+                        check
+                      </span>
+                    ) : !lessonAccessible ? (
+                      <span className="material-symbols-outlined text-sm">
+                        lock
+                      </span>
+                    ) : (
+                      lessonIndex + 1
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3
                       className={`text-sm font-medium truncate ${
-                        isCurrent
-                          ? "text-white"
-                          : isLocked
-                            ? "text-gray-500"
-                            : "text-[#4A5568]"
+                        isCurrentLesson
+                          ? "text-blue-700"
+                          : !lessonAccessible
+                            ? "text-slate-500"
+                            : "text-slate-800"
                       }`}
                     >
                       {lesson.title}
-                    </span>
-                    <span
-                      className={`text-[10px] ${
-                        isCurrent ? "text-white/80" : "text-gray-400"
-                      }`}
-                    >
-                      {lesson.duration || "--:--"}
-                    </span>
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      {completedCount}/{totalItems} hoàn thành
+                    </p>
                   </div>
                 </div>
-              );
-            })}
-          </div>
+
+                {/* Lesson Items */}
+                {isCurrentLesson &&
+                  lesson.lessonItems &&
+                  lesson.lessonItems.length > 0 && (
+                    <div className="bg-gray-50 py-1">
+                      {lesson.lessonItems.map((item, itemIndex) => {
+                        const isCurrentItem = currentItem?.id === item.id;
+                        const itemAccessible = isItemAccessible(
+                          lessonIndex,
+                          itemIndex,
+                        );
+                        const isItemComplete = completedItemIds.has(item.id);
+
+                        return (
+                          <div
+                            key={item.id}
+                            onClick={() => itemAccessible && onItemSelect(item)}
+                            className={`px-4 py-2.5 flex items-center gap-3 transition-colors ml-4 border-l-2 ${
+                              !itemAccessible
+                                ? "cursor-not-allowed opacity-50"
+                                : "cursor-pointer"
+                            } ${
+                              isCurrentItem
+                                ? "border-blue-500 bg-blue-50"
+                                : itemAccessible
+                                  ? "border-transparent hover:bg-gray-100"
+                                  : "border-transparent"
+                            }`}
+                          >
+                            <div
+                              className={`size-6 rounded flex items-center justify-center ${
+                                isItemComplete
+                                  ? "bg-green-100 text-green-600"
+                                  : !itemAccessible
+                                    ? "bg-slate-200 text-slate-400"
+                                    : getItemTypeColor(item.type)
+                              }`}
+                            >
+                              <span className="material-symbols-outlined text-sm">
+                                {isItemComplete
+                                  ? "check_circle"
+                                  : !itemAccessible
+                                    ? "lock"
+                                    : getItemTypeIcon(item.type)}
+                              </span>
+                            </div>
+                            <span
+                              className={`text-sm truncate flex-1 ${
+                                isCurrentItem
+                                  ? "text-blue-700 font-medium"
+                                  : isItemComplete
+                                    ? "text-green-700"
+                                    : !itemAccessible
+                                      ? "text-slate-400"
+                                      : "text-slate-600"
+                              }`}
+                            >
+                              {item.title}
+                            </span>
+                            {isItemComplete && (
+                              <span className="material-symbols-outlined text-green-500 text-sm">
+                                verified
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+              </div>
+            );
+          })}
         </div>
       </aside>
     </>
@@ -177,3 +283,6 @@ const LessonSidebar = ({
 };
 
 export default LessonSidebar;
+
+// Export helper functions for use in other components
+export { getItemTypeIcon, getItemTypeColor };

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useMyCourses } from "../../hooks/useCourses";
+import { useMyCourses, useCreateInviteCode } from "../../hooks/useCourses";
+import { toast } from "@/components/common/Toast";
 
 const CourseListPage = () => {
   const [filters, setFilters] = useState({
@@ -23,12 +24,36 @@ const CourseListPage = () => {
     visibility: filters.visibility === "all" ? undefined : filters.visibility,
   });
 
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  const [createdCode, setCreatedCode] = useState<string | null>(null);
+  const { createCode, loading: creatingCode } = useCreateInviteCode();
+
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({
       ...prev,
       [key]: value,
       pageNo: 0, // Reset to first page on filter change
     }));
+  };
+
+  const handleCreateCode = async () => {
+    if (!selectedCourseId) return;
+    try {
+      const code = await createCode(selectedCourseId, {
+        expirationInMinutes: 60 * 24 * 1,
+      }); // Default 7 days
+      setCreatedCode(code);
+      toast.success("Tạo mã mời thành công!");
+    } catch (err) {
+      toast.error("Tạo mã mời thất bại");
+    }
+  };
+
+  const openInviteModal = (courseId: string) => {
+    setSelectedCourseId(courseId);
+    setCreatedCode(null);
+    setShowInviteModal(true);
   };
 
   if (loading) {
@@ -68,7 +93,7 @@ const CourseListPage = () => {
   const draftCount = courseList.filter((c) => c.status === "DRAFT").length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -229,6 +254,15 @@ const CourseListPage = () => {
                     </span>
                     Chỉnh sửa
                   </Link>
+                  <button
+                    onClick={() => openInviteModal(course.id)}
+                    className="flex items-center justify-center px-3 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-200 hover:translate-y-[-2px] duration-300 transition-all"
+                    title="Tạo mã mời"
+                  >
+                    <span className="material-symbols-outlined text-sm">
+                      key
+                    </span>
+                  </button>
                   <Link
                     to={`/teacher/courses/${course.id}`}
                     className="flex items-center justify-center px-3 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-200 hover:translate-y-[-2px] duration-300 transition-all"
@@ -242,6 +276,90 @@ const CourseListPage = () => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Invite Code Modal */}
+      {showInviteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-900">
+                Tạo mã tham gia
+              </h3>
+              <button
+                onClick={() => setShowInviteModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+
+            <p className="text-sm text-gray-600 mb-6">
+              Mã tham gia cho phép học viên tự ghi danh vào khóa học này. Mã mặc
+              định có hiệu lực trong 1 ngày.
+            </p>
+
+            {createdCode ? (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                <p className="text-xs text-green-700 font-medium mb-1">
+                  Mã tham gia của bạn:
+                </p>
+                <div className="flex items-center justify-between">
+                  <span className="text-2xl font-mono font-bold text-green-800 tracking-wider">
+                    {createdCode}
+                  </span>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(createdCode);
+                      toast.success("Đã sao chép mã!");
+                    }}
+                    className="p-2 hover:bg-green-100 rounded-full text-green-700"
+                    title="Sao chép"
+                  >
+                    <span className="material-symbols-outlined text-sm">
+                      content_copy
+                    </span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-blue-600">
+                  <span className="material-symbols-outlined text-3xl">
+                    vpn_key
+                  </span>
+                </div>
+              </div>
+            )}
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowInviteModal(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg"
+              >
+                Đóng
+              </button>
+              {!createdCode && (
+                <button
+                  onClick={handleCreateCode}
+                  disabled={creatingCode}
+                  className="px-4 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg disabled:opacity-50 flex items-center gap-2"
+                >
+                  {creatingCode ? (
+                    <span className="material-symbols-outlined animate-spin text-sm">
+                      progress_activity
+                    </span>
+                  ) : (
+                    <span className="material-symbols-outlined text-sm">
+                      add_circle
+                    </span>
+                  )}
+                  Tạo mã mới
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>

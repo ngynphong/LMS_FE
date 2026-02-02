@@ -4,6 +4,14 @@
 // ==================== API Response Types ====================
 // These match the backend API structure
 
+export interface EnrollCourseRequest {
+  enrollmentCode: string;
+}
+
+export interface CreateInviteCodeRequest {
+  expirationInMinutes: number;
+}
+
 export interface ApiTeacher {
   id: string;
   email: string;
@@ -17,7 +25,7 @@ export interface ApiTeacher {
 export interface ApiCourse {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   thumbnailUrl?: string;
   status?: string; // DRAFT, PUBLISHED, etc.
   visibility?: string; // PUBLIC, PRIVATE
@@ -26,6 +34,7 @@ export interface ApiCourse {
   schoolId?: string;
   teacherId?: string;
   teacherName?: string;
+  schoolName?: string | null;
   teacher?: ApiTeacher;
   school?: { id: string; name: string } | null;
   lessonCount?: number;
@@ -143,4 +152,10 @@ export type LessonStatus = 'completed' | 'current' | 'locked' | 'available';
 
 export interface LessonListItem extends ApiLesson {
   status: LessonStatus;
+}
+
+export interface VideoHeartbeatRequest {
+  lessonItemId: string;
+  currentSecond: number;
+  totalDuration: number;
 }

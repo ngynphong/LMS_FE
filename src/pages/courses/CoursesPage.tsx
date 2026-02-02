@@ -1,15 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Breadcrumb from "../../components/courses/Breadcrumb";
 import FilterSidebar from "../../components/courses/FilterSidebar";
 import CourseCard from "../../components/courses/CourseCard";
 import Pagination from "../../components/courses/Pagination";
-import { useCourses } from "../../hooks/useCourses";
+import {
+  useCourses,
+  useStudentCourses,
+  useEnrollCourse,
+} from "../../hooks/useCourses";
 import { FaSearch } from "react-icons/fa";
+import { toast } from "@/components/common/Toast";
+import { useNavigate } from "react-router-dom";
 
 const CoursesPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const coursesPerPage = 6;
+  const navigate = useNavigate();
 
   const { data, loading, error } = useCourses({
     pageNo: currentPage - 1, // API is 0-indexed
@@ -19,6 +26,25 @@ const CoursesPage = () => {
     status: "PUBLISHED", // Public courses should be published
     visibility: "PUBLIC", // And public
   });
+
+  // Student Enrollment Data
+  const { data: enrolledCourses } = useStudentCourses({
+    pageSize: 1000, // Fetch all
+  });
+  const [enrolledCourseIds, setEnrolledCourseIds] = useState<Set<string>>(
+    new Set(),
+  );
+
+  useEffect(() => {
+    if (enrolledCourses) {
+      setEnrolledCourseIds(new Set(enrolledCourses.map((c) => c.id)));
+    }
+  }, [enrolledCourses]);
+
+  const { enroll, loading: enrolling } = useEnrollCourse();
+  const [showEnrollModal, setShowEnrollModal] = useState(false);
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  const [enrollmentCode, setEnrollmentCode] = useState("");
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -30,12 +56,35 @@ const CoursesPage = () => {
     setCurrentPage(1); // Reset to first page on search
   };
 
+  const handleCourseClick = (courseId: string) => {
+    if (enrolledCourseIds.has(courseId)) {
+      navigate(`/courses/${courseId}`);
+    } else {
+      setSelectedCourseId(courseId);
+      setEnrollmentCode("");
+      setShowEnrollModal(true);
+    }
+  };
+
+  const handleEnrollSubmit = async () => {
+    if (!selectedCourseId || !enrollmentCode) return;
+    try {
+      await enroll(selectedCourseId, { enrollmentCode });
+      toast.success("Tham gia khóa học thành công!");
+      setShowEnrollModal(false);
+      // Navigate to detail page
+      navigate(`/courses/${selectedCourseId}`);
+    } catch (err) {
+      toast.error("Mã tham gia không hợp lệ hoặc hết hạn.");
+    }
+  };
+
   const courses = data?.data?.items || [];
   const totalCourses = data?.data?.totalElement || 0;
   const totalPages = data?.data?.totalPage || 0;
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-white relative">
       <main className="max-w-[1280px] mx-auto w-full px-4 sm:px-10 py-6">
         <Breadcrumb />
 
@@ -98,6 +147,8 @@ const CoursesPage = () => {
                         rating={5} // Placeholder
                         reviews={0} // Placeholder
                         instructor={course.teacherName}
+                        onClick={() => handleCourseClick(course.id)}
+                        isEnrolled={enrolledCourseIds.has(course.id)}
                       />
                     ))}
                   </div>
@@ -120,6 +171,61 @@ const CoursesPage = () => {
           </div>
         </div>
       </main>
+
+      {/* Enrollment Modal */}
+      {showEnrollModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-900">
+                Tham gia khóa học
+              </h3>
+              <button
+                onClick={() => setShowEnrollModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+
+            <p className="text-sm text-gray-600 mb-6">
+              Vui lòng nhập mã tham gia được cung cấp bởi giảng viên để ghi danh
+              vào khóa học này.
+            </p>
+
+            <div className="mb-6">
+              <input
+                type="text"
+                value={enrollmentCode}
+                onChange={(e) => setEnrollmentCode(e.target.value)}
+                placeholder="Nhập mã tham gia..."
+                className="w-full px-4 py-3 rounded-lg border border-slate-200 text-sm focus:ring-1 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF]"
+              />
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowEnrollModal(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:translate-y-[-2px] transition-all duration-300 rounded-lg"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={handleEnrollSubmit}
+                disabled={enrolling || !enrollmentCode}
+                className="px-4 py-2 text-sm font-bold text-white color-primary-bg hover:translate-y-[-2px] transition-all duration-300 rounded-lg disabled:opacity-50 flex items-center gap-2"
+              >
+                {enrolling && (
+                  <span className="material-symbols-outlined animate-spin text-sm">
+                    progress_activity
+                  </span>
+                )}
+                Tham gia ngay
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

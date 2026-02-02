@@ -13,6 +13,10 @@ const studentRoutes: RouteObject[] = [
     element: <StudentQuizTakingPage />,
   },
   {
+    path: "/student/courses/:courseId/learn",
+    element: <StudentCourseLearningPage />,
+  },
+  {
     path: "/student",
     element: <StudentLayout />,
     children: [
@@ -23,10 +27,6 @@ const studentRoutes: RouteObject[] = [
       {
         path: "my-courses",
         element: <StudentMyCoursesPage />,
-      },
-      {
-        path: "courses/:courseId/learn",
-        element: <StudentCourseLearningPage />,
       },
       {
         path: "profile",
