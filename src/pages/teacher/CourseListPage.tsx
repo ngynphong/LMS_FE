@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   useMyCourses,
@@ -17,6 +17,16 @@ const CourseListPage = () => {
     status: "",
     visibility: "",
   });
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setFilters((prev) => ({ ...prev, keyword: searchTerm, pageNo: 0 }));
+    }, 500);
+
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
 
   const {
     data: courses,
@@ -85,7 +95,7 @@ const CourseListPage = () => {
     }
   };
 
-  if (loading) {
+  if (loading && !courses) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="flex items-center gap-3">
@@ -151,15 +161,15 @@ const CourseListPage = () => {
           <input
             type="text"
             placeholder="Tìm kiếm khóa học..."
-            value={filters.keyword}
-            onChange={(e) => handleFilterChange("keyword", e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-[#0074bd] focus:border-[#0074bd]"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF]"
           />
         </div>
         <select
           value={filters.status}
           onChange={(e) => handleFilterChange("status", e.target.value)}
-          className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
+          className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
         >
           <option value="all">Tất cả trạng thái</option>
           <option value="PUBLISHED">Đã xuất bản</option>
@@ -168,7 +178,7 @@ const CourseListPage = () => {
         <select
           value={filters.visibility}
           onChange={(e) => handleFilterChange("visibility", e.target.value)}
-          className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
+          className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
         >
           <option value="all">Tất cả quyền</option>
           <option value="PUBLIC">Công khai</option>
@@ -177,7 +187,7 @@ const CourseListPage = () => {
         <select
           value={filters.sorts}
           onChange={(e) => handleFilterChange("sorts", e.target.value)}
-          className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
+          className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
         >
           <option value="createdAt:desc">Mới nhất</option>
           <option value="createdAt:asc">Cũ nhất</option>
@@ -204,7 +214,7 @@ const CourseListPage = () => {
         </div>
         <div className="bg-white p-4 rounded-xl border border-slate-200">
           <p className="text-[#5e7b8d] text-xs font-medium">Tổng bài học</p>
-          <p className="text-[#0074bd] text-2xl font-bold mt-1">
+          <p className="text-[#1E90FF] text-2xl font-bold mt-1">
             {courseList.reduce((sum, c) => sum + (c.lessonCount || 0), 0)}
           </p>
         </div>
