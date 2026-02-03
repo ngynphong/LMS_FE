@@ -145,7 +145,7 @@ const TeacherSidebar = ({
                   isCollapsed ? "size-10" : "size-12"
                 }`}
                 style={{
-                  backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuDxzHGBuvCbcbT7_cVmyqt_jJ7NCJw2mxPGD66bp0OtXUigvQ8TGNcmtIZ5DZtmQaCXqeSV3YtcXZnQJrjarq2RE70oBSFDMaehH6RJw-5HZMewr30nWv8Dnu8AEITbjgPtPSa129dlh7aDtMW6nkazmBKzyHiKYSEQscd5sUh4NhVAgJSkwvETf9GuI1R-0pv8qqI0dR53X2sxOIQ6h_3Itp75g0oZP4sqs63EejNd-_fsFOZxYcevr0iU2NP9F5s42xDxXBtpTKQx")`,
+                  backgroundImage: `url("/img/avatar-default.png")`,
                 }}
               />
               {(!isCollapsed || isMobileOpen) && (

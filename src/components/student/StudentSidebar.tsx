@@ -117,9 +117,9 @@ const StudentSidebar = ({
           className="absolute -right-3 top-8 bg-white border border-gray-200 rounded-full p-1 text-gray-500 hover:color-primary shadow-sm z-50 text-xs hidden lg:flex items-center justify-center transition-colors"
         >
           {isCollapsed ? (
-            <ChevronRight animateOnHover animation="path-loop" size={14}/>
+            <ChevronRight animateOnHover animation="path-loop" size={14} />
           ) : (
-            <ChevronLeft animateOnHover animation="path-loop" size={14}/>
+            <ChevronLeft animateOnHover animation="path-loop" size={14} />
           )}
         </button>
 
@@ -148,11 +148,11 @@ const StudentSidebar = ({
               </div>
               {(!isCollapsed || isMobileOpen) && (
                 <span className="text-xl font-bold tracking-tight color-primary whitespace-nowrap overflow-hidden lg:block hidden">
-                  IES Edu
+                  IES EDU
                 </span>
               )}
               <span className="text-xl font-bold tracking-tight color-primary whitespace-nowrap overflow-hidden lg:hidden">
-                IES Edu
+                IES EDU
               </span>
             </Link>
           </div>

@@ -1,10 +1,39 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useTeacherQuizzes } from "../../hooks/useQuizzes";
+import {
+  useTeacherQuizzes,
+  useGenerateQuizCode,
+  usePublishQuiz,
+} from "../../hooks/useQuizzes";
+import { toast } from "../../components/common/Toast";
+import { QuizStatisticsModal } from "../../components/teacher/QuizStatisticsModal";
 
 const ExamListPage = () => {
-  const { data: exams, loading, error } = useTeacherQuizzes();
+  const { data: exams, loading, error, refetch } = useTeacherQuizzes();
+  const { generate, loading: isGenerating } = useGenerateQuizCode();
+  const { publish, loading: isPublishing } = usePublishQuiz();
   const [searchQuery, setSearchQuery] = useState("");
+  const [statsQuizId, setStatsQuizId] = useState<string | null>(null);
+
+  const handleGenerateCode = async (quizId: string) => {
+    try {
+      const res = await generate(quizId);
+      toast.success(`Mã code mới: ${res.code}`);
+      refetch(); // Refresh list to update UI
+    } catch (error) {
+      toast.error("Thất bại khi tạo mã code");
+    }
+  };
+
+  const handlePublish = async (quizId: string) => {
+    try {
+      await publish(quizId);
+      toast.success("Đã cập nhật trạng thái công khai!");
+      refetch();
+    } catch (error) {
+      toast.error("Cập nhật trạng thái thất bại");
+    }
+  };
 
   // Filtered exams
   const filteredExams = (exams || []).filter((e) => {
@@ -57,7 +86,7 @@ const ExamListPage = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-[#0074bd] text-sm"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm"
               placeholder="Tìm kiếm đề thi..."
             />
           </div>
@@ -76,11 +105,13 @@ const ExamListPage = () => {
                 <h3 className="text-[#111518] text-base font-bold leading-tight line-clamp-2">
                   {exam.title}
                 </h3>
-                <span
-                  className={`shrink-0 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${exam.isDynamic ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"}`}
-                >
-                  {exam.isDynamic ? "Dynamic" : "Static"}
-                </span>
+                <div className="flex flex-col gap-1 items-end">
+                  <span
+                    className={`shrink-0 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${exam.isPublished ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}
+                  >
+                    {exam.isPublished ? "Public" : "Private"}
+                  </span>
+                </div>
               </div>
 
               <div className="flex items-center gap-4 text-sm text-slate-500 mb-4">
@@ -97,19 +128,88 @@ const ExamListPage = () => {
                   <span>{exam.durationInMinutes} phút</span>
                 </div>
               </div>
+              <div className="flex items-center gap-4 text-sm text-slate-500 mb-4">
+                <div className="flex items-center gap-1">
+                  <span className="material-symbols-outlined text-base">
+                    calendar_today
+                  </span>
+                  <span>
+                    {exam.closeTime
+                      ? new Date(exam.closeTime).toLocaleString()
+                      : "Chưa đặt"}
+                  </span>
+                </div>
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                <button
+                  onClick={() => handlePublish(exam.id)}
+                  disabled={isPublishing}
+                  className={`flex items-center justify-center gap-1 p-2 rounded-lg text-sm font-bold transition-colors ${
+                    exam.isPublished
+                      ? "bg-green-50 text-green-600 hover:bg-green-100"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                  title={
+                    exam.isPublished ? "Đã công khai" : "Công khai bài thi"
+                  }
+                >
+                  <span className="material-symbols-outlined text-lg">
+                    {exam.isPublished ? "public" : "public_off"}
+                  </span>
+                  {exam.isPublished ? "Đã công khai" : "Công khai"}
+                </button>
 
-              <div className="flex gap-2 pt-3 border-t border-slate-100">
+                {exam.code && (
+                  <div className="flex items-center gap-1 p-2 bg-gray-50 rounded-lg border border-gray-200">
+                    <span className="font-mono font-bold text-[#1A2B3C]">
+                      {exam.code}
+                    </span>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(exam.code!);
+                        toast.success("Đã sao chép mã!");
+                      }}
+                      className="text-gray-400 hover:text-[#1E90FF]"
+                      title="Sao chép"
+                    >
+                      <span className="material-symbols-outlined text-sm">
+                        content_copy
+                      </span>
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex gap-2 pt-3 border-t border-slate-100 mt-3">
                 <Link
                   to={`/teacher/exams/${exam.id}/edit`}
-                  className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg bg-[#0074bd]/10 text-[#0074bd] text-sm font-bold hover:bg-[#0074bd]/20 transition-colors"
+                  className="flex items-center justify-center gap-1 p-2 rounded-lg bg-[#0074bd]/10 text-[#0074bd] text-sm font-bold hover:bg-[#0074bd]/20 transition-colors"
                 >
                   <span className="material-symbols-outlined text-base">
                     edit
                   </span>
-                  Chỉnh sửa
+                  Sửa
                 </Link>
-                <button className="flex items-center justify-center p-2 rounded-lg border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 transition-colors">
-                  <span className="material-symbols-outlined">delete</span>
+                <button
+                  onClick={() => handleGenerateCode(exam.id)}
+                  disabled={isGenerating}
+                  className="flex items-center justify-center gap-1 p-2 rounded-lg bg-purple-50 text-purple-600 text-sm font-bold hover:bg-purple-100 transition-colors"
+                  title="Tạo mã Code"
+                >
+                  <span className="material-symbols-outlined text-lg">
+                    {exam.code ? "refresh" : "vpn_key"}
+                  </span>
+                  {exam.code ? "Đổi mã" : "Tạo mã"}
+                </button>
+                <button
+                  onClick={() => setStatsQuizId(exam.id)}
+                  className="flex items-center justify-center gap-1 p-2 rounded-lg bg-blue-50 text-blue-600 text-sm font-bold hover:bg-blue-100 transition-colors"
+                  title="Xem thống kê"
+                >
+                  <span className="material-symbols-outlined text-lg">
+                    analytics
+                  </span>
+                  Thống kê
                 </button>
               </div>
             </div>
@@ -121,6 +221,14 @@ const ExamListPage = () => {
           </div>
         )}
       </div>
+
+      {statsQuizId && (
+        <QuizStatisticsModal
+          isOpen={!!statsQuizId}
+          onClose={() => setStatsQuizId(null)}
+          quizId={statsQuizId}
+        />
+      )}
     </div>
   );
 };

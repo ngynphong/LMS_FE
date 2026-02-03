@@ -209,9 +209,8 @@ const StudentMyCoursesPage = () => {
               <div
                 className="w-full h-full bg-center bg-cover bg-slate-100"
                 style={{
-                  backgroundImage: course.thumbnailUrl
-                    ? `url("${course.thumbnailUrl}")`
-                    : undefined,
+                  backgroundImage:
+                    `url("${course.thumbnailUrl}")` || "/img/book.png",
                 }}
               >
                 {!course.thumbnailUrl && (
