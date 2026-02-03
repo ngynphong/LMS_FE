@@ -141,11 +141,9 @@ const CoursesPage = () => {
                         key={course.id}
                         id={course.id}
                         title={course.name}
-                        image={course.thumbnailUrl || ""}
+                        image={course.thumbnailUrl || "/img/book.png"}
                         category={course.schoolName || "Khóa học"}
-                        duration="N/A" // API doesn't return duration yet
-                        rating={5} // Placeholder
-                        reviews={0} // Placeholder
+                        createdAt={course.createdAt}
                         instructor={course.teacherName}
                         onClick={() => handleCourseClick(course.id)}
                         isEnrolled={enrolledCourseIds.has(course.id)}

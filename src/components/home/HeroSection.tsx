@@ -1,7 +1,6 @@
 import {
   FaArrowRight,
-  FaStar,
-  FaCalendarAlt,
+  FaStar, 
   FaBolt,
   FaRocket,
 } from "react-icons/fa";
@@ -43,15 +42,6 @@ const HeroSection = () => {
             >
               Khám phá khóa học
             </Link>
-            <Link
-              to="/contact"
-              className="border-2 border-gray-200 text-gray-700 px-8 py-4 rounded-xl font-bold hover:bg-gray-50 transition-all flex items-center justify-center gap-2 w-full sm:w-auto"
-            >
-              <span>
-                <FaCalendarAlt />
-              </span>{" "}
-              Đặt lịch tư vấn
-            </Link>
           </div>
           <div className="flex flex-wrap items-center gap-4 mt-4 bg-white/60 backdrop-blur-sm p-3 border border-white/50 rounded-2xl w-fit">
             <div className="flex -space-x-3">
@@ -74,7 +64,7 @@ const HeroSection = () => {
                 ))}
               </div>
               <span className="text-xs sm:text-sm text-gray-600 font-medium">
-                2,500+ học viên tin dùng
+                1,000+ học viên tin dùng
               </span>
             </div>
           </div>
@@ -92,10 +82,10 @@ const HeroSection = () => {
             <img
               alt="Student studying"
               className="w-full h-full object-cover"
-              src="/hero-img.png"
+              src="/img/hero-img.png"
               onError={(e) => {
                 (e.target as HTMLImageElement).src =
-                  "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
+                  "/img/hero-img.png";
               }}
             />
           </div>

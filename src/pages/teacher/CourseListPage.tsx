@@ -249,13 +249,11 @@ const CourseListPage = () => {
             >
               {/* Thumbnail */}
               <div className="aspect-video relative">
-                {course.thumbnailUrl && (
-                  <img
-                    src={course.thumbnailUrl}
-                    alt={course.name}
-                    className="w-full h-full object-cover"
-                  />
-                )}
+                <img
+                  src={course.thumbnailUrl || "/img/book.png"}
+                  alt={course.name}
+                  className="w-full h-full object-cover"
+                />
                 <div className="absolute top-3 right-3">
                   <span
                     className={`px-2 py-1 rounded text-xs font-medium ${course.status === "PUBLISHED" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}
