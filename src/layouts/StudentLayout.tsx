@@ -30,7 +30,7 @@ const StudentLayout = ({ children }: StudentLayoutProps) => {
           >
             <FaBars className="text-xl" />
           </button>
-          <span className="font-bold text-lg color-primary">IES Edu</span>
+          <span className="font-bold text-lg color-primary">IES EDU</span>
         </div>
         {user && (
           <img

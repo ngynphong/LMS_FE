@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash} from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useAuth } from "../../hooks/useAuth";
 // import { toast } from '../../components/common/Toast';
 
@@ -166,7 +166,7 @@ const RegisterPage = () => {
                 className="w-12 h-12"
               />
             </span>
-            <span className="text-xl font-bold tracking-tight ">IES Edu</span>
+            <span className="text-xl font-bold tracking-tight ">IES EDU</span>
           </Link>
         </div>
       </div>
@@ -186,7 +186,7 @@ const RegisterPage = () => {
                 className="w-12 h-12"
               />
             </span>
-            <span className="text-lg font-bold tracking-tight">IES Edu</span>
+            <span className="text-lg font-bold tracking-tight">IES EDU</span>
           </Link>
 
           {/* Tabs */}
@@ -217,7 +217,7 @@ const RegisterPage = () => {
               Tạo tài khoản mới
             </h1>
             <p className="text-gray-600 text-sm font-normal leading-normal">
-              Tham gia cộng đồng học tập IES Edu ngay hôm nay.
+              Tham gia cộng đồng học tập IES EDU ngay hôm nay.
             </p>
           </div>
 

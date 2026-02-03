@@ -27,7 +27,7 @@ const AboutPage = () => {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full color-primary opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 color-primary"></span>
               </span>
-              Chào mừng đến với IES Edu
+              Chào mừng đến với IES EDU
             </div>
 
             <h1 className="text-slate-900 text-start text-3xl sm:text-4xl lg:text-5xl font-black leading-[1.2] lg:leading-[1.1] tracking-tight">
