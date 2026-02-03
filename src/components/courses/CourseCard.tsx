@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { FaStar } from "react-icons/fa";
 import type { Course } from "../../types/course";
 
 // Props for student variant (can be spread from CourseData)
@@ -8,10 +7,8 @@ interface StudentCourseProps {
   title: string;
   category: string;
   image: string;
-  duration?: string;
-  rating: number;
-  reviews?: number;
   instructor?: string;
+  createdAt?: string;
   onClick?: () => void;
   isEnrolled?: boolean;
 }
@@ -81,21 +78,6 @@ const CourseCard = (props: CourseCardProps) => {
             </div>
           </div>
 
-          {/* Rating */}
-          <div className="flex items-center text-sm mb-4">
-            <div className="flex items-center gap-1">
-              <span
-                className="material-symbols-outlined text-amber-500 text-base"
-                style={{ fontVariationSettings: "'FILL' 1" }}
-              >
-                star
-              </span>
-              <span className="font-semibold text-[#101518]">
-                {course.rating}
-              </span>
-            </div>
-          </div>
-
           {/* Actions */}
           <div className="flex gap-2">
             <Link
@@ -122,9 +104,7 @@ const CourseCard = (props: CourseCardProps) => {
     title,
     category,
     image,
-    duration,
-    rating,
-    reviews,
+    createdAt,
     instructor,
     onClick,
     isEnrolled,
@@ -157,14 +137,9 @@ const CourseCard = (props: CourseCardProps) => {
         >
           {title}
         </h3>
-        <div className="flex items-center gap-2 text-gray-500 text-xs">
-          <span className="material-symbols-outlined text-sm">schedule</span>{" "}
-          {duration}
-          <span className="ml-2">
-            <FaStar className="text-yellow-500 inline" />
-          </span>{" "}
-          {rating} ({reviews})
-        </div>
+        <p className="text-gray-500 text-sm">
+          Ngày tạo: {createdAt && new Date(createdAt).toLocaleDateString()}
+        </p>
         <div className="flex items-center justify-between mt-2 pt-4 border-t border-gray-100">
           {instructor && (
             <span className="text-gray-600 text-sm">GV: {instructor}</span>

@@ -12,7 +12,7 @@ const Footer = () => {
           <div className="flex items-center gap-2 color-primary">
             <span className="text-4xl">
               <img
-                src="/logo-edu.png"
+                src="/img/logo-edu.png"
                 alt="ies-edu-logo"
                 className="w-12 h-12"
               />

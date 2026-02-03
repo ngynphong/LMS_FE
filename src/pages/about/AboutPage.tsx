@@ -1,3 +1,12 @@
+import {
+  ScrollReveal,
+  StaggerContainer,
+  StaggerItem,
+  fadeInUp,
+  fadeInLeft,
+  fadeInRight,
+} from "../../components/ui/ScrollReveal";
+
 const AboutPage = () => {
   return (
     <div className="min-h-screen bg-[#f8fafc] font-['Lexend',sans-serif] overflow-x-hidden">
@@ -12,7 +21,7 @@ const AboutPage = () => {
 
         {/* Container: px-4 cho mobile, px-6 cho tablet/desktop */}
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10 py-12 lg:py-20">
-          <div className="space-y-6 lg:space-y-8">
+          <ScrollReveal variant={fadeInLeft} className="space-y-6 lg:space-y-8">
             <div className="inline-flex items-center gap-3 bg-blue-50 color-primary px-3 py-1.5 lg:px-4 lg:py-2 rounded-full font-bold text-[10px] lg:text-xs uppercase tracking-widest border border-blue-100 w-fit">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full color-primary opacity-75"></span>
@@ -30,9 +39,12 @@ const AboutPage = () => {
               nghệ đột phá. Chúng tôi đồng hành cùng bạn trên con đường chinh
               phục đỉnh cao tri thức.
             </p>
-          </div>
+          </ScrollReveal>
 
-          <div className="relative hidden lg:block -mt-10">
+          <ScrollReveal
+            variant={fadeInRight}
+            className="relative hidden lg:block -mt-10"
+          >
             <div className="relative rounded-[3rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] border-12 border-white/10">
               <div
                 className="w-full aspect-4/5 bg-cover bg-center transition-transform duration-700 hover:scale-105"
@@ -45,12 +57,12 @@ const AboutPage = () => {
                 <span className="color-primary text-3xl font-black leading-none">
                   10+
                 </span>
-                <span className="text-slate-600 text-[10px] font-bold uppercase tracking-tighter">
+                <span className="text-slate-600 text-sm font-bold uppercase tracking-tighter">
                   Năm kinh nghiệm
                 </span>
               </div>
             </div>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -62,12 +74,11 @@ const AboutPage = () => {
             {/* Cột ảnh: Mobile -> 1 cột (hoặc 2 cột nhỏ tuỳ ý, ở đây tôi gom lại cho dễ nhìn) hoặc giữ nguyên nhưng giảm gap */}
             {/* Sửa: grid-cols-1 trên mobile nhỏ, sm:grid-cols-2 trên tablet */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 relative order-2 lg:order-1">
-              <div className="space-y-6">
+              <ScrollReveal variant={fadeInLeft} className="space-y-6">
                 <div
                   className="rounded-3xl overflow-hidden shadow-2xl h-64 lg:h-80 border-4 border-white bg-cover bg-center"
                   style={{
-                    backgroundImage:
-                      "url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&auto=format&fit=crop')",
+                    backgroundImage: "url('/img/bg-about-story-1.png')",
                   }}
                 />
                 <div className="color-primary p-6 lg:p-8 rounded-3xl text-white shadow-xl shadow-[#0077BE]/20">
@@ -77,8 +88,12 @@ const AboutPage = () => {
                     cho IES.
                   </p>
                 </div>
-              </div>
-              <div className="space-y-6 lg:pt-12">
+              </ScrollReveal>
+              <ScrollReveal
+                variant={fadeInLeft}
+                delay={0.2}
+                className="space-y-6 lg:pt-12"
+              >
                 <div className="bg-white p-6 lg:p-8 rounded-3xl shadow-xl border border-slate-100">
                   <span className="material-symbols-outlined color-primary text-4xl mb-4">
                     history_edu
@@ -91,14 +106,16 @@ const AboutPage = () => {
                 <div
                   className="rounded-3xl overflow-hidden shadow-2xl h-64 lg:h-72 border-4 border-white bg-cover bg-center"
                   style={{
-                    backgroundImage:
-                      "url('https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=600&auto=format&fit=crop')",
+                    backgroundImage: "url('/img/bg-about-story-2.png')",
                   }}
                 />
-              </div>
+              </ScrollReveal>
             </div>
 
-            <div className="flex flex-col gap-8 lg:gap-10 order-1 lg:order-2">
+            <ScrollReveal
+              variant={fadeInRight}
+              className="flex flex-col gap-8 lg:gap-10 order-1 lg:order-2"
+            >
               <div className="space-y-4">
                 <span className="color-primary font-bold text-xs lg:text-sm tracking-[0.3em] uppercase">
                   Câu chuyện của chúng tôi
@@ -136,7 +153,7 @@ const AboutPage = () => {
                   trong hệ sinh thái khởi nghiệp tại Việt Nam.
                 </p>
               </div>
-            </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -152,7 +169,10 @@ const AboutPage = () => {
           }}
         />
         <div className="max-w-[1280px] mx-auto relative z-10">
-          <div className="text-center max-w-3xl mx-auto mb-12 lg:mb-20 space-y-4">
+          <ScrollReveal
+            variant={fadeInUp}
+            className="text-center max-w-3xl mx-auto mb-12 lg:mb-20 space-y-4"
+          >
             <h2 className="text-3xl lg:text-4xl font-black text-slate-900">
               Tầm Nhìn & Sứ Mệnh
             </h2>
@@ -161,81 +181,88 @@ const AboutPage = () => {
               đầu khu vực.
             </p>
             <div className="w-16 lg:w-24 h-1.5 color-primary mx-auto rounded-full"></div>
-          </div>
+          </ScrollReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10">
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10">
             {/* Vision Card - Giảm padding mobile p-6 */}
-            <div className="group relative bg-white border border-slate-100 p-6 lg:p-10 rounded-4xl lg:rounded-[2.5rem] shadow-[0_20px_50px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(0,119,190,0.15)] transition-all duration-500 hover:-translate-y-3">
-              <div className="size-16 lg:size-20 bg-blue-50 rounded-3xl flex items-center justify-center mb-6 lg:mb-8 group-hover:color-primary group-hover:rotate-12 transition-all duration-500 shadow-lg shadow-blue-100/50">
-                <span className="material-symbols-outlined color-primary group-hover:text-white text-3xl lg:text-4xl">
-                  visibility
-                </span>
+            <StaggerItem>
+              <div className="group relative bg-white border border-slate-100 p-6 lg:p-10 rounded-4xl lg:rounded-[2.5rem] shadow-[0_20px_50px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(0,119,190,0.15)] transition-all duration-500 hover:-translate-y-3">
+                <div className="size-16 lg:size-20 bg-blue-50 rounded-3xl flex items-center justify-center mb-6 lg:mb-8 group-hover:color-primary group-hover:rotate-12 transition-all duration-500 shadow-lg shadow-blue-100/50">
+                  <span className="material-symbols-outlined color-primary group-hover:text-white text-3xl lg:text-4xl">
+                    visibility
+                  </span>
+                </div>
+                <h3 className="text-xl lg:text-2xl font-extrabold mb-3 lg:mb-5 text-slate-900">
+                  Tầm nhìn
+                </h3>
+                <p className="text-slate-600 text-sm lg:text-base leading-relaxed">
+                  Trở thành viện nghiên cứu và đào tạo hàng đầu, tiên phong
+                  trong việc ứng dụng các thành tựu khoa học công nghệ mới nhất.
+                </p>
+                <div className="mt-6 lg:mt-8 flex items-center gap-2 color-primary font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                  Tìm hiểu thêm{" "}
+                  <span className="material-symbols-outlined text-sm">
+                    arrow_right_alt
+                  </span>
+                </div>
               </div>
-              <h3 className="text-xl lg:text-2xl font-extrabold mb-3 lg:mb-5 text-slate-900">
-                Tầm nhìn
-              </h3>
-              <p className="text-slate-600 text-sm lg:text-base leading-relaxed">
-                Trở thành viện nghiên cứu và đào tạo hàng đầu, tiên phong trong
-                việc ứng dụng các thành tựu khoa học công nghệ mới nhất.
-              </p>
-              <div className="mt-6 lg:mt-8 flex items-center gap-2 color-primary font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                Tìm hiểu thêm{" "}
-                <span className="material-symbols-outlined text-sm">
-                  arrow_right_alt
-                </span>
-              </div>
-            </div>
+            </StaggerItem>
 
             {/* Mission Card */}
-            <div className="group relative bg-white border border-slate-100 p-6 lg:p-10 rounded-4xl lg:rounded-[2.5rem] shadow-[0_20px_50px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(0,119,190,0.15)] transition-all duration-500 hover:-translate-y-3">
-              <div className="size-16 lg:size-20 bg-blue-50 rounded-3xl flex items-center justify-center mb-6 lg:mb-8 group-hover:color-primary group-hover:rotate-12 transition-all duration-500 shadow-lg shadow-blue-100/50">
-                <span className="material-symbols-outlined color-primary group-hover:text-white text-3xl lg:text-4xl">
-                  public
-                </span>
+            <StaggerItem>
+              <div className="group relative bg-white border border-slate-100 p-6 lg:p-10 rounded-4xl lg:rounded-[2.5rem] shadow-[0_20px_50px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(0,119,190,0.15)] transition-all duration-500 hover:-translate-y-3">
+                <div className="size-16 lg:size-20 bg-blue-50 rounded-3xl flex items-center justify-center mb-6 lg:mb-8 group-hover:color-primary group-hover:rotate-12 transition-all duration-500 shadow-lg shadow-blue-100/50">
+                  <span className="material-symbols-outlined color-primary group-hover:text-white text-3xl lg:text-4xl">
+                    public
+                  </span>
+                </div>
+                <h3 className="text-xl lg:text-2xl font-extrabold mb-3 lg:mb-5 text-slate-900">
+                  Sứ mệnh
+                </h3>
+                <p className="text-slate-600 text-sm lg:text-base leading-relaxed">
+                  Phục vụ cộng đồng thông qua giáo dục khai phóng, cung cấp
+                  nguồn nhân lực chất lượng cao và giải pháp khởi nghiệp sáng
+                  tạo.
+                </p>
+                <div className="mt-6 lg:mt-8 flex items-center gap-2 color-primary font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                  Tìm hiểu thêm{" "}
+                  <span className="material-symbols-outlined text-sm">
+                    arrow_right_alt
+                  </span>
+                </div>
               </div>
-              <h3 className="text-xl lg:text-2xl font-extrabold mb-3 lg:mb-5 text-slate-900">
-                Sứ mệnh
-              </h3>
-              <p className="text-slate-600 text-sm lg:text-base leading-relaxed">
-                Phục vụ cộng đồng thông qua giáo dục khai phóng, cung cấp nguồn
-                nhân lực chất lượng cao và giải pháp khởi nghiệp sáng tạo.
-              </p>
-              <div className="mt-6 lg:mt-8 flex items-center gap-2 color-primary font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                Tìm hiểu thêm{" "}
-                <span className="material-symbols-outlined text-sm">
-                  arrow_right_alt
-                </span>
-              </div>
-            </div>
+            </StaggerItem>
 
             {/* Core Values Card */}
-            <div className="group relative bg-slate-600 p-6 lg:p-10 rounded-4xl lg:rounded-[2.5rem] shadow-2xl transition-all duration-500 hover:-translate-y-3 border-4 border-[#0077BE]/20">
-              <div className="size-16 lg:size-20 color-primary border border-white rounded-3xl flex items-center justify-center mb-6 lg:mb-8 rotate-12 group-hover:rotate-0 transition-all duration-500">
-                <span className="material-symbols-outlined text-white text-3xl lg:text-4xl">
-                  diamond
-                </span>
+            <StaggerItem>
+              <div className="group relative bg-slate-600 p-6 lg:p-10 rounded-4xl lg:rounded-[2.5rem] shadow-2xl transition-all duration-500 hover:-translate-y-3 border-4 border-[#0077BE]/20">
+                <div className="size-16 lg:size-20 color-primary border border-white rounded-3xl flex items-center justify-center mb-6 lg:mb-8 rotate-12 group-hover:rotate-0 transition-all duration-500">
+                  <span className="material-symbols-outlined text-white text-3xl lg:text-4xl">
+                    diamond
+                  </span>
+                </div>
+                <h3 className="text-xl lg:text-2xl font-extrabold mb-3 lg:mb-5 text-white">
+                  Giá trị cốt lõi
+                </h3>
+                <ul className="space-y-3 lg:space-y-4">
+                  {[
+                    "Năng động - Sáng tạo",
+                    "Bền vững & Trách nhiệm",
+                    "Chất lượng vượt trội",
+                    "Làm chủ tương lai",
+                  ].map((item, idx) => (
+                    <li
+                      key={idx}
+                      className="flex items-center gap-3 text-slate-300 font-medium text-sm lg:text-base"
+                    >
+                      <span className="size-2 color-primary rounded-full shrink-0"></span>{" "}
+                      {item}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <h3 className="text-xl lg:text-2xl font-extrabold mb-3 lg:mb-5 text-white">
-                Giá trị cốt lõi
-              </h3>
-              <ul className="space-y-3 lg:space-y-4">
-                {[
-                  "Năng động - Sáng tạo",
-                  "Bền vững & Trách nhiệm",
-                  "Chất lượng vượt trội",
-                  "Làm chủ tương lai",
-                ].map((item, idx) => (
-                  <li
-                    key={idx}
-                    className="flex items-center gap-3 text-slate-300 font-medium text-sm lg:text-base"
-                  >
-                    <span className="size-2 color-primary rounded-full shrink-0"></span>{" "}
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+            </StaggerItem>
+          </StaggerContainer>
         </div>
       </section>
 
@@ -250,7 +277,10 @@ const AboutPage = () => {
           }}
         />
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 relative z-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 lg:mb-20 gap-6 lg:gap-8">
+          <ScrollReveal
+            variant={fadeInUp}
+            className="flex flex-col md:flex-row md:items-end justify-between mb-12 lg:mb-20 gap-6 lg:gap-8"
+          >
             <div className="max-w-xl space-y-3 lg:space-y-4">
               <span className="color-primary font-bold text-xs lg:text-sm tracking-widest uppercase">
                 Hoạt động chuyên môn
@@ -264,9 +294,9 @@ const AboutPage = () => {
               </p>
             </div>
             {/* Nếu số 4 ở code cũ là trang trí thì để, không thì xoá. Tôi tạm ẩn đi */}
-          </div>
+          </ScrollReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-8">
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-8">
             {/* Mapping data để code gọn hơn */}
             {[
               {
@@ -300,7 +330,7 @@ const AboutPage = () => {
                 color: "cyan",
               },
             ].map((item, idx) => (
-              <div
+              <StaggerItem
                 key={idx}
                 className="bg-white p-6 lg:p-8 rounded-4xl lg:rounded-4xl shadow-[0_15px_30px_-10px_rgba(0,0,0,0.05)] hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 group"
               >
@@ -320,27 +350,30 @@ const AboutPage = () => {
                 <p className="text-xs text-slate-500 leading-relaxed">
                   {item.desc}
                 </p>
-              </div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 
       {/* --- ORGANIZATION STRUCTURE --- */}
       <section className="py-16 lg:py-32 px-4 sm:px-6 bg-white">
         <div className="max-w-[900px] mx-auto">
-          <div className="text-center mb-12 lg:mb-20 space-y-4">
+          <ScrollReveal
+            variant={fadeInUp}
+            className="text-center mb-12 lg:mb-20 space-y-4"
+          >
             <span className="color-primary font-bold text-xs lg:text-sm tracking-widest uppercase">
               Quản trị viện
             </span>
             <h2 className="text-3xl lg:text-4xl font-black text-slate-900">
               Cơ Cấu Tổ Chức
             </h2>
-          </div>
+          </ScrollReveal>
 
-          <div className="flex flex-col gap-4 lg:gap-6">
+          <StaggerContainer className="flex flex-col gap-4 lg:gap-6">
             {/* Leadership - Mobile padding px-5 */}
-            <div className="group border-2 border-slate-100 rounded-2xl lg:rounded-3xl overflow-hidden hover:border-[#0077BE] transition-all duration-300">
+            <StaggerItem className="group border-2 border-slate-100 rounded-2xl lg:rounded-3xl overflow-hidden hover:border-[#0077BE] transition-all duration-300">
               <div className="w-full bg-white px-5 py-6 lg:px-10 lg:py-8 flex items-center justify-between group-hover:bg-blue-50/50 transition-colors cursor-pointer">
                 <div className="flex items-center gap-4 lg:gap-6">
                   <div className="size-12 lg:size-14 rounded-2xl color-primary/10 flex items-center justify-center color-primary group-hover:color-primary group-hover:text-white transition-all shrink-0">
@@ -374,10 +407,10 @@ const AboutPage = () => {
                   </li>
                 </ul>
               </div>
-            </div>
+            </StaggerItem>
 
             {/* Departments */}
-            <div className="group border-2 border-slate-100 rounded-2xl lg:rounded-3xl overflow-hidden hover:border-[#0077BE] transition-all duration-300">
+            <StaggerItem className="group border-2 border-slate-100 rounded-2xl lg:rounded-3xl overflow-hidden hover:border-[#0077BE] transition-all duration-300">
               <div className="w-full bg-white px-5 py-6 lg:px-10 lg:py-8 flex items-center justify-between group-hover:bg-blue-50/50 transition-colors cursor-pointer">
                 <div className="flex items-center gap-4 lg:gap-6">
                   <div className="size-12 lg:size-14 rounded-2xl color-primary/10 flex items-center justify-center color-primary group-hover:color-primary group-hover:text-white transition-all shrink-0">
@@ -433,10 +466,10 @@ const AboutPage = () => {
                   ))}
                 </ul>
               </div>
-            </div>
+            </StaggerItem>
 
             {/* Subsidiaries */}
-            <div className="group border-2 border-slate-100 rounded-2xl lg:rounded-3xl overflow-hidden hover:border-[#0077BE] transition-all duration-300">
+            <StaggerItem className="group border-2 border-slate-100 rounded-2xl lg:rounded-3xl overflow-hidden hover:border-[#0077BE] transition-all duration-300">
               <div className="w-full bg-white px-5 py-6 lg:px-10 lg:py-8 flex items-center justify-between group-hover:bg-blue-50/50 transition-colors cursor-pointer">
                 <div className="flex items-center gap-4 lg:gap-6">
                   <div className="size-12 lg:size-14 rounded-2xl color-primary/10 flex items-center justify-center color-primary group-hover:color-primary group-hover:text-white transition-all shrink-0">
@@ -492,9 +525,12 @@ const AboutPage = () => {
                   ))}
                 </ul>
               </div>
-            </div>
+            </StaggerItem>
 
-            <div className="bg-blue-50/50 rounded-2xl p-6 lg:p-8 border border-blue-100 mt-4">
+            <ScrollReveal
+              variant={fadeInUp}
+              className="bg-blue-50/50 rounded-2xl p-6 lg:p-8 border border-blue-100 mt-4"
+            >
               <p className="text-slate-600 text-sm lg:text-base leading-relaxed text-center italic">
                 Cơ cấu tổ chức của Viện được thiết kế nhằm đảm bảo tính chuyên
                 nghiệp và hiệu quả trong mọi hoạt động. Sự phân chia rõ ràng
@@ -502,8 +538,8 @@ const AboutPage = () => {
                 IES vận hành trơn tru, đồng thời tạo điều kiện thuận lợi cho
                 việc thực hiện sứ mệnh và tầm nhìn đã đề ra.
               </p>
-            </div>
-          </div>
+            </ScrollReveal>
+          </StaggerContainer>
         </div>
       </section>
 
@@ -512,7 +548,10 @@ const AboutPage = () => {
         <div className="absolute top-0 right-0 w-1/2 h-full bg-[#0077BE]/10 blur-3xl rounded-full translate-x-1/2"></div>
         <div className="absolute bottom-0 left-0 w-1/2 h-full bg-purple-500/10 blur-3xl rounded-full -translate-x-1/2"></div>
 
-        <div className="max-w-[1000px] mx-auto px-4 sm:px-6 relative z-10 text-center">
+        <ScrollReveal
+          variant={fadeInUp}
+          className="max-w-[1000px] mx-auto px-4 sm:px-6 relative z-10 text-center"
+        >
           <span className="color-primary font-bold text-xs lg:text-sm tracking-[0.3em] uppercase mb-6 block">
             Kết luận
           </span>
@@ -532,7 +571,7 @@ const AboutPage = () => {
             phát triển bền vững và đóng góp tích cực vào sự nghiệp phát triển
             kinh tế - xã hội của đất nước.
           </p>
-        </div>
+        </ScrollReveal>
       </section>
     </div>
   );
