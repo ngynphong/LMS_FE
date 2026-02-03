@@ -33,3 +33,4 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
           remote-dir: /ap-learning.site/
+          dangerous-clean-slate: true
