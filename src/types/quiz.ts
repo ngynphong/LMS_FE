@@ -169,6 +169,8 @@ export interface QuizQuestionAttempt {
     content: string;
     type: "SINGLE_CHOICE" | "MULTIPLE_CHOICE" | "TRUE_FALSE" | "TEXT";
     answers: QuizAnswer[];
+    selectedAnswerIds?: string[];
+    textAnswer?: string;
 }
 
 export interface QuizStartResponse {
