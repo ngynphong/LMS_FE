@@ -17,7 +17,7 @@ const Footer = () => {
                 className="w-12 h-12"
               />
             </span>
-            <h2 className="text-white text-2xl font-bold">IES Edu</h2>
+            <h2 className="text-white text-2xl font-bold">IES EDU</h2>
           </div>
           <p className="text-gray-400 text-sm leading-relaxed">
             Nâng tầm tri thức Việt qua các khóa học công nghệ thực chiến và lộ
@@ -123,7 +123,7 @@ const Footer = () => {
             </li>
             <li className="flex items-start gap-3">
               <span className="material-symbols-outlined color-primary">
-                <FaLocationDot className="hover:animate-bounce"/>
+                <FaLocationDot className="hover:animate-bounce" />
               </span>
               <span>
                 Số 3 Công Trường Quốc Tế , Phường Xuân Hoà, Thành phố Hồ Chí
@@ -135,7 +135,7 @@ const Footer = () => {
       </div>
 
       <div className="max-w-[1280px] mx-auto mt-16 pt-8 border-t border-white/5 text-center text-gray-500 text-xs">
-        <p>© 2026 IES Edu. Kiến tạo tương lai số. All rights reserved.</p>
+        <p>© 2026 IES EDU. Kiến tạo tương lai số. All rights reserved.</p>
       </div>
     </footer>
   );

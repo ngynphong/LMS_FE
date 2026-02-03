@@ -71,7 +71,9 @@ const FeaturedCoursesSection = () => {
                           }}
                         />
                         <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold color-primary">
-                          {course.visibility === "PUBLIC" ? "Công khai" : "Riêng tư"}
+                          {course.visibility === "PUBLIC"
+                            ? "Công khai"
+                            : "Riêng tư"}
                         </div>
                       </div>
                       <div className="p-5 flex flex-col gap-2 h-[calc(100%-12rem)]">
@@ -82,7 +84,7 @@ const FeaturedCoursesSection = () => {
                           <span className="material-symbols-outlined text-sm">
                             person
                           </span>{" "}
-                          {course.teacherName || "IES Education"}
+                          {course.teacherName || "IES EDUcation"}
                         </div>
                       </div>
                     </div>

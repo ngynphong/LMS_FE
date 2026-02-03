@@ -1,24 +1,25 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import LessonQuiz from "../../components/student/LessonQuiz";
+
 import LessonSidebar, {
   getItemTypeIcon,
   getItemTypeColor,
 } from "../../components/student/LessonSidebar";
 import { useCourseDetail } from "../../hooks/useCourses";
 import {
+  useStudentTeacherQuizzes,
+  useJoinQuizByCode,
+} from "../../hooks/useQuizzes";
+import {
   getLessonById,
   getLessonItemById,
-  getQuizByLessonId,
   trackVideoHeartbeat,
   markLessonItemComplete,
 } from "../../services/lessonService";
-import type {
-  ApiLesson,
-  LessonItem,
-  LessonQuiz as LessonQuizType,
-} from "../../types/learningTypes";
+import type { ApiLesson, LessonItem } from "../../types/learningTypes";
+import type { StudentTeacherQuiz } from "../../types/quiz";
 import PdfSlideshow from "@/components/common/PdfSlideshow";
+import { toast } from "@/components/common/Toast";
 
 type TabType = "overview" | "quiz";
 
@@ -41,7 +42,35 @@ const CourseLearningPage = () => {
   const [currentLesson, setCurrentLesson] = useState<ApiLesson | null>(null);
   const [currentItem, setCurrentItem] = useState<LessonItem | null>(null);
   const [loadingItem, setLoadingItem] = useState(false);
-  const [quiz, setQuiz] = useState<LessonQuizType | null>(null);
+  const { data: studentTeacherQuizzes } = useStudentTeacherQuizzes();
+
+  // Quiz Join State
+
+  const [selectedQuizToJoin, setSelectedQuizToJoin] =
+    useState<StudentTeacherQuiz | null>(null);
+  const [joinCode, setJoinCode] = useState("");
+  const [joinClass, setJoinClass] = useState(false);
+  const { join: joinQuiz, loading: joinLoading } = useJoinQuizByCode();
+
+  const handleJoinQuiz = async () => {
+    try {
+      await joinQuiz(joinCode, joinClass);
+      toast.success(
+        `Tham gia thành công! Bạn có thể bắt đầu làm bài bất cứ lúc nào.`,
+      );
+
+      setSelectedQuizToJoin(null);
+      setJoinCode("");
+      setJoinClass(false);
+    } catch (error) {
+      console.error("Failed to join quiz", error);
+      toast.error("Tham gia thất bại. Vui lòng kiểm tra lại mã.");
+    }
+  };
+
+  const handleStartQuiz = (quizId: string) => {
+    navigate(`/student/quizzes/${quizId}/take`);
+  };
 
   // Progress tracking states
   const [completedItemIds, setCompletedItemIds] = useState<Set<string>>(
@@ -118,8 +147,6 @@ const CourseLearningPage = () => {
         }
         if (targetLesson) {
           setCurrentLesson(targetLesson);
-          const quizData = await getQuizByLessonId(targetLesson.id);
-          setQuiz(quizData);
 
           if (targetLesson.lessonItems && targetLesson.lessonItems.length > 0) {
             handleItemSelect(targetLesson.lessonItems[0]);
@@ -664,11 +691,6 @@ const CourseLearningPage = () => {
                     }`}
                   >
                     {tab.label}
-                    {tab.id === "quiz" && quiz && (
-                      <span className="absolute ml-[-100px] mt-[-12px] px-2 py-0.5 color-primary text-[10px] font-bold rounded-full">
-                        {quiz.questions.length}
-                      </span>
-                    )}
                   </button>
                 ))}
               </div>
@@ -688,72 +710,171 @@ const CourseLearningPage = () => {
                   </div>
                 )}
 
-                {/* {activeTab === "materials" && (
-                  <div className="max-w-2xl">
-                    {currentLesson?.lessonItems &&
-                    currentLesson.lessonItems.length > 0 ? (
-                      <div className="space-y-3">
-                        {currentLesson.lessonItems.map((item) => (
-                          <div
-                            key={item.id}
-                            onClick={() => handleItemSelect(item)}
-                            className="flex items-center justify-between rounded-lg bg-white p-3 border border-gray-100 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
-                          >
-                            <div className="flex items-center gap-3">
-                              <div
-                                className={`size-10 rounded-lg flex items-center justify-center ${getItemTypeColor(item.type)}`}
-                              >
-                                <span className="material-symbols-outlined">
-                                  {getItemTypeIcon(item.type)}
-                                </span>
-                              </div>
-                              <div>
-                                <p className="font-medium text-sm text-[#1A2B3C]">
-                                  {item.title}
-                                </p>
-                                <p className="text-xs text-gray-500">
-                                  {item.type}
-                                </p>
-                              </div>
-                            </div>
-                            <span className="material-symbols-outlined text-gray-400">
-                              chevron_right
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-center py-12 text-gray-500">
-                        <span className="material-symbols-outlined text-4xl mb-2">
-                          folder_open
-                        </span>
-                        <p>Không có tài liệu đính kèm</p>
-                      </div>
-                    )}
-                  </div>
-                )} */}
-
-                {/* {activeTab === "discussion" && (
-                  <div className="text-center py-12 text-gray-500">
-                    <span className="material-symbols-outlined text-4xl mb-2">
-                      forum
-                    </span>
-                    <p>Tính năng thảo luận sẽ sớm được cập nhật</p>
-                  </div>
-                )} */}
-
                 {activeTab === "quiz" && (
                   <div className="max-w-2xl">
-                    {quiz ? (
-                      <LessonQuiz quiz={quiz} />
-                    ) : (
-                      <div className="text-center py-12 text-gray-500">
-                        <span className="material-symbols-outlined text-4xl mb-2">
-                          quiz
-                        </span>
-                        <p>Bài học này chưa có bài kiểm tra</p>
-                      </div>
-                    )}
+                    {/* Quiz List */}
+                    <div className="space-y-4">
+                      {studentTeacherQuizzes.length > 0 ? (
+                        studentTeacherQuizzes.map((quiz) => (
+                          <div
+                            key={quiz.id}
+                            className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow"
+                          >
+                            <div className="flex justify-between items-start mb-4">
+                              <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h3 className="text-lg font-semibold text-[#1A2B3C]">
+                                    {quiz.title}
+                                  </h3>
+                                  <span
+                                    className={`text-xs px-2 py-0.5 rounded font-bold uppercase ${
+                                      quiz.type === "PRACTICE"
+                                        ? "bg-indigo-100 text-indigo-700"
+                                        : "bg-red-100 text-red-700"
+                                    }`}
+                                  >
+                                    {quiz.type === "PRACTICE"
+                                      ? "Luyện tập"
+                                      : "Kiểm tra"}
+                                  </span>
+                                </div>
+                                <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-500">
+                                  <span className="flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-base">
+                                      timer
+                                    </span>
+                                    {quiz.durationInMinutes} phút
+                                  </span>
+                                  <span className="flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-base">
+                                      help
+                                    </span>
+                                    {quiz.totalQuestions} câu hỏi
+                                  </span>
+                                  {(quiz.maxAttempts || 0) > 0 && (
+                                    <span className="flex items-center gap-1">
+                                      <span className="material-symbols-outlined text-base">
+                                        repeat
+                                      </span>
+                                      {quiz.maxAttempts} lần
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                              {quiz.isDynamic && (
+                                <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">
+                                  Dynamic
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Actions Section */}
+                            <div className="flex items-center gap-3 mt-4 pt-4 border-t border-gray-100 flex-wrap">
+                              {/* Primary Action: Start Immediately */}
+                              <button
+                                onClick={() => handleStartQuiz(quiz.id)}
+                                disabled={
+                                  (quiz.maxAttempts || 0) > 0 &&
+                                  (quiz.attemptsCount || 0) >=
+                                    (quiz.maxAttempts || 0)
+                                }
+                                className="px-5 py-2.5 color-primary-bg text-white font-bold rounded-xl hover:bg-[#006da8] shadow-sm hover:shadow-md transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                <span className="material-symbols-outlined text-[20px]">
+                                  play_arrow
+                                </span>
+                                {(quiz.attemptsCount || 0) > 0
+                                  ? "Làm lại"
+                                  : "Bắt đầu làm bài"}
+                              </button>
+
+                              {/* Secondary Action: Join with Code */}
+                              {selectedQuizToJoin?.id === quiz.id ? (
+                                <div className="w-full mt-3 bg-gray-50 border border-gray-200 rounded-xl p-4 animate-fadeIn">
+                                  <div className="flex flex-col gap-3">
+                                    <div className="flex items-center justify-between">
+                                      <h4 className="font-bold text-gray-700 text-sm">
+                                        Nhập mã tham gia
+                                      </h4>
+                                      <button
+                                        onClick={() => {
+                                          setSelectedQuizToJoin(null);
+                                          setJoinCode("");
+                                          setJoinClass(false);
+                                        }}
+                                        className="text-gray-400 hover:text-gray-600 p-1"
+                                      >
+                                        <span className="material-symbols-outlined text-lg">
+                                          close
+                                        </span>
+                                      </button>
+                                    </div>
+
+                                    <div className="flex gap-2">
+                                      <input
+                                        type="text"
+                                        placeholder="Nhập mã quiz..."
+                                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                        value={joinCode}
+                                        onChange={(e) =>
+                                          setJoinCode(e.target.value)
+                                        }
+                                        autoFocus
+                                      />
+                                      <button
+                                        onClick={() => handleJoinQuiz()}
+                                        disabled={!joinCode || joinLoading}
+                                        className="px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                                      >
+                                        {joinLoading
+                                          ? "Đang xử lý..."
+                                          : "Xác nhận"}
+                                      </button>
+                                    </div>
+
+                                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                                      <input
+                                        type="checkbox"
+                                        className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
+                                        checked={joinClass}
+                                        onChange={(e) =>
+                                          setJoinClass(e.target.checked)
+                                        }
+                                      />
+                                      <span className="text-sm text-gray-600 font-medium">
+                                        Tham gia vào lớp học (Lưu mã cho lần
+                                        sau)
+                                      </span>
+                                    </label>
+                                    <p className="text-xs text-gray-500 italic">
+                                      * Nếu chọn "Tham gia vào lớp học", bạn sẽ
+                                      được thêm vào danh sách lớp của giáo viên.
+                                    </p>
+                                  </div>
+                                </div>
+                              ) : (
+                                <button
+                                  onClick={() => setSelectedQuizToJoin(quiz)}
+                                  className="px-4 py-2.5 text-gray-600 font-semibold rounded-xl hover:bg-gray-100 transition-colors flex items-center gap-2 text-sm ml-auto"
+                                >
+                                  <span className="material-symbols-outlined text-[20px]">
+                                    vpn_key
+                                  </span>
+                                  Nhập mã tham gia
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-12 text-gray-500">
+                          <span className="material-symbols-outlined text-4xl mb-2">
+                            quiz
+                          </span>
+                          <p>Không có bài kiểm tra nào khả dụng</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>

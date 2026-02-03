@@ -187,7 +187,9 @@ const ResetPasswordPage = () => {
                   className="w-12 h-12"
                 />
               </span>
-              <span className="text-xl color-primary font-bold tracking-tight">IES Edu</span>
+              <span className="text-xl color-primary font-bold tracking-tight">
+                IES EDU
+              </span>
             </Link>
             {/* <div className="max-w-md absolute bottom-20">
               <h1 className="text-black text-5xl font-bold leading-tight mb-6">
@@ -215,7 +217,7 @@ const ResetPasswordPage = () => {
                   className="w-12 h-12"
                 />
               </span>
-              <span className="text-xl font-bold tracking-tight">IES Edu</span>
+              <span className="text-xl font-bold tracking-tight">IES EDU</span>
             </Link>
 
             {/* Back Button */}

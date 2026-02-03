@@ -1,6 +1,43 @@
+// ... imports
 import { useState, useEffect, useCallback } from 'react';
-import { createQuiz, getTeacherQuizzes } from '../services/quizService';
-import type { CreateQuizRequest, QuizSummary } from '../types/quiz';
+import { 
+    createQuiz, 
+    getTeacherQuizzes,
+    publishQuiz,
+    generateQuizCode,
+    getQuizStatistics,
+    startQuiz, 
+    submitQuiz, 
+    saveQuizProgress, 
+    getQuizHistory, 
+    getQuizAttempt,
+    getMyOngoingQuizzes,
+    checkPracticeAnswer,
+    reviewAttempt,
+    joinQuizByCode,
+    getStudentTeacherQuizzes,
+    getQuizById,
+    updateQuiz
+} from '../services/quizService';
+import type { 
+    CreateQuizRequest, 
+    QuizSummary, 
+    ApiOngoingQuiz, 
+    CheckPracticeAnswerRequest, 
+    CheckPracticeAnswerResponse,
+    QuizAttemptReview,
+    QuizStatistics,
+    GenerateCodeResponse,
+    JoinQuizResponse,
+    StudentTeacherQuiz,
+    QuizStartResponse, 
+    SubmitQuizRequest, 
+    SaveProgressRequest, 
+    QuizHistoryItem, 
+    QuizAttemptDetailResponse,
+    UpdateQuizRequest,
+    QuizDetailResponse
+} from '../types/quiz';
 
 export const useCreateQuiz = () => {
     const [loading, setLoading] = useState(false);
@@ -20,6 +57,53 @@ export const useCreateQuiz = () => {
     };
 
     return { create, loading, error };
+};
+
+export const useUpdateQuiz = () => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
+
+    const update = async (id: string, data: UpdateQuizRequest) => {
+        setLoading(true);
+        setError(null);
+        try {
+            await updateQuiz(id, data);
+        } catch (err) {
+            setError(err instanceof Error ? err : new Error('Failed to update quiz'));
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { update, loading, error };
+};
+
+export const useQuiz = (id?: string) => {
+    const [data, setData] = useState<QuizDetailResponse | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
+
+    useEffect(() => {
+        if (!id) return;
+        
+        const fetchQuiz = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const quiz = await getQuizById(id);
+                setData(quiz);
+            } catch (err) {
+                setError(err instanceof Error ? err : new Error('Failed to fetch quiz details'));
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchQuiz();
+    }, [id]);
+
+    return { data, loading, error };
 };
 
 interface UseTeacherQuizzesReturn {
@@ -59,22 +143,84 @@ export const useTeacherQuizzes = (): UseTeacherQuizzesReturn => {
     return { data, loading, error, refetch };
 };
 
-// ==================== Student Quiz Hooks ====================
+export const usePublishQuiz = () => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
 
-import { 
-    startQuiz, 
-    submitQuiz, 
-    saveQuizProgress, 
-    getQuizHistory, 
-    getQuizAttempt 
-} from '../services/quizService';
-import type { 
-    QuizStartResponse, 
-    SubmitQuizRequest, 
-    SaveProgressRequest, 
-    QuizHistoryItem, 
-    QuizAttemptDetailResponse
-} from '../types/quiz';
+    const publish = async (quizId: string) => {
+        setLoading(true);
+        setError(null);
+        try {
+            await publishQuiz(quizId);
+        } catch (err) {
+            setError(err instanceof Error ? err : new Error('Failed to publish quiz'));
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { publish, loading, error };
+};
+
+export const useGenerateQuizCode = () => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
+
+    const generate = async (quizId: string): Promise<GenerateCodeResponse> => {
+        setLoading(true);
+        setError(null);
+        try {
+            const res = await generateQuizCode(quizId);
+            return res;
+        } catch (err) {
+            setError(err instanceof Error ? err : new Error('Failed to generate quiz code'));
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    return { generate, loading, error };
+}
+
+export const useQuizStatistics = (quizId?: string) => {
+    const [data, setData] = useState<QuizStatistics | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<Error | null>(null);
+    const [trigger, setTrigger] = useState(0);
+
+    const refetch = useCallback(() => {
+        setTrigger(prev => prev + 1);
+    }, []);
+
+    useEffect(() => {
+        if (!quizId) {
+             setLoading(false);
+             return;
+        }
+
+        const fetchStats = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const stats = await getQuizStatistics(quizId);
+                setData(stats);
+            } catch (err) {
+                setError(err instanceof Error ? err : new Error('Failed to fetch quiz statistics'));
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchStats();
+    }, [quizId, trigger]);
+
+     return { data, loading, error, refetch };
+}
+
+
+// ==================== Student Quiz Hooks ====================
 
 export const useStartQuiz = () => {
     const [loading, setLoading] = useState(false);
@@ -105,8 +251,8 @@ export const useSubmitQuiz = () => {
         setLoading(true);
         setError(null);
         try {
-            const result = await submitQuiz(data);
-            return result;
+            const res = await submitQuiz(data);
+            return res;
         } catch (err) {
             setError(err instanceof Error ? err : new Error('Failed to submit quiz'));
             throw err;
@@ -116,6 +262,27 @@ export const useSubmitQuiz = () => {
     };
 
     return { submit, loading, error };
+};
+
+export const useCheckPracticeAnswer = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const check = async (data: CheckPracticeAnswerRequest): Promise<CheckPracticeAnswerResponse> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await checkPracticeAnswer(data);
+      return res;
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Failed to check answer'));
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { check, loading, error };
 };
 
 export const useSaveQuizProgress = () => {
@@ -196,3 +363,116 @@ export const useQuizAttempt = (attemptId?: string) => {
 
     return { data, loading, error };
 };
+
+export const useMyOngoingQuizzes = () => {
+    const [data, setData] = useState<ApiOngoingQuiz[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<Error | null>(null);
+    const [trigger, setTrigger] = useState(0);
+
+    const refetch = useCallback(() => {
+        setTrigger(prev => prev + 1);
+    }, []);
+
+    useEffect(() => {
+        const fetchOngoing = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const ongoing = await getMyOngoingQuizzes();
+                setData(ongoing);
+            } catch (err) {
+                setError(err instanceof Error ? err : new Error('Failed to fetch ongoing quizzes'));
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchOngoing();
+    }, [trigger]);
+
+    return { data, loading, error, refetch };
+};
+
+
+export const useQuizReview = (attemptId?: string) => {
+    const [data, setData] = useState<QuizAttemptReview | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<Error | null>(null);
+
+    useEffect(() => {
+        if (!attemptId) {
+             setLoading(false);
+             return;
+        }
+
+        const fetchReview = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const review = await reviewAttempt(attemptId);
+                setData(review);
+            } catch (err) {
+                setError(err instanceof Error ? err : new Error('Failed to fetch review'));
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchReview();
+    }, [attemptId]);
+
+    return { data, loading, error };
+};
+
+export const useJoinQuizByCode = () => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
+
+    const join = async (code: string, joinClass: boolean): Promise<JoinQuizResponse> => {
+        setLoading(true);
+        setError(null);
+        try {
+            const res = await joinQuizByCode(code, joinClass);
+            return res;
+        } catch (err) {
+            setError(err instanceof Error ? err : new Error('Failed to join quiz'));
+            // Re-throw so component can handle it (show specific error message)
+            throw err; 
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    return { join, loading, error };
+}
+
+export const useStudentTeacherQuizzes = () => {
+    const [data, setData] = useState<StudentTeacherQuiz[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<Error | null>(null);
+    const [trigger, setTrigger] = useState(0);
+
+    const refetch = useCallback(() => {
+        setTrigger(prev => prev + 1);
+    }, []);
+
+    useEffect(() => {
+        const fetchQuizzes = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const quizzes = await getStudentTeacherQuizzes();
+                setData(quizzes);
+            } catch (err) {
+                setError(err instanceof Error ? err : new Error('Failed to fetch teacher quizzes for student'));
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchQuizzes();
+    }, [trigger]);
+
+    return { data, loading, error, refetch };
+}

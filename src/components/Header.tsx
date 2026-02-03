@@ -134,7 +134,10 @@ const Header = () => {
               </Link>
             </nav>
           </div>
-          <Link to="/courses" className="hidden lg:flex color-primary-bg text-white px-6 py-2.5 rounded-xl font-bold items-center gap-2 shadow-lg shadow-[#0077BE]/20 hover:cursor-pointer hover:translate-y-[-2px] duration-300 transition-all">
+          <Link
+            to="/courses"
+            className="hidden lg:flex color-primary-bg text-white px-6 py-2.5 rounded-xl font-bold items-center gap-2 shadow-lg shadow-[#0077BE]/20 hover:cursor-pointer hover:translate-y-[-2px] duration-300 transition-all"
+          >
             <span className="material-symbols-outlined">
               <IoSchool />
             </span>{" "}
@@ -164,7 +167,7 @@ const Header = () => {
                 className="w-8 h-8"
               />
               <h2 className="text-lg color-primary font-bold tracking-tight">
-                IES Edu
+                IES EDU
               </h2>
             </div>
             <button
