@@ -51,6 +51,20 @@ const StudentQuizTakingPage = () => {
         const data = await start(quizId);
         setAttempt(data);
 
+        // Pre-fill answers if resuming an attempt
+        const initialAnswers: Record<string, string[]> = {};
+        if (data.questions) {
+          data.questions.forEach((q) => {
+            if (q.selectedAnswerIds && q.selectedAnswerIds.length > 0) {
+              initialAnswers[q.id] = q.selectedAnswerIds;
+            }
+          });
+        }
+        setAnswers(initialAnswers);
+        lastSavedAnswersRef.current = JSON.parse(
+          JSON.stringify(initialAnswers),
+        );
+
         // Initialize timer from server time if possible, or just duration
         // Assuming startedAt is ISO string
         if (data.status === "IN_PROGRESS" && data.startedAt) {
