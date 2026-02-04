@@ -219,6 +219,7 @@ export const useStudentCourses = (params?: {
     keyword?: string;
     status?: string;
     visibility?: string;
+    completed?: boolean;
 }) => {
     const [data, setData] = useState<ApiCourse[] | null>(null);
     const [totalElements, setTotalElements] = useState<number>(0);

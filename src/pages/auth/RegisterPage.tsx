@@ -161,7 +161,7 @@ const RegisterPage = () => {
           >
             <span className="text-3xl">
               <img
-                src="/logo-edu.png"
+                src="/img/logo-edu.png"
                 alt="ies-edu-logo"
                 className="w-12 h-12"
               />
@@ -181,7 +181,7 @@ const RegisterPage = () => {
           >
             <span className="text-2xl">
               <img
-                src="/ies-edu-logo.png"
+                src="/img/logo-edu.png"
                 alt="ies-edu-logo"
                 className="w-12 h-12"
               />

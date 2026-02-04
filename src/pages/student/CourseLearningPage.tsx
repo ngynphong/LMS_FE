@@ -6,10 +6,7 @@ import LessonSidebar, {
   getItemTypeColor,
 } from "../../components/student/LessonSidebar";
 import { useCourseDetail } from "../../hooks/useCourses";
-import {
-  useStudentTeacherQuizzes,
-  useJoinQuizByCode,
-} from "../../hooks/useQuizzes";
+import { useQuizByLessonItem } from "../../hooks/useQuizzes";
 import {
   getLessonById,
   getLessonItemById,
@@ -17,9 +14,7 @@ import {
   markLessonItemComplete,
 } from "../../services/lessonService";
 import type { ApiLesson, LessonItem } from "../../types/learningTypes";
-import type { StudentTeacherQuiz } from "../../types/quiz";
 import PdfSlideshow from "@/components/common/PdfSlideshow";
-import { toast } from "@/components/common/Toast";
 
 type TabType = "overview" | "quiz";
 
@@ -42,31 +37,9 @@ const CourseLearningPage = () => {
   const [currentLesson, setCurrentLesson] = useState<ApiLesson | null>(null);
   const [currentItem, setCurrentItem] = useState<LessonItem | null>(null);
   const [loadingItem, setLoadingItem] = useState(false);
-  const { data: studentTeacherQuizzes } = useStudentTeacherQuizzes();
-
-  // Quiz Join State
-
-  const [selectedQuizToJoin, setSelectedQuizToJoin] =
-    useState<StudentTeacherQuiz | null>(null);
-  const [joinCode, setJoinCode] = useState("");
-  const [joinClass, setJoinClass] = useState(false);
-  const { join: joinQuiz, loading: joinLoading } = useJoinQuizByCode();
-
-  const handleJoinQuiz = async () => {
-    try {
-      await joinQuiz(joinCode, joinClass);
-      toast.success(
-        `Tham gia thành công! Bạn có thể bắt đầu làm bài bất cứ lúc nào.`,
-      );
-
-      setSelectedQuizToJoin(null);
-      setJoinCode("");
-      setJoinClass(false);
-    } catch (error) {
-      console.error("Failed to join quiz", error);
-      toast.error("Tham gia thất bại. Vui lòng kiểm tra lại mã.");
-    }
-  };
+  const { data: lessonQuizzes, loading: quizLoading } = useQuizByLessonItem(
+    currentItem?.id,
+  );
 
   const handleStartQuiz = (quizId: string) => {
     navigate(`/student/quizzes/${quizId}/take`);
@@ -274,7 +247,11 @@ const CourseLearningPage = () => {
     (e: React.SyntheticEvent<HTMLVideoElement>) => {
       const video = e.currentTarget;
       // Skip check if item is completed
-      if (currentItem && completedItemIds.has(currentItem.id)) return;
+      if (
+        currentItem &&
+        (currentItem.completed || completedItemIds.has(currentItem.id))
+      )
+        return;
 
       // If user tries to seek forward beyond what they've watched + buffer, reset to last valid position
       if (video.currentTime > lastValidTimeRef.current + 2) {
@@ -382,7 +359,8 @@ const CourseLearningPage = () => {
     }
 
     const content = currentItem.content;
-    const isCompleted = completedItemIds.has(currentItem.id);
+    const isCompleted =
+      currentItem.completed || completedItemIds.has(currentItem.id);
 
     if (currentItem.type === "VIDEO" && content?.resourceUrl) {
       return (
@@ -711,170 +689,111 @@ const CourseLearningPage = () => {
                 )}
 
                 {activeTab === "quiz" && (
-                  <div className="max-w-2xl">
-                    {/* Quiz List */}
-                    <div className="space-y-4">
-                      {studentTeacherQuizzes.length > 0 ? (
-                        studentTeacherQuizzes.map((quiz) => (
-                          <div
-                            key={quiz.id}
-                            className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow"
-                          >
-                            <div className="flex justify-between items-start mb-4">
-                              <div>
-                                <div className="flex items-center gap-2 mb-1">
-                                  <h3 className="text-lg font-semibold text-[#1A2B3C]">
-                                    {quiz.title}
-                                  </h3>
-                                  <span
-                                    className={`text-xs px-2 py-0.5 rounded font-bold uppercase ${
-                                      quiz.type === "PRACTICE"
-                                        ? "bg-indigo-100 text-indigo-700"
-                                        : "bg-red-100 text-red-700"
-                                    }`}
-                                  >
-                                    {quiz.type === "PRACTICE"
-                                      ? "Luyện tập"
-                                      : "Kiểm tra"}
-                                  </span>
-                                </div>
-                                <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-500">
-                                  <span className="flex items-center gap-1">
-                                    <span className="material-symbols-outlined text-base">
-                                      timer
-                                    </span>
-                                    {quiz.durationInMinutes} phút
-                                  </span>
-                                  <span className="flex items-center gap-1">
-                                    <span className="material-symbols-outlined text-base">
-                                      help
-                                    </span>
-                                    {quiz.totalQuestions} câu hỏi
-                                  </span>
-                                  {(quiz.maxAttempts || 0) > 0 && (
-                                    <span className="flex items-center gap-1">
-                                      <span className="material-symbols-outlined text-base">
-                                        repeat
-                                      </span>
-                                      {quiz.maxAttempts} lần
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-                              {quiz.isDynamic && (
-                                <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded-full">
-                                  Dynamic
-                                </span>
-                              )}
-                            </div>
-
-                            {/* Actions Section */}
-                            <div className="flex items-center gap-3 mt-4 pt-4 border-t border-gray-100 flex-wrap">
-                              {/* Primary Action: Start Immediately */}
-                              <button
-                                onClick={() => handleStartQuiz(quiz.id)}
-                                disabled={
-                                  (quiz.maxAttempts || 0) > 0 &&
-                                  (quiz.attemptsCount || 0) >=
-                                    (quiz.maxAttempts || 0)
-                                }
-                                className="px-5 py-2.5 color-primary-bg text-white font-bold rounded-xl hover:bg-[#006da8] shadow-sm hover:shadow-md transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                              >
-                                <span className="material-symbols-outlined text-[20px]">
-                                  play_arrow
-                                </span>
-                                {(quiz.attemptsCount || 0) > 0
-                                  ? "Làm lại"
-                                  : "Bắt đầu làm bài"}
-                              </button>
-
-                              {/* Secondary Action: Join with Code */}
-                              {selectedQuizToJoin?.id === quiz.id ? (
-                                <div className="w-full mt-3 bg-gray-50 border border-gray-200 rounded-xl p-4 animate-fadeIn">
-                                  <div className="flex flex-col gap-3">
-                                    <div className="flex items-center justify-between">
-                                      <h4 className="font-bold text-gray-700 text-sm">
-                                        Nhập mã tham gia
-                                      </h4>
-                                      <button
-                                        onClick={() => {
-                                          setSelectedQuizToJoin(null);
-                                          setJoinCode("");
-                                          setJoinClass(false);
-                                        }}
-                                        className="text-gray-400 hover:text-gray-600 p-1"
-                                      >
-                                        <span className="material-symbols-outlined text-lg">
-                                          close
-                                        </span>
-                                      </button>
-                                    </div>
-
-                                    <div className="flex gap-2">
-                                      <input
-                                        type="text"
-                                        placeholder="Nhập mã quiz..."
-                                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                                        value={joinCode}
-                                        onChange={(e) =>
-                                          setJoinCode(e.target.value)
-                                        }
-                                        autoFocus
-                                      />
-                                      <button
-                                        onClick={() => handleJoinQuiz()}
-                                        disabled={!joinCode || joinLoading}
-                                        className="px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
-                                      >
-                                        {joinLoading
-                                          ? "Đang xử lý..."
-                                          : "Xác nhận"}
-                                      </button>
-                                    </div>
-
-                                    <label className="flex items-center gap-2 cursor-pointer select-none">
-                                      <input
-                                        type="checkbox"
-                                        className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 border-gray-300"
-                                        checked={joinClass}
-                                        onChange={(e) =>
-                                          setJoinClass(e.target.checked)
-                                        }
-                                      />
-                                      <span className="text-sm text-gray-600 font-medium">
-                                        Tham gia vào lớp học (Lưu mã cho lần
-                                        sau)
-                                      </span>
-                                    </label>
-                                    <p className="text-xs text-gray-500 italic">
-                                      * Nếu chọn "Tham gia vào lớp học", bạn sẽ
-                                      được thêm vào danh sách lớp của giáo viên.
-                                    </p>
-                                  </div>
-                                </div>
-                              ) : (
-                                <button
-                                  onClick={() => setSelectedQuizToJoin(quiz)}
-                                  className="px-4 py-2.5 text-gray-600 font-semibold rounded-xl hover:bg-gray-100 transition-colors flex items-center gap-2 text-sm ml-auto"
+                  <div className="max-w-2xl space-y-4">
+                    {quizLoading ? (
+                      <div className="flex justify-center p-8">
+                        <span className="material-symbols-outlined animate-spin text-3xl color-primary">
+                          progress_activity
+                        </span>
+                      </div>
+                    ) : lessonQuizzes && lessonQuizzes.length > 0 ? (
+                      lessonQuizzes.map((quiz) => (
+                        <div
+                          key={quiz.id}
+                          className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex justify-between items-start mb-4">
+                            <div>
+                              <div className="flex items-center gap-2 mb-1">
+                                <h3 className="text-lg font-semibold text-[#1A2B3C]">
+                                  {quiz.title}
+                                </h3>
+                                <span
+                                  className={`text-xs px-2 py-0.5 rounded font-bold uppercase ${
+                                    quiz.type === "PRACTICE"
+                                      ? "bg-indigo-100 text-indigo-700"
+                                      : "bg-red-100 text-red-700"
+                                  }`}
                                 >
-                                  <span className="material-symbols-outlined text-[20px]">
-                                    vpn_key
+                                  {quiz.type === "PRACTICE"
+                                    ? "Luyện tập"
+                                    : "Kiểm tra"}
+                                </span>
+                              </div>
+                              <span className="text-sm text-gray-500 mb-2">
+                                {quiz.description}
+                              </span>
+                              <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-500">
+                                <span className="flex items-center gap-1">
+                                  <span className="material-symbols-outlined text-base">
+                                    timer
                                   </span>
-                                  Nhập mã tham gia
-                                </button>
-                              )}
+                                  {quiz.durationInMinutes} phút
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <span className="material-symbols-outlined text-base">
+                                    help
+                                  </span>
+                                  {quiz.totalQuestions} câu hỏi
+                                </span>
+                                {(quiz.maxAttempts || 0) > 0 && (
+                                  <span className="flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-base">
+                                      repeat
+                                    </span>
+                                    {quiz.maxAttempts} lần
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        ))
-                      ) : (
-                        <div className="text-center py-12 text-gray-500">
-                          <span className="material-symbols-outlined text-4xl mb-2">
+
+                          {/* Actions Section */}
+                          <div className="flex items-center gap-3 mt-4 pt-4 border-t border-gray-100 flex-wrap">
+                            {(() => {
+                              const isClosed =
+                                quiz.closeTime &&
+                                new Date(quiz.closeTime) < new Date();
+
+                              return (
+                                <>
+                                  {/* Primary Action: Start Immediately */}
+                                  <button
+                                    onClick={() => handleStartQuiz(quiz.id)}
+                                    disabled={isClosed || false}
+                                    className={`px-5 py-2.5 text-white font-bold rounded-xl shadow-sm transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed ${
+                                      isClosed
+                                        ? "bg-gray-400 hover:bg-gray-400"
+                                        : "color-primary-bg hover:bg-[#006da8] hover:shadow-md"
+                                    }`}
+                                  >
+                                    <span className="material-symbols-outlined text-[20px]">
+                                      {isClosed ? "lock" : "play_arrow"}
+                                    </span>
+                                    {isClosed ? "Đã đóng" : "Bắt đầu làm bài"}
+                                  </button>
+
+                                  {isClosed && (
+                                    <span className="text-red-500 text-sm font-medium">
+                                      Bài quiz này đã đóng
+                                    </span>
+                                  )}
+                                </>
+                              );
+                            })()}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="flex items-center justify-center h-48 bg-slate-50 rounded-xl border border-dashed border-slate-300">
+                        <div className="text-center text-gray-500">
+                          <span className="material-symbols-outlined text-4xl mb-2 opacity-50">
                             quiz
                           </span>
-                          <p>Không có bài kiểm tra nào khả dụng</p>
+                          <p>Không có bài kiểm tra nào cho nội dung này.</p>
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

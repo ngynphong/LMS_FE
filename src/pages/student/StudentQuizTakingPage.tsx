@@ -68,10 +68,7 @@ const StudentQuizTakingPage = () => {
         // Initialize timer from server time if possible, or just duration
         // Assuming startedAt is ISO string
         if (data.status === "IN_PROGRESS" && data.startedAt) {
-          const dateStr = data.startedAt.endsWith("Z")
-            ? data.startedAt
-            : data.startedAt + "Z";
-          const startTime = new Date(dateStr).getTime();
+          const startTime = new Date(data.startedAt).getTime();
           const durationMs = data.durationInMinutes * 60 * 1000;
           const endTime = startTime + durationMs;
           const now = Date.now();
@@ -325,7 +322,7 @@ const StudentQuizTakingPage = () => {
                 </span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="w-4 h-4 rounded-sm border-2 border-primary bg-blue-50"></span>
+                <span className="w-4 h-4 rounded-sm border-2 border-[#007bff] bg-blue-50"></span>
                 <span className="text-sm font-medium text-gray-600">
                   Đang chọn
                 </span>

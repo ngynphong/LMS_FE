@@ -135,7 +135,8 @@ export const QuizReviewModal = ({
                             <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">
                               Câu trả lời của bạn:
                             </div>
-                            {q.selectedAnswers.length > 0 ? (
+                            {q.selectedAnswers &&
+                            q.selectedAnswers.length > 0 ? (
                               q.selectedAnswers.map((ans) => (
                                 <div
                                   key={ans.id}
@@ -165,15 +166,22 @@ export const QuizReviewModal = ({
                               <div className="text-xs font-bold text-green-600 uppercase tracking-wide mb-1">
                                 Đáp án đúng:
                               </div>
-                              {q.correctAnswers.map((ans) => (
-                                <div
-                                  key={ans.id}
-                                  className="p-3 rounded-lg border border-green-200 bg-white text-green-900 flex items-center gap-3"
-                                >
-                                  <MdCheckCircle className="text-green-500 text-xl" />
-                                  <span>{ans.content}</span>
+                              {q.correctAnswers &&
+                              q.correctAnswers.length > 0 ? ( // Added check here
+                                q.correctAnswers.map((ans) => (
+                                  <div
+                                    key={ans.id}
+                                    className="p-3 rounded-lg border border-green-200 bg-white text-green-900 flex items-center gap-3"
+                                  >
+                                    <MdCheckCircle className="text-green-500 text-xl" />
+                                    <span>{ans.content}</span>
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="text-gray-400 italic text-sm">
+                                  Không có đáp án đúng (???)
                                 </div>
-                              ))}
+                              )}
                             </div>
                           )}
                         </div>

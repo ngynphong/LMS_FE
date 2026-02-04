@@ -123,7 +123,7 @@ const CourseBuilderPage = () => {
           );
           setLessons(lessonsWithItems);
         };
-       fetchLessonDetails();
+        fetchLessonDetails();
       }
     }
   }, [courseData]);
@@ -566,7 +566,7 @@ const CourseBuilderPage = () => {
             <div className="grid grid-cols-12 gap-6 max-w-7xl mx-auto">
               {/* Left Column - Course Outline */}
               <div className="col-span-4">
-                <div className="sticky top-28">
+                <div className="sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2 scrollbar-thin scrollbar-webkit">
                   <CourseOutline
                     course={course}
                     lessons={lessons}

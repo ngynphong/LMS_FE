@@ -149,7 +149,7 @@ const LessonSidebar = ({
       {/* Sidebar */}
       <aside
         className={`
-          fixed lg:static inset-y-0 left-0 z-30
+          fixed lg:static inset-y-0 left-0 z-30 h-full
           flex flex-col border-r border-gray-200 bg-white overflow-hidden transition-all duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
           ${isDesktopOpen ? "lg:w-80" : "lg:w-0 lg:border-r-0"}
@@ -178,7 +178,7 @@ const LessonSidebar = ({
         </div>
 
         {/* Lessons List with Items */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto min-h-0 scrollbar-thin scrollbar-webkit">
           {lessons.map((lesson, lessonIndex) => {
             const isCurrentLesson = currentLesson?.id === lesson.id;
             const lessonAccessible = isLessonAccessible(lessonIndex);
