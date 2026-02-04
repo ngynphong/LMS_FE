@@ -23,7 +23,8 @@ const ImportQuestionsModal = ({
   const [selectedLessonId, setSelectedLessonId] = useState<string>("");
 
   // Fetch courses for selection
-  const { data: courses } = useMyCourses({ pageSize: 100 });
+  const { data: coursesData } = useMyCourses({ pageSize: 100 });
+  const courses = coursesData?.items || [];
 
   // Fetch lessons when course is selected
   const { data: courseDetail } = useCourseDetail(selectedCourseId || undefined);

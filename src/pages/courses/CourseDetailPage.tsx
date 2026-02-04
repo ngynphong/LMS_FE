@@ -47,21 +47,20 @@ const relatedCourses = [
 
 const CourseDetailPage = () => {
   const { id } = useParams<{ id: string }>();
-  const { data: course, loading, error } = useCourseDetail(id);
+  const { data: course, isLoading: loading, error } = useCourseDetail(id);
   const navigate = useNavigate();
 
   // Enrollment Check
-  const { data: enrolledCourses, loading: loadingEnrolled } = useStudentCourses(
-    { pageSize: 1000 },
-  ); // Fetch all to check
+  const { data: enrolledCoursesData, isLoading: loadingEnrolled } =
+    useStudentCourses({ pageSize: 1000 }); // Fetch all to check
   const [isEnrolled, setIsEnrolled] = useState(false);
 
   useEffect(() => {
-    if (enrolledCourses && id) {
-      const enrolled = enrolledCourses.some((c) => c.id === id);
+    if (enrolledCoursesData?.items && id) {
+      const enrolled = enrolledCoursesData.items.some((c) => c.id === id);
       setIsEnrolled(enrolled);
     }
-  }, [enrolledCourses, id]);
+  }, [enrolledCoursesData, id]);
 
   const [activeTab, setActiveTab] = useState<"intro" | "content" | "reviews">(
     "intro",
@@ -138,8 +137,6 @@ const CourseDetailPage = () => {
     (course.teacher
       ? `${course.teacher.firstName} ${course.teacher.lastName}`
       : "Giảng viên");
-  const rating = 5.0; // Placeholder
-  const reviewCount = 0; // Placeholder
   const studentCount = 0; // Placeholder
   const schoolName = course.school?.name || "LMS Platform";
 
@@ -185,12 +182,21 @@ const CourseDetailPage = () => {
           {/* Main Content */}
           <div className="flex flex-col gap-6">
             {/* Video Player */}
-            <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-black shadow-xl">
-              <img
-                src={course.thumbnailUrl || ""}
-                alt={course.name}
-                className="w-full h-full object-cover opacity-60"
-              />
+            <div className="relative aspect-video w-full rounded-2xl overflow-hidden shadow-xl">
+              <div
+                className="w-full h-full bg-center bg-cover bg-slate-100"
+                style={{ backgroundImage: `url("${course.thumbnailUrl}")` }}
+              >
+                {!course.thumbnailUrl && (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <img
+                      src="/img/book.png"
+                      alt={course.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+              </div>
               <div className="absolute inset-0 flex items-center justify-center group cursor-pointer hover:bg-black/20 transition-colors">
                 <div className="color-primary text-white w-20 h-20 rounded-full flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
                   <FaPlay className="text-2xl ml-1" />
@@ -222,16 +228,6 @@ const CourseDetailPage = () => {
                 >
                   Nội dung khóa học
                 </button>
-                <button
-                  className={`px-6 py-4 text-sm font-bold border-b-2 transition-colors ${
-                    activeTab === "reviews"
-                      ? "color-primary border-[#0077BE]"
-                      : "text-gray-600 border-transparent hover:color-primary"
-                  }`}
-                  onClick={() => setActiveTab("reviews")}
-                >
-                  Đánh giá
-                </button>
               </div>
 
               {/* Tab Content */}
@@ -243,16 +239,6 @@ const CourseDetailPage = () => {
                     </h1>
 
                     <div className="flex items-center gap-4 flex-wrap">
-                      <div className="flex items-center gap-1 text-yellow-500">
-                        <FaStar className="text-lg" />
-                        <span className="font-bold text-gray-900">
-                          {rating}
-                        </span>
-                      </div>
-                      <span className="text-gray-600 text-sm">
-                        ({reviewCount} đánh giá)
-                      </span>
-                      <span className="text-gray-400">•</span>
                       <span className="text-gray-600 text-sm">
                         {studentCount} học viên
                       </span>
@@ -375,12 +361,6 @@ const CourseDetailPage = () => {
                     )}
                   </div>
                 )}
-
-                {activeTab === "reviews" && (
-                  <div className="text-center py-12 text-gray-500">
-                    <p>Chưa có đánh giá nào</p>
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -390,10 +370,18 @@ const CourseDetailPage = () => {
             <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
               <div
                 className="aspect-video w-full bg-cover bg-center"
-                style={{
-                  backgroundImage: `url('${course.thumbnailUrl || ""}')`,
-                }}
-              />
+                style={{ backgroundImage: `url("${course.thumbnailUrl}")` }}
+              >
+                {!course.thumbnailUrl && (
+                  <div className="aspect-video w-full bg-cover bg-center">
+                    <img
+                      src="/img/book.png"
+                      alt={course.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+              </div>
               <div className="p-6 flex flex-col gap-6">
                 <div className="text-center">
                   <p className="text-sm text-gray-600 mb-1">Giảng viên</p>
@@ -405,7 +393,9 @@ const CourseDetailPage = () => {
                 <div className="flex flex-col gap-3">
                   {isEnrolled ? (
                     <button
-                      onClick={() => navigate(`/student/courses/${course.id}/learn`)}
+                      onClick={() =>
+                        navigate(`/student/courses/${course.id}/learn`)
+                      }
                       className="w-full h-12 color-primary-bg text-white font-bold rounded-lg hover:cursor-pointer hover:translate-y-[-2px] duration-300 transition-all shadow-md"
                     >
                       Tiếp tục học

@@ -28,7 +28,7 @@ const CourseLearningPage = () => {
   // Fetch course with useCourseDetail hook
   const {
     data: course,
-    loading: courseLoading,
+    isLoading: courseLoading,
     error: courseError,
   } = useCourseDetail(courseId);
 

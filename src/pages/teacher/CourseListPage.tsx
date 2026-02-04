@@ -29,8 +29,8 @@ const CourseListPage = () => {
   }, [searchTerm]);
 
   const {
-    data: courses,
-    loading,
+    data: coursesData,
+    isLoading: loading,
     error,
     refetch,
   } = useMyCourses({
@@ -39,15 +39,19 @@ const CourseListPage = () => {
     visibility: filters.visibility === "all" ? undefined : filters.visibility,
   });
 
+  const courses = coursesData?.items || [];
+
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [createdCode, setCreatedCode] = useState<string | null>(null);
-  const { createCode, loading: creatingCode } = useCreateInviteCode();
+  const { mutateAsync: createCode, isPending: creatingCode } =
+    useCreateInviteCode();
 
   // Delete course state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [courseToDelete, setCourseToDelete] = useState<string | null>(null);
-  const { remove: deleteCourse, loading: deletingCourse } = useDeleteCourse();
+  const { mutateAsync: deleteCourse, isPending: deletingCourse } =
+    useDeleteCourse();
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({
@@ -60,8 +64,9 @@ const CourseListPage = () => {
   const handleCreateCode = async () => {
     if (!selectedCourseId) return;
     try {
-      const code = await createCode(selectedCourseId, {
-        expirationInMinutes: 60 * 24 * 1,
+      const code = await createCode({
+        courseId: selectedCourseId,
+        data: { expirationInMinutes: 60 * 24 * 1 },
       }); // Default 7 days
       setCreatedCode(code);
       toast.success("Tạo mã mời thành công!");
@@ -95,7 +100,7 @@ const CourseListPage = () => {
     }
   };
 
-  if (loading && !courses) {
+  if (loading && !coursesData) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="flex items-center gap-3">
@@ -116,7 +121,7 @@ const CourseListPage = () => {
         </span>
         <p className="text-slate-600">Không thể tải danh sách khóa học</p>
         <button
-          onClick={refetch}
+          onClick={() => refetch()}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
         >
           Thử lại
@@ -249,11 +254,20 @@ const CourseListPage = () => {
             >
               {/* Thumbnail */}
               <div className="aspect-video relative">
-                <img
-                  src={course.thumbnailUrl || "/img/book.png"}
-                  alt={course.name}
-                  className="w-full h-full object-cover"
-                />
+                <div
+                  className="w-full h-full bg-center bg-cover bg-slate-100"
+                  style={{ backgroundImage: `url("${course.thumbnailUrl}")` }}
+                >
+                  {!course.thumbnailUrl && (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <img
+                        src="/img/book.png"
+                        alt={course.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                </div>
                 <div className="absolute top-3 right-3">
                   <span
                     className={`px-2 py-1 rounded text-xs font-medium ${course.status === "PUBLISHED" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}

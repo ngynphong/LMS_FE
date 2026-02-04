@@ -30,9 +30,10 @@ const QuestionFormPage = () => {
   const { data: qList } = useQuestions();
 
   // New hooks for selecting lesson
-  const { data: courses } = useMyCourses({ pageSize: 100 }); // Fetch all courses for selection
+  const { data: coursesData } = useMyCourses({ pageSize: 100 }); // Fetch all courses for selection
+  const courses = coursesData?.items || [];
   const [selectedCourseId, setSelectedCourseId] = useState<string>("");
-  const { data: courseDetail, loading: lessonsLoading } = useCourseDetail(
+  const { data: courseDetail, isLoading: lessonsLoading } = useCourseDetail(
     selectedCourseId || undefined,
   );
   const lessons = courseDetail?.lessons || [];

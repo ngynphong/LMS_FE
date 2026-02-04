@@ -92,7 +92,8 @@ const ExamFormPage = () => {
   });
 
   // Fetch courses
-  const { data: courses } = useMyCourses({ pageSize: 100 });
+  const { data: coursesData } = useMyCourses({ pageSize: 100 });
+  const courses = coursesData?.items || [];
   const { data: courseDetail } = useCourseDetail(selectedCourseId || undefined);
   const lessons = courseDetail?.lessons || [];
 

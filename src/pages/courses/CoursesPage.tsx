@@ -18,7 +18,11 @@ const CoursesPage = () => {
   const coursesPerPage = 6;
   const navigate = useNavigate();
 
-  const { data, loading, error } = useCourses({
+  const {
+    data,
+    isLoading: loading,
+    error,
+  } = useCourses({
     pageNo: currentPage - 1, // API is 0-indexed
     pageSize: coursesPerPage,
     keyword: searchQuery,
@@ -28,7 +32,7 @@ const CoursesPage = () => {
   });
 
   // Student Enrollment Data
-  const { data: enrolledCourses } = useStudentCourses({
+  const { data: enrolledCoursesData } = useStudentCourses({
     pageSize: 1000, // Fetch all
   });
   const [enrolledCourseIds, setEnrolledCourseIds] = useState<Set<string>>(
@@ -36,12 +40,12 @@ const CoursesPage = () => {
   );
 
   useEffect(() => {
-    if (enrolledCourses) {
-      setEnrolledCourseIds(new Set(enrolledCourses.map((c) => c.id)));
+    if (enrolledCoursesData?.items) {
+      setEnrolledCourseIds(new Set(enrolledCoursesData.items.map((c) => c.id)));
     }
-  }, [enrolledCourses]);
+  }, [enrolledCoursesData]);
 
-  const { enroll, loading: enrolling } = useEnrollCourse();
+  const { mutateAsync: enroll, isPending: enrolling } = useEnrollCourse();
   const [showEnrollModal, setShowEnrollModal] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [enrollmentCode, setEnrollmentCode] = useState("");
@@ -69,7 +73,10 @@ const CoursesPage = () => {
   const handleEnrollSubmit = async () => {
     if (!selectedCourseId || !enrollmentCode) return;
     try {
-      await enroll(selectedCourseId, { enrollmentCode });
+      await enroll({
+        courseId: selectedCourseId,
+        data: { enrollmentCode },
+      });
       toast.success("Tham gia khóa học thành công!");
       setShowEnrollModal(false);
       // Navigate to detail page
@@ -141,7 +148,7 @@ const CoursesPage = () => {
                         key={course.id}
                         id={course.id}
                         title={course.name}
-                        image={course.thumbnailUrl || "/img/book.png"}
+                        thumbnailUrl={course.thumbnailUrl}
                         category={course.schoolName || "Khóa học"}
                         createdAt={course.createdAt}
                         instructor={course.teacherName}

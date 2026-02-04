@@ -7,7 +7,12 @@ import type { LessonItem, ApiLesson } from "../../types/learningTypes";
 const TeacherCourseDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: course, loading, error, refetch } = useCourseDetail(id);
+  const {
+    data: course,
+    isLoading: loading,
+    error,
+    refetch,
+  } = useCourseDetail(id);
   const [lessonsWithItems, setLessonsWithItems] = useState<ApiLesson[]>([]);
 
   useEffect(() => {
@@ -50,7 +55,7 @@ const TeacherCourseDetailPage = () => {
         </span>
         <p className="text-slate-600">Không tìm thấy khóa học</p>
         <button
-          onClick={refetch}
+          onClick={() => refetch()}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
         >
           Thử lại
@@ -124,18 +129,17 @@ const TeacherCourseDetailPage = () => {
       <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
         <div className="flex flex-col md:flex-row">
           {/* Thumbnail */}
-          <div className="w-full md:w-80 aspect-video bg-slate-100 shrink-0">
-            {course.thumbnailUrl ? (
-              <img
-                src={course.thumbnailUrl}
-                alt={course.name}
-                className="w-full h-full object-cover"
-              />
-            ) : (
+          <div
+            className="w-full md:w-80 aspect-video bg-center bg-cover bg-slate-100 shrink-0"
+            style={{ backgroundImage: `url("${course.thumbnailUrl}")` }}
+          >
+            {!course.thumbnailUrl && (
               <div className="w-full h-full flex items-center justify-center">
-                <span className="material-symbols-outlined text-5xl text-slate-300">
-                  image
-                </span>
+                <img
+                  src="/img/book.png"
+                  alt={course.name}
+                  className="w-full h-full object-cover"
+                />
               </div>
             )}
           </div>

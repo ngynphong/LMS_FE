@@ -30,12 +30,10 @@ const StudentMyCoursesPage = () => {
 
   // Call API with useStudentCourses hook with dynamic params
   const {
-    data: courses,
-    loading,
+    data: coursesData,
+    isLoading: loading,
     error,
     refetch,
-    totalPages,
-    totalElements,
   } = useStudentCourses({
     pageNo,
     pageSize,
@@ -43,6 +41,10 @@ const StudentMyCoursesPage = () => {
     keyword: debouncedSearch,
     completed: completedStatus,
   });
+
+  const courses = coursesData?.items || null;
+  const totalPages = coursesData?.totalPage || 0;
+  const totalElements = coursesData?.totalElement || 0;
 
   // Handle tab change
   const handleTabChange = (tab: "all" | "in_progress" | "completed") => {
@@ -97,7 +99,7 @@ const StudentMyCoursesPage = () => {
           </span>
           <p className="text-slate-600">Không thể tải danh sách khóa học</p>
           <button
-            onClick={refetch}
+            onClick={() => refetch()}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
           >
             Thử lại
@@ -223,15 +225,16 @@ const StudentMyCoursesPage = () => {
                   <div
                     className="w-full h-full bg-center bg-cover bg-slate-100"
                     style={{
-                      backgroundImage:
-                        `url("${course.thumbnailUrl}")` || "/img/book.png",
+                      backgroundImage: `url("${course.thumbnailUrl}")`,
                     }}
                   >
                     {!course.thumbnailUrl && (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <span className="material-symbols-outlined text-4xl text-slate-300">
-                          image
-                        </span>
+                      <div className="w-full md:w-80 aspect-video bg-slate-100 shrink-0">
+                        <img
+                          src="/img/book.png"
+                          alt={course.name}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                     )}
                   </div>

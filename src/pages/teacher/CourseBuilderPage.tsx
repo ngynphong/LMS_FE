@@ -69,11 +69,13 @@ const CourseBuilderPage = () => {
   }, [selectedItem]);
 
   // Hooks
-  const { create: createCourse, loading: creatingCourse } = useCreateCourse();
-  const { update: updateCourse, loading: updatingCourse } = useUpdateCourse();
+  const { mutateAsync: createCourse, isPending: creatingCourse } =
+    useCreateCourse();
+  const { mutateAsync: updateCourse, isPending: updatingCourse } =
+    useUpdateCourse();
   const {
     data: courseData,
-    loading: loadingCourse,
+    isLoading: loadingCourse,
     refetch: refetchCourse,
   } = useCourseDetail(id);
   const { create: createLesson, loading: creatingLesson } = useCreateLesson();
@@ -85,7 +87,7 @@ const CourseBuilderPage = () => {
     useUpdateLessonItem();
   const { remove: deleteLessonItem, loading: deletingItem } =
     useDeleteLessonItem();
-  const { approve: approveCourse, loading: publishLoading } =
+  const { mutateAsync: approveCourse, isPending: publishLoading } =
     useApproveCourse();
   const { reorder: reorderLessons } = useReorderLessons();
   const { reorder: reorderItems } = useReorderLessonItems();
@@ -94,7 +96,7 @@ const CourseBuilderPage = () => {
   const handlePublish = async () => {
     if (!courseId) return;
     try {
-      await approveCourse(courseId, "PUBLISHED");
+      await approveCourse({ id: courseId, status: "PUBLISHED" });
       toast.success("Khóa học đã được xuất bản!");
       refetchCourse();
     } catch (error) {
@@ -218,7 +220,7 @@ const CourseBuilderPage = () => {
   }) => {
     try {
       if (isEditMode && courseId) {
-        await updateCourse(courseId, data);
+        await updateCourse({ id: courseId, data });
         setCourse((prev) => (prev ? { ...prev, ...data } : null));
         toast.success("Đã cập nhật khóa học!");
       } else {

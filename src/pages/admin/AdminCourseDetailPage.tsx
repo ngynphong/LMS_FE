@@ -14,7 +14,12 @@ import LoadingOverlay from "../../components/common/LoadingOverlay";
 const AdminCourseDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data: course, loading, error, refetch } = useCourseDetail(id);
+  const {
+    data: course,
+    isLoading: loading,
+    error,
+    refetch,
+  } = useCourseDetail(id);
   const [lessonsWithItems, setLessonsWithItems] = useState<ApiLesson[]>([]);
   const [viewItem, setViewItem] = useState<LessonItem | null>(null);
   const [loadingView, setLoadingView] = useState(false);
@@ -34,8 +39,9 @@ const AdminCourseDetailPage = () => {
     variant: "info",
   });
 
-  const { approve, loading: approveLoading } = useApproveCourse();
-  const { ban, loading: banLoading } = useBanCourse();
+  const { mutateAsync: approve, isPending: approveLoading } =
+    useApproveCourse();
+  const { mutateAsync: ban, isPending: banLoading } = useBanCourse();
 
   useEffect(() => {
     if (course?.lessons) {
@@ -77,7 +83,7 @@ const AdminCourseDetailPage = () => {
         </span>
         <p className="text-slate-600">Không tìm thấy khóa học</p>
         <button
-          onClick={refetch}
+          onClick={() => refetch()}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
         >
           Thử lại
@@ -150,7 +156,7 @@ const AdminCourseDetailPage = () => {
 
     try {
       if (modalConfig.type === "APPROVE") {
-        await approve(id, "PUBLISHED");
+        await approve({ id, status: "PUBLISHED" });
         toast.success("Đã phê duyệt khóa học thành công");
       } else if (modalConfig.type === "BAN") {
         await ban(id);
