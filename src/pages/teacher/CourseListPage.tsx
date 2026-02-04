@@ -7,10 +7,11 @@ import {
 } from "../../hooks/useCourses";
 import { toast } from "@/components/common/Toast";
 import { ConfirmationModal } from "@/components/common/ConfirmationModal";
+import PaginationControl from "@/components/common/PaginationControl";
 
 const CourseListPage = () => {
   const [filters, setFilters] = useState({
-    pageNo: 0,
+    pageNo: 1, // API is 1-indexed
     pageSize: 10,
     sorts: "createdAt:desc",
     keyword: "",
@@ -22,15 +23,15 @@ const CourseListPage = () => {
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      setFilters((prev) => ({ ...prev, keyword: searchTerm, pageNo: 0 }));
+      setFilters((prev) => ({ ...prev, keyword: searchTerm, pageNo: 1 }));
     }, 500);
 
     return () => clearTimeout(handler);
   }, [searchTerm]);
 
   const {
-    data: courses,
-    loading,
+    data: coursesData,
+    isLoading: loading,
     error,
     refetch,
   } = useMyCourses({
@@ -39,29 +40,35 @@ const CourseListPage = () => {
     visibility: filters.visibility === "all" ? undefined : filters.visibility,
   });
 
+  const courses = coursesData?.items || [];
+  const totalPages = coursesData?.totalPage || 0;
+
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [createdCode, setCreatedCode] = useState<string | null>(null);
-  const { createCode, loading: creatingCode } = useCreateInviteCode();
+  const { mutateAsync: createCode, isPending: creatingCode } =
+    useCreateInviteCode();
 
   // Delete course state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [courseToDelete, setCourseToDelete] = useState<string | null>(null);
-  const { remove: deleteCourse, loading: deletingCourse } = useDeleteCourse();
+  const { mutateAsync: deleteCourse, isPending: deletingCourse } =
+    useDeleteCourse();
 
   const handleFilterChange = (key: string, value: string) => {
     setFilters((prev) => ({
       ...prev,
       [key]: value,
-      pageNo: 0, // Reset to first page on filter change
+      pageNo: 1, // Reset to first page on filter change
     }));
   };
 
   const handleCreateCode = async () => {
     if (!selectedCourseId) return;
     try {
-      const code = await createCode(selectedCourseId, {
-        expirationInMinutes: 60 * 24 * 1,
+      const code = await createCode({
+        courseId: selectedCourseId,
+        data: { expirationInMinutes: 60 * 24 * 1 },
       }); // Default 7 days
       setCreatedCode(code);
       toast.success("Tạo mã mời thành công!");
@@ -95,7 +102,7 @@ const CourseListPage = () => {
     }
   };
 
-  if (loading && !courses) {
+  if (loading && !coursesData) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="flex items-center gap-3">
@@ -116,7 +123,7 @@ const CourseListPage = () => {
         </span>
         <p className="text-slate-600">Không thể tải danh sách khóa học</p>
         <button
-          onClick={refetch}
+          onClick={() => refetch()}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
         >
           Thử lại
@@ -126,10 +133,6 @@ const CourseListPage = () => {
   }
 
   const courseList = courses || [];
-  const publishedCount = courseList.filter(
-    (c) => c.status === "PUBLISHED",
-  ).length;
-  const draftCount = courseList.filter((c) => c.status === "DRAFT").length;
 
   return (
     <div className="space-y-6 relative">
@@ -153,8 +156,8 @@ const CourseListPage = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex items-center gap-4">
-        <div className="flex-1 relative">
+      <div className="flex flex-wrap items-center gap-4">
+        <div className="flex-1 min-w-[200px] relative">
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
             search
           </span>
@@ -166,57 +169,33 @@ const CourseListPage = () => {
             className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF]"
           />
         </div>
-        <select
-          value={filters.status}
-          onChange={(e) => handleFilterChange("status", e.target.value)}
-          className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
-        >
-          <option value="all">Tất cả trạng thái</option>
-          <option value="PUBLISHED">Đã xuất bản</option>
-          <option value="DRAFT">Bản nháp</option>
-        </select>
-        <select
-          value={filters.visibility}
-          onChange={(e) => handleFilterChange("visibility", e.target.value)}
-          className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
-        >
-          <option value="all">Tất cả quyền</option>
-          <option value="PUBLIC">Công khai</option>
-          <option value="PRIVATE">Riêng tư</option>
-        </select>
-        <select
-          value={filters.sorts}
-          onChange={(e) => handleFilterChange("sorts", e.target.value)}
-          className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
-        >
-          <option value="createdAt:desc">Mới nhất</option>
-          <option value="createdAt:asc">Cũ nhất</option>
-        </select>
-      </div>
-
-      {/* Stats Summary */}
-      <div className="grid grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-200">
-          <p className="text-[#5e7b8d] text-xs font-medium">Tổng khóa học</p>
-          <p className="text-[#101518] text-2xl font-bold mt-1">
-            {courseList.length}
-          </p>
-        </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-200">
-          <p className="text-[#5e7b8d] text-xs font-medium">Công khai</p>
-          <p className="text-green-600 text-2xl font-bold mt-1">
-            {publishedCount}
-          </p>
-        </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-200">
-          <p className="text-[#5e7b8d] text-xs font-medium">Bản nháp</p>
-          <p className="text-amber-600 text-2xl font-bold mt-1">{draftCount}</p>
-        </div>
-        <div className="bg-white p-4 rounded-xl border border-slate-200">
-          <p className="text-[#5e7b8d] text-xs font-medium">Tổng bài học</p>
-          <p className="text-[#1E90FF] text-2xl font-bold mt-1">
-            {courseList.reduce((sum, c) => sum + (c.lessonCount || 0), 0)}
-          </p>
+        <div className="flex flex-wrap gap-2">
+          <select
+            value={filters.status}
+            onChange={(e) => handleFilterChange("status", e.target.value)}
+            className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
+          >
+            <option value="all">Tất cả trạng thái</option>
+            <option value="PUBLISHED">Đã xuất bản</option>
+            <option value="DRAFT">Bản nháp</option>
+          </select>
+          <select
+            value={filters.visibility}
+            onChange={(e) => handleFilterChange("visibility", e.target.value)}
+            className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
+          >
+            <option value="all">Tất cả quyền</option>
+            <option value="PUBLIC">Công khai</option>
+            <option value="PRIVATE">Riêng tư</option>
+          </select>
+          <select
+            value={filters.sorts}
+            onChange={(e) => handleFilterChange("sorts", e.target.value)}
+            className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
+          >
+            <option value="createdAt:desc">Mới nhất</option>
+            <option value="createdAt:asc">Cũ nhất</option>
+          </select>
         </div>
       </div>
 
@@ -249,11 +228,20 @@ const CourseListPage = () => {
             >
               {/* Thumbnail */}
               <div className="aspect-video relative">
-                <img
-                  src={course.thumbnailUrl || "/img/book.png"}
-                  alt={course.name}
-                  className="w-full h-full object-cover"
-                />
+                <div
+                  className="w-full h-full bg-center bg-cover bg-slate-100"
+                  style={{ backgroundImage: `url("${course.thumbnailUrl}")` }}
+                >
+                  {!course.thumbnailUrl && (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <img
+                        src="/img/book.png"
+                        alt={course.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                </div>
                 <div className="absolute top-3 right-3">
                   <span
                     className={`px-2 py-1 rounded text-xs font-medium ${course.status === "PUBLISHED" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}
@@ -324,6 +312,19 @@ const CourseListPage = () => {
           ))}
         </div>
       )}
+
+      {/* Pagination Controls */}
+      <div className="mt-8 pb-4">
+        <PaginationControl
+          currentPage={filters.pageNo}
+          totalPages={totalPages}
+          onPageChange={(page) => handleFilterChange("pageNo", String(page))}
+          pageSize={filters.pageSize}
+          onPageSizeChange={(size) =>
+            handleFilterChange("pageSize", String(size))
+          }
+        />
+      </div>
 
       {/* Invite Code Modal */}
       {showInviteModal && (

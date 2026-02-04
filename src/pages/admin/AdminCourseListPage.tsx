@@ -47,7 +47,11 @@ const AdminCourseListPage = () => {
   }, [keyword]);
 
   // Main Data Hook
-  const { data, loading, refetch } = useAdminCourses({
+  const {
+    data,
+    isLoading: loading,
+    refetch,
+  } = useAdminCourses({
     pageNo: page,
     pageSize: 10,
     keyword: debouncedKeyword,
@@ -66,8 +70,9 @@ const AdminCourseListPage = () => {
     pageSize: 1,
   });
 
-  const { ban, loading: banLoading } = useBanCourse();
-  const { approve, loading: approveLoading } = useApproveCourse();
+  const { mutateAsync: ban, isPending: banLoading } = useBanCourse();
+  const { mutateAsync: approve, isPending: approveLoading } =
+    useApproveCourse();
 
   const openBanModal = (id: string, courseName: string) => {
     setModalConfig({
@@ -85,7 +90,7 @@ const AdminCourseListPage = () => {
 
     try {
       if (modalConfig.type === "APPROVE") {
-        await approve(modalConfig.courseId, "PUBLISHED");
+        await approve({ id: modalConfig.courseId, status: "PUBLISHED" });
         toast.success("Đã phê duyệt khóa học thành công");
       } else if (modalConfig.type === "BAN") {
         await ban(modalConfig.courseId);

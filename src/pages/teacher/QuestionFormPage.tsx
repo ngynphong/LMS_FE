@@ -19,20 +19,24 @@ const QuestionFormPage = () => {
   const location = useLocation();
   const isEditMode = !!id;
 
-  const { create: createQuestion, loading: createLoading } =
+  const { mutateAsync: createQuestion, isPending: createLoading } =
     useCreateQuestion();
-  const { update: updateQuestion, loading: updateLoading } =
+  const { mutateAsync: updateQuestion, isPending: updateLoading } =
     useUpdateQuestion();
 
   // Try to get question from location state first, otherwise we might need to find it from the list
   // Since we don't have getQuestionById API, we rely on the list or passed state.
   // Ideally, if a user goes directly to the URL, we might need to fetch the full list to find it (fallback).
-  const { data: qList } = useQuestions();
+  // useQuestions now returns response object with items
+  // Previously: const { data: qList } = useQuestions();
+  const { data: questionsResponse } = useQuestions();
+  const qList = questionsResponse?.items;
 
   // New hooks for selecting lesson
-  const { data: courses } = useMyCourses({ pageSize: 100 }); // Fetch all courses for selection
+  const { data: coursesData } = useMyCourses({ pageSize: 100 }); // Fetch all courses for selection
+  const courses = coursesData?.items || [];
   const [selectedCourseId, setSelectedCourseId] = useState<string>("");
-  const { data: courseDetail, loading: lessonsLoading } = useCourseDetail(
+  const { data: courseDetail, isLoading: lessonsLoading } = useCourseDetail(
     selectedCourseId || undefined,
   );
   const lessons = courseDetail?.lessons || [];
@@ -116,7 +120,7 @@ const QuestionFormPage = () => {
 
     try {
       if (isEditMode && id) {
-        await updateQuestion(id, requestData);
+        await updateQuestion({ id, data: requestData });
       } else {
         await createQuestion(requestData);
       }

@@ -6,7 +6,7 @@ interface StudentCourseProps {
   id: string | number;
   title: string;
   category: string;
-  image: string;
+  thumbnailUrl: string;
   instructor?: string;
   createdAt?: string;
   onClick?: () => void;
@@ -45,11 +45,19 @@ const CourseCard = (props: CourseCardProps) => {
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
         {/* Thumbnail */}
         <div
-          className="h-40 bg-center bg-cover bg-no-repeat"
-          style={{
-            backgroundImage: `url('${course.thumbnail || course.image}')`,
-          }}
-        />
+          className="w-full h-full bg-center bg-cover bg-slate-100"
+          style={{ backgroundImage: `url("${course.thumbnail}")` }}
+        >
+          {!course.thumbnail && (
+            <div className="w-full h-full flex items-center justify-center">
+              <img
+                src="/img/book.png"
+                alt={course.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+        </div>
 
         {/* Content */}
         <div className="p-4">
@@ -103,7 +111,7 @@ const CourseCard = (props: CourseCardProps) => {
     id,
     title,
     category,
-    image,
+    thumbnailUrl,
     createdAt,
     instructor,
     onClick,
@@ -116,11 +124,20 @@ const CourseCard = (props: CourseCardProps) => {
         className="relative h-44 w-full overflow-hidden cursor-pointer"
         onClick={onClick}
       >
-        <img
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          src={image}
-          alt={title}
-        />
+        <div
+          className="w-full h-full bg-center bg-cover bg-slate-100"
+          style={{ backgroundImage: `url("${thumbnailUrl}")` }}
+        >
+          {!thumbnailUrl && (
+            <div className="w-full h-full flex items-center justify-center">
+              <img
+                src="/img/book.png"
+                alt={title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+        </div>
         <div className="absolute top-3 left-3 color-primary-bg text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider">
           {category}
         </div>

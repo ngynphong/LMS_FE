@@ -8,7 +8,7 @@ import {
 import { useCourses } from "../../hooks/useCourses";
 
 const FeaturedCoursesSection = () => {
-  const { data, loading } = useCourses({
+  const { data, isLoading: loading } = useCourses({
     pageNo: 0,
     pageSize: 4,
     sorts: ["createdAt:desc"],

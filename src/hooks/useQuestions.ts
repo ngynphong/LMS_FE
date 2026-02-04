@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
     getQuestions, 
     createQuestion, 
@@ -8,152 +8,62 @@ import {
     getQuestionTemplate 
 } from '../services/questionService';
 import type { 
-    Question, 
+    // Question, 
     CreateQuestionRequest, 
-    UpdateQuestionRequest, 
-    ImportQuestionResult,
+    UpdateQuestionRequest,
+    // ImportQuestionResult,
     GetQuestionsParams
 } from '../types/question';
 
-interface UseQuestionsReturn {
-    data: Question[] | null;
-    loading: boolean;
-    error: Error | null;
-    refetch: () => void;
-    totalElements: number;
-    totalPages: number;
-}
-
-export const useQuestions = (params?: GetQuestionsParams): UseQuestionsReturn => {
-    const [data, setData] = useState<Question[] | null>(null);
-    const [totalElements, setTotalElements] = useState<number>(0);
-    const [totalPages, setTotalPages] = useState<number>(0);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<Error | null>(null);
-    const [trigger, setTrigger] = useState<number>(0);
-
-    const refetch = useCallback(() => {
-        setTrigger(prev => prev + 1);
-    }, []);
-
-    useEffect(() => {
-        const fetchQuestions = async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                const response = await getQuestions(params);
-                setData(response.items);
-                setTotalElements(response.totalElement);
-                setTotalPages(response.totalPage);
-            } catch (err) {
-                setError(err instanceof Error ? err : new Error('Failed to fetch questions'));
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchQuestions();
-    }, [trigger, JSON.stringify(params)]);
-
-    return { data, loading, error, refetch, totalElements, totalPages };
+export const useQuestions = (params?: GetQuestionsParams) => {
+    return useQuery({
+        queryKey: ['questions', params],
+        queryFn: () => getQuestions(params),
+    });
 };
 
 export const useCreateQuestion = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
-
-    const create = async (data: CreateQuestionRequest) => {
-        setLoading(true);
-        setError(null);
-        try {
-            return await createQuestion(data);
-        } catch (err) {
-            setError(err instanceof Error ? err : new Error('Failed to create question'));
-            throw err;
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return { create, loading, error };
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (data: CreateQuestionRequest) => createQuestion(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['questions'] });
+        },
+    });
 };
 
 export const useUpdateQuestion = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
-
-    const update = async (id: string, data: UpdateQuestionRequest) => {
-        setLoading(true);
-        setError(null);
-        try {
-            return await updateQuestion(id, data);
-        } catch (err) {
-            setError(err instanceof Error ? err : new Error('Failed to update question'));
-            throw err;
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return { update, loading, error };
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ id, data }: { id: string; data: UpdateQuestionRequest }) => updateQuestion(id, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['questions'] });
+        },
+    });
 };
 
 export const useDeleteQuestion = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
-
-    const remove = async (id: string) => {
-        setLoading(true);
-        setError(null);
-        try {
-            await deleteQuestion(id);
-        } catch (err) {
-            setError(err instanceof Error ? err : new Error('Failed to delete question'));
-            throw err;
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return { remove, loading, error };
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (id: string) => deleteQuestion(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['questions'] });
+        },
+    });
 };
 
 export const useImportQuestions = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
-
-    const importFile = async (lessonId: string | undefined, file: File): Promise<ImportQuestionResult> => {
-        setLoading(true);
-        setError(null);
-        try {
-            return await importQuestions(lessonId, file);
-        } catch (err) {
-            setError(err instanceof Error ? err : new Error('Failed to import questions'));
-            throw err;
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return { importFile, loading, error };
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ lessonId, file }: { lessonId: string | undefined; file: File }) => importQuestions(lessonId, file),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['questions'] });
+        },
+    });
 };
 
 export const useQuestionTemplate = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
-
-    const getTemplate = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            return await getQuestionTemplate();
-        } catch (err) {
-            setError(err instanceof Error ? err : new Error('Failed to get question template'));
-            throw err;
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return { getTemplate, loading, error };
+    return useMutation({
+        mutationFn: () => getQuestionTemplate(),
+    });
 };

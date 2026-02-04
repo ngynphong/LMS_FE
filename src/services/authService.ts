@@ -341,3 +341,43 @@ export const getCurrentUserApi = async (): Promise<AuthResponse> => {
         return handleApiError(error, 'Failed to fetch user profile');
     }
 };
+
+export const loginWithCustomToken = async (token: string): Promise<AuthResponse> => {
+    try {
+        // Save token first
+        localStorage.setItem('token', token);
+
+        // Fetch profile data
+        const profileResponse = await axiosInstance.get<ProfileResponse>('/my-profile');
+        
+        if (profileResponse.data.code !== 1000 && profileResponse.data.code !== 0) {
+             throw new Error(profileResponse.data.message || 'Failed to fetch user profile with custom token');
+        }
+        
+        const profileData = profileResponse.data.data;
+        const userData = profileData.user;
+        const user: User = {
+             id: userData.id,
+             firstName: userData.firstName || '',
+             lastName: userData.lastName || '',
+             email: userData.email || '',
+             urlImg: userData.imgUrl || '',
+             dob: userData.dob || '',
+             role: mapRolesToUserRole(userData.roles || []),
+             studentProfile: {
+                 id: profileData.id,
+                 schoolName: profileData.schoolName || '',
+                 emergencyContact: profileData.emergencyContact || '',
+                 goal: profileData.goal || '',
+                 stats: profileData.stats
+             },
+         };
+
+         return { user, token };
+
+    } catch (error) {
+        // If failed, clear token to avoid bad state
+        localStorage.removeItem('token');
+        return handleApiError(error, 'Login with custom token failed');
+    }
+};

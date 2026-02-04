@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import type { QuestionDifficulty } from "../../types/question";
 import { useQuestions, useDeleteQuestion } from "../../hooks/useQuestions";
+import { useMyCourses, useCourseDetail } from "../../hooks/useCourses";
 import ImportQuestionsModal from "../../components/question/ImportQuestionsModal";
 import { ConfirmationModal } from "../../components/common/ConfirmationModal";
+import PaginationControl from "../../components/common/PaginationControl";
 
 const QuestionBankPage = () => {
   const [pagination, setPagination] = useState({
@@ -11,61 +13,46 @@ const QuestionBankPage = () => {
     pageSize: 10,
   });
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [difficultyFilter, setDifficultyFilter] = useState("all");
+  const [selectedCourseId, setSelectedCourseId] = useState("");
+  const [selectedLessonId, setSelectedLessonId] = useState("");
+
+  // Fetch Courses for filter
+  const { data: coursesData } = useMyCourses({ pageSize: 100 });
+  const courses = coursesData?.items || [];
+
+  // Fetch Lessons when Course selected
+  const { data: courseDetail } = useCourseDetail(selectedCourseId || undefined);
+  const lessons = courseDetail?.lessons || [];
+
   const {
-    data: rawQuestions,
-    loading,
+    data: questionsResponse,
+    isLoading: loading,
     error,
-    refetch,
-    totalPages,
-    totalElements,
   } = useQuestions({
     pageNo: pagination.pageNo,
     pageSize: pagination.pageSize,
+    content: searchQuery,
+    difficulty: difficultyFilter === "all" ? undefined : difficultyFilter,
+    lessonId: selectedLessonId || undefined,
   });
-  const { remove: deleteQuestion } = useDeleteQuestion();
 
-  const questions = Array.isArray(rawQuestions) ? rawQuestions : [];
+  const questions = questionsResponse?.items || [];
+  const totalPages = questionsResponse?.totalPage || 0;
+  const totalElements = questionsResponse?.totalElement || 0;
+
+  const { mutateAsync: deleteQuestion } = useDeleteQuestion();
+
   const [showImportModal, setShowImportModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
     questionId: string | null;
   }>({ isOpen: false, questionId: null });
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [topicFilter, setTopicFilter] = useState("all");
-  const [difficultyFilter, setDifficultyFilter] = useState("all");
-
-  // Helper to extract unique topics from questions
-  const topics = Array.from(
-    new Set(
-      questions?.map((q) => q.lessonName || "Khác").filter(Boolean) || [],
-    ),
-  );
-
-  // Stats
-  // Note: Question type in DB is SINGLE_CHOICE / MULTIPLE_CHOICE (uppercase)
-  // Adjusting stat counts to match potential API values
-  const totalQuestions = questions?.length || 0;
-  const singleChoiceCount =
-    questions?.filter((q) => q.type === "SINGLE_CHOICE").length || 0;
-  // Assuming 'essay' might not exist in the new API or is handled differently, relying on SINGLE_CHOICE vs others for now or just generic stats
-  // The screenshot showed "type": "SINGLE_CHOICE"
-  const multiChoiceCount =
-    questions?.filter((q) => q.type === "MULTIPLE_CHOICE").length || 0;
-
-  // Filtered questions
-  const filteredQuestions =
-    questions?.filter((q) => {
-      const matchesSearch = q.content
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
-      // We might filter by lessonName as 'topic' since 'topic' field is missing in Question interface
-      const topic = q.lessonName || "Khác";
-      const matchesTopic = topicFilter === "all" || topic === topicFilter;
-      const matchesDifficulty =
-        difficultyFilter === "all" || q.difficulty === difficultyFilter;
-      return matchesSearch && matchesTopic && matchesDifficulty;
-    }) || [];
+  // Helper stats (approximate based on current page or we'd need separate API for global stats)
+  // For now, we can just show total questions from metadata
+  const totalQuestions = totalElements;
 
   const getDifficultyBadge = (difficulty: QuestionDifficulty) => {
     switch (difficulty) {
@@ -88,7 +75,7 @@ const QuestionBankPage = () => {
     if (deleteModal.questionId) {
       try {
         await deleteQuestion(deleteModal.questionId);
-        refetch();
+        // refetch is handled by invalidation
         setDeleteModal({ isOpen: false, questionId: null });
       } catch (error) {
         console.error("Failed to delete question:", error);
@@ -144,7 +131,7 @@ const QuestionBankPage = () => {
 
       {/* Search and Filters */}
       <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-        <div className="flex-1 min-w-[300px]">
+        <div className="flex-1 min-w-[250px]">
           <div className="relative">
             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
               search
@@ -152,23 +139,31 @@ const QuestionBankPage = () => {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setPagination((prev) => ({ ...prev, pageNo: 1 }));
+              }}
               className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm"
               placeholder="Tìm kiếm câu hỏi..."
             />
           </div>
         </div>
-        <div className="flex gap-3">
-          <div className="relative min-w-[150px]">
+        <div className="flex flex-wrap gap-3">
+          {/* Course Filter */}
+          <div className="relative min-w-[200px]">
             <select
-              value={topicFilter}
-              onChange={(e) => setTopicFilter(e.target.value)}
+              value={selectedCourseId}
+              onChange={(e) => {
+                setSelectedCourseId(e.target.value);
+                setSelectedLessonId(""); // Reset lesson when course changes
+                setPagination((prev) => ({ ...prev, pageNo: 1 }));
+              }}
               className="w-full appearance-none px-4 py-2.5 bg-slate-50 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm pr-10"
             >
-              <option value="all">Bài học: Tất cả</option>
-              {topics.map((topic, index) => (
-                <option key={index} value={topic}>
-                  {topic}
+              <option value="">Tất cả khóa học</option>
+              {courses.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
                 </option>
               ))}
             </select>
@@ -176,10 +171,38 @@ const QuestionBankPage = () => {
               expand_more
             </span>
           </div>
+
+          {/* Lesson Filter */}
+          <div className="relative min-w-[200px]">
+            <select
+              value={selectedLessonId}
+              onChange={(e) => {
+                setSelectedLessonId(e.target.value);
+                setPagination((prev) => ({ ...prev, pageNo: 1 }));
+              }}
+              className="w-full appearance-none px-4 py-2.5 bg-slate-50 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm pr-10"
+              disabled={!selectedCourseId}
+            >
+              <option value="">Tất cả bài học</option>
+              {lessons.map((l) => (
+                <option key={l.id} value={l.id}>
+                  {l.title}
+                </option>
+              ))}
+            </select>
+            <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-lg">
+              expand_more
+            </span>
+          </div>
+
+          {/* Difficulty Filter */}
           <div className="relative min-w-[150px]">
             <select
               value={difficultyFilter}
-              onChange={(e) => setDifficultyFilter(e.target.value)}
+              onChange={(e) => {
+                setDifficultyFilter(e.target.value);
+                setPagination((prev) => ({ ...prev, pageNo: 1 }));
+              }}
               className="w-full appearance-none px-4 py-2.5 bg-slate-50 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm pr-10"
             >
               <option value="all">Mức độ: Tất cả</option>
@@ -194,7 +217,7 @@ const QuestionBankPage = () => {
         </div>
       </div>
 
-      {/* Statistics */}
+      {/* Statistics - Simplified for now as we don't have aggregated stats from API */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
           <div className="bg-[#0074bd]/10 p-3 rounded-lg">
@@ -208,36 +231,6 @@ const QuestionBankPage = () => {
             </p>
             <p className="text-2xl font-bold text-[#111518]">
               {totalQuestions}
-            </p>
-          </div>
-        </div>
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="bg-green-100 p-3 rounded-lg">
-            <span className="material-symbols-outlined text-green-600 text-2xl">
-              checklist
-            </span>
-          </div>
-          <div>
-            <p className="text-slate-500 text-sm font-medium">
-              Chọn một đáp án
-            </p>
-            <p className="text-2xl font-bold text-[#111518]">
-              {singleChoiceCount}
-            </p>
-          </div>
-        </div>
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="bg-orange-100 p-3 rounded-lg">
-            <span className="material-symbols-outlined text-orange-600 text-2xl">
-              edit_note
-            </span>
-          </div>
-          <div>
-            <p className="text-slate-500 text-sm font-medium">
-              Chọn nhiều đáp án
-            </p>
-            <p className="text-2xl font-bold text-[#111518]">
-              {multiChoiceCount}
             </p>
           </div>
         </div>
@@ -269,7 +262,7 @@ const QuestionBankPage = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {filteredQuestions.map((question) => {
+            {questions.map((question) => {
               const badge = getDifficultyBadge(question.difficulty);
               return (
                 <tr
@@ -277,9 +270,12 @@ const QuestionBankPage = () => {
                   className="hover:bg-slate-50 transition-colors"
                 >
                   <td className="px-6 py-4">
-                    <p className="text-sm text-[#111518] font-medium line-clamp-1">
-                      {question.content}
-                    </p>
+                    <div
+                      className="text-sm text-[#111518] font-medium line-clamp-2"
+                      dangerouslySetInnerHTML={{
+                        __html: question.content,
+                      }}
+                    />
                   </td>
                   <td className="px-6 py-4">
                     <span className="text-sm text-[#111518]">
@@ -287,9 +283,12 @@ const QuestionBankPage = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-sm text-[#111518]">
-                      {question.explanation || "-"}
-                    </span>
+                    <div
+                      className="text-sm text-slate-500 line-clamp-2"
+                      dangerouslySetInnerHTML={{
+                        __html: question.explanation || "-",
+                      }}
+                    />
                   </td>
                   <td className="px-6 py-4 text-center">
                     <span
@@ -333,53 +332,22 @@ const QuestionBankPage = () => {
         </table>
 
         {/* Pagination Controls */}
-        <div className="px-6 py-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
-          <div className="text-sm text-slate-500">
-            Hiển thị từ {(pagination.pageNo - 1) * pagination.pageSize + 1} đến{" "}
-            {Math.min(pagination.pageNo * pagination.pageSize, totalElements)}{" "}
-            trong tổng số {totalElements} kết quả
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() =>
-                setPagination((prev) => ({ ...prev, pageNo: prev.pageNo - 1 }))
-              }
-              disabled={pagination.pageNo === 1}
-              className="flex items-center justify-center p-2 h-8 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed text-slate-600"
-            >
-              <span className="material-symbols-outlined text-sm">
-                chevron_left
-              </span>
-            </button>
-
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <button
-                key={page}
-                onClick={() =>
-                  setPagination((prev) => ({ ...prev, pageNo: page }))
-                }
-                className={`min-w-[32px] h-8 rounded-lg text-sm font-medium transition-colors ${
-                  pagination.pageNo === page
-                    ? "bg-[#0074bd] text-white"
-                    : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
-                }`}
-              >
-                {page}
-              </button>
-            ))}
-
-            <button
-              onClick={() =>
-                setPagination((prev) => ({ ...prev, pageNo: prev.pageNo + 1 }))
-              }
-              disabled={pagination.pageNo === totalPages}
-              className="flex items-center justify-center p-2 h-8 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed text-slate-600"
-            >
-              <span className="material-symbols-outlined text-sm">
-                chevron_right
-              </span>
-            </button>
-          </div>
+        <div className="px-6 py-4 border-t border-slate-200 bg-slate-50">
+          <PaginationControl
+            currentPage={pagination.pageNo}
+            totalPages={totalPages}
+            onPageChange={(page) =>
+              setPagination((prev) => ({ ...prev, pageNo: page }))
+            }
+            pageSize={pagination.pageSize}
+            onPageSizeChange={(size) =>
+              setPagination((prev) => ({
+                ...prev,
+                pageSize: size,
+                pageNo: 1,
+              }))
+            }
+          />
         </div>
       </div>
 
@@ -387,7 +355,7 @@ const QuestionBankPage = () => {
         <ImportQuestionsModal
           onClose={() => setShowImportModal(false)}
           onSuccess={() => {
-            refetch();
+            // refetch(); // Invalidation handles this
             setShowImportModal(false);
           }}
         />

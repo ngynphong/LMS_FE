@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { format, isValid } from "date-fns";
+import { vi } from "date-fns/locale";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCreateQuiz, useUpdateQuiz, useQuiz } from "../../hooks/useQuizzes";
 import { useMyCourses, useCourseDetail } from "../../hooks/useCourses";
@@ -15,16 +17,18 @@ import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 const ExamFormPage = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const isEditMode = !!id;
+  const navigate = useNavigate();
 
-  const { create, loading: createLoading } = useCreateQuiz();
-  const { update, loading: updateLoading } = useUpdateQuiz();
+  const { mutateAsync: createQuiz, isPending: creating } = useCreateQuiz();
+  const { mutateAsync: updateQuiz, isPending: updating } = useUpdateQuiz();
   const {
     data: quizDetail,
-    loading: quizLoading,
+    isLoading: quizLoading,
     error: quizError,
   } = useQuiz(id);
+
+  // Lesson Selection
 
   // Debug logs
   useEffect(() => {
@@ -84,15 +88,29 @@ const ExamFormPage = () => {
   // Static Question State
   const [staticQuestions, setStaticQuestions] = useState<StaticQuestion[]>([]);
   // Question Bank Fetching
+  // Question Bank Fetching
   const [questionSearch, setQuestionSearch] = useState("");
-  const { data: availableQuestions, loading: loadingQuestions } = useQuestions({
-    content: questionSearch,
-    pageSize: 20, // Limit for now, could be paginated
-    lessonId: selectedLessonId || undefined, // Optional: filter by selected lesson
-  });
+  const [qPage, setQPage] = useState(1);
+  const [qPageSize, setQPageSize] = useState(10);
+  const [qLessonId, setQLessonId] = useState<string>("");
 
+  const { data: availableQuestionsResponse, isLoading: loadingQuestions } =
+    useQuestions({
+      content: questionSearch,
+      pageNo: qPage,
+      pageSize: qPageSize,
+      lessonId: qLessonId || undefined, // Use specific filter, removed fallback to quiz lesson to allow wider search
+    });
+  const availableQuestions = availableQuestionsResponse?.items || [];
+  const qTotalPages = availableQuestionsResponse?.totalPage || 0;
+  // const qTotalElements = availableQuestionsResponse?.totalElement || 0;
+
+  // Questions for manual selection
+  // const { data: questionsResponse } = useQuestions({ pageSize: 1000 }); // Fetch all questions for selection
+  // const questions = questionsResponse?.items || [];
   // Fetch courses
-  const { data: courses } = useMyCourses({ pageSize: 100 });
+  const { data: coursesData } = useMyCourses({ pageSize: 100 });
+  const courses = coursesData?.items || [];
   const { data: courseDetail } = useCourseDetail(selectedCourseId || undefined);
   const lessons = courseDetail?.lessons || [];
 
@@ -265,23 +283,23 @@ const ExamFormPage = () => {
 
     try {
       if (isEditMode && id) {
-        await update(id, quizData);
-        toast.success("Cập nhật đề thi thành công!");
+        await updateQuiz({ id, data: quizData });
+        toast.success("Cập nhật bài kiểm tra thành công");
       } else {
-        await create(quizData);
-        toast.success("Tạo đề thi thành công!");
+        await createQuiz(quizData);
+        toast.success("Tạo bài kiểm tra thành công");
       }
       navigate("/teacher/exams");
     } catch (error) {
       console.error(error);
-      toast.error(isEditMode ? "Cập nhật thất bại" : "Tạo đề thi thất bại");
+      toast.error("Có lỗi xảy ra");
     }
   };
 
   return (
     <div className="space-y-6 pb-24">
       <LoadingOverlay
-        isLoading={createLoading || updateLoading || quizLoading}
+        isLoading={creating || updating || quizLoading}
         message={isEditMode ? "Đang cập nhật..." : "Đang tạo bài thi..."}
       />
       {/* Breadcrumbs */}
@@ -526,17 +544,69 @@ const ExamFormPage = () => {
                 <label className="block text-sm font-semibold text-[#111518] mb-2">
                   Thời gian đóng đề (Hạn chót)
                 </label>
-                <input
-                  type="datetime-local"
-                  value={formData.closeTime}
-                  onChange={(e) =>
-                    setFormData({ ...formData, closeTime: e.target.value })
-                  }
-                  className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none"
-                />
-                <p className="text-xs text-slate-500 mt-1">
-                  Để trống nếu không có hạn chót
-                </p>
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="date"
+                    value={
+                      formData.closeTime ? formData.closeTime.split("T")[0] : ""
+                    }
+                    onChange={(e) => {
+                      const date = e.target.value;
+                      const time = formData.closeTime
+                        ? formData.closeTime.split("T")[1]
+                        : "00:00";
+                      if (date) {
+                        setFormData({
+                          ...formData,
+                          closeTime: `${date}T${time}`,
+                        });
+                      } else {
+                        setFormData({ ...formData, closeTime: "" });
+                      }
+                    }}
+                    className="flex-1 h-12 rounded-lg border border-slate-200 bg-white px-4 focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none"
+                  />
+                  <input
+                    type="time"
+                    value={
+                      formData.closeTime
+                        ? formData.closeTime.split("T")[1]?.substring(0, 5)
+                        : ""
+                    }
+                    onChange={(e) => {
+                      const time = e.target.value;
+                      const date = formData.closeTime
+                        ? formData.closeTime.split("T")[0]
+                        : "";
+                      if (date && time) {
+                        setFormData({
+                          ...formData,
+                          closeTime: `${date}T${time}`,
+                        });
+                      }
+                    }}
+                    className="min-w-36 h-12 rounded-lg border border-slate-200 bg-white px-4 focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none"
+                  />
+                </div>
+
+                {formData.closeTime &&
+                  isValid(new Date(formData.closeTime)) && (
+                    <p className="text-sm text-[#1E90FF] font-medium flex items-center gap-1">
+                      <span className="material-symbols-outlined text-lg">
+                        event
+                      </span>
+                      {format(
+                        new Date(formData.closeTime),
+                        "HH:mm 'ngày' dd/MM/yyyy (EEEE)",
+                        { locale: vi },
+                      )}
+                    </p>
+                  )}
+                {!formData.closeTime && (
+                  <p className="text-xs text-slate-500 mt-1">
+                    Để trống nếu không có hạn chót
+                  </p>
+                )}
               </div>
               <div className="flex flex-col gap-3 justify-center">
                 <label className="flex items-center gap-3 cursor-pointer">
@@ -711,14 +781,36 @@ const ExamFormPage = () => {
             ) : (
               // STATIC QUESTIONS SELECTION UI
               <div className="space-y-6">
-                <div className="flex gap-4 mb-4">
-                  <input
-                    type="text"
-                    placeholder="Tìm kiếm câu hỏi..."
-                    className="flex-1 h-10 rounded border border-slate-200 px-3 text-sm"
-                    value={questionSearch}
-                    onChange={(e) => setQuestionSearch(e.target.value)}
-                  />
+                <div className="flex flex-wrap gap-4 mb-4">
+                  <div className="flex-1 min-w-[200px]">
+                    <input
+                      type="text"
+                      placeholder="Tìm kiếm câu hỏi..."
+                      className="w-full h-10 rounded border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1E90FF]"
+                      value={questionSearch}
+                      onChange={(e) => {
+                        setQuestionSearch(e.target.value);
+                        setQPage(1); // Reset to page 1 on search
+                      }}
+                    />
+                  </div>
+                  <div className="min-w-[200px]">
+                    <select
+                      value={qLessonId}
+                      onChange={(e) => {
+                        setQLessonId(e.target.value);
+                        setQPage(1);
+                      }}
+                      className="w-full h-10 rounded border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1E90FF]"
+                    >
+                      <option value="">Tất cả bài học</option>
+                      {lessons.map((l) => (
+                        <option key={l.id} value={l.id}>
+                          {l.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div className="border rounded-lg overflow-hidden">
@@ -727,8 +819,8 @@ const ExamFormPage = () => {
                       <tr>
                         <th className="px-4 py-3 w-10">Chọn</th>
                         <th className="px-4 py-3">Nội dung câu hỏi</th>
-                        <th className="px-4 py-3 w-24">Loại</th>
-                        <th className="px-4 py-3 w-24">Độ khó</th>
+                        <th className="px-4 py-3 w-28">Loại</th>
+                        <th className="px-4 py-3 w-28">Độ khó</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
@@ -801,6 +893,54 @@ const ExamFormPage = () => {
                       )}
                     </tbody>
                   </table>
+
+                  {/* Pagination Controls */}
+                  <div className="px-4 py-3 border-t border-slate-200 bg-slate-50 flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex items-center gap-2 text-sm text-slate-500">
+                      <span>Hiển thị</span>
+                      <select
+                        value={qPageSize}
+                        onChange={(e) => {
+                          setQPageSize(Number(e.target.value));
+                          setQPage(1);
+                        }}
+                        className="bg-white border border-slate-300 text-slate-900 text-xs rounded focus:ring-blue-500 focus:border-blue-500 block p-1"
+                      >
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={50}>50</option>
+                      </select>
+                      <span>kết quả</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-slate-500 mr-2">
+                        Trang {qPage} / {qTotalPages || 1}
+                      </span>
+                      <div className="flex gap-1">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setQPage((prev) => Math.max(prev - 1, 1))
+                          }
+                          disabled={qPage === 1}
+                          className="p-1 px-2 rounded border border-slate-300 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed text-xs font-medium"
+                        >
+                          Trước
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setQPage((prev) => Math.min(prev + 1, qTotalPages))
+                          }
+                          disabled={qPage >= qTotalPages}
+                          className="p-1 px-2 rounded border border-slate-300 bg-white text-slate-500 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed text-xs font-medium"
+                        >
+                          Sau
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 {staticQuestions.length > 0 && (
@@ -903,10 +1043,10 @@ const ExamFormPage = () => {
           <button
             type="submit"
             onClick={handleSubmit}
-            disabled={createLoading || updateLoading}
+            disabled={creating || updating}
             className="px-6 py-2.5 rounded-lg bg-[#1E90FF] text-white font-bold hover:bg-[#0074bd] transition-colors shadow-lg shadow-blue-500/30 flex items-center gap-2"
           >
-            {createLoading || updateLoading ? (
+            {creating || updating ? (
               <span className="material-symbols-outlined animate-spin text-xl">
                 progress_activity
               </span>

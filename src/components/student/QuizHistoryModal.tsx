@@ -25,10 +25,11 @@ export const QuizHistoryModal = ({
   onReview,
 }: QuizHistoryModalProps) => {
   const {
-    data: history,
-    loading,
+    data: historyData,
+    isLoading: loading,
     error,
   } = useQuizHistory(isOpen ? quizId : undefined);
+  const history = historyData || [];
 
   if (!isOpen) return null;
 

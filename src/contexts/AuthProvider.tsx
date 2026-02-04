@@ -10,6 +10,7 @@ import {
   googleLoginApi,
   getCurrentUserApi,
   logoutApi,
+  loginWithCustomToken,
 } from "../services/authService";
 import type { User, AuthResponse, ChangePasswordRequest } from "../types/auth";
 import { AuthContext } from "./AuthContext";
@@ -44,8 +45,27 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   // Khôi phục trạng thái đăng nhập từ localStorage khi component được mount
   useEffect(() => {
     const initializeAuth = async () => {
+      // 1. Check for custom initial token from env (for custom integrations)
+      const initialAuthToken = import.meta.env.VITE_INITIAL_AUTH_TOKEN;
       const storedToken = localStorage.getItem("token");
 
+      if (initialAuthToken && !storedToken) {
+        console.log("Found VITE_INITIAL_AUTH_TOKEN, attempting auto-login...");
+        try {
+          const response = await loginWithCustomToken(initialAuthToken);
+          // loginWithCustomToken already sets localStorage
+          setToken(response.token);
+          setUser(response.user);
+          setIsAuthenticated(true);
+          setInitialLoading(false);
+          return; // Exit early if custom token login successful
+        } catch (e) {
+          console.error("Custom token login failed", e);
+          // Fallthrough to normal initialization
+        }
+      }
+
+      // 2. Normal initialization from localStorage
       if (storedToken && storedToken !== "undefined") {
         // Validate token trước khi set authenticated
         try {
@@ -123,6 +143,39 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     };
 
     initializeAuth();
+
+    // 3. Listen for "auth:refreshed" event from Axios interceptor
+    const handleAuthRefreshed = async () => {
+      console.log(
+        "Auth refreshed event received in AuthProvider. Syncing state...",
+      );
+      try {
+        const currentToken = localStorage.getItem("token");
+        if (currentToken) {
+          setToken(currentToken);
+          // Optionally re-fetch user if needed, but usually just token update is enough for subsequent requests.
+          // However, user roles might have changed etc. Safe to re-fetch or just update token state.
+          // For now, let's just make sure isAuthenticated is true and token is current.
+          setIsAuthenticated(true);
+
+          // Re-fetch user profile to be safe and ensure state is in sync
+          const userProfileResponse = await getCurrentUserApi();
+          setUser(userProfileResponse.user);
+          safelyStoreUser(userProfileResponse.user);
+        }
+      } catch (error) {
+        console.error("Failed to sync state after auth refresh", error);
+        // If sync fails, do nothing? Or force logout?
+        // Better to stay safe, if we can't get user, maybe something is wrong.
+        // But interceptor just succeeded refesh.
+      }
+    };
+
+    window.addEventListener("auth:refreshed", handleAuthRefreshed);
+
+    return () => {
+      window.removeEventListener("auth:refreshed", handleAuthRefreshed);
+    };
   }, []);
 
   const handleAuthResponse = useCallback(
