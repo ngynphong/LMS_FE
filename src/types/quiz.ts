@@ -35,6 +35,8 @@ export interface UpdateQuizRequest extends CreateQuizRequest {}
 
 export interface QuizDetailResponse extends CreateQuizRequest {
     id: string;
+    totalQuestions: number;
+    attemptsCount?: number; // Added based on usage in UI, though API might not return it yet
     // Add other fields if backend returns more than what's in request
 }
 

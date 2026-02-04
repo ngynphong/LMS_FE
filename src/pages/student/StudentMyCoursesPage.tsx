@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useStudentCourses } from "../../hooks/useCourses";
 
@@ -7,60 +7,54 @@ const StudentMyCoursesPage = () => {
     "all" | "in_progress" | "completed"
   >("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortOption, setSortOption] = useState("recent");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [sortOption, setSortOption] = useState("createdAt:desc");
+  const [pageNo, setPageNo] = useState(0);
+  const pageSize = 12; // Adjust as needed
 
-  // Call API with useStudentCourses hook
+  // Debounce search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+      setPageNo(0); // Reset to first page on search
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Determine completed status based on tab
+  const completedStatus = useMemo(() => {
+    if (activeTab === "in_progress") return false;
+    if (activeTab === "completed") return true;
+    return undefined;
+  }, [activeTab]);
+
+  // Call API with useStudentCourses hook with dynamic params
   const {
     data: courses,
     loading,
     error,
     refetch,
+    totalPages,
+    totalElements,
   } = useStudentCourses({
-    pageNo: 0,
-    pageSize: 100,
-    sorts: "createdAt:desc",
+    pageNo,
+    pageSize,
+    sorts: sortOption,
+    keyword: debouncedSearch,
+    completed: completedStatus,
   });
 
-  // Filter and sort courses
-  const filteredCourses = useMemo(() => {
-    if (!courses) return [];
+  // Handle tab change
+  const handleTabChange = (tab: "all" | "in_progress" | "completed") => {
+    setActiveTab(tab);
+    setPageNo(0); // Reset to first page on tab change
+  };
 
-    let filtered = [...courses];
-
-    // Search filter
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (c) =>
-          c.name.toLowerCase().includes(query) ||
-          c.teacherName?.toLowerCase().includes(query) ||
-          c.schoolName?.toLowerCase().includes(query),
-      );
-    }
-
-    // Filter by tab
-    if (activeTab === "in_progress") {
-      filtered = filtered.filter(
-        (c) => (c.progress ?? 0) > 0 && (c.progress ?? 0) < 100,
-      );
-    } else if (activeTab === "completed") {
-      filtered = filtered.filter((c) => (c.progress ?? 0) === 100);
-    }
-
-    // Sort
-    if (sortOption === "recent") {
-      filtered.sort(
-        (a, b) =>
-          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
-      );
-    } else if (sortOption === "name_asc") {
-      filtered.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortOption === "name_desc") {
-      filtered.sort((a, b) => b.name.localeCompare(a.name));
-    }
-
-    return filtered;
-  }, [courses, activeTab, sortOption, searchQuery]);
+  // Handle sort change
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortOption(e.target.value);
+    setPageNo(0);
+  };
 
   // Format date helper
   const formatDate = (dateString: string) => {
@@ -72,7 +66,14 @@ const StudentMyCoursesPage = () => {
     });
   };
 
-  if (loading) {
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 0 && newPage < totalPages) {
+      setPageNo(newPage);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  if (loading && !courses) {
     return (
       <div className="max-w-6xl mx-auto px-0 md:px-8 py-4">
         <div className="flex items-center justify-center min-h-[400px]">
@@ -87,7 +88,7 @@ const StudentMyCoursesPage = () => {
     );
   }
 
-  if (error) {
+  if (error && !courses) {
     return (
       <div className="max-w-6xl mx-auto px-0 md:px-8 py-4">
         <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
@@ -114,7 +115,7 @@ const StudentMyCoursesPage = () => {
           Khóa học của tôi
         </h2>
         <span className="text-sm text-slate-500">
-          {courses?.length || 0} khóa học
+          {totalElements || 0} khóa học
         </span>
       </div>
 
@@ -122,7 +123,7 @@ const StudentMyCoursesPage = () => {
       <div className="mb-6 md:mb-8 border-b border-slate-200">
         <div className="flex flex-wrap gap-2 md:gap-8">
           <button
-            onClick={() => setActiveTab("all")}
+            onClick={() => handleTabChange("all")}
             className={`flex flex-col items-center justify-center pb-3 pt-4 px-2 transition-colors whitespace-nowrap ${
               activeTab === "all"
                 ? "border-b-4 border-[#1E90FF] color-primary"
@@ -132,7 +133,7 @@ const StudentMyCoursesPage = () => {
             <p className="text-sm font-bold tracking-wide">Tất cả</p>
           </button>
           <button
-            onClick={() => setActiveTab("in_progress")}
+            onClick={() => handleTabChange("in_progress")}
             className={`flex flex-col items-center justify-center pb-3 pt-4 px-2 transition-colors whitespace-nowrap ${
               activeTab === "in_progress"
                 ? "border-b-4 border-[#1E90FF] color-primary"
@@ -142,7 +143,7 @@ const StudentMyCoursesPage = () => {
             <p className="text-sm font-bold tracking-wide">Đang học</p>
           </button>
           <button
-            onClick={() => setActiveTab("completed")}
+            onClick={() => handleTabChange("completed")}
             className={`flex flex-col items-center justify-center pb-3 pt-4 px-2 transition-colors whitespace-nowrap ${
               activeTab === "completed"
                 ? "border-b-4 border-[#1E90FF] color-primary"
@@ -184,12 +185,11 @@ const StudentMyCoursesPage = () => {
           <div className="relative">
             <select
               value={sortOption}
-              onChange={(e) => setSortOption(e.target.value)}
+              onChange={handleSortChange}
               className="w-full appearance-none pl-3 pr-10 py-2.5 rounded-xl border border-slate-200 bg-white text-[#111518] focus:ring-2 focus:ring-[#27A4F2] focus:border-[#27A4F2] outline-none transition-all cursor-pointer text-sm"
             >
-              <option value="recent">Gần đây nhất</option>
-              <option value="name_asc">Tên A-Z</option>
-              <option value="name_desc">Tên Z-A</option>
+              <option value="createdAt:desc">Mới nhất</option>
+              <option value="createdAt:asc">Cũ nhất</option>
             </select>
             <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[20px]">
               expand_more
@@ -200,123 +200,144 @@ const StudentMyCoursesPage = () => {
 
       {/* Course Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-        {filteredCourses.map((course) => (
-          <div
-            key={course.id}
-            className="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition-shadow flex flex-col"
-          >
-            <div className="relative aspect-video">
+        {loading && !courses
+          ? // Skeleton loading if initial load
+            Array.from({ length: 6 }).map((_, i) => (
               <div
-                className="w-full h-full bg-center bg-cover bg-slate-100"
-                style={{
-                  backgroundImage:
-                    `url("${course.thumbnailUrl}")` || "/img/book.png",
-                }}
+                key={i}
+                className="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 h-[320px] animate-pulse"
               >
-                {!course.thumbnailUrl && (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="material-symbols-outlined text-4xl text-slate-300">
-                      image
-                    </span>
-                  </div>
-                )}
-              </div>
-              {/* Status Badge */}
-              <span
-                className={`absolute top-3 left-3 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded ${
-                  course.status === "PUBLISHED"
-                    ? "bg-green-500"
-                    : course.status === "DRAFT"
-                      ? "bg-yellow-500"
-                      : "bg-slate-500"
-                }`}
-              >
-                {course.status === "PUBLISHED"
-                  ? "Đang mở"
-                  : course.status === "DRAFT"
-                    ? "Bản nháp"
-                    : course.status || "Khóa học"}
-              </span>
-            </div>
-            <div className="p-4 md:p-5 flex flex-col flex-1">
-              <h3 className="text-[#111518] text-base font-bold leading-tight mb-2 line-clamp-2">
-                {course.name}
-              </h3>
-
-              {/* Teacher & School Info */}
-              <div className="flex flex-col gap-1 mb-3 text-sm text-slate-500">
-                {course.teacherName && (
-                  <div className="flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[16px]">
-                      person
-                    </span>
-                    <span>{course.teacherName}</span>
-                  </div>
-                )}
-                {course.schoolName && (
-                  <div className="flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-[16px]">
-                      school
-                    </span>
-                    <span>{course.schoolName}</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Progress & Dates */}
-              <div className="flex flex-col gap-2 mb-4 mt-auto">
-                {course.progressPercent !== undefined && (
-                  <div className="w-full">
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-slate-500">Tiến độ</span>
-                      <span className="font-medium color-primary">
-                        {course.progressPercent}%
-                      </span>
-                    </div>
-                    <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                      <div
-                        className="h-full color-primary-bg rounded-full transition-all duration-500"
-                        style={{ width: `${course.progressPercent}%` }}
-                      />
-                    </div>
-                  </div>
-                )}
-
-                <div className="text-xs text-slate-400 flex items-center gap-1">
-                  <span className="material-symbols-outlined text-[14px]">
-                    calendar_month
-                  </span>
-                  {course.completedAt ? (
-                    <span>Hoàn thành: {formatDate(course.completedAt)}</span>
-                  ) : course.enrolledAt ? (
-                    <span>Tham gia: {formatDate(course.enrolledAt)}</span>
-                  ) : (
-                    <span>Cập nhật: {formatDate(course.updatedAt)}</span>
-                  )}
+                <div className="bg-slate-200 h-48 w-full" />
+                <div className="p-4 space-y-3">
+                  <div className="h-4 bg-slate-200 rounded w-3/4" />
+                  <div className="h-3 bg-slate-200 rounded w-1/2" />
                 </div>
               </div>
-
-              <Link
-                to={`/student/courses/${course.id}/learn`}
-                className="w-full py-2.5 md:py-3 color-primary-bg text-white text-sm font-bold rounded-lg transition-colors flex items-center justify-center gap-2 hover:opacity-90"
+            ))
+          : courses?.map((course) => (
+              <div
+                key={course.id}
+                className="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition-shadow flex flex-col"
               >
-                Vào học
-                <span className="material-symbols-outlined text-sm">
-                  play_circle
-                </span>
-              </Link>
-            </div>
-          </div>
-        ))}
-        {filteredCourses.length === 0 && (
+                <div className="relative aspect-video">
+                  <div
+                    className="w-full h-full bg-center bg-cover bg-slate-100"
+                    style={{
+                      backgroundImage:
+                        `url("${course.thumbnailUrl}")` || "/img/book.png",
+                    }}
+                  >
+                    {!course.thumbnailUrl && (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <span className="material-symbols-outlined text-4xl text-slate-300">
+                          image
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  {/* Status Badge */}
+                  <span
+                    className={`absolute top-3 left-3 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded ${
+                      course.status === "PUBLISHED"
+                        ? "bg-green-500"
+                        : course.status === "DRAFT"
+                          ? "bg-yellow-500"
+                          : "bg-slate-500"
+                    }`}
+                  >
+                    {course.status === "PUBLISHED"
+                      ? "Đang mở"
+                      : course.status === "DRAFT"
+                        ? "Bản nháp"
+                        : course.status || "Khóa học"}
+                  </span>
+                </div>
+                <div className="p-4 md:p-5 flex flex-col flex-1">
+                  <h3 className="text-[#111518] text-base font-bold leading-tight mb-2 line-clamp-2">
+                    {course.name}
+                  </h3>
+
+                  {/* Teacher & School Info */}
+                  <div className="flex flex-col gap-1 mb-3 text-sm text-slate-500">
+                    {course.teacherName && (
+                      <div className="flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-[16px]">
+                          person
+                        </span>
+                        <span>{course.teacherName}</span>
+                      </div>
+                    )}
+                    {course.schoolName && (
+                      <div className="flex items-center gap-1.5">
+                        <span className="material-symbols-outlined text-[16px]">
+                          school
+                        </span>
+                        <span>{course.schoolName}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Progress & Dates */}
+                  <div className="flex flex-col gap-2 mb-4 mt-auto">
+                    {course.progressPercent !== undefined && (
+                      <div className="w-full">
+                        <div className="flex justify-between text-xs mb-1">
+                          <span className="text-slate-500">Tiến độ</span>
+                          <span className="font-medium color-primary">
+                            {course.progressPercent}%
+                          </span>
+                        </div>
+                        <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                          <div
+                            className="h-full color-primary-bg rounded-full transition-all duration-500"
+                            style={{ width: `${course.progressPercent}%` }}
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="text-xs text-slate-400 flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[14px]">
+                        calendar_month
+                      </span>
+                      {course.completedAt ? (
+                        <span>
+                          Hoàn thành: {formatDate(course.completedAt)}
+                        </span>
+                      ) : course.enrolledAt ? (
+                        <span>Tham gia: {formatDate(course.enrolledAt)}</span>
+                      ) : (
+                        <span>Cập nhật: {formatDate(course.updatedAt)}</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <Link
+                    to={`/student/courses/${course.id}/learn`}
+                    className="w-full py-2.5 md:py-3 color-primary-bg text-white text-sm font-bold rounded-lg transition-colors flex items-center justify-center gap-2 hover:opacity-90"
+                  >
+                    Vào học
+                    <span className="material-symbols-outlined text-sm">
+                      play_circle
+                    </span>
+                  </Link>
+                </div>
+              </div>
+            ))}
+
+        {(!courses || courses.length === 0) && !loading && (
           <div className="col-span-full py-12 text-center text-slate-500">
             <span className="material-symbols-outlined text-4xl mb-2">
               school
             </span>
             <p>Không tìm thấy khóa học nào</p>
-            {searchQuery && (
+            {(searchQuery || activeTab !== "all") && (
               <button
-                onClick={() => setSearchQuery("")}
+                onClick={() => {
+                  setSearchQuery("");
+                  setActiveTab("all");
+                  setPageNo(0);
+                }}
                 className="mt-2 text-blue-600 hover:underline text-sm"
               >
                 Xóa bộ lọc
@@ -325,6 +346,35 @@ const StudentMyCoursesPage = () => {
           </div>
         )}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 mt-8">
+          <button
+            onClick={() => handlePageChange(pageNo - 1)}
+            disabled={pageNo === 0}
+            className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span className="material-symbols-outlined text-lg">
+              chevron_left
+            </span>
+          </button>
+
+          <span className="text-sm text-gray-600 font-medium px-2">
+            Trang {pageNo + 1} / {totalPages}
+          </span>
+
+          <button
+            onClick={() => handlePageChange(pageNo + 1)}
+            disabled={pageNo >= totalPages - 1}
+            className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span className="material-symbols-outlined text-lg">
+              chevron_right
+            </span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

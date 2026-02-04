@@ -195,3 +195,13 @@ export const getQuizById = async (id: string): Promise<QuizDetailResponse> => {
         throw error;
     }
 };
+
+export const getQuizByLessonItem = async (lessonItemId: string): Promise<QuizDetailResponse[]> => {
+    try {
+        const response = await axiosInstance.get<{ code: number; message: string; data: QuizDetailResponse[] }>(`/quiz/by-lesson-item/${lessonItemId}`);
+        return response.data.data;
+    } catch (error) {
+        console.error('Failed to fetch quiz by lesson item:', error);
+        throw error;
+    }
+};

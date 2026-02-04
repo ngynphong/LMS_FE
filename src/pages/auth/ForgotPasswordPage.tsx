@@ -66,7 +66,7 @@ const ForgotPasswordPage = () => {
               className="absolute top-10 left-10 flex items-center gap-2 color-primary hover:opacity-90 transition-opacity"
             >
               <img
-                src="/logo-edu.png"
+                src="/img/logo-edu.png"
                 alt="ies-edu-logo"
                 className="w-12 h-12"
               />
@@ -94,7 +94,7 @@ const ForgotPasswordPage = () => {
             >
               <span className="text-3xl">
                 <img
-                  src="/ies-edu-logo.png"
+                  src="/img/logo-edu.png"
                   alt="ies-edu-logo"
                   className="w-12 h-12"
                 />

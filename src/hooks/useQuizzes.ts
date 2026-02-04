@@ -17,7 +17,8 @@ import {
     joinQuizByCode,
     getStudentTeacherQuizzes,
     getQuizById,
-    updateQuiz
+    updateQuiz,
+    getQuizByLessonItem
 } from '../services/quizService';
 import type { 
     CreateQuizRequest, 
@@ -102,6 +103,39 @@ export const useQuiz = (id?: string) => {
 
         fetchQuiz();
     }, [id]);
+
+    return { data, loading, error };
+};
+
+export const useQuizByLessonItem = (lessonItemId?: string) => {
+    const [data, setData] = useState<QuizDetailResponse[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
+
+    useEffect(() => {
+        if (!lessonItemId) {
+            setData([]);
+            return;
+        }
+
+        const fetchQuiz = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const quizzes = await getQuizByLessonItem(lessonItemId);
+                setData(quizzes);
+            } catch (err) {
+                // If it's a 404, it might just mean no quiz for this lesson item, which is fine
+                // But generally we want to expose the error
+                setError(err instanceof Error ? err : new Error('Failed to fetch quiz details'));
+                setData([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchQuiz();
+    }, [lessonItemId]);
 
     return { data, loading, error };
 };

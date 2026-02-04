@@ -34,27 +34,28 @@ const navItems: NavItem[] = [
     label: "Khóa học của tôi",
   },
   {
-    path: "/student/schedule",
-    icon: <FaCalendar className="text-xl" />,
-    label: "Lịch học",
-  },
-  {
-    path: "/student/messages",
-    icon: <FaEnvelope className="text-xl" />,
-    label: "Tin nhắn",
-  },
-  {
     path: "/student/quizzes",
     icon: <Quiz animateOnHover size={20} />,
     label: "Bài kiểm tra",
   },
   {
-    path: "/student/certificates",
+    path: "#calendar",
+    icon: <FaCalendar className="text-xl" />,
+    label: "Lịch học",
+  },
+  {
+    path: "#messages",
+    icon: <FaEnvelope className="text-xl" />,
+    label: "Tin nhắn",
+  },
+
+  {
+    path: "#certificates",
     icon: <FaCertificate className="text-xl" />,
     label: "Chứng chỉ",
   },
   {
-    path: "/student/settings",
+    path: "#settings",
     icon: <FaCog className="text-xl" />,
     label: "Cài đặt",
   },

@@ -107,6 +107,7 @@ export const getStudentCourses = async (params?: {
   keyword?: string;
   status?: string;
   visibility?: string;
+  completed?: boolean;
 }): Promise<{ items: ApiCourse[]; totalElement: number; totalPage: number }> => {
   const response = await axiosInstance.get<{ code: number; message: string; data: { items: ApiCourse[]; totalElement: number; totalPage: number } }>('/courses/students/my-courses', {
     params: {
@@ -115,7 +116,8 @@ export const getStudentCourses = async (params?: {
       sorts: params?.sorts || 'createdAt:desc',
       keyword: params?.keyword,
       status: params?.status,
-      visibility: params?.visibility
+      visibility: params?.visibility,
+      completed: params?.completed
     }
   });
   return response.data.data;

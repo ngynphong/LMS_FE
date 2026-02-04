@@ -246,9 +246,7 @@ const ExamFormPage = () => {
       shuffleQuestions: formData.shuffleQuestions,
       isDynamic: formData.isDynamic,
       type: formData.type,
-      closeTime: formData.closeTime
-        ? new Date(formData.closeTime).toISOString()
-        : null,
+      closeTime: formData.closeTime ? `${formData.closeTime}:00` : null,
       showScoreAfterSubmit: formData.showScoreAfterSubmit,
       showResultAfterSubmit: formData.showResultAfterSubmit,
       isPublished: formData.isPublished,

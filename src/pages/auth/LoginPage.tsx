@@ -149,7 +149,7 @@ const LoginPage = () => {
             >
               <span className="text-3xl">
                 <img
-                  src="/logo-edu.png"
+                  src="/img/logo-edu.png"
                   alt="ies-edu-logo"
                   className="w-12 h-12"
                 />
@@ -178,7 +178,7 @@ const LoginPage = () => {
             >
               <span className="text-3xl">
                 <img
-                  src="/logo-edu.png"
+                  src="/img/logo-edu.png"
                   alt="ies-edu-logo"
                   className="w-12 h-12"
                 />
