@@ -21,7 +21,7 @@ export const QuizReviewModal = ({
 }: QuizReviewModalProps) => {
   const {
     data: review,
-    loading,
+    isLoading: loading,
     error,
   } = useQuizReview(isOpen && attemptId ? attemptId : undefined);
 

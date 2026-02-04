@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 import { Link } from "react-router-dom";
 import {
   useTeacherQuizzes,
@@ -9,9 +11,10 @@ import { toast } from "../../components/common/Toast";
 import { QuizStatisticsModal } from "../../components/teacher/QuizStatisticsModal";
 
 const ExamListPage = () => {
-  const { data: exams, loading, error, refetch } = useTeacherQuizzes();
-  const { generate, loading: isGenerating } = useGenerateQuizCode();
-  const { publish, loading: isPublishing } = usePublishQuiz();
+  const { data: exams, isLoading: loading, error } = useTeacherQuizzes();
+  const { mutateAsync: generate, isPending: isGenerating } =
+    useGenerateQuizCode();
+  const { mutateAsync: publish, isPending: isPublishing } = usePublishQuiz();
   const [searchQuery, setSearchQuery] = useState("");
   const [statsQuizId, setStatsQuizId] = useState<string | null>(null);
 
@@ -19,24 +22,24 @@ const ExamListPage = () => {
     try {
       const res = await generate(quizId);
       toast.success(`Mã code mới: ${res.code}`);
-      refetch(); // Refresh list to update UI
+      // Assuming refetch is no longer needed or handled by query invalidation
     } catch (error) {
       toast.error("Thất bại khi tạo mã code");
     }
   };
 
-  const handlePublish = async (quizId: string) => {
+  const handlePublish = async (quizId: string, currentStatus: string) => {
+    if (currentStatus === "PUBLISHED") return; // Assuming PUBLISHED is the new status string
     try {
       await publish(quizId);
-      toast.success("Đã cập nhật trạng thái công khai!");
-      refetch();
-    } catch (error) {
-      toast.error("Cập nhật trạng thái thất bại");
+      toast.success("Đã xuất bản bài kiểm tra");
+    } catch (e) {
+      toast.error("Có lỗi xảy ra khi xuất bản");
     }
   };
 
   // Filtered exams
-  const filteredExams = (exams || []).filter((e) => {
+  const filteredExams = (exams || []).filter((e: any) => {
     const matchesSearch = e.title
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
@@ -135,14 +138,25 @@ const ExamListPage = () => {
                   </span>
                   <span>
                     {exam.closeTime
-                      ? new Date(exam.closeTime).toLocaleString()
+                      ? format(
+                          new Date(exam.closeTime),
+                          "HH:mm 'ngày' dd/MM/yyyy (EEEE)",
+                          {
+                            locale: vi,
+                          },
+                        )
                       : "Chưa đặt"}
                   </span>
                 </div>
               </div>
               <div className="flex gap-2 flex-wrap">
                 <button
-                  onClick={() => handlePublish(exam.id)}
+                  onClick={() =>
+                    handlePublish(
+                      exam.id,
+                      exam.isPublished ? "PUBLISHED" : "DRAFT",
+                    )
+                  }
                   disabled={isPublishing}
                   className={`flex items-center justify-center gap-1 p-2 rounded-lg text-sm font-bold transition-colors ${
                     exam.isPublished

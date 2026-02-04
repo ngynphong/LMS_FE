@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Breadcrumb from "../../components/courses/Breadcrumb";
 import FilterSidebar from "../../components/courses/FilterSidebar";
 import CourseCard from "../../components/courses/CourseCard";
-import Pagination from "../../components/courses/Pagination";
+import PaginationControl from "@/components/common/PaginationControl";
 import {
   useCourses,
   useStudentCourses,
@@ -165,11 +165,14 @@ const CoursesPage = () => {
 
                 {/* Pagination */}
                 {courses.length > 0 && (
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                  />
+                  <div className="flex justify-center mt-8">
+                    <PaginationControl
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={handlePageChange}
+                      disablePageSizeSelect
+                    />
+                  </div>
                 )}
               </>
             )}

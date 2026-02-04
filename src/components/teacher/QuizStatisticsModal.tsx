@@ -24,7 +24,7 @@ export const QuizStatisticsModal = ({
 }: QuizStatisticsModalProps) => {
   const {
     data: stats,
-    loading,
+    isLoading: loading,
     error,
   } = useQuizStatistics(isOpen ? quizId : undefined);
 

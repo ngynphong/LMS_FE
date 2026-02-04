@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 import LessonSidebar, {
   getItemTypeIcon,
   getItemTypeColor,
@@ -37,7 +38,7 @@ const CourseLearningPage = () => {
   const [currentLesson, setCurrentLesson] = useState<ApiLesson | null>(null);
   const [currentItem, setCurrentItem] = useState<LessonItem | null>(null);
   const [loadingItem, setLoadingItem] = useState(false);
-  const { data: lessonQuizzes, loading: quizLoading } = useQuizByLessonItem(
+  const { data: lessonQuizzes, isLoading: quizLoading } = useQuizByLessonItem(
     currentItem?.id,
   );
 
@@ -746,6 +747,22 @@ const CourseLearningPage = () => {
                                 )}
                               </div>
                             </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-base text-gray-500 font-semibold">
+                              Hạn chót:
+                            </span>
+                            <p className="text-sm text-gray-500">
+                              {quiz.closeTime
+                                ? format(
+                                    new Date(quiz.closeTime),
+                                    "HH:mm 'ngày' dd/MM/yyyy (EEEE)",
+                                    {
+                                      locale: vi,
+                                    },
+                                  )
+                                : "Chưa đặt"}
+                            </p>
                           </div>
 
                           {/* Actions Section */}

@@ -19,9 +19,11 @@ import type { StudentTeacherQuiz } from "../../types/quiz";
 const StudentAvailableQuizzesPage = () => {
   const navigate = useNavigate();
   const [filter, setFilter] = useState("all");
-  const { data: quizzes, loading } = useStudentTeacherQuizzes();
-  const { data: ongoingQuizzes, loading: ongoingLoading } =
+  const { data: quizzesData, isLoading: loading } = useStudentTeacherQuizzes();
+  const quizzes = quizzesData || [];
+  const { data: ongoingQuizzesData, isLoading: ongoingLoading } =
     useMyOngoingQuizzes();
+  const ongoingQuizzes = ongoingQuizzesData || [];
 
   // Modal States
   const [historyQuiz, setHistoryQuiz] = useState<{

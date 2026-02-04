@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useStudentCourses } from "../../hooks/useCourses";
+import PaginationControl from "@/components/common/PaginationControl";
 
 const StudentMyCoursesPage = () => {
   const [activeTab, setActiveTab] = useState<
@@ -352,30 +353,13 @@ const StudentMyCoursesPage = () => {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-8">
-          <button
-            onClick={() => handlePageChange(pageNo - 1)}
-            disabled={pageNo === 0}
-            className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span className="material-symbols-outlined text-lg">
-              chevron_left
-            </span>
-          </button>
-
-          <span className="text-sm text-gray-600 font-medium px-2">
-            Trang {pageNo + 1} / {totalPages}
-          </span>
-
-          <button
-            onClick={() => handlePageChange(pageNo + 1)}
-            disabled={pageNo >= totalPages - 1}
-            className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span className="material-symbols-outlined text-lg">
-              chevron_right
-            </span>
-          </button>
+        <div className="mt-8 flex justify-center">
+          <PaginationControl
+            currentPage={pageNo + 1}
+            totalPages={totalPages}
+            onPageChange={(page) => handlePageChange(page - 1)}
+            disablePageSizeSelect
+          />
         </div>
       )}
     </div>

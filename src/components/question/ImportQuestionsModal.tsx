@@ -15,8 +15,10 @@ const ImportQuestionsModal = ({
   onClose,
   onSuccess,
 }: ImportQuestionsModalProps) => {
-  const { importFile, loading: importLoading } = useImportQuestions();
-  const { getTemplate, loading: templateLoading } = useQuestionTemplate();
+  const { mutateAsync: importFile, isPending: importLoading } =
+    useImportQuestions();
+  const { mutateAsync: getTemplate, isPending: templateLoading } =
+    useQuestionTemplate();
 
   const [file, setFile] = useState<File | null>(null);
   const [selectedCourseId, setSelectedCourseId] = useState<string>("");
@@ -65,7 +67,10 @@ const ImportQuestionsModal = ({
     }
 
     try {
-      const result = await importFile(selectedLessonId || undefined, file);
+      const result = await importFile({
+        lessonId: selectedLessonId || undefined,
+        file,
+      });
       toast.success(
         `Import thành công: ${result.success} câu hỏi, Thất bại: ${result.failed}, Trùng lặp: ${result.duplicate}`,
       );

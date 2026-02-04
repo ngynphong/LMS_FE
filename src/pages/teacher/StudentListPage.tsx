@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTeacher } from "../../hooks/useTeacher";
 import { toast } from "../../components/common/Toast";
-import Pagination from "../../components/courses/Pagination";
+import PaginationControl from "../../components/common/PaginationControl";
 
 const StudentListPage = () => {
   // Use useTeacher hook
@@ -17,8 +17,11 @@ const StudentListPage = () => {
 
   // Local state for UI
   const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
   const [keyword, setKeyword] = useState<string>("");
   const [debouncedKeyword, setDebouncedKeyword] = useState<string>("");
+  const [sortBy, setSortBy] = useState<string>("name");
+  const [order, setOrder] = useState<string>("asc");
 
   // Import state
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
@@ -36,8 +39,8 @@ const StudentListPage = () => {
 
   // Fetch students using hook
   useEffect(() => {
-    getStudents(page, 10, debouncedKeyword);
-  }, [getStudents, page, debouncedKeyword]);
+    getStudents(page, pageSize, debouncedKeyword, sortBy, order);
+  }, [getStudents, page, pageSize, debouncedKeyword, sortBy, order]);
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -109,7 +112,7 @@ const StudentListPage = () => {
 
       {/* Filters */}
       <div className="flex items-center gap-4">
-        <div className="flex-1 relative">
+        <div className="flex-1 min-w-[200px] relative">
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
             search
           </span>
@@ -120,6 +123,31 @@ const StudentListPage = () => {
             onChange={(e) => setKeyword(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
           />
+        </div>
+        <div className="flex items-center gap-2">
+          <select
+            value={sortBy}
+            onChange={(e) => {
+              setSortBy(e.target.value);
+              setPage(1);
+            }}
+            className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
+          >
+            <option value="name">Tên</option>
+            <option value="email">Email</option>
+            <option value="totalCourses">Tổng khóa học</option>
+          </select>
+          <select
+            value={order}
+            onChange={(e) => {
+              setOrder(e.target.value);
+              setPage(1);
+            }}
+            className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
+          >
+            <option value="asc">Tăng dần</option>
+            <option value="desc">Giảm dần</option>
+          </select>
         </div>
       </div>
 
@@ -258,11 +286,16 @@ const StudentListPage = () => {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-end px-6 border-t border-slate-100 py-4">
-          <Pagination
+        <div className="flex items-center justify-between px-6 border-t border-slate-100 py-4 flex-wrap gap-4">
+          <PaginationControl
             currentPage={page}
             totalPages={totalPages}
             onPageChange={handlePageChange}
+            pageSize={pageSize}
+            onPageSizeChange={(size) => {
+              setPageSize(size);
+              setPage(1);
+            }}
           />
         </div>
       </div>

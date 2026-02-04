@@ -20,10 +20,11 @@ const StudentQuizTakingPage = () => {
   const navigate = useNavigate();
 
   // API Hooks
-  const { start } = useStartQuiz();
-  const { submit, loading: submitLoading } = useSubmitQuiz();
-  const { save } = useSaveQuizProgress();
-  const { check: checkAnswer, loading: checkLoading } =
+  // API Hooks
+  const { mutateAsync: startQuiz } = useStartQuiz();
+  const { mutateAsync: submitQuiz, isPending: submitLoading } = useSubmitQuiz();
+  const { mutateAsync: saveProgress } = useSaveQuizProgress();
+  const { mutateAsync: checkAnswer, isPending: checkLoading } =
     useCheckPracticeAnswer();
 
   // State
@@ -48,7 +49,7 @@ const StudentQuizTakingPage = () => {
     if (!quizId) return;
     const init = async () => {
       try {
-        const data = await start(quizId);
+        const data = await startQuiz(quizId);
         setAttempt(data);
 
         // Pre-fill answers if resuming an attempt
@@ -123,9 +124,11 @@ const StudentQuizTakingPage = () => {
             selectedAnswerIds: selectedIds,
           }),
         );
-        save({ attemptId: attempt.id, answers: formattedAnswers }).then(() => {
-          lastSavedAnswersRef.current = JSON.parse(JSON.stringify(answers));
-        });
+        saveProgress({ attemptId: attempt.id, answers: formattedAnswers }).then(
+          () => {
+            lastSavedAnswersRef.current = JSON.parse(JSON.stringify(answers));
+          },
+        );
       }, 5000); // 2 seconds debounce
     }
 
@@ -213,7 +216,7 @@ const StudentQuizTakingPage = () => {
           selectedAnswerIds: selectedIds,
         }),
       );
-      await submit({ attemptId: attempt.id, answers: formattedAnswers });
+      await submitQuiz({ attemptId: attempt.id, answers: formattedAnswers });
       toast.success("Nộp bài thành công!");
       navigate("/student/quizzes"); // Or result page?
     } catch (error) {

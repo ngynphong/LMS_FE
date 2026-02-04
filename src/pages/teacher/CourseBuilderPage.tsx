@@ -78,19 +78,22 @@ const CourseBuilderPage = () => {
     isLoading: loadingCourse,
     refetch: refetchCourse,
   } = useCourseDetail(id);
-  const { create: createLesson, loading: creatingLesson } = useCreateLesson();
-  const { update: updateLesson, loading: updatingLesson } = useUpdateLesson();
-  const { remove: deleteLesson, loading: deletingLesson } = useDeleteLesson();
-  const { create: createLessonItem, loading: creatingItem } =
+  const { mutateAsync: createLesson, isPending: creatingLesson } =
+    useCreateLesson();
+  const { mutateAsync: updateLesson, isPending: updatingLesson } =
+    useUpdateLesson();
+  const { mutateAsync: deleteLesson, isPending: deletingLesson } =
+    useDeleteLesson();
+  const { mutateAsync: createLessonItem, isPending: creatingItem } =
     useCreateLessonItem();
-  const { update: updateLessonItem, loading: updatingItem } =
+  const { mutateAsync: updateLessonItem, isPending: updatingItem } =
     useUpdateLessonItem();
-  const { remove: deleteLessonItem, loading: deletingItem } =
+  const { mutateAsync: deleteLessonItem, isPending: deletingItem } =
     useDeleteLessonItem();
   const { mutateAsync: approveCourse, isPending: publishLoading } =
     useApproveCourse();
-  const { reorder: reorderLessons } = useReorderLessons();
-  const { reorder: reorderItems } = useReorderLessonItems();
+  const { mutateAsync: reorderLessons } = useReorderLessons();
+  const { mutateAsync: reorderItems } = useReorderLessonItems();
 
   // Publish handler
   const handlePublish = async () => {
@@ -171,7 +174,7 @@ const CourseBuilderPage = () => {
     if (!courseId) return;
     const lessonIds = currentLessons.map((l) => l.id);
     try {
-      await reorderLessons(courseId, lessonIds);
+      await reorderLessons({ courseId, lessonIds });
       // toast.success("Đã cập nhật thứ tự bài học"); // Optional, maybe too noisy
     } catch (e) {
       toast.error("Lỗi cập nhật thứ tự bài học");
@@ -184,7 +187,7 @@ const CourseBuilderPage = () => {
   ) => {
     const itemIds = currentItems.map((i) => i.id);
     try {
-      await reorderItems(lessonId, itemIds);
+      await reorderItems({ lessonId, itemIds });
       // toast.success("Đã cập nhật thứ tự nội dung");
     } catch (e) {
       toast.error("Lỗi cập nhật thứ tự nội dung");
@@ -250,7 +253,7 @@ const CourseBuilderPage = () => {
       if (selectedItem?.id === "new") {
         // Create new lesson
         if (!courseId) return;
-        const newLesson = await createLesson(courseId, data);
+        const newLesson = await createLesson({ courseId, data });
         setLessons((prev) => [...prev, newLesson]);
         setSelectedItem({
           type: "lesson",
@@ -260,7 +263,7 @@ const CourseBuilderPage = () => {
         toast.success("Đã thêm bài học!");
       } else if (selectedItem?.id) {
         // Update existing lesson
-        await updateLesson(selectedItem.id, data.title);
+        await updateLesson({ lessonId: selectedItem.id, title: data.title });
         setLessons((prev) =>
           prev.map((l) =>
             l.id === selectedItem.id ? { ...l, title: data.title } : l,
@@ -323,11 +326,14 @@ const CourseBuilderPage = () => {
     try {
       if (selectedItem?.id === "new") {
         // Create new item
-        await createLessonItem(lessonId, {
-          title: data.title,
-          description: data.description,
-          textContent: data.textContent,
-          file: data.file,
+        await createLessonItem({
+          lessonId,
+          data: {
+            title: data.title,
+            description: data.description,
+            textContent: data.textContent,
+            file: data.file,
+          },
         });
         // Fetch lesson detail to get updated items
         const updatedLesson = await getLessonById(lessonId);
@@ -339,10 +345,13 @@ const CourseBuilderPage = () => {
         toast.success("Đã thêm nội dung!");
       } else if (selectedItem?.id) {
         // Update existing item
-        await updateLessonItem(selectedItem.id, {
-          title: data.title,
-          description: data.description,
-          textContent: data.textContent,
+        await updateLessonItem({
+          id: selectedItem.id,
+          data: {
+            title: data.title,
+            description: data.description,
+            textContent: data.textContent,
+          },
         });
         // Fetch lesson detail to get updated items
         const updatedLesson = await getLessonById(lessonId);
