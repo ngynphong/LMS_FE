@@ -18,14 +18,15 @@ import type { EnrollCourseRequest, CreateInviteCodeRequest } from '../types/lear
 
 // ==================== Queries ====================
 
-export const useCourses = (params: GetCoursesParams = {}) => {
+export const useCourses = (params: GetCoursesParams = {}, options: { enabled?: boolean } = {}) => {
     return useQuery({
         queryKey: ['courses', params],
         queryFn: () => getCourses(params),
+        enabled: options.enabled,
     });
 };
 
-export const useAdminCourses = (params: GetCoursesParams = {}) => {
+export const useAdminCourses = (params: GetCoursesParams = {}, ) => {
     return useQuery({
         queryKey: ['admin-courses', params],
         queryFn: () => getAdminCourses(params),
@@ -71,12 +72,11 @@ export const useStudentCourses = (params: {
     status?: string;
     visibility?: string;
     completed?: boolean;
-} = {}) => {
+} = {}, options: { enabled?: boolean } = {}) => {
     return useQuery({
         queryKey: ['student-courses', params],
         queryFn: () => getStudentCourses(params),
-        // keepPreviousData is now placeholderData: keepPreviousData in v5? Or just standard behavior.
-        // We'll stick to basic configuration.
+        enabled: options.enabled,
     });
 };
 

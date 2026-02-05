@@ -6,15 +6,20 @@ import {
   fadeInUp,
 } from "../ui/ScrollReveal";
 import { useCourses } from "../../hooks/useCourses";
+import { useAuth } from "@/hooks/useAuth";
 
 const FeaturedCoursesSection = () => {
-  const { data, isLoading: loading } = useCourses({
-    pageNo: 0,
-    pageSize: 4,
-    sorts: ["createdAt:desc"],
-    visibility: "PUBLIC",
-    status: "PUBLISHED",
-  });
+  const { isAuthenticated } = useAuth();
+  const { data, isLoading: loading } = useCourses(
+    {
+      pageNo: 0,
+      pageSize: 4,
+      sorts: ["createdAt:desc"],
+      visibility: "PUBLIC",
+      status: "PUBLISHED",
+    },
+    { enabled: isAuthenticated },
+  );
 
   const courses = data?.data?.items?.slice(0, 4) || [];
 

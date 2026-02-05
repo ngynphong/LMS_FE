@@ -122,7 +122,7 @@ const Header = () => {
               </Link>
               <Link
                 className="font-medium hover:color-primary transition-colors"
-                to="/forum"
+                to="/#forum"
               >
                 Diễn đàn
               </Link>

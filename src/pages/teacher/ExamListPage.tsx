@@ -172,26 +172,6 @@ const ExamListPage = () => {
                   </span>
                   {exam.isPublished ? "Đã công khai" : "Công khai"}
                 </button>
-
-                {exam.code && (
-                  <div className="flex items-center gap-1 p-2 bg-gray-50 rounded-lg border border-gray-200">
-                    <span className="font-mono font-bold text-[#1A2B3C]">
-                      {exam.code}
-                    </span>
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(exam.code!);
-                        toast.success("Đã sao chép mã!");
-                      }}
-                      className="text-gray-400 hover:text-[#1E90FF]"
-                      title="Sao chép"
-                    >
-                      <span className="material-symbols-outlined text-sm">
-                        content_copy
-                      </span>
-                    </button>
-                  </div>
-                )}
               </div>
 
               <div className="flex gap-2 pt-3 border-t border-slate-100 mt-3">
@@ -215,16 +195,25 @@ const ExamListPage = () => {
                   </span>
                   {exam.code ? "Đổi mã" : "Tạo mã"}
                 </button>
-                <button
-                  onClick={() => setStatsQuizId(exam.id)}
-                  className="flex items-center justify-center gap-1 p-2 rounded-lg bg-blue-50 text-blue-600 text-sm font-bold hover:bg-blue-100 transition-colors"
-                  title="Xem thống kê"
-                >
-                  <span className="material-symbols-outlined text-lg">
-                    analytics
-                  </span>
-                  Thống kê
-                </button>
+                {exam.code && (
+                  <div className="flex items-center gap-1 p-1 px-2 bg-gray-50 rounded-lg border border-gray-200">
+                    <span className="font-mono font-bold text-[#1A2B3C]">
+                      {exam.code}
+                    </span>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(exam.code!);
+                        toast.success("Đã sao chép mã!");
+                      }}
+                      className="text-gray-400 hover:text-[#1E90FF]"
+                      title="Sao chép"
+                    >
+                      <span className="material-symbols-outlined text-sm">
+                        content_copy
+                      </span>
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
