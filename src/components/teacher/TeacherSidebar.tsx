@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaTimes } from "react-icons/fa";
 import {
   MdDashboard,
@@ -51,7 +51,7 @@ const navItems: NavItem[] = [
   {
     path: "/teacher/reports",
     icon: <MdReport className="text-xl" />,
-    label: "Báo cáo",
+    label: "Báo cáo điểm",
   },
   {
     path: "/teacher/settings",
@@ -76,6 +76,7 @@ const TeacherSidebar = ({
   const location = useLocation();
   const { logout } = useAuth();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -209,6 +210,7 @@ const TeacherSidebar = ({
           >
             {/* Create Course Button */}
             <button
+              onClick={() => navigate("/teacher/courses/new")}
               className={`color-primary-bg hover:opacity-90 text-white text-sm font-bold rounded-lg flex items-center justify-center transition-all shadow-md shadow-blue-200 ${
                 isCollapsed ? "lg:size-10 lg:p-0" : "w-full py-3 gap-2"
               } w-full py-3 gap-2`}

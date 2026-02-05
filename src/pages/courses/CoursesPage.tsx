@@ -11,12 +11,14 @@ import {
 import { FaSearch } from "react-icons/fa";
 import { toast } from "@/components/common/Toast";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 const CoursesPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const coursesPerPage = 6;
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   const {
     data,
@@ -29,12 +31,15 @@ const CoursesPage = () => {
     sorts: ["createdAt:desc"], // Correct: array of strings
     status: "PUBLISHED", // Public courses should be published
     visibility: "PUBLIC", // And public
-  });
+  }, { enabled: isAuthenticated });
 
   // Student Enrollment Data
-  const { data: enrolledCoursesData } = useStudentCourses({
-    pageSize: 1000, // Fetch all
-  });
+  const { data: enrolledCoursesData } = useStudentCourses(
+    {
+      pageSize: 1000, // Fetch all
+    },
+    { enabled: isAuthenticated },
+  );
   const [enrolledCourseIds, setEnrolledCourseIds] = useState<Set<string>>(
     new Set(),
   );

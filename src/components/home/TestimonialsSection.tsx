@@ -19,9 +19,9 @@ const testimonials: Testimonial[] = [
   {
     id: 1,
     name: "Nguyễn Thị C",
-    role: "Web Developer at TechCorp",
+    role: "Học sinh tiểu học",
     content:
-      "Khóa học tại EduBiển thực sự chất lượng, giảng viên hỗ trợ rất nhiệt tình và giáo trình sát với thực tế.",
+      "Con rất thích học ở IES EDU. Thầy cô giảng bài dễ hiểu và luôn giúp con khi con chưa hiểu bài.",
     rating: 5,
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuALNti7aymXiKX0TlrB2nTKflobYTAgvBV7vLhafEAPDTv7Ghvt4T_w0tWXHuJ9FoPGA8lgU7kwYuaUr6_5nBN0T2ldahG7ffkTrI6zs85o0qFQo9OPIfiKg7iftx6SCO3H8joiSg66_aWAwbtxNFvRPJyxHxaYzp6D9qaDETaSZsM7OmsNGlUy6xvpLOIJfFfeTNDpxTMbNvgHNWF2fYsmCN8lhH8I2-rgI0pS0Y3Yk0HuoCodTTa19jG4Q0eHdiu5cChXCd8ZflRU",
@@ -29,9 +29,9 @@ const testimonials: Testimonial[] = [
   {
     id: 2,
     name: "Trần Minh K",
-    role: "UI/UX Designer at CreativeHub",
+    role: "Học sinh tiểu học",
     content:
-      "Mình đã học được rất nhiều kỹ năng mới chỉ sau 3 tháng. Lộ trình bài bản giúp mình tự tin ứng tuyển vào công ty mơ ước.",
+      "Học ở đây rất vui. Con được làm nhiều bài tập hay và hiểu bài nhanh hơn ở lớp.",
     rating: 5,
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDEAZNdV59tM24ZyPQtutC0DsV5iPwbbVXqNSv_xHTAvjCVZ5ZlvneBg51omybsDKWkby5kUM93hspPnxHgZehh7LJNIztxRzJhFZ33vuoXXL89PyUOS_psF0zAjL18LtaBAhygZCgCH9BFwbpu2deWXzvllQaHEQCshCMdDMPKaqwEsMmwO64FfoClwOdQZxE51g6EHCdGHYeUsBBP-xTEQcppjunDu7-4caPN4YQ6hXwfETM7F-OBYT42kXI_OcLC3GDTgGw8mhWu",
@@ -39,9 +39,9 @@ const testimonials: Testimonial[] = [
   {
     id: 3,
     name: "Phạm Hoàng L",
-    role: "Data Analyst at VinaData",
+    role: "Học sinh tiểu học",
     content:
-      "Kiến thức thực chiến là điều mình thích nhất. Cảm ơn đội ngũ EduBiển đã luôn đồng hành và giải đáp thắc mắc.",
+      "Con thấy học rất dễ hiểu và không bị áp lực. Con thích nhất là thầy cô luôn động viên con cố gắng.",
     rating: 5,
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuACL2nv_p5u3u_0OSk3sgjJeysdu6hQEVPgCqcWA3ciFnrjlluPPYEMFuxrN4qcAiwyF8OUqMx_D_it5UL_r2DPDnf41O3kbR6F9QJxP-13kikxWVw6gu5jwx5T0tyZnqpI5h5baqVBfmTfdEnA4Nod5EFbst2YC7sfgcNDCmKWb8suYdje-7V2tKOopl5KkcXGM6G45pM5yDajEAOFKGc_D9b3egsowk31muJvze3FCLmfNdYX1CYYRvRLDjmTS2ICHLMUpIQ0IUog",
@@ -54,10 +54,10 @@ const TestimonialsSection = () => {
       <div className="max-w-[1280px] mx-auto px-10">
         <ScrollReveal variant={fadeInUp} className="text-center mb-16">
           <span className="color-primary font-bold tracking-widest text-sm uppercase">
-            Cảm nhận từ học viên
+            Cảm nhận từ học sinh
           </span>
           <h2 className="sm:text-4xl text-2xl font-extrabold text-gray-900 mt-2 max-w-3xl mx-auto">
-            Hơn 10,000 học viên đã thay đổi tương lai cùng Edu LMS
+            Hơn 1,000 học sinh đã thay đổi tương lai cùng IES EDU
           </h2>
         </ScrollReveal>
 
