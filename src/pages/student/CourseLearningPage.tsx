@@ -652,7 +652,7 @@ const CourseLearningPage = () => {
             )}
 
             {/* Tabs */}
-            <div className="mt-4 sm:mt-6 flex flex-col">
+            <div className="mt-4 sm:mt-6 flex flex-col px-2">
               <div className="flex gap-6 sm:gap-8 border-b border-gray-200 scrollbar-hide -mx-4 sm:mx-0 px-0 sm:px-2">
                 {[
                   { id: "overview", label: "Tổng quan" },

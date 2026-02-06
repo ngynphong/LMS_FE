@@ -104,7 +104,7 @@ const StudentAvailableQuizzesPage = () => {
       <div className="sticky top-0 z-20 bg-gray-50/95 backdrop-blur-sm -mx-4 px-4 md:static md:bg-transparent md:mx-0 md:px-0 mb-6 transition-all duration-200">
         <div className="w-full border-b border-gray-200/60">
           <div className="overflow-x-auto scrollbar-hide pb-1 -mb-px">
-            <div className="flex gap-6 md:gap-8 min-w-max px-1">
+            <div className="flex gap-4 md:gap-8 min-w-max px-1">
               {[
                 { id: "all", label: "Tất cả" },
                 { id: "ongoing", label: "Đang làm dở" },
