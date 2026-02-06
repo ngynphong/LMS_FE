@@ -25,6 +25,7 @@ jobs:
       - name: 🏗️ Build project
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_WS_URL: ${{ secrets.VITE_WS_URL }}
         run: npm run build
 
       - name: 📂 Sync files
