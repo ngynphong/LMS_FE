@@ -1,65 +1,83 @@
-interface Student {
-  id: number;
-  name: string;
-  initials: string;
-  color: string;
-  course: string;
-  joinedTime: string;
-  status: string;
-  statusColor: string;
+import type { AtRiskStudentResponse } from "../../../types/teacherDashboard";
+
+interface AtRiskStudentsTableProps {
+  data: AtRiskStudentResponse[] | undefined;
+  isLoading: boolean;
 }
 
-const students: Student[] = [
-  {
-    id: 1,
-    name: 'Lê Văn Hùng',
-    initials: 'LH',
-    color: 'bg-[#0b8eda]/20 text-[#0b8eda]',
-    course: 'Thiết kế UI/UX cơ bản',
-    joinedTime: '10 phút trước',
-    status: 'Vừa thanh toán',
-    statusColor: 'bg-green-100 text-green-700'
-  },
-  {
-    id: 2,
-    name: 'Trần Thị Ngọc',
-    initials: 'TN',
-    color: 'bg-blue-100 text-blue-700',
-    course: 'Lập trình Frontend ReactJS',
-    joinedTime: '2 giờ trước',
-    status: 'Học bổng',
-    statusColor: 'bg-blue-100 text-blue-700'
-  },
-  {
-    id: 3,
-    name: 'Phạm Minh Anh',
-    initials: 'PA',
-    color: 'bg-purple-100 text-purple-700',
-    course: 'Marketing Kỹ thuật số',
-    joinedTime: '5 giờ trước',
-    status: 'Đã kích hoạt',
-    statusColor: 'bg-green-100 text-green-700'
-  },
-  {
-    id: 4,
-    name: 'Quách Thanh Tùng',
-    initials: 'QT',
-    color: 'bg-orange-100 text-orange-700',
-    course: 'Phân tích dữ liệu Python',
-    joinedTime: 'Hôm qua',
-    status: 'Đã kích hoạt',
-    statusColor: 'bg-green-100 text-green-700'
-  }
-];
+const AtRiskStudentsTable = ({ data, isLoading }: AtRiskStudentsTableProps) => {
+  const formatLastActive = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffHours / 24);
 
-const NewStudentsTable = () => {
+    if (diffHours < 1) return "Vừa xong";
+    if (diffHours < 24) return `${diffHours} giờ trước`;
+    if (diffDays < 7) return `${diffDays} ngày trước`;
+    return date.toLocaleDateString("vi-VN");
+  };
+
+  const getScoreColor = (score: number) => {
+    if (score >= 50) return "bg-yellow-100 text-yellow-700";
+    return "bg-red-100 text-red-700";
+  };
+
+  if (isLoading) {
+    return (
+      <div className="bg-white p-6 rounded-xl border border-[#dbe2e6]">
+        <div className="h-6 w-48 bg-gray-200 rounded mb-6 animate-pulse" />
+        <div className="space-y-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="flex items-center gap-4 animate-pulse">
+              <div className="h-10 w-10 bg-gray-200 rounded-full" />
+              <div className="flex-1">
+                <div className="h-4 w-32 bg-gray-200 rounded mb-2" />
+                <div className="h-3 w-24 bg-gray-200 rounded" />
+              </div>
+              <div className="h-6 w-16 bg-gray-200 rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  const students = data || [];
+
+  if (students.length === 0) {
+    return (
+      <div className="bg-white p-6 rounded-xl border border-[#dbe2e6]">
+        <h2 className="text-[#111518] text-lg font-bold mb-6">
+          Học viên cần chú ý
+        </h2>
+        <div className="flex items-center justify-center h-32 text-[#607b8a]">
+          <div className="text-center">
+            <span className="material-symbols-outlined text-4xl text-green-500 mb-2">
+              check_circle
+            </span>
+            <p>Tất cả học viên đang có tiến độ tốt!</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white p-6 rounded-xl border border-[#dbe2e6]">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-[#111518] text-lg font-bold">Học viên mới tham gia</h2>
-        <button className="p-2 text-[#607b8a] hover:text-[#0b8eda] transition-colors">
-          <span className="material-symbols-outlined">more_horiz</span>
-        </button>
+        <div>
+          <h2 className="text-[#111518] text-lg font-bold">
+            Học viên cần chú ý
+          </h2>
+          <p className="text-sm text-[#607b8a]">
+            Học viên có tiến độ thấp hoặc điểm quiz thấp
+          </p>
+        </div>
+        <span className="px-3 py-1 bg-red-100 text-red-700 text-sm font-semibold rounded-full">
+          {students.length} học viên
+        </span>
       </div>
 
       <div className="overflow-x-auto">
@@ -67,37 +85,32 @@ const NewStudentsTable = () => {
           <thead>
             <tr className="text-[#607b8a] text-xs font-bold uppercase tracking-wider border-b border-gray-100">
               <th className="pb-4 font-bold">Học viên</th>
-              <th className="pb-4 font-bold">Khóa học</th>
-              <th className="pb-4 font-bold">Thời gian tham gia</th>
-              <th className="pb-4 font-bold">Trạng thái</th>
+              <th className="pb-4 font-bold">Điểm thấp nhất</th>
+              <th className="pb-4 font-bold">Hoạt động</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {students.map((student) => (
               <tr
-                key={student.id}
+                key={student.studentId}
                 className="group hover:bg-gray-50 transition-colors"
               >
                 <td className="py-4">
                   <div className="flex items-center gap-3">
-                    <div
-                      className={`size-8 rounded-full flex items-center justify-center font-bold text-xs ${student.color}`}
-                    >
-                      {student.initials}
-                    </div>
                     <span className="text-sm font-semibold text-[#111518]">
-                      {student.name}
+                      {student.fullName}
                     </span>
                   </div>
                 </td>
-                <td className="py-4 text-sm text-[#607b8a]">{student.course}</td>
-                <td className="py-4 text-sm text-[#607b8a]">{student.joinedTime}</td>
                 <td className="py-4">
                   <span
-                    className={`px-2 py-1 rounded-full text-[10px] font-bold ${student.statusColor}`}
+                    className={`px-2 py-1 rounded-full text-xs font-bold ${getScoreColor(student.lowestQuizScore)}`}
                   >
-                    {student.status}
+                    {student.lowestQuizScore.toFixed(1)} điểm
                   </span>
+                </td>
+                <td className="py-4 text-sm text-[#607b8a]">
+                  {formatLastActive(student.lastActive)}
                 </td>
               </tr>
             ))}
@@ -108,4 +121,4 @@ const NewStudentsTable = () => {
   );
 };
 
-export default NewStudentsTable;
+export default AtRiskStudentsTable;

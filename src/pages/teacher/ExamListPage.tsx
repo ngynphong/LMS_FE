@@ -70,7 +70,7 @@ const ExamListPage = () => {
           </p>
         </div>
         <Link
-          to="/teacher/exams/new"
+          to="/teacher/quizzes/new"
           className="color-primary-bg hover:translate-y-[-2px] duration-300 text-white px-5 py-2.5 rounded-lg flex items-center gap-2 font-bold transition-all shadow-md"
         >
           <span className="material-symbols-outlined text-lg">add_circle</span>
@@ -176,7 +176,7 @@ const ExamListPage = () => {
 
               <div className="flex gap-2 pt-3 border-t border-slate-100 mt-3">
                 <Link
-                  to={`/teacher/exams/${exam.id}/edit`}
+                  to={`/teacher/quizzes/${exam.id}/edit`}
                   className="flex items-center justify-center gap-1 p-2 rounded-lg bg-[#0074bd]/10 text-[#0074bd] text-sm font-bold hover:bg-[#0074bd]/20 transition-colors"
                 >
                   <span className="material-symbols-outlined text-base">

@@ -5,6 +5,12 @@ import type {
   StudentDetailResponse, 
   UpdateStudentRequest 
 } from "../types/student";
+import type {
+  ApiResponseDashboardSummary,
+  ApiResponseAtRiskStudents,
+  ApiResponseQuizPerformance,
+  ApiResponseCourseHealth
+} from "../types/teacherDashboard";
 import axios from "axios";
 
 // Helper for error handling
@@ -73,5 +79,43 @@ export const updateStudentApi = async (id: string, data: UpdateStudentRequest): 
         }
     } catch (error) {
         return handleApiError(error, 'Failed to update student');
+    }
+};
+
+// ==================== Dashboard APIs ====================
+
+export const getDashboardSummaryApi = async (): Promise<ApiResponseDashboardSummary> => {
+    try {
+        const response = await axiosInstance.get<ApiResponseDashboardSummary>('/teacher/dashboard/summary');
+        return response.data;
+    } catch (error) {
+        return handleApiError(error, 'Failed to fetch dashboard summary');
+    }
+};
+
+export const getAtRiskStudentsApi = async (): Promise<ApiResponseAtRiskStudents> => {
+    try {
+        const response = await axiosInstance.get<ApiResponseAtRiskStudents>('/teacher/dashboard/students/at-risk');
+        return response.data;
+    } catch (error) {
+        return handleApiError(error, 'Failed to fetch at-risk students');
+    }
+};
+
+export const getQuizPerformanceApi = async (): Promise<ApiResponseQuizPerformance> => {
+    try {
+        const response = await axiosInstance.get<ApiResponseQuizPerformance>('/teacher/dashboard/quizzes/performance');
+        return response.data;
+    } catch (error) {
+        return handleApiError(error, 'Failed to fetch quiz performance');
+    }
+};
+
+export const getCourseHealthApi = async (): Promise<ApiResponseCourseHealth> => {
+    try {
+        const response = await axiosInstance.get<ApiResponseCourseHealth>('/teacher/dashboard/courses');
+        return response.data;
+    } catch (error) {
+        return handleApiError(error, 'Failed to fetch course health');
     }
 };

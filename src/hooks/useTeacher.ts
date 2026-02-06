@@ -1,9 +1,14 @@
 import { useState, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { 
     getMyStudentsApi, 
     importStudentApi, 
     getStudentDetailApi, 
-    updateStudentApi 
+    updateStudentApi,
+    getDashboardSummaryApi,
+    getAtRiskStudentsApi,
+    getQuizPerformanceApi,
+    getCourseHealthApi
 } from '../services/teacherService';
 import type { Student, UpdateStudentRequest } from '../types/student';
 import { toast } from '../components/common/Toast';
@@ -98,4 +103,32 @@ export const useTeacher = () => {
         getStudent,
         updateStudent
     };
+};
+
+export const useTeacherDashboardSummary = () => {
+    return useQuery({
+        queryKey: ['teacher-dashboard-summary'],
+        queryFn: getDashboardSummaryApi,
+    });
+};
+
+export const useAtRiskStudents = () => {
+    return useQuery({
+        queryKey: ['teacher-at-risk-students'],
+        queryFn: getAtRiskStudentsApi,
+    });
+};
+
+export const useQuizPerformance = () => {
+    return useQuery({
+        queryKey: ['teacher-quiz-performance'],
+        queryFn: getQuizPerformanceApi,
+    });
+};
+
+export const useCourseHealth = () => {
+    return useQuery({
+        queryKey: ['teacher-course-health'],
+        queryFn: getCourseHealthApi,
+    });
 };
