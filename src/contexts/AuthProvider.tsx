@@ -392,12 +392,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       firstName: string,
       lastName: string,
       dob: string,
-      roleName: string,
     ) => {
       setLoading(true);
       setError(null);
       try {
-        await registerApi(email, password, firstName, lastName, dob, roleName);
+        await registerApi(email, password, firstName, lastName, dob);
         toast.success(
           "Đăng ký thành công! Vui lòng xác thực email trước khi đăng nhập.",
         );

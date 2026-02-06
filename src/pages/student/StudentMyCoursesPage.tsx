@@ -1,7 +1,10 @@
 import { useState, useMemo, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useStudentCourses } from "../../hooks/useCourses";
 import PaginationControl from "@/components/common/PaginationControl";
+import StudentCourseCard, {
+  StudentCourseCardSkeleton,
+} from "@/components/student/StudentCourseCard";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 const StudentMyCoursesPage = () => {
   const [activeTab, setActiveTab] = useState<
@@ -59,16 +62,6 @@ const StudentMyCoursesPage = () => {
     setPageNo(0);
   };
 
-  // Format date helper
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("vi-VN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
-
   const handlePageChange = (newPage: number) => {
     if (newPage >= 0 && newPage < totalPages) {
       setPageNo(newPage);
@@ -77,18 +70,7 @@ const StudentMyCoursesPage = () => {
   };
 
   if (loading && !courses) {
-    return (
-      <div className="max-w-6xl mx-auto px-0 md:px-8 py-4">
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined animate-spin text-2xl text-blue-600">
-              progress_activity
-            </span>
-            <span className="text-slate-600">Đang tải khóa học...</span>
-          </div>
-        </div>
-      </div>
-    );
+    return <LoadingOverlay isLoading={loading} message="Đang tải khoá học" />;
   }
 
   if (error && !courses) {
@@ -124,9 +106,15 @@ const StudentMyCoursesPage = () => {
 
       {/* Tabs */}
       <div className="mb-6 md:mb-8 border-b border-slate-200">
-        <div className="flex flex-wrap gap-2 md:gap-8">
+        <div
+          className="flex flex-wrap gap-2 md:gap-8"
+          role="tablist"
+          aria-label="Bộ lọc khóa học"
+        >
           <button
             onClick={() => handleTabChange("all")}
+            role="tab"
+            aria-selected={activeTab === "all"}
             className={`flex flex-col items-center justify-center pb-3 pt-4 px-2 transition-colors whitespace-nowrap ${
               activeTab === "all"
                 ? "border-b-4 border-[#1E90FF] color-primary"
@@ -137,6 +125,8 @@ const StudentMyCoursesPage = () => {
           </button>
           <button
             onClick={() => handleTabChange("in_progress")}
+            role="tab"
+            aria-selected={activeTab === "in_progress"}
             className={`flex flex-col items-center justify-center pb-3 pt-4 px-2 transition-colors whitespace-nowrap ${
               activeTab === "in_progress"
                 ? "border-b-4 border-[#1E90FF] color-primary"
@@ -147,6 +137,8 @@ const StudentMyCoursesPage = () => {
           </button>
           <button
             onClick={() => handleTabChange("completed")}
+            role="tab"
+            aria-selected={activeTab === "completed"}
             className={`flex flex-col items-center justify-center pb-3 pt-4 px-2 transition-colors whitespace-nowrap ${
               activeTab === "completed"
                 ? "border-b-4 border-[#1E90FF] color-primary"
@@ -206,127 +198,10 @@ const StudentMyCoursesPage = () => {
         {loading && !courses
           ? // Skeleton loading if initial load
             Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 h-[320px] animate-pulse"
-              >
-                <div className="bg-slate-200 h-48 w-full" />
-                <div className="p-4 space-y-3">
-                  <div className="h-4 bg-slate-200 rounded w-3/4" />
-                  <div className="h-3 bg-slate-200 rounded w-1/2" />
-                </div>
-              </div>
+              <StudentCourseCardSkeleton key={i} />
             ))
           : courses?.map((course) => (
-              <div
-                key={course.id}
-                className="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition-shadow flex flex-col"
-              >
-                <div className="relative aspect-video">
-                  <div
-                    className="w-full h-full bg-center bg-cover bg-slate-100"
-                    style={{
-                      backgroundImage: `url("${course.thumbnailUrl}")`,
-                    }}
-                  >
-                    {!course.thumbnailUrl && (
-                      <div className="w-full md:w-80 aspect-video bg-slate-100 shrink-0">
-                        <img
-                          src="/img/book.png"
-                          alt={course.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    )}
-                  </div>
-                  {/* Status Badge */}
-                  <span
-                    className={`absolute top-3 left-3 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded ${
-                      course.status === "PUBLISHED"
-                        ? "bg-green-500"
-                        : course.status === "DRAFT"
-                          ? "bg-yellow-500"
-                          : "bg-slate-500"
-                    }`}
-                  >
-                    {course.status === "PUBLISHED"
-                      ? "Đang mở"
-                      : course.status === "DRAFT"
-                        ? "Bản nháp"
-                        : course.status || "Khóa học"}
-                  </span>
-                </div>
-                <div className="p-4 md:p-5 flex flex-col flex-1">
-                  <h3 className="text-[#111518] text-base font-bold leading-tight mb-2 line-clamp-2">
-                    {course.name}
-                  </h3>
-
-                  {/* Teacher & School Info */}
-                  <div className="flex flex-col gap-1 mb-3 text-sm text-slate-500">
-                    {course.teacherName && (
-                      <div className="flex items-center gap-1.5">
-                        <span className="material-symbols-outlined text-[16px]">
-                          person
-                        </span>
-                        <span>{course.teacherName}</span>
-                      </div>
-                    )}
-                    {course.schoolName && (
-                      <div className="flex items-center gap-1.5">
-                        <span className="material-symbols-outlined text-[16px]">
-                          school
-                        </span>
-                        <span>{course.schoolName}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Progress & Dates */}
-                  <div className="flex flex-col gap-2 mb-4 mt-auto">
-                    {course.progressPercent !== undefined && (
-                      <div className="w-full">
-                        <div className="flex justify-between text-xs mb-1">
-                          <span className="text-slate-500">Tiến độ</span>
-                          <span className="font-medium color-primary">
-                            {course.progressPercent}%
-                          </span>
-                        </div>
-                        <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                          <div
-                            className="h-full color-primary-bg rounded-full transition-all duration-500"
-                            style={{ width: `${course.progressPercent}%` }}
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="text-xs text-slate-400 flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[14px]">
-                        calendar_month
-                      </span>
-                      {course.completedAt ? (
-                        <span>
-                          Hoàn thành: {formatDate(course.completedAt)}
-                        </span>
-                      ) : course.enrolledAt ? (
-                        <span>Tham gia: {formatDate(course.enrolledAt)}</span>
-                      ) : (
-                        <span>Cập nhật: {formatDate(course.updatedAt)}</span>
-                      )}
-                    </div>
-                  </div>
-
-                  <Link
-                    to={`/student/courses/${course.id}/learn`}
-                    className="w-full py-2.5 md:py-3 color-primary-bg text-white text-sm font-bold rounded-lg transition-colors flex items-center justify-center gap-2 hover:opacity-90"
-                  >
-                    Vào học
-                    <span className="material-symbols-outlined text-sm">
-                      play_circle
-                    </span>
-                  </Link>
-                </div>
-              </div>
+              <StudentCourseCard key={course.id} course={course} />
             ))}
 
         {(!courses || courses.length === 0) && !loading && (

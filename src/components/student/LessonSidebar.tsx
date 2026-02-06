@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type { ApiLesson, LessonItem } from "../../types/learningTypes";
 
 interface LessonSidebarProps {
@@ -57,48 +57,52 @@ const LessonSidebar = ({
   isDesktopOpen = true,
   onDesktopToggle,
 }: LessonSidebarProps) => {
-  // Check if a lesson item is accessible (previous items in ALL lessons must be completed)
+  // Pre-compute accessibility maps to avoid O(n²) recalculation on every render
+  const { lessonAccessibilityMap, itemAccessibilityMap } = useMemo(() => {
+    const lessonMap = new Map<number, boolean>();
+    const itemMap = new Map<string, boolean>(); // key: "lessonIndex-itemIndex"
+
+    let allPreviousCompleted = true;
+
+    for (let lessonIndex = 0; lessonIndex < lessons.length; lessonIndex++) {
+      const lesson = lessons[lessonIndex];
+      const items = lesson.lessonItems || [];
+
+      // Lesson is accessible if all previous lessons are completed
+      lessonMap.set(lessonIndex, allPreviousCompleted);
+
+      let allItemsInLessonCompleted = true;
+      let previousItemsCompleted = allPreviousCompleted;
+
+      for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
+        const item = items[itemIndex];
+        // Item is accessible if all previous items (including from prev lessons) are completed
+        itemMap.set(`${lessonIndex}-${itemIndex}`, previousItemsCompleted);
+
+        if (!completedItemIds.has(item.id)) {
+          previousItemsCompleted = false;
+          allItemsInLessonCompleted = false;
+        }
+      }
+
+      if (!allItemsInLessonCompleted) {
+        allPreviousCompleted = false;
+      }
+    }
+
+    return { lessonAccessibilityMap: lessonMap, itemAccessibilityMap: itemMap };
+  }, [lessons, completedItemIds]);
+
+  // Helper functions using cached maps
   const isItemAccessible = (
     lessonIndex: number,
     itemIndex: number,
   ): boolean => {
-    // Check all previous lessons are fully completed
-    for (let i = 0; i < lessonIndex; i++) {
-      const lesson = lessons[i];
-      const items = lesson.lessonItems || [];
-      for (const item of items) {
-        if (!completedItemIds.has(item.id)) {
-          return false;
-        }
-      }
-    }
-
-    // Check previous items in current lesson
-    const currentLessonItems = lessons[lessonIndex]?.lessonItems || [];
-    for (let i = 0; i < itemIndex; i++) {
-      if (!completedItemIds.has(currentLessonItems[i].id)) {
-        return false;
-      }
-    }
-
-    return true;
+    return itemAccessibilityMap.get(`${lessonIndex}-${itemIndex}`) ?? false;
   };
 
-  // Check if a lesson is accessible
   const isLessonAccessible = (lessonIndex: number): boolean => {
-    if (lessonIndex === 0) return true;
-
-    // All items in previous lessons must be completed
-    for (let i = 0; i < lessonIndex; i++) {
-      const lesson = lessons[i];
-      const items = lesson.lessonItems || [];
-      for (const item of items) {
-        if (!completedItemIds.has(item.id)) {
-          return false;
-        }
-      }
-    }
-    return true;
+    return lessonAccessibilityMap.get(lessonIndex) ?? false;
   };
 
   // Count completed items in a lesson

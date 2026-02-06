@@ -49,7 +49,7 @@ const AIChatbot = () => {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full color-primary-bg text-white shadow-lg hover:scale-110 transition-all duration-300 group"
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full color-primary-bg text-white shadow-lg hover:scale-110 transition-all duration-300 group"
         aria-label="Mở trợ lý AI"
       >
         <span className="material-symbols-outlined text-[28px]">
@@ -64,7 +64,7 @@ const AIChatbot = () => {
   // Minimized state - show only header bar
   if (isMinimized) {
     return (
-      <div className="fixed bottom-6 right-6 z-50 w-[360px] rounded-xl bg-white shadow-2xl border border-gray-200 overflow-hidden">
+      <div className="fixed bottom-0 right-0 sm:bottom-6 sm:right-6 z-50 w-full sm:w-[360px] sm:rounded-xl rounded-t-xl bg-white shadow-2xl border border-gray-200 overflow-hidden">
         <div
           className="flex items-center justify-between color-primary-bg px-4 py-3 cursor-pointer"
           onClick={() => setIsMinimized(false)}
@@ -116,7 +116,7 @@ const AIChatbot = () => {
 
   // Full chat window - harmonious sizing
   return (
-    <div className="fixed bottom-6 right-6 z-50 w-[360px] md:w-[400px] h-[400px] md:h-[500px] flex flex-col rounded-xl bg-white shadow-2xl border border-gray-200 overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
+    <div className="fixed bottom-0 right-0 sm:bottom-6 sm:right-6 z-50 w-full h-[85vh] sm:w-[360px] sm:h-[450px] md:w-[400px] md:h-[500px] flex flex-col rounded-t-xl sm:rounded-xl bg-white shadow-2xl border border-gray-200 overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
       {/* Header */}
       <div className="flex items-center justify-between color-primary-bg px-4 py-3">
         <div className="flex items-center gap-3">
@@ -158,7 +158,7 @@ const AIChatbot = () => {
       </div>
 
       {/* Messages Container */}
-      <div className="flex-1 h-[480px] overflow-y-auto p-4 bg-blue-50/30 space-y-4">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 bg-blue-50/30 space-y-3 sm:space-y-4">
         {messages.map((message) => (
           <div
             key={message.id}
@@ -232,7 +232,7 @@ const AIChatbot = () => {
       </div>
 
       {/* Input Area */}
-      <div className="p-4 bg-white border-t border-gray-100">
+      <div className="p-3 sm:p-4 bg-white border-t border-gray-100">
         <div className="flex items-center gap-2 rounded-xl bg-gray-50 border border-gray-200 px-4 py-2.5 focus-within:border-[#1E90FF] focus-within:ring-2 focus-within:ring-[#1E90FF]/20 transition-all">
           <input
             ref={inputRef}

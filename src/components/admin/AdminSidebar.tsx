@@ -32,6 +32,11 @@ const navItems: NavItem[] = [
     label: "Quản lý người dùng",
   },
   {
+    path: "/admin/teachers/new",
+    icon: <MdLibraryBooks className="text-xl" />,
+    label: "Thêm giáo viên",
+  },
+  {
     path: "/admin/courses",
     icon: <FaCalendar className="text-xl" />,
     label: "Quản lý khóa học",
@@ -41,6 +46,7 @@ const navItems: NavItem[] = [
     icon: <MdPayments className="text-xl" />,
     label: "Quản lý giao dịch",
   },
+
   {
     path: "/admin/reports",
     icon: <MdAnalytics className="text-xl" />,

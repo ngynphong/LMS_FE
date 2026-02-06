@@ -5,7 +5,11 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCreateQuiz, useUpdateQuiz, useQuiz } from "../../hooks/useQuizzes";
 import { useMyCourses, useCourseDetail } from "../../hooks/useCourses";
 import { useQuestions } from "../../hooks/useQuestions";
-import { getLessonById, getLessonItemById } from "../../services/lessonService";
+import {
+  getLessonById,
+  getLessonItemById,
+  getLessonsByCourseId,
+} from "../../services/lessonService";
 import type {
   CreateQuizRequest,
   DynamicConfig,
@@ -138,54 +142,112 @@ const ExamFormPage = () => {
     fetchLessonItems();
   }, [selectedLessonId]);
 
-  // Resolve hierarchy for editing
+  // Set selectedLessonItemId after lessonItems are loaded (for edit mode)
+  useEffect(() => {
+    if (isEditMode && quizDetail?.lessonItemId && lessonItems.length > 0) {
+      // Only set if the lessonItemId exists in the current lessonItems
+      const exists = lessonItems.some(
+        (item) => item.id === quizDetail.lessonItemId,
+      );
+      if (exists) {
+        setSelectedLessonItemId(quizDetail.lessonItemId);
+      }
+    }
+  }, [isEditMode, quizDetail?.lessonItemId, lessonItems]);
+
+  // Resolve hierarchy for editing (Course > Lesson > LessonItem)
   useEffect(() => {
     const resolveHierarchy = async () => {
-      if (isEditMode && quizDetail?.lessonItemId) {
-        console.log("Resolving hierarchy for item:", quizDetail.lessonItemId);
-        try {
-          // Get Lesson Item to find Lesson ID
-          // Note: lessonId might not be in the strict TypeScript interface but usually returned
-          const lessonItem = (await getLessonItemById(
-            quizDetail.lessonItemId,
-          )) as any;
-          console.log("Resolved Lesson Item:", lessonItem);
+      if (!isEditMode || !quizDetail?.lessonItemId) return;
+      if (!courses || courses.length === 0) return;
 
-          if (lessonItem && lessonItem.lessonId) {
-            setSelectedLessonId(lessonItem.lessonId);
+      console.log(
+        "Resolving hierarchy for lessonItemId:",
+        quizDetail.lessonItemId,
+      );
 
-            // Get Lesson to find Course ID
-            const lesson = await getLessonById(lessonItem.lessonId);
-            console.log("Resolved Lesson:", lesson);
+      try {
+        // Method 1: Try to get lessonId from lesson-items API
+        const lessonItem = await getLessonItemById(quizDetail.lessonItemId);
+        console.log("Resolved Lesson Item:", lessonItem);
 
-            if (lesson && lesson.courseId) {
-              setSelectedCourseId(lesson.courseId);
-            }
+        if (lessonItem && (lessonItem as any).lessonId) {
+          const lessonId = (lessonItem as any).lessonId;
+          setSelectedLessonId(lessonId);
+
+          const lesson = await getLessonById(lessonId);
+          console.log("Resolved Lesson:", lesson);
+
+          if (lesson && lesson.courseId) {
+            setSelectedCourseId(lesson.courseId);
           }
-        } catch (error) {
-          console.error("Error resolving hierarchy:", error);
+          return; // Success, exit early
         }
+
+        // Method 2: Fallback - Search through all courses to find the lessonItem
+        console.log(
+          "lessonId not in API response, searching through",
+          courses.length,
+          "courses...",
+        );
+
+        for (const course of courses) {
+          try {
+            // Use getLessonsByCourseId to get lessons with lessonItems
+            const lessons = await getLessonsByCourseId(course.id);
+            console.log("Course", course.id, "has", lessons.length, "lessons");
+
+            if (!lessons || lessons.length === 0) continue;
+
+            for (const lesson of lessons) {
+              const items = lesson.lessonItems || [];
+              console.log("Lesson", lesson.id, "has", items.length, "items");
+
+              const found = items.some(
+                (item) => item.id === quizDetail.lessonItemId,
+              );
+
+              if (found) {
+                console.log(
+                  "✅ Found in course:",
+                  course.id,
+                  "lesson:",
+                  lesson.id,
+                );
+                setSelectedCourseId(course.id);
+                setSelectedLessonId(lesson.id);
+                return;
+              }
+            }
+          } catch (e) {
+            console.warn("Error fetching lessons for course", course.id, e);
+            // Continue to next course
+          }
+        }
+        console.warn("❌ Could not find lessonItem in any course");
+      } catch (error) {
+        console.error("Error resolving hierarchy:", error);
       }
     };
 
-    if (quizDetail) {
+    // Only run when BOTH quizDetail AND courses are loaded
+    if (quizDetail && courses && courses.length > 0) {
       resolveHierarchy();
     }
-  }, [isEditMode, quizDetail]);
+  }, [isEditMode, quizDetail, courses]);
 
   // Populate form data when quizDetail is loaded
   useEffect(() => {
     if (quizDetail && isEditMode) {
-      // Use fallback properties if needed, casting to any if structure might differ
-      const qd = quizDetail as any;
+      const qd = quizDetail;
 
       setFormData({
         title: qd.title || "",
         description: qd.description || "",
-        duration: qd.durationInMinutes ?? qd.duration ?? 60,
+        duration: qd.durationInMinutes ?? 60,
         maxAttempts: qd.maxAttempts ?? 1,
-        passingScore: qd.passScore ?? qd.passingScore ?? 50,
-        shuffleQuestions: qd.shuffleQuestions ?? true,
+        passingScore: qd.passScore ?? 50,
+        shuffleQuestions: true, // Not returned from API, default to true
         isDynamic: qd.isDynamic ?? true,
         type: qd.type || "PRACTICE",
         closeTime: qd.closeTime || "",
@@ -194,19 +256,32 @@ const ExamFormPage = () => {
         isPublished: qd.isPublished ?? true,
       });
 
-      // Populate Dynamic Config
+      // Populate Dynamic Config - map from API response format to form format
       if (qd.isDynamic && qd.dynamicConfigs && qd.dynamicConfigs.length > 0) {
-        setDynamicConfig(qd.dynamicConfigs[0]);
+        const apiConfig = qd.dynamicConfigs[0];
+        setDynamicConfig({
+          targetLessonId: selectedLessonId || "", // Will be resolved by hierarchy
+          difficulty: apiConfig.difficulty,
+          quantity: apiConfig.quantity,
+          scorePerQuestion: apiConfig.pointsPerQuestion,
+        });
       }
 
-      // Populate Static Questions
-      if (!qd.isDynamic && qd.staticQuestions) {
-        setStaticQuestions(qd.staticQuestions);
+      // Populate Static Questions - map from API response format to form format
+      if (
+        !qd.isDynamic &&
+        qd.staticQuestions &&
+        qd.staticQuestions.length > 0
+      ) {
+        const mappedQuestions = qd.staticQuestions.map((sq, index) => ({
+          questionId: sq.id,
+          score: sq.defaultScore || 1,
+          order: index + 1,
+        }));
+        setStaticQuestions(mappedQuestions);
       }
-
-      setSelectedLessonItemId(qd.lessonItemId || "");
     }
-  }, [quizDetail, isEditMode]);
+  }, [quizDetail, isEditMode, selectedLessonId]);
 
   const toggleStaticQuestion = (question: Question) => {
     const exists = staticQuestions.find((sq) => sq.questionId === question.id);

@@ -1,9 +1,4 @@
-import {
-  FaArrowRight,
-  FaStar, 
-  FaBolt,
-  FaRocket,
-} from "react-icons/fa";
+import { FaArrowRight, FaStar, FaBolt, FaRocket } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { ScrollReveal, fadeInLeft, fadeInRight } from "../ui/ScrollReveal";
 
@@ -13,9 +8,8 @@ const HeroSection = () => {
       <div className="max-w-[1280px] mx-auto px-4 md:px-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <ScrollReveal
           variant={fadeInLeft}
-          className="flex flex-col gap-6 order-2 lg:order-1"
+          className="flex flex-col gap-4 order-2 lg:order-1"
         >
-          {" "}
           <div className="inline-flex items-center gap-2 color-primary px-3 py-1 rounded-full w-fit">
             <span className="color-primary-bg text-white text-[10px] px-1.5 py-0.5 rounded-md font-bold uppercase shrink-0">
               Mới
@@ -27,8 +21,11 @@ const HeroSection = () => {
               <FaArrowRight />
             </span>
           </div>
-          <h1 className="text-slate-900 text-start text-3xl sm:text-4xl lg:text-5xl font-black leading-[1.2] lg:leading-[1.1] tracking-tight">
-            Viện Khoa Học Sáng Tạo Khởi Nghiệp
+          <h1 className="text-slate-900 text-start text-2xl sm:text-3xl lg:text-5xl font-black leading-[1.2] lg:leading-[1.1] tracking-tight">
+            Viện Khoa Học
+          </h1>
+          <h1 className="text-slate-900 text-start text-2xl sm:text-3xl lg:text-5xl font-black leading-[1.2] lg:leading-[1.1] tracking-tight">
+            Sáng Tạo Khởi Nghiệp
           </h1>
           <p className="text-base sm:text-xl text-slate-600 leading-relaxed max-w-xl">
             Kiến tạo tương lai thông qua giáo dục khai phóng và ứng dụng công
@@ -84,8 +81,7 @@ const HeroSection = () => {
               className="w-full h-full object-cover"
               src="/img/hero-img.png"
               onError={(e) => {
-                (e.target as HTMLImageElement).src =
-                  "/img/hero-img.png";
+                (e.target as HTMLImageElement).src = "/img/hero-img.png";
               }}
             />
           </div>

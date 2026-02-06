@@ -30,3 +30,85 @@ export interface AdminUser {
   joinedDate: string;
   status: UserStatus;
 }
+
+export interface AdminDashboardData {
+  data: {
+    totalUsers: number;
+    totalStudents: number;
+    totalTeachers: number;
+    totalCourses: number;
+    activeCourses: number;
+    currentOnlineUsers: number;
+    totalPageViews: number;
+    todayVisitors: number;
+  };
+}
+
+
+export interface SystemLog {
+  id: string;
+  action: string;
+  actor: string;
+  ipAddress: string;
+  endpoint: string;
+  method: string;
+  requestData: string;
+  timestamp: string;
+  success: boolean;
+}
+
+export interface SystemLogResponse {
+  code: number;
+  message: string;
+  data: {
+    pageNo: number;
+    pageSize: number;
+    totalPage: number;
+    totalElement: number;
+    sortBy: string[];
+    items: SystemLog[];
+  };
+}
+
+export interface CreateTeacherRequest {
+  email: string;
+  password?: string; // Optional if generated or same as email
+  firstName: string;
+  lastName: string;
+  dob: string; // YYYY-MM-DD
+  roleName: string; // Should be "TEACHER"
+}
+
+export interface TeacherProfile {
+  id: string;
+  qualification: string;
+  specialization: string;
+  experience: string;
+  biography: string;
+  certificateUrls: string[];
+  isVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+  deleted: boolean;
+}
+
+export interface UserData {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  imgUrl: string;
+  dob: string;
+  roles: string[];
+}
+
+export interface CreateTeacherResponseData extends UserData {
+  teacherProfile: TeacherProfile;
+  studentProfile: { id: string };
+}
+
+export interface CreateTeacherResponse {
+  code: number;
+  message: string;
+  data: CreateTeacherResponseData;
+}

@@ -8,7 +8,6 @@ import {
   usePublishQuiz,
 } from "../../hooks/useQuizzes";
 import { toast } from "../../components/common/Toast";
-import { QuizStatisticsModal } from "../../components/teacher/QuizStatisticsModal";
 
 const ExamListPage = () => {
   const { data: exams, isLoading: loading, error } = useTeacherQuizzes();
@@ -16,7 +15,6 @@ const ExamListPage = () => {
     useGenerateQuizCode();
   const { mutateAsync: publish, isPending: isPublishing } = usePublishQuiz();
   const [searchQuery, setSearchQuery] = useState("");
-  const [statsQuizId, setStatsQuizId] = useState<string | null>(null);
 
   const handleGenerateCode = async (quizId: string) => {
     try {
@@ -224,14 +222,6 @@ const ExamListPage = () => {
           </div>
         )}
       </div>
-
-      {statsQuizId && (
-        <QuizStatisticsModal
-          isOpen={!!statsQuizId}
-          onClose={() => setStatsQuizId(null)}
-          quizId={statsQuizId}
-        />
-      )}
     </div>
   );
 };

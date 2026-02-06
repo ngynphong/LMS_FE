@@ -41,19 +41,15 @@ const AdminUserManagementPage = () => {
   );
   const [isUpdatingRole, setIsUpdatingRole] = useState(false);
 
-  const {
-    data,
-    loading,
-    updateParams,
-    deleteUser,
-    updateUserRoles,
-  } = useUsers({
-    pageNo: 0,
-    pageSize: 10,
-    keyword: "",
-    role: "All",
-    sorts: ["createdAt:desc"],
-  });
+  const { data, loading, updateParams, deleteUser, updateUserRoles } = useUsers(
+    {
+      pageNo: 0,
+      pageSize: 10,
+      keyword: "",
+      role: "All",
+      sorts: ["createdAt:desc"],
+    },
+  );
 
   const handleDeleteUser = (userId: string) => {
     setUserToDelete(userId);
@@ -207,10 +203,13 @@ const AdminUserManagementPage = () => {
               <MdFileDownload className="text-xl" />
               Xuất báo cáo
             </button>
-            <button className="px-5 py-2.5 color-primary-bg text-white font-semibold text-sm rounded-lg flex items-center gap-2 hover:bg-[#1E90FF]/90 shadow-lg shadow-[#1E90FF]/20 transition-all">
+            <Link
+              to="/admin/teachers/new"
+              className="px-5 py-2.5 bg-[#0078bd] text-white font-semibold text-sm rounded-lg flex items-center gap-2 hover:bg-[#0078bd]/90 shadow-lg shadow-[#0078bd]/20 transition-all"
+            >
               <MdPersonAdd className="text-xl" />
-              Thêm thành viên
-            </button>
+              Thêm giáo viên
+            </Link>
           </div>
         </div>
       </div>

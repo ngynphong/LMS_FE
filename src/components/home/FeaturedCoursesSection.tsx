@@ -28,21 +28,21 @@ const FeaturedCoursesSection = () => {
       <div className="max-w-[1280px] mx-auto px-10">
         <ScrollReveal
           variant={fadeInUp}
-          className="flex items-end justify-between mb-10"
+          className="flex items-end justify-between gap-2 mb-10"
         >
           <div className="flex flex-col gap-2">
             <span className="color-primary font-bold tracking-widest text-sm uppercase">
               Bộ sưu tập
             </span>
-            <h2 className="text-3xl font-extrabold text-gray-900">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
               Khóa học nổi bật
             </h2>
           </div>
           <Link
-            className="flex items-center gap-1 color-primary font-bold hover:gap-2 transition-all"
+            className="flex items-center gap-1 color-primary font-bold hover:gap-2 transition-all text-sm sm:text-base"
             to="/courses"
           >
-            Xem tất cả
+            Xem thêm
           </Link>
         </ScrollReveal>
 

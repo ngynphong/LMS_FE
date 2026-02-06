@@ -16,7 +16,6 @@ const RegisterPage = () => {
     email: "",
     password: "",
     dob: "",
-    roleName: "STUDENT", // Default role
   });
 
   const validateEmail = (email: string): boolean => {
@@ -123,7 +122,6 @@ const RegisterPage = () => {
           formData.firstName,
           formData.lastName,
           formData.dob,
-          formData.roleName,
         );
 
         // Registration successful - toast is shown in auth context
@@ -288,39 +286,22 @@ const RegisterPage = () => {
             </div>
 
             {/* Date of Birth & Role */}
-            <div className="grid grid-cols-2 gap-2">
-              <div className="flex flex-col gap-1">
-                <label className="text-gray-900 text-sm font-medium leading-normal">
-                  Ngày sinh
-                </label>
-                <input
-                  className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.dob ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#27A4F2]"} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 text-sm font-normal`}
-                  type="date"
-                  name="dob"
-                  value={formData.dob}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  required
-                />
-                {errors.dob && (
-                  <p className="text-red-500 text-xs mt-0.5">{errors.dob}</p>
-                )}
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-gray-900 text-sm font-medium leading-normal">
-                  Vai trò
-                </label>
-                <select
-                  className="form-select flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 focus:ring-[#27A4F2] border border-gray-200 bg-white h-9 px-3 py-2 text-sm font-normal"
-                  name="roleName"
-                  value={formData.roleName}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="STUDENT">Học viên</option>
-                  <option value="TEACHER">Giáo viên</option>
-                </select>
-              </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-gray-900 text-sm font-medium leading-normal">
+                Ngày sinh
+              </label>
+              <input
+                className={`form-input flex w-full rounded-lg text-gray-900 focus:outline-0 focus:ring-2 ${errors.dob ? "border-red-500 focus:ring-red-500/50" : "border-gray-200 focus:ring-[#27A4F2]"} border bg-white h-9 placeholder:text-gray-500 px-3 py-2 text-sm font-normal`}
+                type="date"
+                name="dob"
+                value={formData.dob}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                required
+              />
+              {errors.dob && (
+                <p className="text-red-500 text-xs mt-0.5">{errors.dob}</p>
+              )}
             </div>
 
             {/* Mật khẩu */}
