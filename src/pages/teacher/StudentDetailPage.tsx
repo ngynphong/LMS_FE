@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useTeacher } from "../../hooks/useTeacher";
+import { useStudentDetail, useUpdateStudent } from "../../hooks/useTeacher";
 import type { UpdateStudentRequest } from "../../types/student";
 
 const StudentDetailPage = () => {
   const { id } = useParams<{ id: string }>();
-  const { student, loading, getStudent, updateStudent } = useTeacher();
+
+  // React Query hooks
+  const { data: student, isLoading: loading } = useStudentDetail(id);
+  const { mutateAsync: updateStudentMutation, isPending: updating } =
+    useUpdateStudent();
 
   // Edit state
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -16,13 +20,6 @@ const StudentDetailPage = () => {
     dob: "",
     goal: "",
   });
-  const [updating, setUpdating] = useState(false);
-
-  useEffect(() => {
-    if (id) {
-      getStudent(id);
-    }
-  }, [id, getStudent]);
 
   // Update edit form when student data loads
   useEffect(() => {
@@ -48,16 +45,11 @@ const StudentDetailPage = () => {
     e.preventDefault();
     if (!id) return;
 
-    setUpdating(true);
     try {
-      await updateStudent(id, editForm);
-      // toast is handled in hook, but we need to close modal and refresh
+      await updateStudentMutation({ id, data: editForm });
       setIsEditModalOpen(false);
-      getStudent(id); // Refresh data
     } catch (error) {
       console.error(error);
-    } finally {
-      setUpdating(false);
     }
   };
 
@@ -78,9 +70,7 @@ const StudentDetailPage = () => {
   // Safety check in case student is null during render (unlikely with above checks)
   if (!student) return null;
 
-  const firstChar = student.firstName
-    ? student.firstName[0]
-    : "S";
+  const firstChar = student.firstName ? student.firstName[0] : "S";
 
   return (
     <div className="space-y-6">

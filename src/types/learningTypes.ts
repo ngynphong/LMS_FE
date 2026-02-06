@@ -72,6 +72,7 @@ export interface LessonItem {
   createdAt: string;
   updatedAt: string;
   content: LessonItemContent;
+  lessonId?: string; // For resolving hierarchy in edit mode
 }
 
 export interface ApiLesson {

@@ -1,9 +1,4 @@
-import {
-  FaArrowRight,
-  FaStar, 
-  FaBolt,
-  FaRocket,
-} from "react-icons/fa";
+import { FaArrowRight, FaStar, FaBolt, FaRocket } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { ScrollReveal, fadeInLeft, fadeInRight } from "../ui/ScrollReveal";
 
@@ -15,7 +10,6 @@ const HeroSection = () => {
           variant={fadeInLeft}
           className="flex flex-col gap-4 order-2 lg:order-1"
         >
-          {" "}
           <div className="inline-flex items-center gap-2 color-primary px-3 py-1 rounded-full w-fit">
             <span className="color-primary-bg text-white text-[10px] px-1.5 py-0.5 rounded-md font-bold uppercase shrink-0">
               Mới

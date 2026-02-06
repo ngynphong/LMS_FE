@@ -82,10 +82,10 @@ const TeacherSidebar = ({
 
   // Close mobile sidebar on route change
   useEffect(() => {
-    if (onMobileClose) {
+    if (isMobileOpen && onMobileClose) {
       onMobileClose();
     }
-  }, [location.pathname, onMobileClose]);
+  }, [location.pathname]);
 
   const handleLogoutClick = () => {
     setIsLogoutModalOpen(true);

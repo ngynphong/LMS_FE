@@ -38,6 +38,9 @@ const ExamReportDetailPage = React.lazy(
 const TeacherLessonItemPreviewPage = React.lazy(
   () => import("../pages/teacher/TeacherLessonItemPreviewPage"),
 );
+const TeacherSettingsPage = React.lazy(
+  () => import("../pages/teacher/TeacherSettingsPage"),
+);
 
 /**
  * Teacher Routes
@@ -66,12 +69,7 @@ const finalTeacherRoutes: RouteObject[] = [
       { path: "students/:id", element: <StudentDetailPage /> },
       { path: "reports", element: <ReportsListPage /> },
       { path: "reports/:id", element: <ExamReportDetailPage /> },
-      {
-        path: "settings",
-        element: (
-          <div className="text-[#111518]">Trang Cài đặt - Coming Soon</div>
-        ),
-      },
+      { path: "settings", element: <TeacherSettingsPage /> },
     ],
   },
   {

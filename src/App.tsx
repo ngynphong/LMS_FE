@@ -3,6 +3,7 @@ import { BrowserRouter, useRoutes } from "react-router-dom";
 import ScrollToTop from "./components/common/ScrollToTop";
 import routes from "./routes";
 import "./App.css";
+import LoadingOverlay from "./components/common/LoadingOverlay";
 
 function AppRoutes() {
   const element = useRoutes(routes);
@@ -16,9 +17,7 @@ function App() {
       <div className="min-h-screen font-['Lexend'] text-[#111418]">
         <React.Suspense
           fallback={
-            <div className="flex h-screen items-center justify-center">
-              Đang tải...
-            </div>
+            <LoadingOverlay isLoading={true} message="Đang tải trang" />
           }
         >
           <AppRoutes />

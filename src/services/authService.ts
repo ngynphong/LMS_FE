@@ -100,7 +100,6 @@ export const registerApi = async (
     firstName: string,
     lastName: string,
     dob: string,
-    roleName: string
 ): Promise<AuthResponse> => {
     try {
         const response = await publicAxios.post<AuthResponse>('/auth/register', {
@@ -109,7 +108,6 @@ export const registerApi = async (
             firstName,
             lastName,
             dob,
-            roleName
         });
         return response.data;
     } catch (error) {

@@ -13,6 +13,13 @@ When reviewing code, follow these steps:
 2. **Edge cases**: Are error conditions handled?
 3. **Style**: Does it follow project conventions?
 4. **Performance**: Are there obvious inefficiencies?
+5. **Security**: Are there obvious security vulnerabilities?
+6. **Accessibility**: Are there obvious accessibility issues?
+7. **Scalability**: Are there obvious scalability issues?
+8. **Maintainability**: Is the code easy to maintain?
+9. **Testability**: Is the code easy to test?
+10. **Documentation**: Is the code well-documented?
+11. **Clean code**: Is the code clean and readable?
 
 ## How to provide feedback
 

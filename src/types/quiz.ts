@@ -1,5 +1,6 @@
 // ==================== Quiz Requests ====================
 
+// Request format for creating/updating quiz
 export interface DynamicConfig {
     targetLessonId: string;
     difficulty: "EASY" | "MEDIUM" | "HARD";
@@ -33,11 +34,54 @@ export interface CreateQuizRequest {
 
 export interface UpdateQuizRequest extends CreateQuizRequest {}
 
-export interface QuizDetailResponse extends CreateQuizRequest {
+// ==================== Quiz Detail Response ====================
+
+// Response format from GET /quiz/{id} - different structure from request
+export interface QuizDetailDynamicConfig {
     id: string;
+    questionType: "SINGLE_CHOICE" | "MULTIPLE_CHOICE" | "TRUE_FALSE" | "TEXT";
+    difficulty: "EASY" | "MEDIUM" | "HARD";
+    quantity: number;
+    pointsPerQuestion: number;
+}
+
+export interface QuizDetailStaticQuestion {
+    id: string;
+    content: string;
+    explanation?: string;
+    difficulty: "EASY" | "MEDIUM" | "HARD";
+    type: "SINGLE_CHOICE" | "MULTIPLE_CHOICE" | "TRUE_FALSE" | "TEXT";
+    defaultScore: number;
+    lessonId?: string;
+    lessonName?: string;
+    answers: {
+        id: string;
+        content: string;
+        correct: boolean;
+    }[];
+    active: boolean;
+}
+
+export interface QuizDetailResponse {
+    id: string;
+    title: string;
+    description: string;
+    type: "PRACTICE" | "QUIZ";
+    isDynamic: boolean;
+    durationInMinutes: number;
     totalQuestions: number;
-    attemptsCount?: number; // Added based on usage in UI, though API might not return it yet
-    // Add other fields if backend returns more than what's in request
+    passScore: number;
+    maxAttempts: number;
+    closeTime?: string | null;
+    showScoreAfterSubmit: boolean;
+    showResultAfterSubmit: boolean;
+    code?: string;
+    isPublished: boolean;
+    lessonItemId: string;
+    dynamicConfigs: QuizDetailDynamicConfig[];
+    staticQuestions: QuizDetailStaticQuestion[];
+    createdAt: string;
+    attemptsCount?: number;
 }
 
 export interface GenerateCodeResponse {

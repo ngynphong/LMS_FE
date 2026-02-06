@@ -1,20 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useTeacher } from "../../hooks/useTeacher";
-import { toast } from "../../components/common/Toast";
+import { useStudents, useImportStudents } from "../../hooks/useTeacher";
 import PaginationControl from "../../components/common/PaginationControl";
 
 const StudentListPage = () => {
-  // Use useTeacher hook
-  const {
-    students,
-    loading,
-    totalPages,
-    totalElements,
-    getStudents,
-    importStudent,
-  } = useTeacher();
-
   // Local state for UI
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -26,7 +15,22 @@ const StudentListPage = () => {
   // Import state
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [importFile, setImportFile] = useState<File | null>(null);
-  const [importing, setImporting] = useState(false);
+
+  // React Query hooks
+  const { data: studentsData, isLoading: loading } = useStudents(
+    page,
+    pageSize,
+    debouncedKeyword,
+    sortBy,
+    order,
+  );
+
+  const { mutateAsync: importStudent, isPending: importing } =
+    useImportStudents();
+
+  const students = studentsData?.students || [];
+  const totalPages = studentsData?.totalPages || 1;
+  const totalElements = studentsData?.totalElements || 0;
 
   // Debounce keyword
   useEffect(() => {
@@ -36,11 +40,6 @@ const StudentListPage = () => {
     }, 500);
     return () => clearTimeout(timer);
   }, [keyword]);
-
-  // Fetch students using hook
-  useEffect(() => {
-    getStudents(page, pageSize, debouncedKeyword, sortBy, order);
-  }, [getStudents, page, pageSize, debouncedKeyword, sortBy, order]);
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -56,26 +55,12 @@ const StudentListPage = () => {
     e.preventDefault();
     if (!importFile) return;
 
-    setImporting(true);
     try {
-      const response = await importStudent(importFile);
-      if (response.code === 0 || response.code === 1000) {
-        toast.success(`Nhập thành công: ${response.data.success} học sinh.`);
-        if (response.data.failed > 0) {
-          toast.warning(
-            `Lỗi khi nhập ${response.data.failed} dòng. Hãy kiểm tra lỗi`,
-          );
-        }
-        setIsImportModalOpen(false);
-        setImportFile(null);
-        getStudents(page, 10, debouncedKeyword); // Refresh list
-      } else {
-        toast.error(response.message || "Nhập thất bại");
-      }
+      await importStudent(importFile);
+      setIsImportModalOpen(false);
+      setImportFile(null);
     } catch (error) {
       console.error(error);
-    } finally {
-      setImporting(false);
     }
   };
 
