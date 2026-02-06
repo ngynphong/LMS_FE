@@ -6,9 +6,29 @@ import {
   MdCalendarToday,
   MdDownload,
 } from "react-icons/md";
-import { adminStats, approvalRequests } from "../../data/admin";
+import { approvalRequests } from "../../data/admin";
+import { useAdminDashboard } from "../../hooks/useAdmin";
 
 const AdminDashboardPage = () => {
+  const { data: dashboardData, isLoading, error } = useAdminDashboard();
+  const stats = dashboardData?.data;
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0078bd]"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-10 text-red-500">
+        Đã có lỗi xảy ra khi tải dữ liệu: {(error as Error).message}
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-6xl mx-auto space-y-6 text-[#101518]">
       {/* Page Header */}
@@ -18,7 +38,7 @@ const AdminDashboardPage = () => {
             Tổng quan hệ thống
           </h2>
           <p className="text-[#5e7c8d] text-sm">
-            Cập nhật lúc: {adminStats.lastUpdated}
+            Cập nhật lúc: {new Date().toLocaleString("vi-VN")}
           </p>
         </div>
         <div className="flex gap-3">
@@ -39,21 +59,19 @@ const AdminDashboardPage = () => {
             <div className="p-2 bg-[#0078bd]/10 rounded-lg">
               <MdGroup className="text-[#0078bd] text-xl" />
             </div>
-            <span
-              className={`px-2 py-0.5 rounded text-xs font-bold ${
-                adminStats.userGrowth >= 0
-                  ? "text-[#078836] bg-[#078836]/10"
-                  : "text-red-600 bg-red-100"
-              }`}
-            >
-              {adminStats.userGrowth >= 0 ? "+" : ""}
-              {adminStats.userGrowth}%
-            </span>
           </div>
           <p className="text-[#5e7c8d] text-sm font-medium">Tổng người dùng</p>
           <p className="text-[#101518] text-3xl font-bold mt-1">
-            {adminStats.totalUsers.toLocaleString()}
+            {stats?.totalUsers?.toLocaleString()}
           </p>
+          <div className="mt-2 text-xs text-[#5e7c8d] flex gap-2">
+            <span>
+              Học viên: <b>{stats?.totalStudents?.toLocaleString()}</b>
+            </span>
+            <span>
+              Giáo viên: <b>{stats?.totalTeachers?.toLocaleString()}</b>
+            </span>
+          </div>
         </div>
 
         <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
@@ -61,22 +79,15 @@ const AdminDashboardPage = () => {
             <div className="p-2 bg-[#0078bd]/10 rounded-lg">
               <MdLocalLibrary className="text-[#0078bd] text-xl" />
             </div>
-            <span
-              className={`px-2 py-0.5 rounded text-xs font-bold ${
-                adminStats.activeCoursesGrowth >= 0
-                  ? "text-[#078836] bg-[#078836]/10"
-                  : "text-red-600 bg-red-100"
-              }`}
-            >
-              {adminStats.activeCoursesGrowth >= 0 ? "+" : ""}
-              {adminStats.activeCoursesGrowth}%
-            </span>
           </div>
           <p className="text-[#5e7c8d] text-sm font-medium">
             Khóa học đang hoạt động
           </p>
           <p className="text-[#101518] text-3xl font-bold mt-1">
-            {adminStats.activeCourses.toLocaleString()}
+            {stats?.activeCourses?.toLocaleString()}{" "}
+            <span className="text-sm font-normal text-gray-500">
+              / {stats?.totalCourses?.toLocaleString()}
+            </span>
           </p>
         </div>
 
@@ -85,22 +96,12 @@ const AdminDashboardPage = () => {
             <div className="p-2 bg-[#0078bd]/10 rounded-lg">
               <MdPayments className="text-[#0078bd] text-xl" />
             </div>
-            <span
-              className={`px-2 py-0.5 rounded text-xs font-bold ${
-                adminStats.revenueGrowth >= 0
-                  ? "text-[#078836] bg-[#078836]/10"
-                  : "text-red-600 bg-red-100"
-              }`}
-            >
-              {adminStats.revenueGrowth >= 0 ? "+" : ""}
-              {adminStats.revenueGrowth}%
-            </span>
           </div>
           <p className="text-[#5e7c8d] text-sm font-medium">
-            Doanh thu tháng này
+            Người dùng trực tuyến
           </p>
           <p className="text-[#101518] text-3xl font-bold mt-1">
-            {(adminStats.revenue / 1000000000).toFixed(1)} tỷ đ
+            {stats?.currentOnlineUsers?.toLocaleString()}
           </p>
         </div>
 
@@ -109,22 +110,15 @@ const AdminDashboardPage = () => {
             <div className="p-2 bg-[#0078bd]/10 rounded-lg">
               <MdVisibility className="text-[#0078bd] text-xl" />
             </div>
-            <span
-              className={`px-2 py-0.5 rounded text-xs font-bold ${
-                adminStats.visitsGrowth >= 0
-                  ? "text-[#078836] bg-[#078836]/10"
-                  : "text-red-600 bg-red-100"
-              }`}
-            >
-              {adminStats.visitsGrowth >= 0 ? "+" : ""}
-              {adminStats.visitsGrowth}%
-            </span>
           </div>
           <p className="text-[#5e7c8d] text-sm font-medium">
             Lượt truy cập hôm nay
           </p>
           <p className="text-[#101518] text-3xl font-bold mt-1">
-            {adminStats.visits.toLocaleString()}
+            {stats?.todayVisitors?.toLocaleString()}
+          </p>
+          <p className="text-xs text-[#5e7c8d] mt-1">
+            Tổng lượt xem: {stats?.totalPageViews?.toLocaleString()}
           </p>
         </div>
       </div>
@@ -137,7 +131,7 @@ const AdminDashboardPage = () => {
               Tăng trưởng Người dùng & Doanh thu
             </h3>
             <p className="text-sm text-[#5e7c8d] mt-1">
-              Dữ liệu thống kê trong 6 tháng gần nhất
+              Dữ liệu biểu đồ (Demo)
             </p>
           </div>
           <div className="flex gap-4">
@@ -180,7 +174,7 @@ const AdminDashboardPage = () => {
 
               {/* Revenue Area (Secondary) */}
               <path
-                d="M0 275 C 100 250, 200 260, 300 180 C 400 200, 500 150, 600 120 C 700 130, 800 80, 900 60 C 1000 70 L 1000 275 L 0 275 Z"
+                d="M0 275 C 100 250, 200 260, 300 180 C 400 200, 500 150, 600 120 C 700 130, 800 80, 900 60 L 1000 70 L 1000 275 L 0 275 Z"
                 fill="rgba(0,120,189, 0.05)"
               />
 

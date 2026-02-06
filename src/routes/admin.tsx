@@ -15,6 +15,12 @@ const AdminCourseListPage = React.lazy(
 const AdminCourseDetailPage = React.lazy(
   () => import("../pages/admin/AdminCourseDetailPage"),
 );
+const CreateTeacherPage = React.lazy(
+  () => import("../pages/admin/CreateTeacherPage"),
+);
+const AdminSettingsPage = React.lazy(
+  () => import("../pages/admin/AdminSettingsPage"),
+);
 
 /**
  * Admin Routes
@@ -42,6 +48,10 @@ const adminRoutes: RouteObject[] = [
         element: <AdminCourseListPage />,
       },
       {
+        path: "teachers/new",
+        element: <CreateTeacherPage />,
+      },
+      {
         path: "courses/:id",
         element: <AdminCourseDetailPage />,
       },
@@ -55,11 +65,7 @@ const adminRoutes: RouteObject[] = [
       },
       {
         path: "settings",
-        element: (
-          <div className="p-8 text-[#101518]">
-            Trang Cấu hình hệ thống - Coming Soon
-          </div>
-        ),
+        element: <AdminSettingsPage />,
       },
       {
         path: "reports",
