@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 import { useAuth } from "../hooks/useAuth";
 import StudentSidebar from "../components/student/StudentSidebar";
+import AIChatbot from "../components/common/AIChatbot";
 
 interface StudentLayoutProps {
   children?: ReactNode;
@@ -62,6 +63,9 @@ const StudentLayout = ({ children }: StudentLayoutProps) => {
           {children || <Outlet />}
         </main>
       </div>
+
+      {/* AI Chatbot */}
+      <AIChatbot />
     </div>
   );
 };
