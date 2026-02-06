@@ -289,7 +289,7 @@ const ExamFormPage = () => {
         await createQuiz(quizData);
         toast.success("Tạo bài kiểm tra thành công");
       }
-      navigate("/teacher/exams");
+      navigate("/teacher/quizzes");
     } catch (error) {
       console.error(error);
       toast.error("Có lỗi xảy ra");
@@ -305,7 +305,7 @@ const ExamFormPage = () => {
       {/* Breadcrumbs */}
       <nav className="flex items-center gap-2 text-sm font-medium">
         <Link
-          to="/teacher/exams"
+          to="/teacher/quizzes"
           className="text-slate-500 hover:text-[#0074bd] transition-colors"
         >
           Đề thi
@@ -1035,7 +1035,7 @@ const ExamFormPage = () => {
       <div className="fixed bottom-0 left-64 right-0 bg-white border-t border-slate-200 px-8 py-4 z-20">
         <div className="max-w-5xl mx-auto flex justify-end gap-4">
           <Link
-            to="/teacher/exams"
+            to="/teacher/quizzes"
             className="px-6 py-2.5 rounded-lg border border-slate-200 font-bold text-slate-600 hover:bg-slate-50 transition-colors"
           >
             Hủy bỏ

@@ -1,25 +1,46 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   FaBook,
-  FaClock,
-  FaCertificate,
   FaBell,
   FaCalendar,
+  FaCheckCircle,
+  FaChartPie,
 } from "react-icons/fa";
 import { MdLocationOn } from "react-icons/md";
 import { notifications } from "../../data/notification";
-import { coursesProgress } from "../../data/coursesData";
 import { useAuth } from "../../hooks/useAuth";
-
-// Mock data
-const statsData = [
-  { icon: <FaBook />, label: "Khóa học đang học", value: "4" },
-  { icon: <FaClock />, label: "Giờ học tuần này", value: "12h" },
-  { icon: <FaCertificate />, label: "Chứng chỉ đã đạt", value: "2" },
-];
+import { useStudentCourses } from "../../hooks/useCourses";
 
 const StudentDashboardPage = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const { data: coursesData } = useStudentCourses({
+    pageNo: 0,
+    pageSize: 3,
+    sorts: "createdAt:desc",
+  });
+
+  const recentCourses = coursesData?.items || [];
+
+  // Real stats data from user profile
+  const statsData = [
+    {
+      icon: <FaBook />,
+      label: "Khóa học đang học",
+      value: user?.studentProfile?.stats?.totalCourses.toString() || "0",
+    },
+    {
+      icon: <FaCheckCircle />,
+      label: "Khóa học đã hoàn thành",
+      value: user?.studentProfile?.stats?.completedCourses.toString() || "0",
+    },
+    {
+      icon: <FaChartPie />,
+      label: "Tiến độ trung bình",
+      value: `${user?.studentProfile?.stats?.overallProgress || 0}%`,
+    },
+  ];
 
   const getNotificationColor = (color: string) => {
     const colors: Record<string, string> = {
@@ -105,48 +126,70 @@ const StudentDashboardPage = () => {
           </div>
 
           <div className="flex flex-col gap-4">
-            {coursesProgress.map((course) => (
-              <div
-                key={course.id}
-                className="flex flex-col sm:flex-row items-center gap-4 lg:gap-6 bg-white p-4 rounded-xl border border-gray-100 shadow-sm"
-              >
+            {recentCourses.length > 0 ? (
+              recentCourses.map((course) => (
                 <div
-                  className="bg-center bg-no-repeat aspect-video bg-cover rounded-lg h-32 w-full sm:h-24 sm:w-40 lg:w-44 shrink-0 shadow-sm"
-                  style={{ backgroundImage: `url('${course.thumbnail}')` }}
-                />
-                <div className="flex flex-col flex-1 gap-3 w-full">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="text-gray-900 text-lg font-bold line-clamp-1">
-                        {course.title}
-                      </p>
-                      <p className="text-gray-500 text-sm mt-1">
-                        Giảng viên: {course.instructor}
-                      </p>
+                  key={course.id}
+                  className="flex flex-col sm:flex-row items-center gap-4 lg:gap-6 bg-white p-4 rounded-xl border border-gray-100 shadow-sm"
+                >
+                  <div
+                    className="bg-center bg-no-repeat aspect-video bg-cover rounded-lg h-32 w-full sm:h-24 sm:w-40 lg:w-44 shrink-0 shadow-sm"
+                    style={{
+                      backgroundImage: `url('${course.thumbnailUrl || "/img/book.png"}')`,
+                    }}
+                  />
+                  <div className="flex flex-col flex-1 gap-3 w-full">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="text-gray-900 text-lg font-bold line-clamp-1">
+                          {course.name}
+                        </p>
+                        <p className="text-gray-500 text-sm mt-1">
+                          Giảng viên:{" "}
+                          {course.teacherName ||
+                            course.teacher?.firstName +
+                              " " +
+                              course.teacher?.lastName ||
+                            "Unknown"}
+                        </p>
+                      </div>
+                      <div className="text-right shrink-0 ml-2">
+                        <p className="color-primary text-lg font-bold">
+                          {course.progressPercent || 0}%
+                        </p>
+                        <p className="text-gray-500 text-xs text-nowrap">
+                          hoàn thành
+                        </p>
+                      </div>
                     </div>
-                    <div className="text-right shrink-0 ml-2">
-                      <p className="color-primary text-lg font-bold">
-                        {course.progress}%
-                      </p>
-                      <p className="text-gray-500 text-xs text-nowrap">
-                        hoàn thành
-                      </p>
+                    <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full color-primary-bg rounded-full transition-all duration-500"
+                        style={{ width: `${course.progressPercent || 0}%` }}
+                      />
                     </div>
                   </div>
-                  <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full color-primary-bg rounded-full transition-all duration-500"
-                      style={{ width: `${course.progress}%` }}
-                    />
+                  <div className="shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+                    <button
+                      onClick={() => navigate(`/student/courses/${course.id}/learn`)}
+                      className="w-full sm:w-auto px-6 py-2.5 color-primary-bg text-white text-sm font-bold rounded-lg hover:scale-105 transition-all cursor-pointer duration-300 whitespace-nowrap"
+                    >
+                      Tiếp tục học
+                    </button>
                   </div>
                 </div>
-                <div className="shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
-                  <button className="w-full sm:w-auto px-6 py-2.5 color-primary text-white text-sm font-bold rounded-lg hover:bg-[#0066a3] transition-colors whitespace-nowrap">
-                    Tiếp tục học
-                  </button>
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 bg-white rounded-xl border border-gray-100">
+                <p className="text-gray-500">Bạn chưa đăng ký khóa học nào.</p>
+                <Link
+                  to="/courses"
+                  className="text-blue-600 hover:underline mt-2 inline-block font-medium"
+                >
+                  Khám phá khóa học ngay
+                </Link>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>

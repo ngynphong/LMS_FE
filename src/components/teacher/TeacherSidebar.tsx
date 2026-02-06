@@ -39,7 +39,7 @@ const navItems: NavItem[] = [
     label: "Ngân hàng câu hỏi",
   },
   {
-    path: "/teacher/exams",
+    path: "/teacher/quizzes",
     icon: <MdQuiz className="text-xl" />,
     label: "Đề thi",
   },
