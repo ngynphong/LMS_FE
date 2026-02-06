@@ -206,7 +206,7 @@ const LessonSidebar = ({
                       : "cursor-pointer"
                   } ${
                     isCurrentLesson
-                      ? "bg-blue-50 border-l-4 border-blue-600"
+                      ? "bg-blue-50  border-blue-600"
                       : lessonAccessible
                         ? "hover:bg-gray-50"
                         : ""
@@ -286,7 +286,7 @@ const LessonSidebar = ({
                           <div
                             key={item.id}
                             onClick={() => itemAccessible && onItemSelect(item)}
-                            className={`px-4 py-2.5 flex items-center gap-3 transition-colors ml-4 border-l-2 ${
+                            className={`px-4 py-2.5 flex items-center gap-3 transition-colors ml-4 ${
                               !itemAccessible
                                 ? "cursor-not-allowed opacity-50"
                                 : "cursor-pointer"

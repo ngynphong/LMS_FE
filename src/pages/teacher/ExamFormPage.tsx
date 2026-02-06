@@ -511,7 +511,7 @@ const ExamFormPage = () => {
                   }
                   className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none"
                 >
-                  <option value={-1}>Không giới hạn</option>
+                  {/* <option >--</option> */}
                   {[1, 2, 3, 4, 5, 10].map((num) => (
                     <option key={num} value={num}>
                       {num} lần

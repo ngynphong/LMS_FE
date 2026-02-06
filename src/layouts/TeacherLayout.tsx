@@ -3,7 +3,7 @@ import { useState, useCallback } from "react";
 import { Outlet } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 import TeacherSidebar from "../components/teacher/TeacherSidebar";
-import AIChatbot from "../components/common/AIChatbot";
+// import AIChatbot from "../components/common/AIChatbot";
 // import { useAuth } from "../hooks/useAuth";
 
 interface TeacherLayoutProps {
@@ -65,7 +65,7 @@ const TeacherLayout = ({ children }: TeacherLayoutProps) => {
       </div>
 
       {/* AI Chatbot */}
-      <AIChatbot />
+      {/* <AIChatbot /> */}
     </div>
   );
 };

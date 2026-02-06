@@ -237,6 +237,23 @@ const StudentQuizTakingPage = () => {
   const currentQuestion = attempt.questions[currentQuestionIndex];
   const isLastQuestion = currentQuestionIndex === attempt.questions.length - 1;
 
+  // Guard: nếu không có câu hỏi nào hoặc index không hợp lệ
+  if (!currentQuestion) {
+    return (
+      <div className="min-h-screen flex items-center justify-center flex-col gap-4">
+        <p className="text-gray-600 text-lg">
+          Không có câu hỏi trong bài kiểm tra này.
+        </p>
+        <Link
+          to="/student/quizzes"
+          className="color-primary-bg text-white px-6 py-2 rounded-lg font-medium hover:opacity-90"
+        >
+          Quay lại danh sách
+        </Link>
+      </div>
+    );
+  }
+
   const getQuestionStatusClass = (
     question: QuizQuestionAttempt,
     index: number,

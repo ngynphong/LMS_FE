@@ -15,6 +15,8 @@ import {
 import { QuizHistoryModal } from "../../components/student/QuizHistoryModal";
 import { QuizReviewModal } from "../../components/student/QuizReviewModal";
 import type { StudentTeacherQuiz } from "../../types/quiz";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
 
 const StudentAvailableQuizzesPage = () => {
   const navigate = useNavigate();
@@ -205,9 +207,17 @@ const StudentAvailableQuizzesPage = () => {
                     <div className="flex items-center gap-3 text-gray-600 text-sm">
                       <MdEventBusy className="text-lg text-gray-400 shrink-0" />
                       <span className="truncate">
-                        Hạn chót:{" "}
+                        Hạn:{" "}
                         <span className="font-semibold text-gray-700">
-                          {new Date(quiz.closeTime).toLocaleDateString("vi-VN")}
+                          {quiz.closeTime
+                            ? format(
+                                new Date(quiz.closeTime),
+                                "HH:mm 'ngày' dd/MM/yyyy",
+                                {
+                                  locale: vi,
+                                },
+                              )
+                            : "Chưa đặt"}
                         </span>
                       </span>
                     </div>
