@@ -5,7 +5,7 @@
 // These match the backend API structure
 
 export interface EnrollCourseRequest {
-  enrollmentCode: string;
+  enrollmentCode?: string; // Optional for PUBLIC courses
 }
 
 export interface CreateInviteCodeRequest {
