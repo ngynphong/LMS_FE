@@ -169,7 +169,7 @@ const CourseCard = (props: CourseCardProps) => {
                 onClick();
               }}
             >
-              Nhập mã tham gia
+              Tham gia
             </button>
           ) : (
             <Link

@@ -16,6 +16,9 @@ import { useAuth } from "../../hooks/useAuth";
 const CoursesPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [visibilityFilter, setVisibilityFilter] = useState<
+    "" | "PUBLIC" | "PRIVATE"
+  >("");
   const coursesPerPage = 6;
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
@@ -24,14 +27,17 @@ const CoursesPage = () => {
     data,
     isLoading: loading,
     error,
-  } = useCourses({
-    pageNo: currentPage - 1, // API is 0-indexed
-    pageSize: coursesPerPage,
-    keyword: searchQuery,
-    sorts: ["createdAt:desc"], // Correct: array of strings
-    status: "PUBLISHED", // Public courses should be published
-    visibility: "PUBLIC", // And public
-  }, { enabled: isAuthenticated });
+  } = useCourses(
+    {
+      pageNo: currentPage - 1, // API is 0-indexed
+      pageSize: coursesPerPage,
+      keyword: searchQuery,
+      sorts: ["createdAt:desc"], // Correct: array of strings
+      status: "PUBLISHED", // Public courses should be published
+      visibility: visibilityFilter || undefined, // Filter by visibility if selected
+    },
+    { enabled: isAuthenticated },
+  );
 
   // Student Enrollment Data
   const { data: enrolledCoursesData } = useStudentCourses(
@@ -53,6 +59,9 @@ const CoursesPage = () => {
   const { mutateAsync: enroll, isPending: enrolling } = useEnrollCourse();
   const [showEnrollModal, setShowEnrollModal] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  const [selectedCourseVisibility, setSelectedCourseVisibility] = useState<
+    string | null
+  >(null);
   const [enrollmentCode, setEnrollmentCode] = useState("");
 
   const handlePageChange = (page: number) => {
@@ -65,29 +74,43 @@ const CoursesPage = () => {
     setCurrentPage(1); // Reset to first page on search
   };
 
-  const handleCourseClick = (courseId: string) => {
+  const handleVisibilityChange = (value: "" | "PUBLIC" | "PRIVATE") => {
+    setVisibilityFilter(value);
+    setCurrentPage(1); // Reset to first page on filter change
+  };
+
+  const handleCourseClick = (courseId: string, visibility?: string) => {
     if (enrolledCourseIds.has(courseId)) {
       navigate(`/courses/${courseId}`);
     } else {
       setSelectedCourseId(courseId);
+      setSelectedCourseVisibility(visibility || null);
       setEnrollmentCode("");
       setShowEnrollModal(true);
     }
   };
 
   const handleEnrollSubmit = async () => {
-    if (!selectedCourseId || !enrollmentCode) return;
+    if (!selectedCourseId) return;
+    // PUBLIC courses don't need enrollment code, PRIVATE courses do
+    const isPublicCourse = selectedCourseVisibility === "PUBLIC";
+    if (!isPublicCourse && !enrollmentCode) return;
+
     try {
       await enroll({
         courseId: selectedCourseId,
-        data: { enrollmentCode },
+        data: isPublicCourse ? {} : { enrollmentCode },
       });
       toast.success("Tham gia khóa học thành công!");
       setShowEnrollModal(false);
       // Navigate to detail page
       navigate(`/courses/${selectedCourseId}`);
     } catch (err) {
-      toast.error("Mã tham gia không hợp lệ hoặc hết hạn.");
+      toast.error(
+        isPublicCourse
+          ? "Không thể tham gia khóa học."
+          : "Mã tham gia không hợp lệ hoặc hết hạn.",
+      );
     }
   };
 
@@ -125,13 +148,29 @@ const CoursesPage = () => {
 
           {/* Content Grid */}
           <div className="flex-1">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
               <h2 className="text-gray-900 text-2xl font-bold">
                 Danh sách khóa học
               </h2>
-              <span className="text-sm text-gray-500">
-                Tìm thấy {totalCourses} khóa học
-              </span>
+              <div className="flex items-center gap-4">
+                {/* Visibility Filter */}
+                <select
+                  value={visibilityFilter}
+                  onChange={(e) =>
+                    handleVisibilityChange(
+                      e.target.value as "" | "PUBLIC" | "PRIVATE",
+                    )
+                  }
+                  className="px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-1 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF] bg-white"
+                >
+                  <option value="">Tất cả</option>
+                  <option value="PUBLIC">Công khai</option>
+                  <option value="PRIVATE">Riêng tư</option>
+                </select>
+                <span className="text-sm text-gray-500">
+                  Tìm thấy {totalCourses} khóa học
+                </span>
+              </div>
             </div>
 
             {loading ? (
@@ -157,7 +196,9 @@ const CoursesPage = () => {
                         category={course.schoolName || "Khóa học"}
                         createdAt={course.createdAt}
                         instructor={course.teacherName}
-                        onClick={() => handleCourseClick(course.id)}
+                        onClick={() =>
+                          handleCourseClick(course.id, course.visibility)
+                        }
                         isEnrolled={enrolledCourseIds.has(course.id)}
                       />
                     ))}
@@ -201,20 +242,29 @@ const CoursesPage = () => {
               </button>
             </div>
 
-            <p className="text-sm text-gray-600 mb-6">
-              Vui lòng nhập mã tham gia được cung cấp bởi giảng viên để ghi danh
-              vào khóa học này.
-            </p>
+            {selectedCourseVisibility === "PUBLIC" ? (
+              <p className="text-sm text-gray-600 mb-6">
+                Khóa học này là công khai. Bạn có thể tham gia ngay mà không cần
+                mã.
+              </p>
+            ) : (
+              <>
+                <p className="text-sm text-gray-600 mb-6">
+                  Vui lòng nhập mã tham gia được cung cấp bởi giảng viên để ghi
+                  danh vào khóa học này.
+                </p>
 
-            <div className="mb-6">
-              <input
-                type="text"
-                value={enrollmentCode}
-                onChange={(e) => setEnrollmentCode(e.target.value)}
-                placeholder="Nhập mã tham gia..."
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 text-sm focus:ring-1 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF]"
-              />
-            </div>
+                <div className="mb-6">
+                  <input
+                    type="text"
+                    value={enrollmentCode}
+                    onChange={(e) => setEnrollmentCode(e.target.value)}
+                    placeholder="Nhập mã tham gia..."
+                    className="w-full px-4 py-3 rounded-lg border border-slate-200 text-sm focus:ring-1 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF]"
+                  />
+                </div>
+              </>
+            )}
 
             <div className="flex justify-end gap-3">
               <button
@@ -225,7 +275,10 @@ const CoursesPage = () => {
               </button>
               <button
                 onClick={handleEnrollSubmit}
-                disabled={enrolling || !enrollmentCode}
+                disabled={
+                  enrolling ||
+                  (selectedCourseVisibility !== "PUBLIC" && !enrollmentCode)
+                }
                 className="px-4 py-2 text-sm font-bold text-white color-primary-bg hover:translate-y-[-2px] transition-all duration-300 rounded-lg disabled:opacity-50 flex items-center gap-2"
               >
                 {enrolling && (

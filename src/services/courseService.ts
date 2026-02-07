@@ -13,7 +13,8 @@ export const getCourses = async (params: GetCoursesParams): Promise<CourseListRe
                 pageNo: params.pageNo || 0,
                 pageSize: params.pageSize || 10,
                 sorts: params.sorts,
-                keyword: params.keyword
+                keyword: params.keyword,
+                visibility: params.visibility
             }
         });
         return response.data;
