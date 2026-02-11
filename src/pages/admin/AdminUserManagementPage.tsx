@@ -8,19 +8,21 @@ import {
   MdEdit,
   MdVpnKey,
   MdDelete,
-  MdFileDownload,
   MdPersonAdd,
   MdChevronLeft,
   MdChevronRight,
   MdCheckCircle,
   MdCancel,
+  MdClose,
+  MdVisibility,
+  MdVisibilityOff,
 } from "react-icons/md";
-// import { adminUsers } from "../../data/admin"; // Removed mock data import
 import type { UserRole, UserStatus } from "../../types/admin";
 import { useUsers } from "../../hooks/useUsers";
 import type { AdminUserListItem } from "../../types/user";
 import { ConfirmationModal } from "../../components/common/ConfirmationModal";
 import { UpdateRoleModal } from "../../components/admin/UpdateRoleModal";
+import { useResetUserPassword } from "../../hooks/useAdmin";
 
 const AdminUserManagementPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -40,6 +42,17 @@ const AdminUserManagementPage = () => {
     [],
   );
   const [isUpdatingRole, setIsUpdatingRole] = useState(false);
+
+  // Reset Password Modal state
+  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] =
+    useState(false);
+  const [userToResetPassword, setUserToResetPassword] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const resetPasswordMutation = useResetUserPassword();
 
   const { data, loading, updateParams, deleteUser, updateUserRoles } = useUsers(
     {
@@ -94,6 +107,28 @@ const AdminUserManagementPage = () => {
     } finally {
       setIsUpdatingRole(false);
     }
+  };
+
+  // Reset Password handlers
+  const handleResetPassword = (userId: string, userName: string) => {
+    setUserToResetPassword({ id: userId, name: userName });
+    setNewPassword("");
+    setShowPassword(false);
+    setIsResetPasswordModalOpen(true);
+  };
+
+  const confirmResetPassword = () => {
+    if (!userToResetPassword || newPassword.length < 6) return;
+    resetPasswordMutation.mutate(
+      { userId: userToResetPassword.id, data: { newPassword } },
+      {
+        onSuccess: () => {
+          setIsResetPasswordModalOpen(false);
+          setUserToResetPassword(null);
+          setNewPassword("");
+        },
+      },
+    );
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -199,10 +234,6 @@ const AdminUserManagementPage = () => {
             </p>
           </div>
           <div className="flex gap-3 pb-2">
-            <button className="px-5 py-2.5 bg-white border border-slate-200 text-slate-700 font-semibold text-sm rounded-lg flex items-center gap-2 hover:bg-slate-50 shadow-sm transition-all">
-              <MdFileDownload className="text-xl" />
-              Xuất báo cáo
-            </button>
             <Link
               to="/admin/teachers/new"
               className="px-5 py-2.5 bg-[#0078bd] text-white font-semibold text-sm rounded-lg flex items-center gap-2 hover:bg-[#0078bd]/90 shadow-lg shadow-[#0078bd]/20 transition-all"
@@ -473,6 +504,12 @@ const AdminUserManagementPage = () => {
                             <MdEdit className="text-xl" />
                           </button>
                           <button
+                            onClick={() =>
+                              handleResetPassword(
+                                user.id,
+                                `${user.firstName} ${user.lastName}`,
+                              )
+                            }
                             className="p-2 text-slate-400 hover:text-orange-500 hover:bg-orange-50 rounded-lg transition-all"
                             title="Đặt lại mật khẩu"
                           >
@@ -566,6 +603,107 @@ const AdminUserManagementPage = () => {
         currentRoles={currentRolesToUpdate}
         isLoading={isUpdatingRole}
       />
+
+      {/* Reset Password Modal */}
+      {isResetPasswordModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+            {/* Header */}
+            <div className="flex items-center justify-between p-5 border-b border-slate-100">
+              <div>
+                <h3 className="text-lg font-bold text-[#111518]">
+                  Đặt lại mật khẩu
+                </h3>
+                <p className="text-sm text-slate-500 mt-0.5">
+                  {userToResetPassword?.name}
+                </p>
+              </div>
+              <button
+                onClick={() => setIsResetPasswordModalOpen(false)}
+                className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all"
+              >
+                <MdClose className="text-xl" />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="p-5 space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                  Mật khẩu mới
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Nhập mật khẩu mới (tối thiểu 6 ký tự)"
+                    className="w-full px-4 py-2.5 pr-10 bg-[#f5f7f8] border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-[#0078bd] focus:border-transparent outline-none transition-all text-[#111518]"
+                    autoFocus
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  >
+                    {showPassword ? (
+                      <MdVisibilityOff className="text-lg" />
+                    ) : (
+                      <MdVisibility className="text-lg" />
+                    )}
+                  </button>
+                </div>
+                {newPassword.length > 0 && newPassword.length < 6 && (
+                  <p className="text-xs text-red-500 mt-1">
+                    Mật khẩu phải có ít nhất 6 ký tự
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-end gap-3 p-5 border-t border-slate-100 bg-slate-50">
+              <button
+                onClick={() => setIsResetPasswordModalOpen(false)}
+                className="px-4 py-2 text-sm font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-all"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={confirmResetPassword}
+                disabled={
+                  newPassword.length < 6 || resetPasswordMutation.isPending
+                }
+                className="px-5 py-2 text-sm font-semibold text-white bg-[#0078bd] hover:bg-[#0078bd]/90 rounded-lg shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {resetPasswordMutation.isPending ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                      />
+                    </svg>
+                    Đang xử lý...
+                  </>
+                ) : (
+                  "Xác nhận"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

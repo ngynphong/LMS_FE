@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import * as adminService from "../services/adminService";
-import type { CreateTeacherRequest } from "../types/admin";
+import type { CreateTeacherRequest, ResetPasswordRequest } from "../types/admin";
 import { toast } from "react-toastify"; // Hook to fetch dashboard stats
 export const useAdminDashboard = () => {
   return useQuery({
@@ -28,6 +28,19 @@ export const useCreateTeacher = () => {
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message || "Có lỗi xảy ra khi tạo tài khoản");
+    },
+  });
+};
+
+export const useResetUserPassword = () => {
+  return useMutation({
+    mutationFn: ({ userId, data }: { userId: string; data: ResetPasswordRequest }) =>
+      adminService.resetUserPassword(userId, data),
+    onSuccess: () => {
+      toast.success("Đặt lại mật khẩu thành công!");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Có lỗi xảy ra khi đặt lại mật khẩu");
     },
   });
 };

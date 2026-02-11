@@ -112,3 +112,13 @@ export interface CreateTeacherResponse {
   message: string;
   data: CreateTeacherResponseData;
 }
+
+export interface ResetPasswordRequest {
+  newPassword: string;
+}
+
+export interface ResetPasswordResponse {
+  code: number;
+  message: string;
+  data: string;
+}

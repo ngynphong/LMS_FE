@@ -1,11 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import {
   MdDashboard,
-  MdLibraryBooks,
   MdPayments,
   MdAnalytics,
   MdSettings,
 } from "react-icons/md";
+import { FaChalkboardTeacher, FaUsers } from "react-icons/fa";
 import { FaCalendar, FaTimes } from "react-icons/fa";
 import { useAuth } from "../../hooks/useAuth";
 import { ConfirmationModal } from "../common/ConfirmationModal";
@@ -28,12 +28,12 @@ const navItems: NavItem[] = [
   },
   {
     path: "/admin/users",
-    icon: <MdLibraryBooks className="text-xl" />,
+    icon: <FaUsers className="text-xl" />,
     label: "Quản lý người dùng",
   },
   {
     path: "/admin/teachers/new",
-    icon: <MdLibraryBooks className="text-xl" />,
+    icon: <FaChalkboardTeacher className="text-xl" />,
     label: "Thêm giáo viên",
   },
   {

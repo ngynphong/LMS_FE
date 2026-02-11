@@ -3,6 +3,8 @@ import type {
     AdminDashboardData, 
     CreateTeacherRequest, 
     CreateTeacherResponse,
+    ResetPasswordRequest,
+    ResetPasswordResponse,
     SystemLogResponse 
 } from "../types/admin";
 import axios from "axios";
@@ -44,5 +46,14 @@ export const createTeacherAccount = async (data: CreateTeacherRequest): Promise<
         return response.data;
     } catch (error) {
         return handleApiError(error, 'Failed to create teacher account');
+    }
+};
+
+export const resetUserPassword = async (userId: string, data: ResetPasswordRequest): Promise<ResetPasswordResponse> => {
+    try {
+        const response = await axiosInstance.patch<ResetPasswordResponse>(`/admin/users/${userId}/reset-password`, data);
+        return response.data;
+    } catch (error) {
+        return handleApiError(error, 'Không thể đặt lại mật khẩu người dùng');
     }
 };
