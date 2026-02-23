@@ -20,8 +20,10 @@ interface StudentCourseCardProps {
 /**
  * Format date to Vietnamese locale
  */
-const formatDate = (dateString: string) => {
+const formatDate = (dateString: string | null | undefined): string => {
+  if (!dateString) return "";
   const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "";
   return date.toLocaleDateString("vi-VN", {
     day: "2-digit",
     month: "2-digit",
@@ -34,33 +36,32 @@ const formatDate = (dateString: string) => {
  */
 const StudentCourseCard = ({ course }: StudentCourseCardProps) => {
   return (
-    <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition-shadow flex flex-col">
+    <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition-shadow flex flex-col h-full">
       {/* Thumbnail */}
-      <div className="relative aspect-video">
+      <div className="relative h-48 shrink-0 overflow-hidden bg-slate-100">
         <img
           src={course.thumbnailUrl || "/img/book.png"}
           alt={course.name}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="w-full h-full object-cover"
           onError={(e) => {
-            // Fallback khi ảnh lỗi
             e.currentTarget.src = "/img/book.png";
           }}
         />
         {/* Status Badge */}
         <span
-          className={`absolute top-3 left-3 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded ${
+          className={`absolute top-3 left-3 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm ${
             course.status === "PUBLISHED"
               ? "bg-green-500"
               : course.status === "DRAFT"
                 ? "bg-yellow-500"
-                : "bg-slate-500"
+                : "bg-blue-500"
           }`}
         >
           {course.status === "PUBLISHED"
             ? "Đang mở"
             : course.status === "DRAFT"
               ? "Bản nháp"
-              : course.status || "Khóa học"}
+              : "Khóa học"}
         </span>
       </div>
 
@@ -109,18 +110,24 @@ const StudentCourseCard = ({ course }: StudentCourseCardProps) => {
             </div>
           )}
 
-          <div className="text-xs text-slate-400 flex items-center gap-1">
-            <span className="material-symbols-outlined text-[14px]">
-              calendar_month
-            </span>
-            {course.completedAt ? (
-              <span>Hoàn thành: {formatDate(course.completedAt)}</span>
-            ) : course.enrolledAt ? (
-              <span>Tham gia: {formatDate(course.enrolledAt)}</span>
-            ) : (
-              <span>Cập nhật: {formatDate(course.updatedAt)}</span>
-            )}
-          </div>
+          {(() => {
+            const dateLabel = course.completedAt
+              ? `Hoàn thành: ${formatDate(course.completedAt)}`
+              : course.enrolledAt
+                ? `Tham gia: ${formatDate(course.enrolledAt)}`
+                : formatDate(course.updatedAt)
+                  ? `Cập nhật: ${formatDate(course.updatedAt)}`
+                  : null;
+
+            return dateLabel ? (
+              <div className="text-xs text-slate-400 flex items-center gap-1">
+                <span className="material-symbols-outlined text-[14px]">
+                  calendar_month
+                </span>
+                <span>{dateLabel}</span>
+              </div>
+            ) : null;
+          })()}
         </div>
 
         {/* CTA Button */}
@@ -141,11 +148,16 @@ const StudentCourseCard = ({ course }: StudentCourseCardProps) => {
  */
 export const StudentCourseCardSkeleton = () => {
   return (
-    <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 h-[320px] animate-pulse">
-      <div className="bg-slate-200 h-48 w-full" />
-      <div className="p-4 space-y-3">
+    <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 animate-pulse flex flex-col h-full">
+      <div className="bg-slate-200 h-48 shrink-0" />
+      <div className="p-4 space-y-3 flex-1">
         <div className="h-4 bg-slate-200 rounded w-3/4" />
         <div className="h-3 bg-slate-200 rounded w-1/2" />
+        <div className="h-2 bg-slate-200 rounded w-full mt-4" />
+        <div className="h-3 bg-slate-200 rounded w-2/3" />
+      </div>
+      <div className="p-4 pt-0">
+        <div className="h-10 bg-slate-200 rounded-lg w-full" />
       </div>
     </div>
   );
