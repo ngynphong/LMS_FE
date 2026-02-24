@@ -53,9 +53,12 @@ const PdfSlideshow = ({ fileUrl }: PdfSlideshowProps) => {
   return <DesktopPdfViewer fileUrl={fileUrl} />;
 };
 
-// ─── Mobile: dùng <iframe> để browser native render PDF (hỗ trợ cuộn nhiều trang)
+// ─── Mobile: dùng Google Docs Viewer vì iOS Safari không hỗ trợ PDF viewer trong iframe/object
 const MobilePdfViewer = ({ fileUrl }: { fileUrl: string }) => {
   const [iframeLoaded, setIframeLoaded] = useState(false);
+
+  // Google Docs Viewer render PDF server-side → trả HTML chuẩn → cuộn + chuyển trang mượt trên mọi mobile browser
+  const viewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(fileUrl)}&embedded=true`;
 
   return (
     <div className="flex flex-col items-center bg-gray-100 p-2 rounded-lg w-full">
@@ -67,23 +70,22 @@ const MobilePdfViewer = ({ fileUrl }: { fileUrl: string }) => {
         </div>
       )}
       <iframe
-        src={fileUrl}
+        src={viewerUrl}
         className="w-full rounded-lg border-0"
         style={{ height: "80vh", display: iframeLoaded ? "block" : "none" }}
         title="PDF Viewer"
         onLoad={() => setIframeLoaded(true)}
+        sandbox="allow-scripts allow-same-origin allow-popups"
       />
-      {iframeLoaded && (
-        <a
-          href={fileUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-2 flex items-center gap-1.5 text-xs text-blue-600 font-medium hover:underline"
-        >
-          <span className="material-symbols-outlined text-sm">open_in_new</span>
-          Mở PDF trong tab mới
-        </a>
-      )}
+      <a
+        href={fileUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-2 flex items-center gap-1.5 text-xs text-blue-600 font-medium hover:underline"
+      >
+        <span className="material-symbols-outlined text-sm">open_in_new</span>
+        Tải xuống PDF
+      </a>
     </div>
   );
 };
