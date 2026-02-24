@@ -53,98 +53,36 @@ const PdfSlideshow = ({ fileUrl }: PdfSlideshowProps) => {
   return <DesktopPdfViewer fileUrl={fileUrl} />;
 };
 
-// ─── Mobile: dùng react-pdf render TẤT CẢ trang trong scrollable container
+// ─── Mobile: dùng <iframe> để browser native render PDF (hỗ trợ cuộn nhiều trang)
 const MobilePdfViewer = ({ fileUrl }: { fileUrl: string }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [containerWidth, setContainerWidth] = useState<number>(300);
-  const [numPages, setNumPages] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const updateWidth = () => {
-      setContainerWidth(container.clientWidth - 16);
-    };
-
-    updateWidth();
-    const resizeObserver = new ResizeObserver(updateWidth);
-    resizeObserver.observe(container);
-    return () => resizeObserver.disconnect();
-  }, []);
-
-  const onDocumentLoadSuccess = useCallback(
-    ({ numPages }: { numPages: number }) => {
-      setNumPages(numPages);
-      setLoading(false);
-      setError(null);
-    },
-    [],
-  );
-
-  const onDocumentLoadError = useCallback((err: Error) => {
-    console.error("Error loading PDF:", err);
-    setLoading(false);
-    setError("Không thể tải file PDF. Vui lòng thử lại sau.");
-  }, []);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
 
   return (
-    <div
-      ref={containerRef}
-      className="flex flex-col items-center bg-gray-100 p-2 rounded-lg w-full"
-    >
-      {loading && (
+    <div className="flex flex-col items-center bg-gray-100 p-2 rounded-lg w-full">
+      {!iframeLoaded && (
         <div className="flex items-center justify-center h-[300px] w-full">
           <span className="material-symbols-outlined animate-spin text-3xl text-blue-600">
             progress_activity
           </span>
         </div>
       )}
-      {error ? (
-        <div className="flex flex-col items-center justify-center h-[300px] w-full text-slate-500 gap-3">
-          <span className="material-symbols-outlined text-4xl text-red-400">
-            error
-          </span>
-          <p className="text-sm text-center">{error}</p>
-          <a
-            href={fileUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="py-2 px-4 bg-blue-600 text-white rounded-lg text-sm font-medium"
-          >
-            Tải xuống PDF
-          </a>
-        </div>
-      ) : (
-        <div className="w-full overflow-y-auto max-h-[75vh] space-y-2">
-          <Document
-            file={fileUrl}
-            onLoadSuccess={onDocumentLoadSuccess}
-            onLoadError={onDocumentLoadError}
-            options={PDF_OPTIONS}
-            className="flex flex-col items-center gap-2"
-            loading={null}
-          >
-            {numPages &&
-              Array.from({ length: numPages }, (_, index) => (
-                <Page
-                  key={`page_${index + 1}`}
-                  pageNumber={index + 1}
-                  renderTextLayer={false}
-                  renderAnnotationLayer={false}
-                  className="shadow-md rounded"
-                  width={containerWidth}
-                />
-              ))}
-          </Document>
-        </div>
-      )}
-      {numPages && (
-        <p className="text-xs text-slate-500 mt-2">
-          Tổng cộng {numPages} trang — cuộn để xem tiếp
-        </p>
+      <iframe
+        src={fileUrl}
+        className="w-full rounded-lg border-0"
+        style={{ height: "80vh", display: iframeLoaded ? "block" : "none" }}
+        title="PDF Viewer"
+        onLoad={() => setIframeLoaded(true)}
+      />
+      {iframeLoaded && (
+        <a
+          href={fileUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-2 flex items-center gap-1.5 text-xs text-blue-600 font-medium hover:underline"
+        >
+          <span className="material-symbols-outlined text-sm">open_in_new</span>
+          Mở PDF trong tab mới
+        </a>
       )}
     </div>
   );
