@@ -11,6 +11,9 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  optimizeDeps: {
+    exclude: ["pdfjs-dist"], // Để Vite không pre-bundle, giúp worker resolve đúng
+  },
   build: {
     rollupOptions: {
       output: {
