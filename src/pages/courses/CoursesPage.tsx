@@ -19,7 +19,7 @@ const CoursesPage = () => {
   const [visibilityFilter, setVisibilityFilter] = useState<
     "" | "PUBLIC" | "PRIVATE"
   >("");
-  const coursesPerPage = 6;
+  const coursesPerPage = 10;
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
@@ -216,7 +216,6 @@ const CoursesPage = () => {
                       currentPage={currentPage}
                       totalPages={totalPages}
                       onPageChange={handlePageChange}
-                      disablePageSizeSelect
                     />
                   </div>
                 )}

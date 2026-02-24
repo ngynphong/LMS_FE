@@ -16,7 +16,7 @@ const PaginationControl = ({
   onPageChange,
   pageSize,
   onPageSizeChange,
-  pageSizeOptions = [10, 20, 50],
+  pageSizeOptions = [10, 20, 50, 100, 1000],
   disablePageSizeSelect = false,
 }: PaginationControlProps) => {
   const renderPageNumbers = () => {

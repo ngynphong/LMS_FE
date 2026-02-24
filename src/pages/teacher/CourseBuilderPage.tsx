@@ -133,12 +133,12 @@ const CourseBuilderPage = () => {
     }
   }, [courseData]);
 
-  // Reload lessons - refetch course detail to get updated lessons
-  const loadLessons = useCallback(async () => {
-    if (!courseId) return;
-    // Refetch course detail to get updated lessons
-    refetchCourse();
-  }, [courseId, refetchCourse]);
+  // // Reload lessons - refetch course detail to get updated lessons
+  // const loadLessons = useCallback(async () => {
+  //   if (!courseId) return;
+  //   // Refetch course detail to get updated lessons
+  //   refetchCourse();
+  // }, [courseId, refetchCourse]);
 
   // DnD Handlers
   const handleMoveLesson = useCallback(
@@ -379,9 +379,25 @@ const CourseBuilderPage = () => {
   const confirmDeleteItem = async () => {
     if (!selectedItem?.id || selectedItem.id === "new") return;
     try {
-      await deleteLessonItem(selectedItem.id);
-      await loadLessons();
+      const deletedItemId = selectedItem.id;
       const lessonId = selectedItem.lessonId;
+      await deleteLessonItem(deletedItemId);
+
+      // Cập nhật state trực tiếp: loại bỏ item đã xoá khỏi lesson tương ứng
+      setLessons((prev) =>
+        prev.map((l) => {
+          if (l.id === lessonId && l.lessonItems) {
+            return {
+              ...l,
+              lessonItems: l.lessonItems.filter(
+                (item) => item.id !== deletedItemId,
+              ),
+            };
+          }
+          return l;
+        }),
+      );
+
       if (lessonId) {
         const lesson = lessons.find((l) => l.id === lessonId);
         setSelectedItem({

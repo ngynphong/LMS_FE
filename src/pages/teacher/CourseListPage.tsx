@@ -213,7 +213,7 @@ const CourseListPage = () => {
           </p>
           <Link
             to="/teacher/courses/new"
-            className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#0074bd] text-white text-sm font-bold"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-lg color-primary-bg text-white text-sm font-bold"
           >
             <span className="material-symbols-outlined text-lg">add</span>
             Tạo khóa học mới
@@ -323,6 +323,7 @@ const CourseListPage = () => {
           onPageSizeChange={(size) =>
             handleFilterChange("pageSize", String(size))
           }
+          pageSizeOptions={[10, 20, 50, 100, 1000]}
         />
       </div>
 
