@@ -53,60 +53,99 @@ const PdfSlideshow = ({ fileUrl }: PdfSlideshowProps) => {
   return <DesktopPdfViewer fileUrl={fileUrl} />;
 };
 
-// ─── Mobile: dùng <object> embed PDF natively (hầu hết mobile browser hỗ trợ)
+// ─── Mobile: dùng react-pdf render TẤT CẢ trang trong scrollable container
 const MobilePdfViewer = ({ fileUrl }: { fileUrl: string }) => {
-  const [useFallback, setUseFallback] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(300);
+  const [numPages, setNumPages] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Google Docs Viewer – fallback nếu <object> không load được
-  const googleViewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
-  if (useFallback) {
-    return (
-      <div className="flex flex-col items-center bg-gray-100 p-2 rounded-lg w-full">
-        <iframe
-          src={googleViewerUrl}
-          className="w-full rounded-lg border-0"
-          style={{ height: "75vh" }}
-          title="PDF Viewer"
-        />
-      </div>
-    );
-  }
+    const updateWidth = () => {
+      setContainerWidth(container.clientWidth - 16);
+    };
+
+    updateWidth();
+    const resizeObserver = new ResizeObserver(updateWidth);
+    resizeObserver.observe(container);
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  const onDocumentLoadSuccess = useCallback(
+    ({ numPages }: { numPages: number }) => {
+      setNumPages(numPages);
+      setLoading(false);
+      setError(null);
+    },
+    [],
+  );
+
+  const onDocumentLoadError = useCallback((err: Error) => {
+    console.error("Error loading PDF:", err);
+    setLoading(false);
+    setError("Không thể tải file PDF. Vui lòng thử lại sau.");
+  }, []);
 
   return (
-    <div className="flex flex-col items-center bg-gray-100 p-2 rounded-lg w-full">
-      <object
-        data={fileUrl}
-        type="application/pdf"
-        className="w-full rounded-lg"
-        style={{ height: "75vh" }}
-      >
-        {/* Fallback nếu browser không hỗ trợ <object> cho PDF */}
-        <div className="flex flex-col items-center justify-center h-[60vh] w-full text-slate-500 gap-4 p-4">
-          <span className="material-symbols-outlined text-4xl text-slate-400">
-            picture_as_pdf
+    <div
+      ref={containerRef}
+      className="flex flex-col items-center bg-gray-100 p-2 rounded-lg w-full"
+    >
+      {loading && (
+        <div className="flex items-center justify-center h-[300px] w-full">
+          <span className="material-symbols-outlined animate-spin text-3xl text-blue-600">
+            progress_activity
           </span>
-          <p className="text-sm text-center">
-            Trình duyệt không hỗ trợ xem PDF trực tiếp.
-          </p>
-          <div className="flex flex-col gap-2 w-full max-w-xs">
-            <button
-              onClick={() => setUseFallback(true)}
-              className="w-full py-2.5 px-4 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-            >
-              Xem qua Google Docs
-            </button>
-            <a
-              href={fileUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full py-2.5 px-4 bg-white text-slate-700 border border-slate-300 rounded-lg text-sm font-medium text-center hover:bg-slate-50 transition-colors"
-            >
-              Tải xuống PDF
-            </a>
-          </div>
         </div>
-      </object>
+      )}
+      {error ? (
+        <div className="flex flex-col items-center justify-center h-[300px] w-full text-slate-500 gap-3">
+          <span className="material-symbols-outlined text-4xl text-red-400">
+            error
+          </span>
+          <p className="text-sm text-center">{error}</p>
+          <a
+            href={fileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="py-2 px-4 bg-blue-600 text-white rounded-lg text-sm font-medium"
+          >
+            Tải xuống PDF
+          </a>
+        </div>
+      ) : (
+        <div className="w-full overflow-y-auto max-h-[75vh] space-y-2">
+          <Document
+            file={fileUrl}
+            onLoadSuccess={onDocumentLoadSuccess}
+            onLoadError={onDocumentLoadError}
+            options={PDF_OPTIONS}
+            className="flex flex-col items-center gap-2"
+            loading={null}
+          >
+            {numPages &&
+              Array.from({ length: numPages }, (_, index) => (
+                <Page
+                  key={`page_${index + 1}`}
+                  pageNumber={index + 1}
+                  renderTextLayer={false}
+                  renderAnnotationLayer={false}
+                  className="shadow-md rounded"
+                  width={containerWidth}
+                />
+              ))}
+          </Document>
+        </div>
+      )}
+      {numPages && (
+        <p className="text-xs text-slate-500 mt-2">
+          Tổng cộng {numPages} trang — cuộn để xem tiếp
+        </p>
+      )}
     </div>
   );
 };
