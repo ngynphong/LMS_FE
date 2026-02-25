@@ -7,7 +7,7 @@ import {
   MdReport,
   MdSettings,
 } from "react-icons/md";
-import { FaDatabase } from "react-icons/fa";
+import { FaDatabase, FaBell } from "react-icons/fa";
 import { IoPeople } from "react-icons/io5";
 import { useAuth } from "../../hooks/useAuth";
 import { ConfirmationModal } from "../common/ConfirmationModal";
@@ -52,6 +52,11 @@ const navItems: NavItem[] = [
     path: "/teacher/reports",
     icon: <MdReport className="text-xl" />,
     label: "Báo cáo điểm",
+  },
+  {
+    path: "/teacher/notifications",
+    icon: <FaBell className="text-xl" />,
+    label: "Thông báo",
   },
   {
     path: "/teacher/settings",

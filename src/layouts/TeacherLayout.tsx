@@ -4,7 +4,8 @@ import { Outlet } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 import TeacherSidebar from "../components/teacher/TeacherSidebar";
 // import AIChatbot from "../components/common/AIChatbot";
-// import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
+import { NotificationDropdown } from "../components/common/NotificationDropdown";
 
 interface TeacherLayoutProps {
   children?: ReactNode;
@@ -13,7 +14,7 @@ interface TeacherLayoutProps {
 const TeacherLayout = ({ children }: TeacherLayoutProps) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  // const { user } = useAuth();
+  const { user } = useAuth();
 
   const handleSidebarToggle = useCallback(
     () => setIsSidebarCollapsed((prev) => !prev),
@@ -37,12 +38,17 @@ const TeacherLayout = ({ children }: TeacherLayoutProps) => {
           </button>
           <span className="font-bold text-lg text-[#111518]">Edu-LMS</span>
         </div>
-        <div
-          className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 border border-[#0b8eda]/20"
-          style={{
-            backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuDxzHGBuvCbcbT7_cVmyqt_jJ7NCJw2mxPGD66bp0OtXUigvQ8TGNcmtIZ5DZtmQaCXqeSV3YtcXZnQJrjarq2RE70oBSFDMaehH6RJw-5HZMewr30nWv8Dnu8AEITbjgPtPSa129dlh7aDtMW6nkazmBKzyHiKYSEQscd5sUh4NhVAgJSkwvETf9GuI1R-0pv8qqI0dR53X2sxOIQ6h_3Itp75g0oZP4sqs63EejNd-_fsFOZxYcevr0iU2NP9F5s42xDxXBtpTKQx")`,
-          }}
-        />
+        <div className="flex items-center gap-2 mr-2">
+          {user && <NotificationDropdown />}
+          <div
+            className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 border border-[#0b8eda]/20"
+            style={{
+              backgroundImage: user?.urlImg
+                ? `url(${user.urlImg})`
+                : `url("https://ui-avatars.com/api/?name=${user?.firstName || "T"}+${user?.lastName || "T"}&background=random")`,
+            }}
+          />
+        </div>
       </div>
 
       {/* Sidebar */}

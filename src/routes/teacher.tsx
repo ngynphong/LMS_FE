@@ -41,6 +41,9 @@ const TeacherLessonItemPreviewPage = React.lazy(
 const TeacherSettingsPage = React.lazy(
   () => import("../pages/teacher/TeacherSettingsPage"),
 );
+const TeacherNotificationPage = React.lazy(
+  () => import("../pages/teacher/TeacherNotificationPage"),
+);
 
 /**
  * Teacher Routes
@@ -70,6 +73,7 @@ const finalTeacherRoutes: RouteObject[] = [
       { path: "reports", element: <ReportsListPage /> },
       { path: "reports/:id", element: <ExamReportDetailPage /> },
       { path: "settings", element: <TeacherSettingsPage /> },
+      { path: "notifications", element: <TeacherNotificationPage /> },
     ],
   },
   {

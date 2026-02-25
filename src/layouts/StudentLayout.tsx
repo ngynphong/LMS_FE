@@ -5,6 +5,7 @@ import { FaBars } from "react-icons/fa";
 import { useAuth } from "../hooks/useAuth";
 import StudentSidebar from "../components/student/StudentSidebar";
 import AIChatbot from "../components/common/AIChatbot";
+import { NotificationDropdown } from "../components/common/NotificationDropdown";
 
 interface StudentLayoutProps {
   children?: ReactNode;
@@ -34,14 +35,17 @@ const StudentLayout = ({ children }: StudentLayoutProps) => {
           <span className="font-bold text-lg color-primary">IES EDU</span>
         </div>
         {user && (
-          <img
-            src={
-              user.urlImg ||
-              `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random`
-            }
-            alt={`${user.firstName} ${user.lastName}`}
-            className="size-8 rounded-full object-cover mr-4 border border-gray-200"
-          />
+          <div className="flex items-center gap-2">
+            <NotificationDropdown />
+            <img
+              src={
+                user.urlImg ||
+                `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random`
+              }
+              alt={`${user.firstName} ${user.lastName}`}
+              className="size-8 rounded-full object-cover mr-4 border border-gray-200"
+            />
+          </div>
         )}
       </div>
 

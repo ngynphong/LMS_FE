@@ -4,6 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useState } from "react";
 import { PhoneCall } from "./animate-ui/icons/phone-call";
 import { Mail } from "./animate-ui/icons/mail";
+import { NotificationDropdown } from "./common/NotificationDropdown";
 
 const Header = () => {
   const { user } = useAuth();
@@ -48,22 +49,27 @@ const Header = () => {
         <div className="flex gap-6 items-center">
           <div className="flex gap-3">
             {user ? (
-              <Link
-                to={getDashboardLink()}
-                className="flex items-center gap-2 cursor-pointer hover:bg-white/10 p-1 px-2 rounded-lg transition-colors group"
-              >
-                <img
-                  src={
-                    user.urlImg ||
-                    `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random`
-                  }
-                  alt={`${user.firstName} ${user.lastName}`}
-                  className="w-6 h-6 rounded-full object-cover border border-white/50"
-                />
-                <span className="font-medium text-sm group-hover:underline">
-                  {user.firstName} {user.lastName}
-                </span>
-              </Link>
+              <>
+                <Link
+                  to={getDashboardLink()}
+                  className="flex items-center gap-2 cursor-pointer hover:bg-white/10 p-1 px-2 rounded-lg transition-colors group"
+                >
+                  <img
+                    src={
+                      user.urlImg ||
+                      `https://ui-avatars.com/api/?name=${user.lastName}+${user.firstName}&background=random`
+                    }
+                    alt={`${user.firstName} ${user.lastName}`}
+                    className="w-6 h-6 rounded-full object-cover border border-white/50"
+                  />
+                  <span className="font-medium text-sm group-hover:underline">
+                    {user.lastName} {user.firstName}
+                  </span>
+                </Link>
+                <div className="flex items-center -mr-2 text-white">
+                  <NotificationDropdown />
+                </div>
+              </>
             ) : (
               <>
                 <Link className="hover:underline" to="/login">
