@@ -51,10 +51,11 @@ export const useUpdateQuiz = () => {
 export const useQuiz = (id?: string) => {
     return useQuery({
         queryKey: ['quiz', id],
-        queryFn: () => getQuizById(id!),
+        queryFn: () => id ? getQuizById(id) : Promise.reject(new Error("Missing ID")),
         enabled: !!id,
     });
 };
+
 
 export const useQuizByLessonItem = (lessonItemId?: string) => {
     return useQuery({

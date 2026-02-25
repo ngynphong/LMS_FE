@@ -335,7 +335,7 @@ const ExamFormPage = () => {
       lessonItemId: selectedLessonItemId,
       durationInMinutes: formData.duration,
       passScore: formData.passingScore,
-      maxAttempts: formData.maxAttempts,
+      maxAttempts: formData.type === "PRACTICE" ? null : formData.maxAttempts,
       shuffleQuestions: formData.shuffleQuestions,
       isDynamic: formData.isDynamic,
       type: formData.type,
@@ -577,16 +577,22 @@ const ExamFormPage = () => {
                   Số lần thử tối đa
                 </label>
                 <select
-                  value={formData.maxAttempts}
+                  value={
+                    formData.type === "PRACTICE" ? "" : formData.maxAttempts
+                  }
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      maxAttempts: parseInt(e.target.value),
+                      maxAttempts:
+                        e.target.value === "" ? 1 : parseInt(e.target.value),
                     })
                   }
-                  className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none"
+                  disabled={formData.type === "PRACTICE"}
+                  className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none disabled:bg-slate-100 disabled:text-slate-500"
                 >
-                  {/* <option >--</option> */}
+                  {formData.type === "PRACTICE" && (
+                    <option value="">Không giới hạn</option>
+                  )}
                   {[1, 2, 3, 4, 5, 10].map((num) => (
                     <option key={num} value={num}>
                       {num} lần

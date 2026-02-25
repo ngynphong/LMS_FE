@@ -1,9 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
 import {
-  FaCertificate,
-  FaCalendar,
-  FaEnvelope,
-  FaCog,
+  // FaCertificate,
+  // FaCalendar,
+  // FaEnvelope,
+  // FaCog,
   FaTimes,
 } from "react-icons/fa";
 import { useAuth } from "../../hooks/useAuth";
@@ -38,27 +38,27 @@ const navItems: NavItem[] = [
     icon: <Quiz animateOnHover size={20} />,
     label: "Bài kiểm tra",
   },
-  {
-    path: "#calendar",
-    icon: <FaCalendar className="text-xl" />,
-    label: "Lịch học",
-  },
-  {
-    path: "#messages",
-    icon: <FaEnvelope className="text-xl" />,
-    label: "Tin nhắn",
-  },
+  // {
+  //   path: "#calendar",
+  //   icon: <FaCalendar className="text-xl" />,
+  //   label: "Lịch học",
+  // },
+  // {
+  //   path: "#messages",
+  //   icon: <FaEnvelope className="text-xl" />,
+  //   label: "Tin nhắn",
+  // },
 
-  {
-    path: "#certificates",
-    icon: <FaCertificate className="text-xl" />,
-    label: "Chứng chỉ",
-  },
-  {
-    path: "#settings",
-    icon: <FaCog className="text-xl" />,
-    label: "Cài đặt",
-  },
+  // {
+  //   path: "#certificates",
+  //   icon: <FaCertificate className="text-xl" />,
+  //   label: "Chứng chỉ",
+  // },
+  // {
+  //   path: "#settings",
+  //   icon: <FaCog className="text-xl" />,
+  //   label: "Cài đặt",
+  // },
 ];
 
 interface StudentSidebarProps {

@@ -1,7 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import {
   MdDashboard,
-  MdPayments,
   MdAnalytics,
   MdSettings,
 } from "react-icons/md";
@@ -41,12 +40,6 @@ const navItems: NavItem[] = [
     icon: <FaCalendar className="text-xl" />,
     label: "Quản lý khóa học",
   },
-  {
-    path: "/admin/transactions",
-    icon: <MdPayments className="text-xl" />,
-    label: "Quản lý giao dịch",
-  },
-
   {
     path: "/admin/reports",
     icon: <MdAnalytics className="text-xl" />,

@@ -17,14 +17,14 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   useEffect(() => {
     // Chỉ connect khi đã authenticated và có token
     if (isAuthenticated && token) {
-      console.log("Initializing WebSocket connection...");
+      // console.log("Initializing WebSocket connection...");
 
       socketService.connect(token, () => {
         setIsConnected(true);
       });
 
       return () => {
-        console.log("Cleaning up WebSocket connection...");
+        // console.log("Cleaning up WebSocket connection...");
         socketService.disconnect();
         setIsConnected(false);
       };

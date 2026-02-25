@@ -9,14 +9,13 @@ import {
   MdVpnKey,
   MdDelete,
   MdPersonAdd,
-  MdChevronLeft,
-  MdChevronRight,
   MdCheckCircle,
   MdCancel,
   MdClose,
   MdVisibility,
   MdVisibilityOff,
 } from "react-icons/md";
+import PaginationControl from "../../components/common/PaginationControl";
 import type { UserRole, UserStatus } from "../../types/admin";
 import { useUsers } from "../../hooks/useUsers";
 import type { AdminUserListItem } from "../../types/user";
@@ -29,6 +28,7 @@ const AdminUserManagementPage = () => {
   const [roleFilter, setRoleFilter] = useState<UserRole | "All">("All");
   const [statusFilter, setStatusFilter] = useState<UserStatus | "All">("All");
   const [activeTab, setActiveTab] = useState<"All" | UserRole>("All");
+  const [pageSize, setPageSize] = useState(10);
 
   // Modal state
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -158,8 +158,14 @@ const AdminUserManagementPage = () => {
     updateParams({ role: tab, pageNo: 0 });
   };
 
-  const handlePageChange = (newPage: number) => {
-    updateParams({ pageNo: newPage });
+  // PaginationControl dùng 1-indexed, API dùng 0-indexed
+  const handlePageChange = (page: number) => {
+    updateParams({ pageNo: page - 1 });
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    updateParams({ pageSize: size, pageNo: 0 });
   };
 
   const filteredUsers = data?.items || [];
@@ -410,11 +416,6 @@ const AdminUserManagementPage = () => {
                 </tr>
               ) : (
                 filteredUsers.map((user: AdminUserListItem) => {
-                  // Map API status if implied or use active/deleted logic
-                  // Assuming API returns 'active' implies good, deleted=true implies blocked?
-                  // Adjust as per real logic. Here defaulting to Active for now as API doesn't have status field directly?
-                  // Wait, user.ts has 'active' property in User but AdminUserListItem might not have it strictly matching?
-                  // AdminUserListItem has deleted field.
                   const displayStatus: UserStatus = user.studentProfile?.deleted
                     ? "Blocked"
                     : "Active";
@@ -448,7 +449,7 @@ const AdminUserManagementPage = () => {
                           )}
                           <div>
                             <p className="text-sm font-bold text-[#111518]">
-                              {user.firstName} {user.lastName}
+                              {user.lastName} {user.firstName}
                             </p>
                             <p className="text-xs text-[#607b8a]">
                               {user.email}
@@ -542,44 +543,15 @@ const AdminUserManagementPage = () => {
           </table>
 
           {/* Pagination */}
-          <div className="p-4 bg-slate-50 flex items-center justify-between border-t border-slate-100">
-            <p className="text-sm text-[#607b8a]">
-              Hiển thị {filteredUsers.length} trên tổng số {totalElements} kết
-              quả
-            </p>
-            <div className="flex gap-2">
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage <= 0}
-                className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-[#0078bd] hover:border-[#0078bd] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <MdChevronLeft className="text-xl" />
-              </button>
-
-              {/* Simple pagination logic - can be improved for many pages */}
-              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                // Simplified centered pagination logic or just show first 5 for now
-                const page = i;
-                return (
-                  <button
-                    key={page}
-                    onClick={() => handlePageChange(page)}
-                    className={`w-8 h-8 flex items-center justify-center rounded-lg border transition-all font-bold text-sm
-                            ${currentPage === page ? "bg-[#0078bd] text-white border-[#0078bd]" : "bg-white border-slate-200 text-slate-600 hover:text-[#0078bd] hover:border-[#0078bd]"}`}
-                  >
-                    {page + 1}
-                  </button>
-                );
-              })}
-
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage >= totalPages - 1}
-                className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-[#0078bd] hover:border-[#0078bd] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <MdChevronRight className="text-xl" />
-              </button>
-            </div>
+          <div className="p-4 bg-slate-50 border-t border-slate-100">
+            <PaginationControl
+              currentPage={currentPage + 1}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              pageSize={pageSize}
+              onPageSizeChange={handlePageSizeChange}
+              pageSizeOptions={[10, 20, 50, 100, 1000]}
+            />
           </div>
         </div>
       </div>

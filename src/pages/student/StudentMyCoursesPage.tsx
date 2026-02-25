@@ -234,6 +234,7 @@ const StudentMyCoursesPage = () => {
             totalPages={totalPages}
             onPageChange={(page) => handlePageChange(page - 1)}
             disablePageSizeSelect
+            pageSizeOptions={[10, 20, 50, 100, 1000]}
           />
         </div>
       )}

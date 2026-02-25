@@ -19,9 +19,19 @@ const CoursesPage = () => {
   const [visibilityFilter, setVisibilityFilter] = useState<
     "" | "PUBLIC" | "PRIVATE"
   >("");
-  const coursesPerPage = 6;
+  const coursesPerPage = 10;
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+      setCurrentPage(1); // Reset page on new search
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   const {
     data,
@@ -31,7 +41,7 @@ const CoursesPage = () => {
     {
       pageNo: currentPage - 1, // API is 0-indexed
       pageSize: coursesPerPage,
-      keyword: searchQuery,
+      keyword: debouncedSearchQuery,
       sorts: ["createdAt:desc"], // Correct: array of strings
       status: "PUBLISHED", // Public courses should be published
       visibility: visibilityFilter || undefined, // Filter by visibility if selected
@@ -71,7 +81,6 @@ const CoursesPage = () => {
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
-    setCurrentPage(1); // Reset to first page on search
   };
 
   const handleVisibilityChange = (value: "" | "PUBLIC" | "PRIVATE") => {
@@ -216,7 +225,6 @@ const CoursesPage = () => {
                       currentPage={currentPage}
                       totalPages={totalPages}
                       onPageChange={handlePageChange}
-                      disablePageSizeSelect
                     />
                   </div>
                 )}

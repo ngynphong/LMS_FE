@@ -2,6 +2,17 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useStudents, useImportStudents } from "../../hooks/useTeacher";
 import PaginationControl from "../../components/common/PaginationControl";
+import { toast } from "../../components/common/Toast";
+
+const getInitials = (name: string) => {
+  if (!name) return "HV";
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .slice(-2)
+    .join("")
+    .toUpperCase();
+};
 
 const StudentListPage = () => {
   // Local state for UI
@@ -57,21 +68,12 @@ const StudentListPage = () => {
 
     try {
       await importStudent(importFile);
+      toast.success("Nhập danh sách học viên thành công!");
       setIsImportModalOpen(false);
       setImportFile(null);
     } catch (error) {
-      console.error(error);
+      toast.error("Tải lên thất bại. Vui lòng kiểm tra định dạng file.");
     }
-  };
-
-  const getInitials = (name: string) => {
-    if (!name) return "HV";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .slice(-2)
-      .join("")
-      .toUpperCase();
   };
 
   return (
@@ -281,6 +283,7 @@ const StudentListPage = () => {
               setPageSize(size);
               setPage(1);
             }}
+            pageSizeOptions={[10, 20, 50, 100, 1000]}
           />
         </div>
       </div>

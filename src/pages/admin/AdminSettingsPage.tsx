@@ -1,17 +1,13 @@
 import { useState } from "react";
 import { useSystemLogs } from "../../hooks/useAdmin";
 import { format } from "date-fns";
-import {
-  MdSettings,
-  MdHistory,
-  MdNavigateBefore,
-  MdNavigateNext,
-} from "react-icons/md";
+import { MdSettings, MdHistory } from "react-icons/md";
+import PaginationControl from "@/components/common/PaginationControl";
 
 const AdminSettingsPage = () => {
   const [activeTab, setActiveTab] = useState<"general" | "logs">("logs");
   const [page, setPage] = useState(1);
-  const pageSize = 10;
+  const [pageSize, setPageSize] = useState(10);
 
   const { data: logsData, isLoading, isError } = useSystemLogs(page, pageSize);
 
@@ -20,6 +16,16 @@ const AdminSettingsPage = () => {
   };
 
   const totalPages = logsData?.data.totalPage || 1;
+
+  // PaginationControl handlers (tương tự AdminUserManagementPage)
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setPage(1); // Reset về trang đầu khi đổi pageSize
+  };
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 text-[#101518]">
@@ -183,27 +189,16 @@ const AdminSettingsPage = () => {
             </div>
 
             {/* Pagination */}
-            {logsData?.data && logsData.data.totalPage > 1 && (
-              <div className="p-4 border-t border-slate-100 flex justify-end gap-2">
-                <button
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  disabled={page === 1}
-                  className="p-2 border border-slate-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
-                >
-                  <MdNavigateBefore className="text-xl" />
-                </button>
-                <div className="flex items-center px-4 text-sm font-medium text-slate-600 bg-slate-50 rounded-lg border border-slate-200">
-                  Trang {page}
-                </div>
-                <button
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  disabled={page === totalPages}
-                  className="p-2 border border-slate-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
-                >
-                  <MdNavigateNext className="text-xl" />
-                </button>
-              </div>
-            )}
+            <div className="p-4 bg-slate-50 border-t border-slate-100">
+              <PaginationControl
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+                pageSize={pageSize}
+                onPageSizeChange={handlePageSizeChange}
+                pageSizeOptions={[10, 20, 50, 100]}
+              />
+            </div>
           </div>
         )}
       </div>
