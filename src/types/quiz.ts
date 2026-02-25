@@ -20,7 +20,7 @@ export interface CreateQuizRequest {
     lessonItemId: string;
     durationInMinutes: number;
     passScore: number;
-    maxAttempts: number;
+    maxAttempts: number | null;
     shuffleQuestions: boolean;
     isDynamic: boolean;
     type: "PRACTICE" | "QUIZ";
@@ -71,7 +71,7 @@ export interface QuizDetailResponse {
     durationInMinutes: number;
     totalQuestions: number;
     passScore: number;
-    maxAttempts: number;
+    maxAttempts: number | null;
     closeTime?: string | null;
     showScoreAfterSubmit: boolean;
     showResultAfterSubmit: boolean;
@@ -122,7 +122,7 @@ export interface QuizSummary {
     durationInMinutes: number;
     totalQuestions: number;
     type: "PRACTICE" | "QUIZ";
-    maxAttempts: number;
+    maxAttempts: number | null;
     passScore: number;
     code?: string;
     isPublished?: boolean;
@@ -154,7 +154,7 @@ export interface StudentTeacherQuiz {
     totalQuestions: number;
     closeTime?: string;
     type: "PRACTICE" | "QUIZ";
-    maxAttempts: number;
+    maxAttempts: number | null;
     passScore: number;
     showScoreAfterSubmit: boolean;
     showResultAfterSubmit: boolean;

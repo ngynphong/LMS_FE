@@ -19,6 +19,7 @@ const StudentProfilePage = () => {
     schoolName: "",
     goal: "",
   });
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     if (user) {
@@ -36,22 +37,34 @@ const StudentProfilePage = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Call API to update profile
+
+    const newErrors: { [key: string]: string } = {};
+    if (!formData.firstName.trim()) newErrors.firstName = "Vui lòng nhập họ";
+    if (!formData.lastName.trim()) newErrors.lastName = "Vui lòng nhập tên";
+    if (!formData.dob) newErrors.dob = "Vui lòng chọn ngày sinh";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     const updatedUser = {
       ...user,
       firstName: formData.firstName,
       lastName: formData.lastName,
       dob: formData.dob,
-      // schoolName: formData.schoolName,
-      // goal: formData.goal,
     };
     try {
       await updateProfileApi(updatedUser);
@@ -135,27 +148,45 @@ const StudentProfilePage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
                   <label className="text-gray-900 text-sm font-semibold">
-                    Họ
+                    Họ <span className="text-red-500">*</span>
                   </label>
                   <input
-                    className="w-full rounded-lg border border-gray-300 h-12 px-4 text-sm transition-all outline-none focus:ring-2 focus:ring-[#27A4F2] focus:border-[#27A4F2]"
+                    className={`w-full rounded-lg border h-12 px-4 text-sm transition-all outline-none focus:ring-2 focus:ring-[#27A4F2] ${
+                      errors.firstName
+                        ? "border-red-500"
+                        : "border-gray-300 focus:border-[#27A4F2]"
+                    }`}
                     type="text"
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleChange}
                   />
+                  {errors.firstName && (
+                    <span className="text-red-500 text-xs">
+                      {errors.firstName}
+                    </span>
+                  )}
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className="text-gray-900 text-sm font-semibold">
-                    Tên
+                    Tên <span className="text-red-500">*</span>
                   </label>
                   <input
-                    className="w-full rounded-lg border border-gray-300 h-12 px-4 text-sm transition-all outline-none focus:ring-2 focus:ring-[#27A4F2] focus:border-[#27A4F2]"
+                    className={`w-full rounded-lg border h-12 px-4 text-sm transition-all outline-none focus:ring-2 focus:ring-[#27A4F2] ${
+                      errors.lastName
+                        ? "border-red-500"
+                        : "border-gray-300 focus:border-[#27A4F2]"
+                    }`}
                     type="text"
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleChange}
                   />
+                  {errors.lastName && (
+                    <span className="text-red-500 text-xs">
+                      {errors.lastName}
+                    </span>
+                  )}
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className="text-gray-900 text-sm font-semibold">
@@ -166,20 +197,27 @@ const StudentProfilePage = () => {
                     type="email"
                     name="email"
                     value={formData.email}
-                    readOnly
+                    disabled
                   />
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className="text-gray-900 text-sm font-semibold">
-                    Ngày sinh
+                    Ngày sinh <span className="text-red-500">*</span>
                   </label>
                   <input
-                    className="w-full rounded-lg border border-gray-300 h-12 px-4 text-sm transition-all outline-none focus:ring-2 focus:ring-[#27A4F2] focus:border-[#27A4F2]"
+                    className={`w-full rounded-lg border h-12 px-4 text-sm transition-all outline-none focus:ring-2 focus:ring-[#27A4F2] ${
+                      errors.dob
+                        ? "border-red-500"
+                        : "border-gray-300 focus:border-[#27A4F2]"
+                    }`}
                     type="date"
                     name="dob"
                     value={formData.dob}
                     onChange={handleChange}
                   />
+                  {errors.dob && (
+                    <span className="text-red-500 text-xs">{errors.dob}</span>
+                  )}
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className="text-gray-900 text-sm font-semibold">
@@ -190,7 +228,7 @@ const StudentProfilePage = () => {
                     type="text"
                     name="schoolName"
                     placeholder="Trường học / Nơi làm việc"
-                    readOnly
+                    disabled
                     value={formData.schoolName}
                     onChange={handleChange}
                   />
@@ -206,7 +244,7 @@ const StudentProfilePage = () => {
                   rows={4}
                   name="goal"
                   value={formData.goal}
-                  readOnly
+                  disabled
                   onChange={handleChange}
                 />
               </div>

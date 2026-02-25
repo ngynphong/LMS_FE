@@ -367,7 +367,7 @@ const QuestionFormPage = () => {
                             correctAnswerIndex: index,
                           })
                         }
-                        className="w-5 h-5 color-primary border-slate-300 focus:ring-[#1E90FF]"
+                        className="w-5 h-5 color-primary border-slate-300 focus:ring-blue-500"
                       />
                     </div>
                     <span className="flex-none font-bold text-sm text-slate-500">
@@ -398,7 +398,7 @@ const QuestionFormPage = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, explanation: e.target.value })
                 }
-                className="w-full p-4 bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-[#0074bd] text-sm min-h-[100px]"
+                className="w-full p-4 bg-slate-50 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm min-h-[100px]"
                 placeholder="Nhập lời giải thích cho sinh viên sau khi hoàn thành câu hỏi..."
               />
             </div>
@@ -409,7 +409,7 @@ const QuestionFormPage = () => {
       {/* Footer */}
       <footer className="p-8 text-center">
         <p className="text-xs text-slate-400">
-          © 2024 Edu-Lms Learning Management System
+          © 2026 IES-EDU Learning Management System
         </p>
       </footer>
     </div>

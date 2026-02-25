@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { useCourseDetail } from "../../hooks/useCourses";
+import { useCourseDetail, useCourseStudents } from "../../hooks/useCourses";
 import { getLessonById } from "../../services/lessonService";
 import type { LessonItem, ApiLesson } from "../../types/learningTypes";
+import PaginationControl from "../../components/common/PaginationControl";
 
 const TeacherCourseDetailPage = () => {
   const { id } = useParams();
@@ -13,7 +14,16 @@ const TeacherCourseDetailPage = () => {
     error,
     refetch,
   } = useCourseDetail(id);
+
+  const {
+    data: studentsResponse,
+    isLoading: studentsLoading,
+    error: studentsError,
+  } = useCourseStudents(id);
+
   const [lessonsWithItems, setLessonsWithItems] = useState<ApiLesson[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
     if (course?.lessons) {
@@ -97,6 +107,15 @@ const TeacherCourseDetailPage = () => {
   const handleViewItem = (lessonId: string, item: LessonItem) => {
     navigate(`/teacher/courses/${id}/lessons/${lessonId}/items/${item.id}`);
   };
+
+  const students = studentsResponse?.data || [];
+  const totalElements = students.length;
+  const totalPages = Math.ceil(totalElements / pageSize);
+
+  const currentStudents = students.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize,
+  );
 
   return (
     <div className="space-y-6">
@@ -290,6 +309,93 @@ const TeacherCourseDetailPage = () => {
               <span className="material-symbols-outlined text-lg">add</span>
               Thêm bài học
             </Link>
+          </div>
+        )}
+      </div>
+
+      {/* Students Section */}
+      <div className="bg-white rounded-xl border border-slate-200 p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-bold text-slate-900">
+            Danh sách học viên
+          </h2>
+          <span className="text-sm text-slate-500">
+            {studentsResponse?.data?.length || 0} học viên
+          </span>
+        </div>
+
+        {studentsLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <span className="material-symbols-outlined animate-spin text-2xl text-blue-600">
+              progress_activity
+            </span>
+          </div>
+        ) : studentsError ? (
+          <div className="text-center py-8 text-red-500">
+            Lỗi khi tải danh sách học viên
+          </div>
+        ) : currentStudents.length > 0 ? (
+          <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {currentStudents.map((student) => (
+                <div
+                  key={student.id}
+                  className="flex items-center gap-4 p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                >
+                  <img
+                    src={student.imgUrl || "/img/default-avatar.png"}
+                    alt={`${student.firstName} ${student.lastName}`}
+                    className="w-12 h-12 rounded-full object-cover bg-slate-100 border border-slate-200"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm font-semibold text-slate-900 truncate">
+                      {student.firstName} {student.lastName}
+                    </h3>
+                    <p className="text-xs text-slate-500 truncate">
+                      {student.email}
+                    </p>
+                  </div>
+                  {student.studentProfile?.schoolName && (
+                    <div className="hidden sm:block text-right shrink-0">
+                      <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
+                        Trường
+                      </p>
+                      <p className="text-xs text-slate-700 truncate max-w-[120px]">
+                        {student.studentProfile.schoolName}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {totalElements > 0 && (
+              <div className="border-t border-slate-200 pt-6 mt-2">
+                <PaginationControl
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                  pageSize={pageSize}
+                  onPageSizeChange={(newSize) => {
+                    setPageSize(newSize);
+                    setCurrentPage(1);
+                  }}
+                  pageSizeOptions={[4, 10, 20, 50]}
+                />
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="text-center py-12 bg-slate-50 rounded-lg border border-slate-100 border-dashed">
+            <span className="material-symbols-outlined text-5xl text-slate-300 mb-4">
+              group
+            </span>
+            <h3 className="text-lg font-semibold text-slate-600 mb-2">
+              Chưa có học viên
+            </h3>
+            <p className="text-sm text-slate-500">
+              Khóa học này hiện chưa có học viên nào tham gia.
+            </p>
           </div>
         )}
       </div>

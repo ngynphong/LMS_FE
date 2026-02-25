@@ -1,5 +1,5 @@
 import axiosInstance from '../config/axios';
-import type { CourseListResponse, GetCoursesParams, CreateCourseRequest, UpdateCourseRequest } from '../types/courseApi';
+import type { CourseListResponse, GetCoursesParams, CreateCourseRequest, UpdateCourseRequest, CourseStudentsResponse } from '../types/courseApi';
 import type { 
   ApiCourse, 
   EnrollCourseRequest,
@@ -153,6 +153,15 @@ export const createInviteCode = async (courseId: string, data: CreateInviteCodeR
     try {
         const res = await axiosInstance.post<{ code: number; message: string; data: string }>(`/courses/${courseId}/invite-code`, data);
         return res.data.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getCourseStudents = async (courseId: string): Promise<CourseStudentsResponse> => {
+    try {
+        const res = await axiosInstance.get<CourseStudentsResponse>(`/courses/${courseId}/students`);
+        return res.data;
     } catch (error) {
         throw error;
     }

@@ -20,17 +20,19 @@ class WebSocketService {
             heartbeatOutgoing: 4000,
 
             // Log để debug (Tắt khi lên Production)
-            debug: (str) => {
-                if (import.meta.env.MODE === 'development') {
-                    console.log('[WS Debug]:', str);
-                }
-            },
+            // debug: (str) => {
+            //     if (import.meta.env.MODE === 'development') {
+            //         console.log('[WS Debug]:', str);
+            //     }
+            // },
         });
 
         // Callback khi có lỗi
         this.client.onStompError = (frame) => {
-            console.error('❌ Broker reported error: ' + frame.headers['message']);
-            console.error('Additional details: ' + frame.body);
+            if (import.meta.env.MODE === 'development') {
+                console.error('❌ Broker reported error: ' + frame.headers['message']);
+                console.error('Additional details: ' + frame.body);
+            }
         };
     }
 
@@ -44,7 +46,7 @@ class WebSocketService {
         };
 
         this.client.onConnect = () => {
-            console.log('✅ Connected to WebSocket');
+            // console.log('✅ Connected to WebSocket');
             this.isConnected = true;
             if (onConnectCallback) onConnectCallback();
         };
@@ -57,14 +59,14 @@ class WebSocketService {
         if (this.isConnected) {
             this.client.deactivate();
             this.isConnected = false;
-            console.log('🔌 Disconnected');
+            // console.log('🔌 Disconnected');
         }
     }
 
     // Hàm Subscribe (Nhận dữ liệu)
     subscribe(destination: string, callback: (payload: any) => void) {
         if (!this.client.connected) {
-            console.warn('⚠️ Client chưa kết nối, không thể subscribe:', destination);
+            // console.warn('⚠️ Client chưa kết nối, không thể subscribe:', destination);
             return;
         }
 
@@ -74,7 +76,7 @@ class WebSocketService {
                 const data = JSON.parse(message.body);
                 callback(data);
             } catch (error) {
-                console.error('Lỗi parse JSON WebSocket:', error);
+                // console.error('Lỗi parse JSON WebSocket:', error);
             }
         });
     }

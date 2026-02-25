@@ -11,7 +11,8 @@ import {
     getCourseById, 
     enrollCourse, 
     createInviteCode, 
-    getStudentCourses 
+    getStudentCourses,
+    getCourseStudents
 } from '../services/courseService';
 import type { GetCoursesParams, CreateCourseRequest, UpdateCourseRequest } from '../types/courseApi';
 import type { EnrollCourseRequest, CreateInviteCodeRequest } from '../types/learningTypes';
@@ -66,7 +67,15 @@ export const useStudentCourses = (params: {
 export const useCourseDetail = (courseId: string | undefined) => {
     return useQuery({
         queryKey: ['course', courseId],
-        queryFn: () => getCourseById(courseId!),
+        queryFn: () => courseId ? getCourseById(courseId) : Promise.reject(new Error("No courseId provided")),
+        enabled: !!courseId,
+    });
+};
+
+export const useCourseStudents = (courseId: string | undefined) => {
+    return useQuery({
+        queryKey: ['course-students', courseId],
+        queryFn: () => courseId ? getCourseStudents(courseId) : Promise.reject(new Error("No courseId provided")),
         enabled: !!courseId,
     });
 };

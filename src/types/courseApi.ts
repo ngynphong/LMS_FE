@@ -74,4 +74,40 @@ export interface ReorderLessonItemsRequest {
     itemIds: string[];
 }
 
+export interface CourseStudent {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    imgUrl?: string;
+    dob?: string;
+    roles: string[];
+    teacherProfile?: {
+        id: string;
+        qualification: string;
+        specialization: string;
+        experience: string;
+        biography: string;
+        certificateUrls: string[];
+        isVerified: boolean;
+        createdAt: string;
+        updatedAt: string;
+        deleted: boolean;
+    };
+    studentProfile?: {
+        id: string;
+        schoolName: string;
+        goal?: string;
+        emergencyContact?: string;
+        createdAt: string;
+        updatedAt: string;
+        deleted: boolean;
+        stats?: any;
+    };
+}
 
+export interface CourseStudentsResponse {
+    code: number;
+    message: string;
+    data: CourseStudent[];
+}
