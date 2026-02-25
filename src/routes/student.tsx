@@ -20,6 +20,9 @@ const StudentAvailableQuizzesPage = React.lazy(
 const StudentQuizTakingPage = React.lazy(
   () => import("../pages/student/StudentQuizTakingPage"),
 );
+const StudentNotificationPage = React.lazy(
+  () => import("../pages/student/StudentNotificationPage"),
+);
 
 const studentRoutes: RouteObject[] = [
   {
@@ -53,6 +56,10 @@ const studentRoutes: RouteObject[] = [
       {
         path: "quizzes",
         element: <StudentAvailableQuizzesPage />,
+      },
+      {
+        path: "notifications",
+        element: <StudentNotificationPage />,
       },
     ],
   },

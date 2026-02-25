@@ -90,7 +90,7 @@ export const NotificationDropdown = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 text-white hover:bg-gray-400 rounded-full transition-colors flex items-center justify-center cursor-pointer"
+        className="relative p-2 text-white hover:bg-white/10 rounded-full transition-colors flex items-center justify-center cursor-pointer"
       >
         <FaBell className="text-xl" />
         {unreadCount > 0 && (

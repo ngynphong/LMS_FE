@@ -5,6 +5,7 @@ import {
   // FaEnvelope,
   // FaCog,
   FaTimes,
+  FaBell,
 } from "react-icons/fa";
 import { useAuth } from "../../hooks/useAuth";
 import { ConfirmationModal } from "../common/ConfirmationModal";
@@ -37,6 +38,11 @@ const navItems: NavItem[] = [
     path: "/student/quizzes",
     icon: <Quiz animateOnHover size={20} />,
     label: "Bài kiểm tra",
+  },
+  {
+    path: "/student/notifications",
+    icon: <FaBell />,
+    label: "Thông báo",
   },
   // {
   //   path: "#calendar",
@@ -76,7 +82,12 @@ const StudentSidebar = ({
 }: StudentSidebarProps) => {
   const location = useLocation();
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    if (path === "/student/dashboard") {
+      return location.pathname === path;
+    }
+    return location.pathname.startsWith(path);
+  };
   const { user, logout } = useAuth();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 

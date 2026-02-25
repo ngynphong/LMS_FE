@@ -83,7 +83,12 @@ const TeacherSidebar = ({
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    if (path === "/teacher/dashboard") {
+      return location.pathname === path;
+    }
+    return location.pathname.startsWith(path);
+  };
 
   // Close mobile sidebar on route change
   useEffect(() => {
