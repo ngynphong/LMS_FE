@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { FaBell } from "react-icons/fa";
+import { FaCircleNotch } from "react-icons/fa";
 import {
   useNotifications,
   useMarkNotificationRead,
@@ -91,8 +92,8 @@ const TeacherNotificationPage = () => {
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         {isLoading ? (
           <div className="p-12 flex justify-center items-center">
-            <span className="material-symbols-outlined animate-spin text-4xl color-primary">
-              progress_activity
+            <span className="animate-spin text-4xl color-primary">
+              <FaCircleNotch />
             </span>
           </div>
         ) : notifications.length === 0 ? (

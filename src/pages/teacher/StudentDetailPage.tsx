@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useStudentDetail, useUpdateStudent } from "../../hooks/useTeacher";
 import type { UpdateStudentRequest } from "../../types/student";
+import { FaCircleNotch } from "react-icons/fa";
 
 const StudentDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -285,8 +286,8 @@ const StudentDetailPage = () => {
                   className="px-4 py-2 rounded-lg bg-[#0074bd] text-white font-bold hover:bg-[#0074bd]/90 disabled:opacity-50 flex items-center gap-2"
                 >
                   {updating && (
-                    <span className="material-symbols-outlined animate-spin text-sm">
-                      progress_activity
+                    <span className="animate-spin text-sm">
+                      <FaCircleNotch />
                     </span>
                   )}
                   Lưu thay đổi

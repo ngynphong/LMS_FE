@@ -20,6 +20,7 @@ interface LessonItemFormProps {
 }
 
 import LoadingOverlay from "../../common/LoadingOverlay";
+import { FaCircleNotch } from "react-icons/fa";
 
 // Max file size in bytes (1MB for now - server limit)
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
@@ -392,8 +393,8 @@ const LessonItemForm = ({
           >
             {loading ? (
               <>
-                <span className="material-symbols-outlined animate-spin text-lg">
-                  progress_activity
+                <span className="animate-spin text-lg">
+                  <FaCircleNotch />
                 </span>
                 <span>Đang lưu...</span>
               </>

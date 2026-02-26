@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import type { Student } from "../../../types/student";
+import { getInitials } from "@/utils/initialsName";
 
 interface StudentCardProps {
   student: Student;
@@ -18,16 +19,6 @@ const StudentCard = ({ student }: StudentCardProps) => {
   };
 
   const status = statusConfig[student.status || "inactive"];
-
-  // Get initials from name
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .slice(-2)
-      .join("")
-      .toUpperCase();
-  };
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 hover:shadow-md transition-shadow">

@@ -17,6 +17,7 @@ import {
 import type { ApiLesson, LessonItem } from "../../types/learningTypes";
 import PdfSlideshow from "@/components/common/PdfSlideshow";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
+import { FaCircleNotch } from "react-icons/fa";
 
 type TabType = "overview" | "quiz";
 
@@ -346,8 +347,8 @@ const CourseLearningPage = () => {
     if (loadingItem) {
       return (
         <div className="flex items-center justify-center h-64 bg-slate-100 rounded-xl">
-          <span className="material-symbols-outlined animate-spin text-3xl text-blue-600">
-            progress_activity
+          <span className="animate-spin text-3xl text-blue-600">
+            <FaCircleNotch />
           </span>
         </div>
       );
@@ -409,8 +410,8 @@ const CourseLearningPage = () => {
             >
               {markingComplete ? (
                 <>
-                  <span className="material-symbols-outlined animate-spin text-lg">
-                    progress_activity
+                  <span className="animate-spin text-lg">
+                    <FaCircleNotch />
                   </span>
                   Đang xử lý...
                 </>
@@ -448,8 +449,8 @@ const CourseLearningPage = () => {
             >
               {markingComplete ? (
                 <>
-                  <span className="material-symbols-outlined animate-spin text-lg">
-                    progress_activity
+                  <span className="animate-spin text-lg">
+                    <FaCircleNotch />
                   </span>
                   Đang xử lý...
                 </>
@@ -489,8 +490,8 @@ const CourseLearningPage = () => {
             >
               {markingComplete ? (
                 <>
-                  <span className="material-symbols-outlined animate-spin text-lg">
-                    progress_activity
+                  <span className="animate-spin text-lg">
+                    <FaCircleNotch />
                   </span>
                   Đang xử lý...
                 </>
@@ -687,8 +688,8 @@ const CourseLearningPage = () => {
                   <div className="max-w-2xl space-y-4">
                     {quizLoading ? (
                       <div className="flex justify-center p-8">
-                        <span className="material-symbols-outlined animate-spin text-3xl color-primary">
-                          progress_activity
+                        <span className="animate-spin text-3xl color-primary">
+                          <FaCircleNotch />
                         </span>
                       </div>
                     ) : lessonQuizzes && lessonQuizzes.length > 0 ? (

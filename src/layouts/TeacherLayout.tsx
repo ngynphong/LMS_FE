@@ -36,17 +36,14 @@ const TeacherLayout = ({ children }: TeacherLayoutProps) => {
           >
             <FaBars className="text-xl" />
           </button>
-          <span className="font-bold text-lg text-[#111518]">Edu-LMS</span>
+          <span className="font-bold text-lg text-[#111518]">IES EDU</span>
         </div>
         <div className="flex items-center gap-2 mr-2">
           {user && <NotificationDropdown />}
-          <div
+          <img
+            src={user?.urlImg || "/img/avatar-default.png"}
+            alt="Avatar"
             className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 border border-[#0b8eda]/20"
-            style={{
-              backgroundImage: user?.urlImg
-                ? `url(${user.urlImg})`
-                : `url("https://ui-avatars.com/api/?name=${user?.firstName || "T"}+${user?.lastName || "T"}&background=random")`,
-            }}
           />
         </div>
       </div>

@@ -249,10 +249,7 @@ const StudentSidebar = ({
                   className={`flex items-center gap-3 ${isCollapsed ? "justify-center" : ""}`}
                 >
                   <img
-                    src={
-                      user.urlImg ||
-                      `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random`
-                    }
+                    src={user.urlImg || "/img/student-default.jpg"}
                     alt={`${user.firstName} ${user.lastName}`}
                     className="size-9 rounded-full object-cover border border-gray-200 shrink-0"
                   />

@@ -5,6 +5,7 @@ import {
 } from "../../hooks/useQuestions";
 import { useMyCourses, useCourseDetail } from "../../hooks/useCourses";
 import { toast } from "../common/Toast";
+import { FaCircleNotch } from "react-icons/fa";
 
 interface ImportQuestionsModalProps {
   onClose: () => void;
@@ -231,8 +232,8 @@ const ImportQuestionsModal = ({
               className="px-4 py-2 text-sm font-bold text-white color-primary-bg hover:translate-y-[-2px] rounded-lg shadow-sm transition-all duration-300 disabled:opacity-50 flex items-center gap-2"
             >
               {importLoading && (
-                <span className="material-symbols-outlined animate-spin text-sm">
-                  progress_activity
+                <span className="animate-spin text-sm">
+                  <FaCircleNotch />
                 </span>
               )}
               Import

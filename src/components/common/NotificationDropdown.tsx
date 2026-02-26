@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { FaBell } from "react-icons/fa";
+import { FaBell, FaCircleNotch } from "react-icons/fa";
 import {
   useNotifications,
   useMarkAllNotificationsRead,
@@ -125,8 +125,8 @@ export const NotificationDropdown = () => {
           <div className="overflow-y-auto custom-scrollbar flex-1 max-h-[400px]">
             {isLoading ? (
               <div className="p-8 flex justify-center items-center">
-                <span className="material-symbols-outlined animate-spin text-2xl color-primary">
-                  progress_activity
+                <span className="animate-spin text-2xl color-primary">
+                  <FaCircleNotch />
                 </span>
               </div>
             ) : notifications.length === 0 ? (
