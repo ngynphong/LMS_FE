@@ -190,3 +190,20 @@ export interface UpdateUserRoleRequest {
   roles: string[];
 }
 
+export interface BatchResetPasswordRequest {
+  userEmails: string[];
+}
+
+export interface AdminBatchResetPasswordRequest {
+  userEmails: string[];
+  action: 'APPROVE' | 'REJECT';
+}
+
+export interface ResetPasswordRequestItem {
+  id: string; // the request ID or user ID depending on backend, let's assume it maps to user ID or request ID. The swagger says it returns User array or similar? Ah, the swagger shows "items": [ { id, email, firstName, lastName, ... } ]. So it's basically AdminUserListItem or User.
+  // Wait, looking at the swagger image for GET /users/reset-password/batch:
+  // "items": [ { "id": "string", "email": "string", "firstName": "string", "lastName": "string", "imgUrl": "string", "dob": "string", "roles": ["string"], "teacherProfile": {...} } ]
+  // This is exactly AdminUserListItem!
+}
+
+// So we can just reuse AdminUserPaginationData for GET /users/reset-password/batch.

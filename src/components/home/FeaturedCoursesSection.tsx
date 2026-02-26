@@ -66,13 +66,10 @@ const FeaturedCoursesSection = () => {
                         <img
                           alt={course.name}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                          src={
-                            course.thumbnailUrl ||
-                            "https://placehold.co/600x400?text=No+Image"
-                          }
+                          src={course.thumbnailUrl || "/img/book.png"}
                           onError={(e) => {
                             (e.target as HTMLImageElement).src =
-                              "https://placehold.co/600x400?text=No+Image";
+                              "/img/book.png";
                           }}
                         />
                         <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg text-xs font-bold color-primary">

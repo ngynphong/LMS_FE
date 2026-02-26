@@ -41,13 +41,22 @@ const QuestionFormPage = () => {
   );
   const lessons = courseDetail?.lessons || [];
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    explanation: string;
+    difficulty: QuestionDifficulty;
+    type: QuestionType;
+    content: string;
+    options: string[];
+    correctAnswerIndices: number[];
+    defaultScore: number;
+    lessonId: string;
+  }>({
     explanation: "",
     difficulty: "EASY" as QuestionDifficulty,
     type: "SINGLE_CHOICE" as QuestionType,
     content: "",
     options: ["", "", "", ""],
-    correctAnswerIndex: 0,
+    correctAnswerIndices: [0],
     defaultScore: 1,
     lessonId: "", // Optional
   });
@@ -65,17 +74,15 @@ const QuestionFormPage = () => {
   }, [id, isEditMode, qList, location.state]);
 
   const populateForm = (question: Question) => {
-    // Map answers back to options and index
-    // Note: This logic assumes 4 options structure for UI simplicity, but API supports dynamic array.
-    // We will try to map the first 4 answers.
-    const newOptions = ["", "", "", ""];
-    let correctIndex = 0;
+    let newOptions = ["", "", "", ""];
+    let correctIndices = [0];
 
-    if (question.answers) {
-      question.answers.forEach((ans, idx) => {
-        if (idx < 4) newOptions[idx] = ans.content;
-        if (ans.correct) correctIndex = idx;
-      });
+    if (question.answers && question.answers.length > 0) {
+      newOptions = question.answers.map((a) => a.content);
+      correctIndices = question.answers
+        .map((a, i) => (a.correct ? i : -1))
+        .filter((i) => i !== -1);
+      if (correctIndices.length === 0) correctIndices = [0];
     }
 
     setFormData({
@@ -84,7 +91,7 @@ const QuestionFormPage = () => {
       type: question.type,
       content: question.content,
       options: newOptions,
-      correctAnswerIndex: correctIndex,
+      correctAnswerIndices: correctIndices,
       defaultScore: question.defaultScore || 1,
       lessonId: question.lessonId || "",
     });
@@ -96,6 +103,38 @@ const QuestionFormPage = () => {
     setFormData({ ...formData, options: newOptions });
   };
 
+  const handleAddOption = () => {
+    setFormData({ ...formData, options: [...formData.options, ""] });
+  };
+
+  const handleRemoveOption = (index: number) => {
+    const newOptions = formData.options.filter((_, i) => i !== index);
+    let newIndices = formData.correctAnswerIndices
+      .filter((i) => i !== index)
+      .map((i) => (i > index ? i - 1 : i));
+    if (newIndices.length === 0 && newOptions.length > 0) newIndices = [0];
+    setFormData({
+      ...formData,
+      options: newOptions,
+      correctAnswerIndices: newIndices,
+    });
+  };
+
+  const handleCorrectAnswerToggle = (index: number) => {
+    if (formData.type === "SINGLE_CHOICE") {
+      setFormData({ ...formData, correctAnswerIndices: [index] });
+    } else {
+      const isAlreadyCorrect = formData.correctAnswerIndices.includes(index);
+      let newIndices = [...formData.correctAnswerIndices];
+      if (isAlreadyCorrect) {
+        newIndices = newIndices.filter((i) => i !== index);
+      } else {
+        newIndices.push(index);
+      }
+      setFormData({ ...formData, correctAnswerIndices: newIndices });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -103,10 +142,18 @@ const QuestionFormPage = () => {
     const answers = formData.options
       .map((opt, idx) => ({
         content: opt,
-        correct: idx === formData.correctAnswerIndex,
+        correct: formData.correctAnswerIndices.includes(idx),
       }))
-      .filter((ans) => ans.content.trim() !== ""); // Filter out empty options if desired, or keep them?
-    // User might want to enforce 4 options. API doesn't seem to enforce count in types but UI does.
+      .filter((ans) => ans.content.trim() !== "");
+
+    if (answers.length < 2) {
+      alert("Vui lòng nhập ít nhất 2 đáp án hợp lệ.");
+      return;
+    }
+    if (!answers.some((a) => a.correct)) {
+      alert("Vui lòng chọn ít nhất 1 đáp án đúng.");
+      return;
+    }
 
     const requestData = {
       content: formData.content,
@@ -205,12 +252,18 @@ const QuestionFormPage = () => {
                 <div className="relative">
                   <select
                     value={formData.type}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const newType = e.target.value as QuestionType;
                       setFormData({
                         ...formData,
-                        type: e.target.value as QuestionType,
-                      })
-                    }
+                        type: newType,
+                        correctAnswerIndices:
+                          newType === "SINGLE_CHOICE" &&
+                          formData.correctAnswerIndices.length > 1
+                            ? [formData.correctAnswerIndices[0]]
+                            : formData.correctAnswerIndices,
+                      });
+                    }}
                     className="w-full appearance-none px-4 py-2.5 bg-slate-50 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm pr-10"
                     required
                   >
@@ -342,49 +395,81 @@ const QuestionFormPage = () => {
                   Danh sách đáp án <span className="text-red-500">*</span>
                 </label>
                 <span className="text-xs text-slate-500">
-                  Chọn nút radio cho đáp án đúng
+                  {formData.type === "SINGLE_CHOICE"
+                    ? "Chọn nút radio cho đáp án đúng"
+                    : "Chọn các checkbox cho nhiều đáp án đúng"}
                 </span>
               </div>
 
               <div className="space-y-3">
-                {["A", "B", "C", "D"].map((letter, index) => (
-                  <div
-                    key={letter}
-                    className={`flex items-center gap-4 p-3 bg-slate-50 rounded-lg border transition-all ${
-                      formData.correctAnswerIndex === index
-                        ? "border-[#0074bd]/50 bg-[#0074bd]/5"
-                        : "border-transparent hover:border-[#0074bd]/30"
-                    }`}
-                  >
-                    <div className="flex-none">
-                      <input
-                        type="radio"
-                        name="correct_answer"
-                        checked={formData.correctAnswerIndex === index}
-                        onChange={() =>
-                          setFormData({
-                            ...formData,
-                            correctAnswerIndex: index,
-                          })
-                        }
-                        className="w-5 h-5 color-primary border-slate-300 focus:ring-blue-500"
-                      />
+                {formData.options.map((_option, index) => {
+                  const letter = String.fromCharCode(65 + index);
+                  return (
+                    <div
+                      key={index}
+                      className={`flex items-start gap-4 p-3 bg-slate-50 rounded-lg border transition-all ${
+                        formData.correctAnswerIndices.includes(index)
+                          ? "border-[#0074bd]/50 bg-[#0074bd]/5"
+                          : "border-transparent hover:border-[#0074bd]/30"
+                      }`}
+                    >
+                      <div className="flex-none mt-1">
+                        <input
+                          type={
+                            formData.type === "SINGLE_CHOICE"
+                              ? "radio"
+                              : "checkbox"
+                          }
+                          name={`correct_answer_${index}`}
+                          checked={formData.correctAnswerIndices.includes(
+                            index,
+                          )}
+                          onChange={() => handleCorrectAnswerToggle(index)}
+                          className="w-5 h-5 color-primary border-slate-300 focus:ring-blue-500 cursor-pointer"
+                        />
+                      </div>
+                      <span className="flex-none font-bold text-sm text-slate-500 mt-1">
+                        {letter}.
+                      </span>
+                      <div className="flex-1 flex gap-2 items-start">
+                        <input
+                          type="text"
+                          value={formData.options[index]}
+                          onChange={(e) =>
+                            handleOptionChange(index, e.target.value)
+                          }
+                          className="flex-1 bg-transparent border-b border-slate-300 focus:border-[#1E90FF] focus:outline-none focus:ring-0 text-sm py-1 px-0"
+                          placeholder={`Nhập nội dung đáp án ${letter}`}
+                          required={index < 2}
+                        />
+                        {formData.options.length > 2 && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveOption(index)}
+                            className="text-red-400 hover:text-red-600 p-1 bg-white rounded-md border border-slate-200 shadow-sm"
+                            title="Xóa đáp án"
+                          >
+                            <span className="material-symbols-outlined text-sm">
+                              delete
+                            </span>
+                          </button>
+                        )}
+                      </div>
                     </div>
-                    <span className="flex-none font-bold text-sm text-slate-500">
-                      {letter}.
-                    </span>
-                    <input
-                      type="text"
-                      value={formData.options[index]}
-                      onChange={(e) =>
-                        handleOptionChange(index, e.target.value)
-                      }
-                      className="flex-1 bg-transparent border-none focus:outline-none focus:ring-0 text-sm p-0"
-                      placeholder={`Nhập nội dung đáp án ${letter}`}
-                      required={index < 2} // At least 2 options required
-                    />
-                  </div>
-                ))}
+                  );
+                })}
+              </div>
+              <div className="flex justify-start mt-4">
+                <button
+                  type="button"
+                  onClick={handleAddOption}
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-semibold color-primary bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors border border-blue-100"
+                >
+                  <span className="material-symbols-outlined text-[18px]">
+                    add
+                  </span>
+                  Thêm đáp án
+                </button>
               </div>
             </div>
 

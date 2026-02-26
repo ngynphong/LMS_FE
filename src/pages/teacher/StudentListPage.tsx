@@ -310,7 +310,7 @@ const StudentListPage = () => {
                   type="file"
                   accept=".csv, .xlsx, .xls"
                   onChange={handleImportFileChange}
-                  className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#0074bd]/10 file:text-[#0074bd] hover:file:bg-[#0074bd]/20"
+                  className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#1E90FF]/10 file:text-[#1E90FF] hover:file:bg-[#1E90FF]/20"
                 />
                 <p className="text-xs text-slate-500">
                   Chấp nhận file .xlsx, .xls, .csv
@@ -327,7 +327,7 @@ const StudentListPage = () => {
                 <button
                   type="submit"
                   disabled={!importFile || importing}
-                  className="px-4 py-2 rounded-lg bg-[#0074bd] text-white font-bold hover:bg-[#0074bd]/90 disabled:opacity-50 flex items-center gap-2"
+                  className="px-4 py-2 rounded-lg bg-[#1E90FF] text-white font-bold hover:bg-[#1E90FF]/90 disabled:opacity-50 flex items-center gap-2"
                 >
                   {importing && (
                     <span className="material-symbols-outlined animate-spin text-sm">

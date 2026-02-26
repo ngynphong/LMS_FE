@@ -7,9 +7,19 @@ import {
   FaChartPie,
 } from "react-icons/fa";
 import { MdLocationOn } from "react-icons/md";
-import { notifications } from "../../data/notification";
+// import { notifications } from "../../data/notification";
 import { useAuth } from "../../hooks/useAuth";
 import { useStudentCourses } from "../../hooks/useCourses";
+import {
+  useNotifications,
+  useMarkNotificationRead,
+} from "../../hooks/useNotifications";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import "dayjs/locale/vi";
+
+dayjs.extend(relativeTime);
+dayjs.locale("vi");
 
 const StudentDashboardPage = () => {
   const { user } = useAuth();
@@ -21,7 +31,16 @@ const StudentDashboardPage = () => {
     sorts: "createdAt:desc",
   });
 
+  const { data: notificationData } = useNotifications(0, 50, "createdAt,desc");
+  const markRead = useMarkNotificationRead();
+
   const recentCourses = coursesData?.items || [];
+  const notifications = Array.isArray(notificationData)
+    ? notificationData
+    : notificationData?.content ||
+      notificationData?.data ||
+      notificationData?.items ||
+      [];
 
   // Real stats data from user profile
   const statsData = [
@@ -42,24 +61,24 @@ const StudentDashboardPage = () => {
     },
   ];
 
-  const getNotificationColor = (color: string) => {
+  const getNotificationColor = (type: string) => {
     const colors: Record<string, string> = {
-      red: "bg-red-500 ring-red-50",
-      blue: "color-primary ring-blue-50",
-      green: "bg-green-500 ring-green-50",
-      yellow: "bg-yellow-500 ring-yellow-50",
+      DEADLINE: "bg-red-500 ring-red-50",
+      INTERACTION: "color-primary-bg ring-blue-50",
+      SYSTEM: "bg-green-500 ring-green-50",
+      SCHEDULE: "bg-yellow-500 ring-yellow-50",
     };
-    return colors[color] || "bg-gray-500 ring-gray-50";
+    return colors[type] || "color-primary-bg ring-blue-50";
   };
 
-  const getNotificationTextColor = (color: string) => {
+  const getNotificationTextColor = (type: string) => {
     const colors: Record<string, string> = {
-      red: "text-red-500",
-      blue: "color-primary",
-      green: "text-green-500",
-      yellow: "text-yellow-500",
+      DEADLINE: "text-red-500",
+      INTERACTION: "color-primary",
+      SYSTEM: "text-green-500",
+      SCHEDULE: "text-yellow-500",
     };
-    return colors[color] || "text-gray-500";
+    return colors[type] || "color-primary";
   };
 
   const getGreeting = (): string => {
@@ -171,7 +190,9 @@ const StudentDashboardPage = () => {
                   </div>
                   <div className="shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
                     <button
-                      onClick={() => navigate(`/student/courses/${course.id}/learn`)}
+                      onClick={() =>
+                        navigate(`/student/courses/${course.id}/learn`)
+                      }
                       className="w-full sm:w-auto px-6 py-2.5 color-primary-bg text-white text-sm font-bold rounded-lg hover:scale-105 transition-all cursor-pointer duration-300 whitespace-nowrap"
                     >
                       Tiếp tục học
@@ -205,32 +226,62 @@ const StudentDashboardPage = () => {
             </h2>
           </div>
           <div className="flex flex-col gap-5">
-            {notifications.map((notif, index) => (
-              <div key={notif.id} className="flex gap-4 group cursor-pointer">
+            {notifications.length === 0 && (
+              <div className="text-center py-6 text-gray-500 text-sm">
+                Bạn chưa có thông báo nào.
+              </div>
+            )}
+            {notifications.slice(0, 4).map((notif, index) => (
+              <div
+                key={notif.id}
+                className={`flex gap-4 group cursor-pointer transition-colors p-2 rounded-xl border border-transparent hover:border-blue-100 hover:bg-blue-50/50 ${!notif.read ? "bg-blue-50/30" : ""}`}
+                onClick={() => {
+                  if (!notif.read) markRead.mutate(notif.id);
+                  if (notif.link) navigate(notif.link);
+                }}
+              >
                 <div className="flex flex-col items-center">
                   <div
-                    className={`size-2.5 rounded-full ${getNotificationColor(notif.color)} ring-4 mt-2`}
+                    className={`size-2.5 rounded-full ${getNotificationColor(notif.type)} ring-4 mt-2`}
                   />
-                  {index < notifications.length - 1 && (
+                  {index < Math.min(notifications.length, 4) - 1 && (
                     <div className="w-0.5 grow bg-gray-100 my-2" />
                   )}
                 </div>
                 <div className="flex-1 pb-2">
+                  <div className="flex items-center justify-between">
+                    <p
+                      className={`text-[11px] font-bold uppercase tracking-wider ${getNotificationTextColor(notif.type)}`}
+                    >
+                      {notif.type === "DEADLINE" && "Hạn chót sắp tới"}
+                      {notif.type === "INTERACTION" && "Tương tác"}
+                      {notif.type === "SYSTEM" && "Hệ thống"}
+                      {notif.type === "SCHEDULE" && "Lịch học"}
+                      {![
+                        "DEADLINE",
+                        "INTERACTION",
+                        "SYSTEM",
+                        "SCHEDULE",
+                      ].includes(notif.type) && notif.type}
+                    </p>
+                    <span className="text-[11px] text-gray-400">
+                      {dayjs(notif.createdAt).fromNow()}
+                    </span>
+                  </div>
                   <p
-                    className={`text-xs font-bold uppercase tracking-wider ${getNotificationTextColor(notif.color)}`}
+                    className={`text-sm mt-1 group-hover:color-primary transition-colors line-clamp-2 ${!notif.read ? "font-bold text-gray-900" : "font-medium text-gray-700"}`}
                   >
-                    {notif.type === "deadline" && "Hạn chót sắp tới"}
-                    {notif.type === "interaction" && "Tương tác"}
-                    {notif.type === "system" && "Hệ thống"}
-                    {notif.type === "schedule" && "Lịch học"}
+                    {notif.title || notif.content}
                   </p>
-                  <p className="text-sm font-semibold text-gray-900 mt-1 group-hover:color-primary transition-colors line-clamp-2">
-                    {notif.title}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {notif.time} • {notif.course}
-                  </p>
+                  {notif.title && notif.content && (
+                    <p className="text-xs text-gray-500 mt-1 line-clamp-1">
+                      {notif.content}
+                    </p>
+                  )}
                 </div>
+                {!notif.read && (
+                  <div className="shrink-0 size-2 rounded-full bg-blue-500 mt-2" />
+                )}
               </div>
             ))}
           </div>

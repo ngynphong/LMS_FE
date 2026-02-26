@@ -5,8 +5,10 @@ import {
   // FaEnvelope,
   // FaCog,
   FaTimes,
+  FaBell,
 } from "react-icons/fa";
 import { useAuth } from "../../hooks/useAuth";
+import { useNotifications } from "../../hooks/useNotifications";
 import { ConfirmationModal } from "../common/ConfirmationModal";
 import { useState, useEffect } from "react";
 import { ChevronLeft } from "../animate-ui/icons/chevron-left";
@@ -37,6 +39,11 @@ const navItems: NavItem[] = [
     path: "/student/quizzes",
     icon: <Quiz animateOnHover size={20} />,
     label: "Bài kiểm tra",
+  },
+  {
+    path: "/student/notifications",
+    icon: <FaBell />,
+    label: "Thông báo",
   },
   // {
   //   path: "#calendar",
@@ -76,9 +83,23 @@ const StudentSidebar = ({
 }: StudentSidebarProps) => {
   const location = useLocation();
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    if (path === "/student/dashboard") {
+      return location.pathname === path;
+    }
+    return location.pathname.startsWith(path);
+  };
   const { user, logout } = useAuth();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
+  const { data: notificationData } = useNotifications(0, 50, "createdAt,desc");
+  const notifications = Array.isArray(notificationData)
+    ? notificationData
+    : notificationData?.content ||
+      notificationData?.data ||
+      notificationData?.items ||
+      [];
+  const unreadCount = notifications.filter((n: any) => !n.read).length || 0;
 
   // Close mobile sidebar on route change
   useEffect(() => {
@@ -175,16 +196,38 @@ const StudentSidebar = ({
                     title={isCollapsed ? item.label : ""}
                   >
                     <span
-                      className={`shrink-0 ${isActive(item.path) ? "color-primary" : "text-slate-400 group-hover:text-slate-600"}`}
+                      className={`shrink-0 relative ${isActive(item.path) ? "color-primary" : "text-slate-400 group-hover:text-slate-600"}`}
                     >
                       {item.icon}
+                      {item.path.includes("notifications") &&
+                        unreadCount > 0 &&
+                        isCollapsed &&
+                        !isMobileOpen && (
+                          <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">
+                            {unreadCount > 9 ? "9+" : unreadCount}
+                          </span>
+                        )}
                     </span>
                     {(!isCollapsed || isMobileOpen) && (
-                      <span className="truncate lg:block hidden">
-                        {item.label}
-                      </span>
+                      <div className="hidden lg:flex items-center justify-between flex-1 truncate">
+                        <span className="truncate">{item.label}</span>
+                        {item.path.includes("notifications") &&
+                          unreadCount > 0 && (
+                            <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white shadow-sm shrink-0">
+                              {unreadCount > 9 ? "9+" : unreadCount}
+                            </span>
+                          )}
+                      </div>
                     )}
-                    <span className="truncate lg:hidden">{item.label}</span>
+                    <div className="flex items-center justify-between flex-1 truncate lg:hidden">
+                      <span className="truncate">{item.label}</span>
+                      {item.path.includes("notifications") &&
+                        unreadCount > 0 && (
+                          <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white shadow-sm shrink-0">
+                            {unreadCount > 9 ? "9+" : unreadCount}
+                          </span>
+                        )}
+                    </div>
                   </Link>
                 </li>
               ))}
