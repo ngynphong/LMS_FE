@@ -8,6 +8,7 @@ import type {
     ChangePasswordRequest,
     ProfileResponse
 } from "../types/auth";
+import type { AdminBatchResetPasswordRequest } from "../types/user";
 import axiosInstance, { publicAxios } from "../config/axios";
 import axios from "axios";
 
@@ -377,5 +378,17 @@ export const loginWithCustomToken = async (token: string): Promise<AuthResponse>
         // If failed, clear token to avoid bad state
         localStorage.removeItem('token');
         return handleApiError(error, 'Login with custom token failed');
+    }
+};
+
+export const approveBatchResetPasswordApi = async (data: AdminBatchResetPasswordRequest): Promise<{message: string, data: string}> => {
+    try {
+        const response = await axiosInstance.post('/auth/reset-password/batch', data);
+        return {
+           message: response.data?.message || 'Successfully',
+           data: response.data?.data || 'Passwords reset successfully',
+        };
+    } catch (error) {
+        return handleApiError(error, 'Failed to approve batch password reset');
     }
 };

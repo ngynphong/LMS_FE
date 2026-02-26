@@ -4,6 +4,9 @@ import { useCourseDetail, useCourseStudents } from "../../hooks/useCourses";
 import { getLessonById } from "../../services/lessonService";
 import type { LessonItem, ApiLesson } from "../../types/learningTypes";
 import PaginationControl from "../../components/common/PaginationControl";
+import { useRequestBatchResetPassword } from "../../hooks/useBatchPasswordReset";
+import { ConfirmationModal } from "../../components/common/ConfirmationModal";
+import { toast } from "../../components/common/Toast";
 
 const TeacherCourseDetailPage = () => {
   const { id } = useParams();
@@ -24,6 +27,10 @@ const TeacherCourseDetailPage = () => {
   const [lessonsWithItems, setLessonsWithItems] = useState<ApiLesson[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [selectedEmails, setSelectedEmails] = useState<string[]>([]);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  const requestResetMutation = useRequestBatchResetPassword();
 
   useEffect(() => {
     if (course?.lessons) {
@@ -116,6 +123,42 @@ const TeacherCourseDetailPage = () => {
     (currentPage - 1) * pageSize,
     currentPage * pageSize,
   );
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedEmails(currentStudents.map((s) => s.email));
+    } else {
+      setSelectedEmails([]);
+    }
+  };
+
+  const handleSelectStudent = (email: string) => {
+    setSelectedEmails((prev) =>
+      prev.includes(email) ? prev.filter((e) => e !== email) : [...prev, email],
+    );
+  };
+
+  const handleRequestReset = () => {
+    if (selectedEmails.length === 0) return;
+    setIsConfirmOpen(true);
+  };
+
+  const executeRequestReset = () => {
+    requestResetMutation.mutate(
+      { userEmails: selectedEmails },
+      {
+        onSuccess: () => {
+          toast.success("Đã gửi yêu cầu reset mật khẩu thành công!");
+          setSelectedEmails([]);
+          setIsConfirmOpen(false);
+        },
+        onError: (err) => {
+          toast.error("Lỗi: " + err.message);
+          setIsConfirmOpen(false);
+        },
+      },
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -315,13 +358,30 @@ const TeacherCourseDetailPage = () => {
 
       {/* Students Section */}
       <div className="bg-white rounded-xl border border-slate-200 p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold text-slate-900">
-            Danh sách học viên
-          </h2>
-          <span className="text-sm text-slate-500">
-            {studentsResponse?.data?.length || 0} học viên
-          </span>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-4">
+            <h2 className="text-lg font-bold text-slate-900">
+              Danh sách học viên
+            </h2>
+            <span className="text-sm text-slate-500 bg-slate-100 px-3 py-1 rounded-full font-medium">
+              {studentsResponse?.data?.length || 0} học viên
+            </span>
+          </div>
+          {selectedEmails.length > 0 && (
+            <button
+              onClick={handleRequestReset}
+              disabled={requestResetMutation.isPending}
+              className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg font-medium text-sm hover:bg-amber-600 transition-colors shadow-sm disabled:opacity-50"
+            >
+              <span className="material-symbols-outlined text-[18px]">
+                lock_reset
+              </span>
+              {requestResetMutation.isPending
+                ? "Đang gửi..."
+                : "Yêu cầu Reset Mật khẩu"}{" "}
+              ({selectedEmails.length})
+            </button>
+          )}
         </div>
 
         {studentsLoading ? (
@@ -336,14 +396,37 @@ const TeacherCourseDetailPage = () => {
           </div>
         ) : currentStudents.length > 0 ? (
           <div className="flex flex-col gap-6">
+            <div className="flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-lg border border-slate-200">
+              <input
+                type="checkbox"
+                checked={
+                  currentStudents.length > 0 &&
+                  currentStudents.every((s) => selectedEmails.includes(s.email))
+                }
+                onChange={handleSelectAll}
+                className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600 cursor-pointer"
+              />
+              <span className="text-sm font-medium text-slate-700">
+                Chọn tất cả trên trang này
+              </span>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {currentStudents.map((student) => (
                 <div
                   key={student.id}
                   className="flex items-center gap-4 p-4 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
                 >
+                  <input
+                    type="checkbox"
+                    checked={selectedEmails.includes(student.email)}
+                    onChange={() => handleSelectStudent(student.email)}
+                    className="w-4 h-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-blue-600 cursor-pointer"
+                  />
                   <img
-                    src={student.imgUrl || "/img/default-avatar.png"}
+                    src={
+                      student.imgUrl ||
+                      `https://ui-avatars.com/api/?name=${student.firstName}+${student.lastName}&background=random`
+                    }
                     alt={`${student.firstName} ${student.lastName}`}
                     className="w-12 h-12 rounded-full object-cover bg-slate-100 border border-slate-200"
                   />
@@ -399,6 +482,18 @@ const TeacherCourseDetailPage = () => {
           </div>
         )}
       </div>
+
+      <ConfirmationModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={executeRequestReset}
+        title="Yêu cầu Reset Mật khẩu"
+        message={`Gửi yêu cầu reset mật khẩu cho ${selectedEmails.length} học viên?`}
+        confirmLabel="Gửi yêu cầu"
+        cancelLabel="Hủy"
+        isLoading={requestResetMutation.isPending}
+        variant="warning"
+      />
     </div>
   );
 };

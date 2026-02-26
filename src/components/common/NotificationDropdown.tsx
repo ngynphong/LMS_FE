@@ -179,7 +179,7 @@ export const NotificationDropdown = () => {
           {/* Footer */}
           <div className="p-3 text-center border-t border-gray-100 bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer">
             <Link
-              to="/student/dashboard" // Default fallback
+              to="/student/notifications" // Default fallback
               onClick={() => setIsOpen(false)}
               className="text-sm font-semibold color-primary w-full block"
             >

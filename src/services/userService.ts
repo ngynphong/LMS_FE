@@ -1,5 +1,5 @@
 import axiosInstance from "../config/axios";
-import type { AdminUserListResponse, UserDashboardParams, UpdateUserRoleRequest } from "../types/user";
+import type { AdminUserListResponse, UserDashboardParams, UpdateUserRoleRequest, BatchResetPasswordRequest } from "../types/user";
 import axios from "axios";
 
 // Helper function to handle API errors (reused from authService or similar)
@@ -47,4 +47,30 @@ export const updateUserRolesApi = async (userId: string, data: UpdateUserRoleReq
        return handleApiError(error, 'Failed to update user roles');
    }
 };
+
+export const requestBatchResetPasswordApi = async (data: BatchResetPasswordRequest): Promise<void> => {
+    try {
+        await axiosInstance.patch(`/users/reset-password/batch`, data);
+    } catch (error) {
+        return handleApiError(error, 'Failed to request batch password reset');
+    }
+};
+
+export const getBatchResetPasswordRequestsApi = async (params: { pageNo?: number; pageSize?: number; sorts?: string[] }): Promise<AdminUserListResponse> => {
+    try {
+        const queryParams = new URLSearchParams();
+        if (params.pageNo !== undefined) queryParams.append('pageNo', params.pageNo.toString());
+        if (params.pageSize !== undefined) queryParams.append('pageSize', params.pageSize.toString());
+        
+        if (params.sorts && params.sorts.length > 0) {
+             params.sorts.forEach(sort => queryParams.append('sorts', sort));
+        }
+
+        const response = await axiosInstance.get<AdminUserListResponse>(`/users/reset-password/batch?${queryParams.toString()}`);
+        return response.data;
+    } catch (error) {
+        return handleApiError(error, 'Failed to fetch batch password reset requests');
+    }
+};
+
 

@@ -1,10 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
-import {
-  MdDashboard,
-  MdAnalytics,
-  MdSettings,
-} from "react-icons/md";
-import { FaChalkboardTeacher, FaUsers } from "react-icons/fa";
+import { MdDashboard, MdAnalytics, MdSettings } from "react-icons/md";
+import { FaChalkboardTeacher, FaUsers, FaKey } from "react-icons/fa";
 import { FaCalendar, FaTimes } from "react-icons/fa";
 import { useAuth } from "../../hooks/useAuth";
 import { ConfirmationModal } from "../common/ConfirmationModal";
@@ -34,6 +30,11 @@ const navItems: NavItem[] = [
     path: "/admin/teachers/new",
     icon: <FaChalkboardTeacher className="text-xl" />,
     label: "Thêm giáo viên",
+  },
+  {
+    path: "/admin/password-requests",
+    icon: <FaKey className="text-xl" />,
+    label: "Đặt lại mật khẩu",
   },
   {
     path: "/admin/courses",

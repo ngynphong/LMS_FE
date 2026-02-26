@@ -21,6 +21,9 @@ const CreateTeacherPage = React.lazy(
 const AdminSettingsPage = React.lazy(
   () => import("../pages/admin/AdminSettingsPage"),
 );
+const AdminPasswordRequestsPage = React.lazy(
+  () => import("../pages/admin/AdminPasswordRequestsPage"),
+);
 
 /**
  * Admin Routes
@@ -54,6 +57,10 @@ const adminRoutes: RouteObject[] = [
       {
         path: "courses/:id",
         element: <AdminCourseDetailPage />,
+      },
+      {
+        path: "password-requests",
+        element: <AdminPasswordRequestsPage />,
       },
       {
         path: "transactions",

@@ -31,11 +31,16 @@ const StudentDashboardPage = () => {
     sorts: "createdAt:desc",
   });
 
-  const { data: notificationData } = useNotifications(0, 5, "createdAt,desc");
+  const { data: notificationData } = useNotifications(0, 50, "createdAt,desc");
   const markRead = useMarkNotificationRead();
 
   const recentCourses = coursesData?.items || [];
-  const notifications = notificationData?.content || [];
+  const notifications = Array.isArray(notificationData)
+    ? notificationData
+    : notificationData?.content ||
+      notificationData?.data ||
+      notificationData?.items ||
+      [];
 
   // Real stats data from user profile
   const statsData = [
@@ -229,9 +234,9 @@ const StudentDashboardPage = () => {
             {notifications.slice(0, 4).map((notif, index) => (
               <div
                 key={notif.id}
-                className={`flex gap-4 group cursor-pointer transition-colors p-2 rounded-xl border border-transparent hover:border-blue-100 hover:bg-blue-50/50 ${!notif.isRead ? "bg-blue-50/30" : ""}`}
+                className={`flex gap-4 group cursor-pointer transition-colors p-2 rounded-xl border border-transparent hover:border-blue-100 hover:bg-blue-50/50 ${!notif.read ? "bg-blue-50/30" : ""}`}
                 onClick={() => {
-                  if (!notif.isRead) markRead.mutate(notif.id);
+                  if (!notif.read) markRead.mutate(notif.id);
                   if (notif.link) navigate(notif.link);
                 }}
               >
@@ -264,17 +269,17 @@ const StudentDashboardPage = () => {
                     </span>
                   </div>
                   <p
-                    className={`text-sm mt-1 group-hover:color-primary transition-colors line-clamp-2 ${!notif.isRead ? "font-bold text-gray-900" : "font-medium text-gray-700"}`}
+                    className={`text-sm mt-1 group-hover:color-primary transition-colors line-clamp-2 ${!notif.read ? "font-bold text-gray-900" : "font-medium text-gray-700"}`}
                   >
-                    {notif.title || notif.message}
+                    {notif.title || notif.content}
                   </p>
-                  {notif.title && notif.message && (
+                  {notif.title && notif.content && (
                     <p className="text-xs text-gray-500 mt-1 line-clamp-1">
-                      {notif.message}
+                      {notif.content}
                     </p>
                   )}
                 </div>
-                {!notif.isRead && (
+                {!notif.read && (
                   <div className="shrink-0 size-2 rounded-full bg-blue-500 mt-2" />
                 )}
               </div>
