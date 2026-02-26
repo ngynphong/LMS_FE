@@ -1,3 +1,4 @@
+import NotFoundPage from "@/pages/error/NotFoundPage";
 import React from "react";
 import type { RouteObject } from "react-router-dom";
 
@@ -50,6 +51,10 @@ const publicRoutes: RouteObject[] = [
   {
     path: "unauthorized",
     element: <UnauthorizedPage />,
+  },
+  {
+    path: "*",
+    element: <NotFoundPage />,
   },
 ];
 
