@@ -1,42 +1,31 @@
 export interface NotificationItem {
   id: string;
   title: string;
-  message: string;
+  content: string;
   type: "SYSTEM" | "COURSE" | "ASSIGNMENT" | "INTERACTION" | "SCHEDULE" | "DEADLINE" | string;
-  isRead: boolean;
+  read: boolean;
   link?: string;
   createdAt: string;
   userId?: string;
+  receiverEmail?: string | null;
 }
 
-export interface NotificationResponse {
-  content: NotificationItem[];
-  pageable: {
-    pageNumber: number;
-    pageSize: number;
-    sort: {
-      empty: boolean;
-      sorted: boolean;
-      unsorted: boolean;
-    };
-    offset: number;
-    paged: boolean;
-    unpaged: boolean;
-  };
-  last: boolean;
-  totalElements: number;
-  totalPages: number;
-  size: number;
-  number: number;
-  sort: {
-    empty: boolean;
-    sorted: boolean;
-    unsorted: boolean;
-  };
-  first: boolean;
-  numberOfElements: number;
-  empty: boolean;
-}
+export type NotificationResponse = NotificationItem[] | {
+  content?: NotificationItem[];
+  data?: NotificationItem[];
+  items?: NotificationItem[];
+  pageable?: any;
+  last?: boolean;
+  totalElements?: number;
+  totalPages?: number;
+  size?: number;
+  number?: number;
+  sort?: any;
+  first?: boolean;
+  numberOfElements?: number;
+  empty?: boolean;
+  [key: string]: any;
+};
 
 export interface GetNotificationsParams {
   page?: number;

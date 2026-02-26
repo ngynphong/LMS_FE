@@ -20,14 +20,19 @@ export const NotificationDropdown = () => {
 
   const { data: notificationData, isLoading } = useNotifications(
     0,
-    5,
+    50,
     "createdAt,desc",
   );
   const markAllRead = useMarkAllNotificationsRead();
   const markRead = useMarkNotificationRead();
 
-  const notifications = notificationData?.content || [];
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const notifications = Array.isArray(notificationData)
+    ? notificationData
+    : notificationData?.content ||
+      notificationData?.data ||
+      notificationData?.items ||
+      [];
+  const unreadCount = notifications.filter((n: any) => !n.read).length;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -47,7 +52,7 @@ export const NotificationDropdown = () => {
   };
 
   const handleNotificationClick = (notif: any) => {
-    if (!notif.isRead) {
+    if (!notif.read) {
       markRead.mutate(notif.id);
     }
     setIsOpen(false);
@@ -131,12 +136,12 @@ export const NotificationDropdown = () => {
               </div>
             ) : (
               <div className="flex flex-col">
-                {notifications.map((notif) => (
+                {notifications.slice(0, 5).map((notif) => (
                   <div
                     key={notif.id}
                     onClick={() => handleNotificationClick(notif)}
                     className={`flex items-start gap-3 p-4 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors ${
-                      !notif.isRead ? "bg-blue-50/30" : ""
+                      !notif.read ? "bg-blue-50/30" : ""
                     }`}
                   >
                     <div className="shrink-0 mt-1">
@@ -151,9 +156,9 @@ export const NotificationDropdown = () => {
                         {notif.type}
                       </p>
                       <p
-                        className={`text-sm text-gray-900 line-clamp-2 ${!notif.isRead ? "font-semibold" : "font-normal"}`}
+                        className={`text-sm text-gray-900 line-clamp-2 ${!notif.read ? "font-semibold" : "font-normal"}`}
                       >
-                        {notif.message || notif.title}
+                        {notif.content || notif.title}
                       </p>
                       <p className="text-[11px] text-gray-500 mt-1.5 flex items-center gap-1">
                         <span className="material-symbols-outlined text-[12px] opacity-70">
@@ -162,7 +167,7 @@ export const NotificationDropdown = () => {
                         {dayjs(notif.createdAt).fromNow()}
                       </p>
                     </div>
-                    {!notif.isRead && (
+                    {!notif.read && (
                       <div className="shrink-0 size-2 bg-blue-500 rounded-full mt-2" />
                     )}
                   </div>

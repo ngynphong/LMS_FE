@@ -23,7 +23,12 @@ const TeacherNotificationPage = () => {
   const markRead = useMarkNotificationRead();
   const markAllRead = useMarkAllNotificationsRead();
 
-  const notifications = notificationData?.content || [];
+  const notifications = Array.isArray(notificationData)
+    ? notificationData
+    : notificationData?.content ||
+      notificationData?.data ||
+      notificationData?.items ||
+      [];
 
   const getNotificationColor = (type: string) => {
     switch (type) {
@@ -69,7 +74,7 @@ const TeacherNotificationPage = () => {
           </p>
         </div>
 
-        {notifications.some((n) => !n.isRead) && (
+        {notifications.some((n: any) => !n.read) && (
           <button
             onClick={() => markAllRead.mutate()}
             disabled={markAllRead.isPending}
@@ -105,9 +110,9 @@ const TeacherNotificationPage = () => {
             {notifications.map((notif) => (
               <div
                 key={notif.id}
-                className={`p-5 flex gap-4 transition-colors cursor-pointer hover:bg-slate-50 ${!notif.isRead ? "bg-blue-50/20" : ""}`}
+                className={`p-5 flex gap-4 transition-colors cursor-pointer hover:bg-slate-50 ${!notif.read ? "bg-blue-50/20" : ""}`}
                 onClick={() => {
-                  if (!notif.isRead) markRead.mutate(notif.id);
+                  if (!notif.read) markRead.mutate(notif.id);
                   if (notif.link) navigate(notif.link);
                 }}
               >
@@ -131,17 +136,17 @@ const TeacherNotificationPage = () => {
                     </span>
                   </div>
                   <h4
-                    className={`text-base font-semibold text-slate-900 mb-1 ${!notif.isRead ? "text-blue-900" : "text-slate-800"}`}
+                    className={`text-base font-semibold text-slate-900 mb-1 ${!notif.read ? "text-blue-900" : "text-slate-800"}`}
                   >
-                    {notif.title || notif.message}
+                    {notif.title || notif.content}
                   </h4>
-                  {notif.title && notif.message && (
+                  {notif.title && notif.content && (
                     <p className="text-sm text-slate-600 line-clamp-2">
-                      {notif.message}
+                      {notif.content}
                     </p>
                   )}
                 </div>
-                {!notif.isRead && (
+                {!notif.read && (
                   <div className="shrink-0 self-center">
                     <div className="w-2.5 h-2.5 rounded-full bg-[#1E90FF]"></div>
                   </div>
