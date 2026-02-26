@@ -51,7 +51,7 @@ const CourseCard = (props: CourseCardProps) => {
           {!course.thumbnail && (
             <div className="w-full h-full flex items-center justify-center">
               <img
-                src="/img/book.png"
+                src="/img/default-course.jpg"
                 alt={course.title}
                 className="w-full h-full object-cover"
               />
@@ -131,7 +131,7 @@ const CourseCard = (props: CourseCardProps) => {
           {!thumbnailUrl && (
             <div className="w-full h-full flex items-center justify-center">
               <img
-                src="/img/book.png"
+                src="/img/default-course.jpg"
                 alt={title}
                 className="w-full h-full object-cover"
               />

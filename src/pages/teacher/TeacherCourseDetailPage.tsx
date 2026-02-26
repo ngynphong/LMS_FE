@@ -7,6 +7,7 @@ import PaginationControl from "../../components/common/PaginationControl";
 import { useRequestBatchResetPassword } from "../../hooks/useBatchPasswordReset";
 import { ConfirmationModal } from "../../components/common/ConfirmationModal";
 import { toast } from "../../components/common/Toast";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 const TeacherCourseDetailPage = () => {
   const { id } = useParams();
@@ -53,14 +54,7 @@ const TeacherCourseDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="flex items-center gap-3">
-          <span className="material-symbols-outlined animate-spin text-2xl text-blue-600">
-            progress_activity
-          </span>
-          <span className="text-slate-600">Đang tải thông tin khóa học...</span>
-        </div>
-      </div>
+      <LoadingOverlay isLoading={true} message="Đang tải thông tin khóa học..." />
     );
   }
 
@@ -198,7 +192,7 @@ const TeacherCourseDetailPage = () => {
             {!course.thumbnailUrl && (
               <div className="w-full h-full flex items-center justify-center">
                 <img
-                  src="/img/book.png"
+                  src="/img/default-course.jpg"
                   alt={course.name}
                   className="w-full h-full object-cover"
                 />

@@ -32,6 +32,7 @@ import type {
   ApiLesson,
   LessonItem,
 } from "../../types/learningTypes";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 const CourseBuilderPage = () => {
   const { id } = useParams();
@@ -516,14 +517,7 @@ const CourseBuilderPage = () => {
 
   if (loadingCourse && isEditMode) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="flex items-center gap-3">
-          <span className="material-symbols-outlined animate-spin text-2xl text-blue-600">
-            progress_activity
-          </span>
-          <span className="text-slate-600">Đang tải...</span>
-        </div>
-      </div>
+      <LoadingOverlay isLoading={true} message="Đang tải khóa học..." />
     );
   }
 

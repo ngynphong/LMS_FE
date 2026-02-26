@@ -16,6 +16,7 @@ import {
 } from "../../services/lessonService";
 import type { ApiLesson, LessonItem } from "../../types/learningTypes";
 import PdfSlideshow from "@/components/common/PdfSlideshow";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 type TabType = "overview" | "quiz";
 
@@ -303,14 +304,7 @@ const CourseLearningPage = () => {
   // Loading state
   if (courseLoading || isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#f5f7fa]">
-        <div className="text-center">
-          <span className="material-symbols-outlined text-[48px] color-primary animate-spin">
-            progress_activity
-          </span>
-          <p className="mt-4 text-[#4A5568]">Đang tải bài học...</p>
-        </div>
-      </div>
+      <LoadingOverlay isLoading={true} message="Đang tải bài học..." />
     );
   }
 

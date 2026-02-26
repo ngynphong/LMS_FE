@@ -76,7 +76,27 @@ const LessonItemForm = ({
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { type, ...dataWithoutType } = formData;
-    await onSubmit(dataWithoutType);
+
+    try {
+      await onSubmit(dataWithoutType);
+      if (!isEdit) {
+        setFormData({
+          title: "",
+          description: "",
+          type: formData.type, // keep the current selected tab
+          textContent: "",
+          file: null,
+          currentFileUrl: "",
+          currentFileName: "",
+        });
+        setFileError(null);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+      }
+    } catch (error) {
+      console.error("Form submission failed", error);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

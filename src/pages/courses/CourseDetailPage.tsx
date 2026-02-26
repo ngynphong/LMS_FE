@@ -190,7 +190,7 @@ const CourseDetailPage = () => {
                 {!course.thumbnailUrl && (
                   <div className="w-full h-full flex items-center justify-center">
                     <img
-                      src="/img/book.png"
+                      src="/img/default-course.jpg"
                       alt={course.name}
                       className="w-full h-full object-cover"
                     />
@@ -375,7 +375,7 @@ const CourseDetailPage = () => {
                 {!course.thumbnailUrl && (
                   <div className="aspect-video w-full bg-cover bg-center">
                     <img
-                      src="/img/book.png"
+                      src="/img/default-course.jpg"
                       alt={course.name}
                       className="w-full h-full object-cover"
                     />

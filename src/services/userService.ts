@@ -19,7 +19,8 @@ export const getUsersApi = async (params: UserDashboardParams): Promise<AdminUse
         if (params.pageSize !== undefined) queryParams.append('pageSize', params.pageSize.toString());
         if (params.keyword) queryParams.append('keyword', params.keyword);
         if (params.role && params.role !== 'All') queryParams.append('role', params.role.toUpperCase());
-        // Handle other filters if API supports them (isVerified, isLocked not explicit in swagger snippet but commonly used)
+        if (params.isVerified !== undefined) queryParams.append('isVerified', params.isVerified.toString());
+        if (params.isLocked !== undefined) queryParams.append('isLocked', params.isLocked.toString());
         
         if (params.sorts && params.sorts.length > 0) {
              params.sorts.forEach(sort => queryParams.append('sorts', sort));

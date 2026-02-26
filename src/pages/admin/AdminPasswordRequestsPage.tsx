@@ -6,6 +6,7 @@ import {
 import PaginationControl from "../../components/common/PaginationControl";
 import { ConfirmationModal } from "../../components/common/ConfirmationModal";
 import { toast } from "../../components/common/Toast";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 const AdminPasswordRequestsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -81,14 +82,7 @@ const AdminPasswordRequestsPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="flex items-center gap-3">
-          <span className="material-symbols-outlined animate-spin text-2xl text-blue-600">
-            progress_activity
-          </span>
-          <span className="text-slate-600">Đang tải danh sách yêu cầu...</span>
-        </div>
-      </div>
+      <LoadingOverlay isLoading={true} message="Đang tải danh sách yêu cầu..." />
     );
   }
 
