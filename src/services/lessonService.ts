@@ -96,8 +96,26 @@ export const updateLessonItem = async (id: string, data: {
     title?: string;
     description?: string;
     textContent?: string;
+    file?: File | null;
 }): Promise<any> => {
-    const response = await axiosInstance.put<{code: number, message: string, data: any}>(`/lesson-items/${id}`, data);
+    const params = new URLSearchParams();
+    if (data.title !== undefined) params.append('title', data.title);
+    if (data.description !== undefined) params.append('description', data.description);
+    if (data.textContent !== undefined) params.append('textContent', data.textContent);
+    
+    const formData = new FormData();
+    if (data.file) {
+        formData.append('file', data.file);
+    }
+    
+    const queryString = params.toString();
+    const url = `/lesson-items/${id}/v2${queryString ? `?${queryString}` : ''}`;
+    
+    const response = await axiosInstance.put<{code: number, message: string, data: any}>(url, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
     return response.data.data;
 };
 

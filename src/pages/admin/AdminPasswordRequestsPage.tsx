@@ -6,6 +6,8 @@ import {
 import PaginationControl from "../../components/common/PaginationControl";
 import { ConfirmationModal } from "../../components/common/ConfirmationModal";
 import { toast } from "../../components/common/Toast";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
+import { getInitials } from "@/utils/initialsName";
 
 const AdminPasswordRequestsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -81,14 +83,7 @@ const AdminPasswordRequestsPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="flex items-center gap-3">
-          <span className="material-symbols-outlined animate-spin text-2xl text-blue-600">
-            progress_activity
-          </span>
-          <span className="text-slate-600">Đang tải danh sách yêu cầu...</span>
-        </div>
-      </div>
+      <LoadingOverlay isLoading={true} message="Đang tải danh sách yêu cầu..." />
     );
   }
 
@@ -189,14 +184,21 @@ const AdminPasswordRequestsPage = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <img
-                          src={
-                            request.imgUrl ||
-                            `https://ui-avatars.com/api/?name=${request.firstName}+${request.lastName}&background=random`
-                          }
-                          alt=""
-                          className="w-10 h-10 rounded-full object-cover bg-slate-100 border border-slate-200"
-                        />
+                        {request.imgUrl ? (
+                          <img
+                            src={request.imgUrl}
+                            alt={`${request.firstName} ${request.lastName}`}
+                            className="w-12 h-12 rounded-full object-cover bg-slate-100 border border-slate-200"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center">
+                            <span className="text-xs font-medium text-slate-600">
+                              {getInitials(
+                                request.firstName + " " + request.lastName,
+                              )}
+                            </span>
+                          </div>
+                        )}
                         <div className="font-medium text-slate-900">
                           {request.firstName} {request.lastName}
                         </div>

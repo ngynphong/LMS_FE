@@ -64,14 +64,7 @@ const AdminCourseDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="flex items-center gap-3">
-          <span className="material-symbols-outlined animate-spin text-2xl text-blue-600">
-            progress_activity
-          </span>
-          <span className="text-slate-600">Đang tải thông tin khóa học...</span>
-        </div>
-      </div>
+      <LoadingOverlay isLoading={true} message="Đang tải thông tin khóa học..." />
     );
   }
 

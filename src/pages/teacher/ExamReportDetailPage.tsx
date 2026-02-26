@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { useQuizStatistics } from "../../hooks/useQuizzes";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 const ExamReportDetailPage = () => {
   const { id } = useParams();
@@ -7,11 +8,7 @@ const ExamReportDetailPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <span className="material-symbols-outlined animate-spin text-4xl text-blue-600">
-          progress_activity
-        </span>
-      </div>
+      <LoadingOverlay isLoading={true} message="Đang tải báo cáo..." />
     );
   }
 

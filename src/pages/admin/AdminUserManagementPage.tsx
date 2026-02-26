@@ -26,8 +26,25 @@ import { useResetUserPassword } from "../../hooks/useAdmin";
 const AdminUserManagementPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState<UserRole | "All">("All");
-  const [statusFilter, setStatusFilter] = useState<UserStatus | "All">("All");
+  const [isVerifiedFilter, setIsVerifiedFilter] = useState<
+    "All" | "true" | "false"
+  >("All");
+  const [isLockedFilter, setIsLockedFilter] = useState<
+    "All" | "true" | "false"
+  >("All");
   const [activeTab, setActiveTab] = useState<"All" | UserRole>("All");
+
+  const handleIsVerifiedChange = (val: "All" | "true" | "false") => {
+    setIsVerifiedFilter(val);
+    const isVerified = val === "All" ? undefined : val === "true";
+    updateParams({ isVerified, pageNo: 0 });
+  };
+
+  const handleIsLockedChange = (val: "All" | "true" | "false") => {
+    setIsLockedFilter(val);
+    const isLocked = val === "All" ? undefined : val === "true";
+    updateParams({ isLocked, pageNo: 0 });
+  };
   const [pageSize, setPageSize] = useState(10);
 
   // Modal state
@@ -60,7 +77,7 @@ const AdminUserManagementPage = () => {
       pageSize: 10,
       keyword: "",
       role: "All",
-      sorts: ["createdAt:desc"],
+      sorts: ["desc"],
     },
   );
 
@@ -284,36 +301,61 @@ const AdminUserManagementPage = () => {
                 className="w-full py-2.5 bg-[#f5f7f8] border-none rounded-lg text-sm focus:ring-2 focus:ring-[#1E90FF] outline-none transition-all text-[#111518] cursor-pointer"
               >
                 <option value="All">Tất cả vai trò</option>
-                <option value="Student">Học viên</option>
-                <option value="Instructor">Giảng viên</option>
-                <option value="Collaborator">CTV Nội dung</option>
+                <option value="STUDENT">Học viên</option>
+                <option value="TEACHER">Giảng viên</option>
+                <option value="ADMIN">Quản trị viên</option>
               </select>
             </div>
-            <div className="w-48">
+            <div className="w-36">
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                Trạng thái
+                Xác thực
               </label>
               <select
-                value={statusFilter}
+                value={isVerifiedFilter}
                 onChange={(e) =>
-                  setStatusFilter(e.target.value as UserStatus | "All")
+                  handleIsVerifiedChange(
+                    e.target.value as "All" | "true" | "false",
+                  )
                 }
                 className="w-full py-2.5 bg-[#f5f7f8] border-none rounded-lg text-sm focus:ring-2 focus:ring-[#1E90FF] outline-none transition-all text-[#111518] cursor-pointer"
               >
-                <option value="All">Tất cả trạng thái</option>
-                <option value="Active">Đang hoạt động</option>
-                <option value="Blocked">Bị khóa</option>
-                <option value="Pending">Chờ xác thực</option>
+                <option value="All">Tất cả</option>
+                <option value="true">Đã xác thực</option>
+                <option value="false">Chưa xác thực</option>
+              </select>
+            </div>
+            <div className="w-40">
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                Trạng thái khóa
+              </label>
+              <select
+                value={isLockedFilter}
+                onChange={(e) =>
+                  handleIsLockedChange(
+                    e.target.value as "All" | "true" | "false",
+                  )
+                }
+                className="w-full py-2.5 bg-[#f5f7f8] border-none rounded-lg text-sm focus:ring-2 focus:ring-[#1E90FF] outline-none transition-all text-[#111518] cursor-pointer"
+              >
+                <option value="All">Tất cả</option>
+                <option value="false">Đang hoạt động</option>
+                <option value="true">Bị khóa</option>
               </select>
             </div>
             <div className="flex items-end">
               <button
                 onClick={() => {
                   setSearchQuery("");
-                  setSearchQuery("");
                   setRoleFilter("All");
-                  setStatusFilter("All");
-                  updateParams({ keyword: "", role: "All", pageNo: 0 });
+                  setIsVerifiedFilter("All");
+                  setIsLockedFilter("All");
+                  updateParams({
+                    keyword: "",
+                    role: "All",
+                    isVerified: undefined,
+                    isLocked: undefined,
+                    pageNo: 0,
+                  });
                 }}
                 className="px-4 py-2.5 text-slate-500 hover:text-[#1E90FF] font-medium text-sm flex items-center gap-1 transition-colors"
               >

@@ -14,6 +14,7 @@ interface LessonFormProps {
 }
 
 import LoadingOverlay from "../../common/LoadingOverlay";
+import { FaCircleNotch } from "react-icons/fa";
 
 const LessonForm = ({
   initialData,
@@ -91,8 +92,8 @@ const LessonForm = ({
           >
             {loading ? (
               <>
-                <span className="material-symbols-outlined animate-spin text-lg">
-                  progress_activity
+                <span className="animate-spin text-lg">
+                  <FaCircleNotch />
                 </span>
                 <span>Đang lưu...</span>
               </>

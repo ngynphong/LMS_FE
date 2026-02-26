@@ -8,6 +8,8 @@ import {
 import { toast } from "@/components/common/Toast";
 import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import PaginationControl from "@/components/common/PaginationControl";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
+import { FaCircleNotch } from "react-icons/fa";
 
 const CourseListPage = () => {
   const [filters, setFilters] = useState({
@@ -104,14 +106,7 @@ const CourseListPage = () => {
 
   if (loading && !coursesData) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="flex items-center gap-3">
-          <span className="material-symbols-outlined animate-spin text-2xl text-blue-600">
-            progress_activity
-          </span>
-          <span className="text-slate-600">Đang tải khóa học...</span>
-        </div>
-      </div>
+      <LoadingOverlay isLoading={true} message="Đang tải khóa học..." />
     );
   }
 
@@ -235,7 +230,7 @@ const CourseListPage = () => {
                   {!course.thumbnailUrl && (
                     <div className="w-full h-full flex items-center justify-center">
                       <img
-                        src="/img/book.png"
+                        src="/img/default-course.jpg"
                         alt={course.name}
                         className="w-full h-full object-cover"
                       />
@@ -395,8 +390,8 @@ const CourseListPage = () => {
                   className="px-4 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg disabled:opacity-50 flex items-center gap-2"
                 >
                   {creatingCode ? (
-                    <span className="material-symbols-outlined animate-spin text-sm">
-                      progress_activity
+                    <span className="animate-spin text-sm">
+                      <FaCircleNotch />
                     </span>
                   ) : (
                     <span className="material-symbols-outlined text-sm">

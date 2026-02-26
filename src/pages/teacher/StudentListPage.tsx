@@ -3,16 +3,8 @@ import { Link } from "react-router-dom";
 import { useStudents, useImportStudents } from "../../hooks/useTeacher";
 import PaginationControl from "../../components/common/PaginationControl";
 import { toast } from "../../components/common/Toast";
-
-const getInitials = (name: string) => {
-  if (!name) return "HV";
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .slice(-2)
-    .join("")
-    .toUpperCase();
-};
+import { FaCircleNotch } from "react-icons/fa";
+import { getInitials } from "@/utils/initialsName";
 
 const StudentListPage = () => {
   // Local state for UI
@@ -330,8 +322,8 @@ const StudentListPage = () => {
                   className="px-4 py-2 rounded-lg bg-[#1E90FF] text-white font-bold hover:bg-[#1E90FF]/90 disabled:opacity-50 flex items-center gap-2"
                 >
                   {importing && (
-                    <span className="material-symbols-outlined animate-spin text-sm">
-                      progress_activity
+                    <span className="animate-spin text-sm">
+                      <FaCircleNotch />
                     </span>
                   )}
                   Tải lên

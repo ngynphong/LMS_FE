@@ -6,6 +6,7 @@ import {
   FaCheck,
   FaPlayCircle,
   FaChevronDown,
+  FaCircleNotch,
 } from "react-icons/fa";
 import {
   MdDescription,
@@ -108,8 +109,8 @@ const CourseDetailPage = () => {
   if (loading || loadingEnrolled) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <span className="material-symbols-outlined animate-spin text-4xl text-blue-600">
-          progress_activity
+        <span className="animate-spin text-4xl text-blue-600">
+          <FaCircleNotch />
         </span>
       </div>
     );
@@ -190,7 +191,7 @@ const CourseDetailPage = () => {
                 {!course.thumbnailUrl && (
                   <div className="w-full h-full flex items-center justify-center">
                     <img
-                      src="/img/book.png"
+                      src="/img/default-course.jpg"
                       alt={course.name}
                       className="w-full h-full object-cover"
                     />
@@ -317,8 +318,8 @@ const CourseDetailPage = () => {
                                     <div className="p-5 border-t border-gray-200 flex flex-col gap-4">
                                       {isLoading ? (
                                         <div className="flex justify-center p-2">
-                                          <span className="material-symbols-outlined animate-spin text-2xl text-blue-600">
-                                            progress_activity
+                                          <span className="animate-spin text-2xl text-blue-600">
+                                            <FaCircleNotch />
                                           </span>
                                         </div>
                                       ) : items && items.length > 0 ? (
@@ -375,7 +376,7 @@ const CourseDetailPage = () => {
                 {!course.thumbnailUrl && (
                   <div className="aspect-video w-full bg-cover bg-center">
                     <img
-                      src="/img/book.png"
+                      src="/img/default-course.jpg"
                       alt={course.name}
                       className="w-full h-full object-cover"
                     />

@@ -7,6 +7,9 @@ import PaginationControl from "../../components/common/PaginationControl";
 import { useRequestBatchResetPassword } from "../../hooks/useBatchPasswordReset";
 import { ConfirmationModal } from "../../components/common/ConfirmationModal";
 import { toast } from "../../components/common/Toast";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
+import { FaCircleNotch } from "react-icons/fa";
+import { getInitials } from "@/utils/initialsName";
 
 const TeacherCourseDetailPage = () => {
   const { id } = useParams();
@@ -53,14 +56,7 @@ const TeacherCourseDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="flex items-center gap-3">
-          <span className="material-symbols-outlined animate-spin text-2xl text-blue-600">
-            progress_activity
-          </span>
-          <span className="text-slate-600">Đang tải thông tin khóa học...</span>
-        </div>
-      </div>
+      <LoadingOverlay isLoading={true} message="Đang tải thông tin khóa học..." />
     );
   }
 
@@ -198,7 +194,7 @@ const TeacherCourseDetailPage = () => {
             {!course.thumbnailUrl && (
               <div className="w-full h-full flex items-center justify-center">
                 <img
-                  src="/img/book.png"
+                  src="/img/default-course.jpg"
                   alt={course.name}
                   className="w-full h-full object-cover"
                 />
@@ -386,8 +382,8 @@ const TeacherCourseDetailPage = () => {
 
         {studentsLoading ? (
           <div className="flex items-center justify-center py-8">
-            <span className="material-symbols-outlined animate-spin text-2xl text-blue-600">
-              progress_activity
+            <span className="animate-spin text-2xl text-blue-600">
+              <FaCircleNotch />
             </span>
           </div>
         ) : studentsError ? (
@@ -422,14 +418,19 @@ const TeacherCourseDetailPage = () => {
                     onChange={() => handleSelectStudent(student.email)}
                     className="w-4 h-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-blue-600 cursor-pointer"
                   />
-                  <img
-                    src={
-                      student.imgUrl ||
-                      `https://ui-avatars.com/api/?name=${student.firstName}+${student.lastName}&background=random`
-                    }
-                    alt={`${student.firstName} ${student.lastName}`}
-                    className="w-12 h-12 rounded-full object-cover bg-slate-100 border border-slate-200"
-                  />
+                  {student.imgUrl ? (
+                    <img
+                      src={student.imgUrl}
+                      alt={`${student.firstName} ${student.lastName}`}
+                      className="w-12 h-12 rounded-full object-cover bg-slate-100 border border-slate-200"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center">
+                      <span className="text-xs font-medium text-slate-600">
+                        {getInitials(student.firstName + " " + student.lastName)}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex-1 min-w-0">
                     <h3 className="text-sm font-semibold text-slate-900 truncate">
                       {student.firstName} {student.lastName}

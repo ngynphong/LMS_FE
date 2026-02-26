@@ -154,7 +154,7 @@ const StudentDashboardPage = () => {
                   <div
                     className="bg-center bg-no-repeat aspect-video bg-cover rounded-lg h-32 w-full sm:h-24 sm:w-40 lg:w-44 shrink-0 shadow-sm"
                     style={{
-                      backgroundImage: `url('${course.thumbnailUrl || "/img/book.png"}')`,
+                      backgroundImage: `url('${course.thumbnailUrl || "/img/default-course.jpg"}')`,
                     }}
                   />
                   <div className="flex flex-col flex-1 gap-3 w-full">

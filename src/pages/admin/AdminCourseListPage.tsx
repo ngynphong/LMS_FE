@@ -12,6 +12,7 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 
 import { ConfirmationModal } from "../../components/common/ConfirmationModal";
+import { FaCircleNotch } from "react-icons/fa";
 
 const AdminCourseListPage = () => {
   // State
@@ -263,8 +264,8 @@ const AdminCourseListPage = () => {
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="flex flex-col items-center gap-3">
-              <span className="material-symbols-outlined animate-spin text-3xl text-primary">
-                progress_activity
+              <span className="animate-spin text-3xl text-primary">
+                <FaCircleNotch />
               </span>
               <span className="text-gray-500">Đang tải dữ liệu...</span>
             </div>

@@ -16,6 +16,8 @@ import {
 } from "../../services/lessonService";
 import type { ApiLesson, LessonItem } from "../../types/learningTypes";
 import PdfSlideshow from "@/components/common/PdfSlideshow";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
+import { FaCircleNotch } from "react-icons/fa";
 
 type TabType = "overview" | "quiz";
 
@@ -303,14 +305,7 @@ const CourseLearningPage = () => {
   // Loading state
   if (courseLoading || isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#f5f7fa]">
-        <div className="text-center">
-          <span className="material-symbols-outlined text-[48px] color-primary animate-spin">
-            progress_activity
-          </span>
-          <p className="mt-4 text-[#4A5568]">Đang tải bài học...</p>
-        </div>
-      </div>
+      <LoadingOverlay isLoading={true} message="Đang tải bài học..." />
     );
   }
 
@@ -352,8 +347,8 @@ const CourseLearningPage = () => {
     if (loadingItem) {
       return (
         <div className="flex items-center justify-center h-64 bg-slate-100 rounded-xl">
-          <span className="material-symbols-outlined animate-spin text-3xl text-blue-600">
-            progress_activity
+          <span className="animate-spin text-3xl text-blue-600">
+            <FaCircleNotch />
           </span>
         </div>
       );
@@ -415,8 +410,8 @@ const CourseLearningPage = () => {
             >
               {markingComplete ? (
                 <>
-                  <span className="material-symbols-outlined animate-spin text-lg">
-                    progress_activity
+                  <span className="animate-spin text-lg">
+                    <FaCircleNotch />
                   </span>
                   Đang xử lý...
                 </>
@@ -454,8 +449,8 @@ const CourseLearningPage = () => {
             >
               {markingComplete ? (
                 <>
-                  <span className="material-symbols-outlined animate-spin text-lg">
-                    progress_activity
+                  <span className="animate-spin text-lg">
+                    <FaCircleNotch />
                   </span>
                   Đang xử lý...
                 </>
@@ -495,8 +490,8 @@ const CourseLearningPage = () => {
             >
               {markingComplete ? (
                 <>
-                  <span className="material-symbols-outlined animate-spin text-lg">
-                    progress_activity
+                  <span className="animate-spin text-lg">
+                    <FaCircleNotch />
                   </span>
                   Đang xử lý...
                 </>
@@ -693,8 +688,8 @@ const CourseLearningPage = () => {
                   <div className="max-w-2xl space-y-4">
                     {quizLoading ? (
                       <div className="flex justify-center p-8">
-                        <span className="material-symbols-outlined animate-spin text-3xl color-primary">
-                          progress_activity
+                        <span className="animate-spin text-3xl color-primary">
+                          <FaCircleNotch />
                         </span>
                       </div>
                     ) : lessonQuizzes && lessonQuizzes.length > 0 ? (

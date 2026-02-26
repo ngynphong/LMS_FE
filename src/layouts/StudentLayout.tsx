@@ -38,10 +38,7 @@ const StudentLayout = ({ children }: StudentLayoutProps) => {
           <div className="flex items-center gap-2">
             <NotificationDropdown />
             <img
-              src={
-                user.urlImg ||
-                `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random`
-              }
+              src={user.urlImg || "/img/student-default.jpg"}
               alt={`${user.firstName} ${user.lastName}`}
               className="size-8 rounded-full object-cover mr-4 border border-gray-200"
             />

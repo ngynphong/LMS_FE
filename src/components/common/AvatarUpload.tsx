@@ -66,9 +66,7 @@ export const AvatarUpload = ({
   };
 
   const displayUrl =
-    previewUrl ||
-    currentImageUrl ||
-    `https://ui-avatars.com/api/?name=${altText}&background=random`;
+    previewUrl || currentImageUrl || "/img/student-default.jpg";
 
   return (
     <div className={`relative group inline-block ${className}`}>

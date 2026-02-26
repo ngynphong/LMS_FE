@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTeacherQuizzes } from "../../hooks/useQuizzes";
+import { FaCircleNotch } from "react-icons/fa";
 
 const ReportsListPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,8 +45,8 @@ const ReportsListPage = () => {
       {/* Reports Grid */}
       {isLoading ? (
         <div className="flex justify-center py-20">
-          <span className="material-symbols-outlined animate-spin text-4xl text-blue-600">
-            progress_activity
+          <span className="animate-spin text-4xl text-blue-600">
+            <FaCircleNotch />
           </span>
         </div>
       ) : error ? (

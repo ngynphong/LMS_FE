@@ -18,6 +18,7 @@ import type {
 import type { Question } from "../../types/question";
 import { toast } from "@/components/common/Toast";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
+import { FaCircleNotch } from "react-icons/fa";
 
 const ExamFormPage = () => {
   const { id } = useParams();
@@ -1128,8 +1129,8 @@ const ExamFormPage = () => {
             className="px-6 py-2.5 rounded-lg bg-[#1E90FF] text-white font-bold hover:bg-[#0074bd] transition-colors shadow-lg shadow-blue-500/30 flex items-center gap-2"
           >
             {creating || updating ? (
-              <span className="material-symbols-outlined animate-spin text-xl">
-                progress_activity
+              <span className="animate-spin text-xl">
+                <FaCircleNotch />
               </span>
             ) : (
               <span className="material-symbols-outlined text-xl">save</span>

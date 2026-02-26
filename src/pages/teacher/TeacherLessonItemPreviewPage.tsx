@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getLessonItemById } from "../../services/lessonService";
 import type { LessonItem } from "../../types/learningTypes";
 import PdfSlideshow from "@/components/common/PdfSlideshow";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 const TeacherLessonItemPreviewPage = () => {
   const { courseId, itemId } = useParams();
@@ -64,14 +65,7 @@ const TeacherLessonItemPreviewPage = () => {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-gray-50">
-        <div className="flex flex-col items-center gap-3">
-          <span className="material-symbols-outlined animate-spin text-4xl text-blue-600">
-            progress_activity
-          </span>
-          <span className="text-slate-600">Đang tải nội dung...</span>
-        </div>
-      </div>
+      <LoadingOverlay isLoading={true} message="Đang tải nội dung..." />
     );
   }
 

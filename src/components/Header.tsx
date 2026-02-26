@@ -55,10 +55,7 @@ const Header = () => {
                   className="flex items-center gap-2 cursor-pointer hover:bg-white/10 p-1 px-2 rounded-lg transition-colors group"
                 >
                   <img
-                    src={
-                      user.urlImg ||
-                      `https://ui-avatars.com/api/?name=${user.lastName}+${user.firstName}&background=random`
-                    }
+                    src={user.urlImg || "/img/student-default.jpg"}
                     alt={`${user.firstName} ${user.lastName}`}
                     className="w-6 h-6 rounded-full object-cover border border-white/50"
                   />

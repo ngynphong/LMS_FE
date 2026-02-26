@@ -8,7 +8,7 @@ import {
   useStudentCourses,
   useEnrollCourse,
 } from "../../hooks/useCourses";
-import { FaSearch } from "react-icons/fa";
+import { FaCircleNotch, FaSearch } from "react-icons/fa";
 import { toast } from "@/components/common/Toast";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
@@ -184,8 +184,8 @@ const CoursesPage = () => {
 
             {loading ? (
               <div className="flex justify-center items-center py-20">
-                <span className="material-symbols-outlined animate-spin text-4xl text-blue-600">
-                  progress_activity
+                <span className="animate-spin text-4xl text-blue-600">
+                  <FaCircleNotch />
                 </span>
               </div>
             ) : error ? (
@@ -291,7 +291,7 @@ const CoursesPage = () => {
               >
                 {enrolling && (
                   <span className="material-symbols-outlined animate-spin text-sm">
-                    progress_activity
+                    <FaCircleNotch />
                   </span>
                 )}
                 Tham gia ngay

@@ -40,11 +40,11 @@ const StudentCourseCard = ({ course }: StudentCourseCardProps) => {
       {/* Thumbnail */}
       <div className="relative h-48 shrink-0 overflow-hidden bg-slate-100">
         <img
-          src={course.thumbnailUrl || "/img/book.png"}
+          src={course.thumbnailUrl || "/img/default-course.jpg"}
           alt={course.name}
           className="w-full h-full object-cover"
           onError={(e) => {
-            e.currentTarget.src = "/img/book.png";
+            e.currentTarget.src = "/img/default-course.jpg";
           }}
         />
         {/* Status Badge */}
