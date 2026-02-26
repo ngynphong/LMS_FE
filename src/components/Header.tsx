@@ -165,7 +165,7 @@ const Header = () => {
           <div className="p-4 flex items-center justify-between border-b border-gray-300">
             <div className="flex items-center gap-2">
               <img
-                src="/ies-edu-logo.png"
+                src="/img/logo-edu.png"
                 alt="ies-edu-logo"
                 className="w-8 h-8"
               />

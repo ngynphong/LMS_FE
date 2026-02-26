@@ -275,7 +275,7 @@ const StudentQuizTakingPage = () => {
       <header className="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-[#e5e7eb] bg-white px-6 py-3 lg:px-10">
         <div className="flex items-center gap-4">
           <Link to="/student/quizzes" className="text-primary w-8 h-8">
-            <img src="/ies-edu-logo.png" alt="Logo" className="w-8 h-8" />
+            <img src="/img/logo-edu.png" alt="Logo" className="w-8 h-8" />
           </Link>
           <h2 className="color-primary text-lg font-bold leading-tight hidden sm:block">
             IES EDU

@@ -45,11 +45,11 @@ const publicRoutes: RouteObject[] = [
         path: "shop",
         element: <div>Shop Page - Coming Soon</div>,
       },
-      {
-        path: "unauthorized",
-        element: <UnauthorizedPage />,
-      },
     ],
+  },
+  {
+    path: "unauthorized",
+    element: <UnauthorizedPage />,
   },
 ];
 

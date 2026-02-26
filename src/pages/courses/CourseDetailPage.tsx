@@ -73,11 +73,6 @@ const CourseDetailPage = () => {
   const [loadingItems, setLoadingItems] = useState<Record<string, boolean>>({});
 
   const toggleSection = async (index: number) => {
-    // If not enrolled, prevent expanding content? or simple show locked?
-    // User requested "nhập code thì mới có thể xem chi tiết".
-    // So if not enrolled, maybe we shouldn't even show the content tab active,
-    // or show it but locked. For now, let's keep it visible but maybe control access in backend or similar.
-    // The requirement is mostly about the "Start Learning" button triggering the Enroll flow.
 
     const isOpen = openSections.includes(index);
     if (isOpen) {

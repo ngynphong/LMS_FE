@@ -2,6 +2,8 @@ import { useState, useRef, useEffect, type KeyboardEvent } from "react";
 import ReactMarkdown from "react-markdown";
 import { useChat } from "../../hooks/useChat";
 import { RiRobot2Line } from "react-icons/ri";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const AIChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,6 +13,8 @@ const AIChatbot = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { messages, isLoading, sendMessage } = useChat();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -49,7 +53,7 @@ const AIChatbot = () => {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full color-primary-bg text-white shadow-lg hover:scale-110 transition-all duration-300 group"
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full color-primary-bg text-white shadow-lg hover:scale-110 transition-all duration-300 group cursor-pointer"
         aria-label="Mở trợ lý AI"
       >
         <span className="material-symbols-outlined text-[28px]">
@@ -59,7 +63,7 @@ const AIChatbot = () => {
         <span className="absolute inline-flex h-full w-full animate-ping rounded-full color-primary-bg opacity-20"></span>
       </button>
     );
-  }
+  };
 
   // Minimized state - show only header bar
   if (isMinimized) {
@@ -159,11 +163,21 @@ const AIChatbot = () => {
 
       {/* Messages Container */}
       <div className="flex-1 overflow-y-auto p-3 sm:p-4 bg-blue-50/30 space-y-3 sm:space-y-4">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex items-start gap-2 ${message.sender === "user" ? "flex-row-reverse" : ""}`}
-          >
+        {!isAuthenticated ? (
+          <div className="flex flex-col items-center justify-center h-full">
+            <p className="text-lg font-semibold text-gray-700 mb-4">
+              Đăng nhập để sử dụng trợ lý AI
+            </p>
+            <button onClick={() => navigate("/login")} className="px-6 py-2.5 color-primary-bg rounded-lg text-white font-medium hover:opacity-80 transition-colors cursor-pointer">
+              Đăng nhập
+            </button>
+          </div>
+        ) : (
+          messages.map((message) => (
+            <div
+              key={message.id}
+              className={`flex items-start gap-2 ${message.sender === "user" ? "flex-row-reverse" : ""}`}
+            >
             {/* Avatar */}
             <div
               className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
@@ -199,7 +213,7 @@ const AIChatbot = () => {
               </span>
             </div>
           </div>
-        ))}
+        )))}
 
         {/* Loading indicator */}
         {isLoading && (
@@ -242,11 +256,11 @@ const AIChatbot = () => {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
-            disabled={isLoading}
+            disabled={!isAuthenticated || isLoading}
           />
           <button
             onClick={handleSend}
-            disabled={isLoading || !inputValue.trim()}
+            disabled={!isAuthenticated || isLoading || !inputValue.trim()}
             className="flex items-center justify-center color-primary hover:scale-110 transition-transform disabled:opacity-50 disabled:hover:scale-100"
             aria-label="Gửi tin nhắn"
           >

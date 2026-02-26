@@ -132,7 +132,7 @@ const AdminSidebar = ({
             >
               <div className="size-10 flex items-center justify-cent shrink-0">
                 <img
-                  src="/ies-edu-logo.png"
+                  src="/img/logo-edu.png"
                   alt="ies-edu-logo"
                   className="w-10 h-10 object-contain"
                 />

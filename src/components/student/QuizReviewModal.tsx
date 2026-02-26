@@ -109,28 +109,7 @@ export const QuizReviewModal = ({
                         <div className="text-gray-900 font-medium text-lg leading-relaxed mb-4">
                           {q.questionContent}
                         </div>
-
-                        {/* Options (We assume we can't render exact options unless API returns all options. 
-                                        Usually review API returns question context including all options, 
-                                        OR we only show User Answer vs Correct Answer.
-                                        
-                                        Based on `QuizQuestionReview` type:
-                                        - `selectedAnswers`: AnswerDetail[]
-                                        - `correctAnswers`: AnswerDetail[]
-                                        
-                                        Wait, if I only have selected and correct, I might not see the distractor options.
-                                        But typically Review UI wants to see full context.
-                                        If the API only returns selected/correct, we display those. 
-                                        Let's assume we display what we have.
-                                    */}
-
                         <div className="space-y-3">
-                          {/* Since we might not have ALL options, we list Selected and Correct explicitly if structure is limited.
-                                            But usually types might have `options` if full review.
-                                            Checking types again: `QuizQuestionReview` has selectedAnswers, correctAnswers. No full options list.
-                                            So we can only show which were selected and which are correct.
-                                        */}
-
                           <div className="flex flex-col gap-2">
                             <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">
                               Câu trả lời của bạn:
@@ -167,7 +146,7 @@ export const QuizReviewModal = ({
                                 Đáp án đúng:
                               </div>
                               {q.correctAnswers &&
-                              q.correctAnswers.length > 0 ? ( // Added check here
+                              q.correctAnswers.length > 0 ? (
                                 q.correctAnswers.map((ans) => (
                                   <div
                                     key={ans.id}

@@ -100,15 +100,6 @@ export const AvatarUpload = ({
           )}
         </div>
       </div>
-
-      {/* Edit Button (Optional, if we want it outside) */}
-      {/* <button 
-                onClick={triggerFileInput}
-                className="absolute bottom-0 right-0 bg-white shadow-md p-1.5 rounded-full text-gray-600 hover:text-[#0077BE] border border-gray-200"
-                disabled={isUploading}
-            >
-                <FaCamera className="text-xs" />
-            </button> */}
     </div>
   );
 };
