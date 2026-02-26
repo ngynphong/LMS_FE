@@ -303,7 +303,7 @@ const AdminCourseListPage = () => {
                         <div
                           className="w-16 h-10 rounded bg-cover bg-center bg-gray-100 shrink-0"
                           style={{
-                            backgroundImage: `url('${course.thumbnailUrl || "https://placehold.co/100x60?text=No+Image"}')`,
+                            backgroundImage: `url('${course.thumbnailUrl || "/img/default-course.jpg"}')`,
                           }}
                         />
                         <span
