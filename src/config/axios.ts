@@ -83,11 +83,6 @@ axiosInstance.interceptors.response.use(
             isRefreshing = true;
 
             try {
-                // Determine refresh token source: either from localStorage or via cookie (if backend supports cookie)
-                // Here we assume the refresh token is the SAME as the access token (common in some simple JWT setups) 
-                // OR checking if we have a separate logic. 
-                // Based on `authService.ts`, `refreshTokenApi` sends `{ token: "..." }`.
-                // We will use publicAxios to avoid circular dependency with authService
                 const currentToken = localStorage.getItem('token');
                 
                 if (!currentToken) {

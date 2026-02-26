@@ -45,27 +45,6 @@ const navItems: NavItem[] = [
     icon: <FaBell />,
     label: "Thông báo",
   },
-  // {
-  //   path: "#calendar",
-  //   icon: <FaCalendar className="text-xl" />,
-  //   label: "Lịch học",
-  // },
-  // {
-  //   path: "#messages",
-  //   icon: <FaEnvelope className="text-xl" />,
-  //   label: "Tin nhắn",
-  // },
-
-  // {
-  //   path: "#certificates",
-  //   icon: <FaCertificate className="text-xl" />,
-  //   label: "Chứng chỉ",
-  // },
-  // {
-  //   path: "#settings",
-  //   icon: <FaCog className="text-xl" />,
-  //   label: "Cài đặt",
-  // },
 ];
 
 interface StudentSidebarProps {
@@ -163,7 +142,7 @@ const StudentSidebar = ({
             >
               <div className="size-10 rounded-lg flex items-center justify-center text-white shrink-0">
                 <img
-                  src="/ies-edu-logo.png"
+                  src="/img/logo-edu.png"
                   alt="ies-edu-logo"
                   className="w-10 h-10 object-contain"
                 />

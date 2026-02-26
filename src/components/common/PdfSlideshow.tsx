@@ -32,25 +32,15 @@ interface PdfSlideshowProps {
   fileUrl: string;
 }
 
-/**
- * PdfSlideshow: Hiển thị PDF dạng slideshow
- * - Desktop: dùng react-pdf (canvas) cho trải nghiệm tốt nhất
- * - Mobile: dùng <object> / Google Docs Viewer fallback vì canvas rendering
- *   trên mobile browsers thường gây blank screen
- * - Hỗ trợ chế độ Toàn màn hình (Fullscreen) pseudo qua CSS
- */
 const PdfSlideshow = ({ fileUrl }: PdfSlideshowProps) => {
   const [isMobile, setIsMobile] = useState(isMobileDevice);
   const [isFullscreen, setIsFullscreen] = useState(false);
-
-  // Re-check on resize (edge case: responsive/DevTools)
   useEffect(() => {
     const handleResize = () => setIsMobile(isMobileDevice());
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Khóa cuộn trang của màn hình ngoài khi bật fullscreen
   useEffect(() => {
     if (isFullscreen) {
       document.body.style.overflow = "hidden";

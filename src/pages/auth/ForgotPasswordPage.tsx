@@ -72,15 +72,6 @@ const ForgotPasswordPage = () => {
               />
               <span className="text-xl font-bold tracking-tight">IES EDU</span>
             </Link>
-            {/* <div className="absolute bottom-20 max-w-md">
-              <h1 className="text-black text-5xl font-bold leading-tight mb-6">
-                Đừng lo lắng!
-              </h1>
-              <p className="text-black/90 text-xl font-light">
-                Chúng tôi sẽ giúp bạn khôi phục mật khẩu và quay lại học tập
-                ngay lập tức.
-              </p>
-            </div> */}
           </div>
         </div>
 

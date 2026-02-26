@@ -154,15 +154,6 @@ const ResetPasswordPage = () => {
     }
   };
 
-  // const handleResendOTP = () => {
-  //   setTimeLeft(600);
-  //   setOtp('');
-  //   setTouched({});
-  //   setErrors({});
-  //   // TODO: Call API to resend OTP
-  //   toast.success('Đã gửi lại mã OTP!');
-  // };
-
   return (
     <main className="flex h-screen w-full">
       <div className="flex w-full flex-row h-full">
@@ -191,14 +182,6 @@ const ResetPasswordPage = () => {
                 IES EDU
               </span>
             </Link>
-            {/* <div className="max-w-md absolute bottom-20">
-              <h1 className="text-black text-5xl font-bold leading-tight mb-6">
-                Gần xong rồi!
-              </h1>
-              <p className="text-black/90 text-xl font-light">
-                Chỉ còn vài bước nữa để bạn có thể quay lại học tập.
-              </p>
-            </div> */}
           </div>
         </div>
 
@@ -352,20 +335,6 @@ const ResetPasswordPage = () => {
                 )}
               </button>
             </form>
-
-            {/* Resend OTP */}
-            {/* <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
-                Không nhận được mã?{' '}
-                <button 
-                  className="color-primary font-bold hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
-                  onClick={handleResendOTP}
-                  disabled={timeLeft > 540} // Chỉ cho phép gửi lại sau 1 phút
-                >
-                  Gửi lại
-                </button>
-              </p>
-            </div> */}
           </div>
         </div>
       </div>
