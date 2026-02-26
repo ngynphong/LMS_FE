@@ -33,6 +33,7 @@ import type {
   LessonItem,
 } from "../../types/learningTypes";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
+import { FaCircleNotch } from "react-icons/fa";
 
 const CourseBuilderPage = () => {
   const { id } = useParams();
@@ -352,6 +353,7 @@ const CourseBuilderPage = () => {
             title: data.title,
             description: data.description,
             textContent: data.textContent,
+            file: data.file,
           },
         });
         // Fetch lesson detail to get updated items
@@ -516,9 +518,7 @@ const CourseBuilderPage = () => {
   };
 
   if (loadingCourse && isEditMode) {
-    return (
-      <LoadingOverlay isLoading={true} message="Đang tải khóa học..." />
-    );
+    return <LoadingOverlay isLoading={true} message="Đang tải khóa học..." />;
   }
 
   return (
@@ -566,8 +566,8 @@ const CourseBuilderPage = () => {
                       className="flex items-center gap-2 px-4 h-10 bg-green-600 rounded-lg text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       {publishLoading ? (
-                        <span className="material-symbols-outlined text-lg animate-spin">
-                          progress_activity
+                        <span className="text-lg animate-spin">
+                          <FaCircleNotch />
                         </span>
                       ) : (
                         <span className="material-symbols-outlined text-lg">

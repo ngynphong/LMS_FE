@@ -43,6 +43,7 @@ const LessonItemForm = ({
     currentFileName: "",
   });
   const [fileError, setFileError] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -102,6 +103,31 @@ const LessonItemForm = ({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    setFileError(null);
+
+    if (file) {
+      if (file.size > MAX_FILE_SIZE) {
+        setFileError("File quá lớn. Vui lòng chọn file dưới 50MB");
+        return;
+      }
+      setFormData((prev) => ({ ...prev, file }));
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
     setFileError(null);
 
     if (file) {
@@ -307,7 +333,14 @@ const LessonItemForm = ({
             </label>
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition-all"
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-all ${
+                isDragging
+                  ? "border-blue-500 bg-blue-50"
+                  : "border-slate-300 hover:border-blue-400 hover:bg-blue-50/50"
+              }`}
             >
               {formData.file || formData.currentFileUrl ? (
                 <div className="flex items-center justify-center gap-3">

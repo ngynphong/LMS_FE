@@ -132,7 +132,7 @@ export const useUpdateLessonItem = () => {
       data,
     }: {
       id: string;
-      data: { title?: string; description?: string; textContent?: string };
+      data: { title?: string; description?: string; textContent?: string; file?: File | null };
     }) => updateLessonItem(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['lesson-item', variables.id] });
