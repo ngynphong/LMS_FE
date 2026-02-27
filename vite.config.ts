@@ -19,10 +19,19 @@ export default defineConfig({
       output: {
         manualChunks: {
           "vendor-react": ["react", "react-dom", "react-router-dom"],
-          "vendor-ui": ["lucide-react", "motion", "clsx", "tailwind-merge"],
+          "vendor-ui": ["lucide-react", "motion", "clsx", "tailwind-merge", "react-icons"],
           "vendor-utils": ["axios", "date-fns", "react-toastify"],
+          "vendor-dnd": ["react-dnd", "react-dnd-html5-backend"],
           "pdf-worker": ["react-pdf"],
+          "vendor-markdown": ["react-markdown"],
         },
+      },
+    },
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
       },
     },
     chunkSizeWarningLimit: 1000,
