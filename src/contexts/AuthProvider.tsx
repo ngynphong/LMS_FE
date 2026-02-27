@@ -87,8 +87,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             error,
           );
 
-          // Check if error is 401 (Unauthorized) - explicit logout
-          // Or if axios interceptor already handled it (token might be gone)
           const isAuthError =
             axios.isAxiosError(error) && error.response?.status === 401;
 
@@ -102,7 +100,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             return;
           }
 
-          // For other errors (network, server error), try to restore from cache
           const storedUser = localStorage.getItem("user");
           if (storedUser && storedUser !== "undefined") {
             try {
@@ -114,7 +111,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
               setIsAuthenticated(true);
               setUser(parsedUser);
             } catch (parseError) {
-              // If cache is corrupt, force logout
               localStorage.removeItem("token");
               localStorage.removeItem("user");
               setIsAuthenticated(false);
@@ -122,7 +118,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
               setUser(null);
             }
           } else {
-            // No cache and API failed -> logout
             localStorage.removeItem("token");
             localStorage.removeItem("user");
             setIsAuthenticated(false);
@@ -133,7 +128,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           }
         }
       } else {
-        // Không có token, set trạng thái chưa authenticated
         setIsAuthenticated(false);
         setToken(null);
         setUser(null);
@@ -153,21 +147,14 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         const currentToken = localStorage.getItem("token");
         if (currentToken) {
           setToken(currentToken);
-          // Optionally re-fetch user if needed, but usually just token update is enough for subsequent requests.
-          // However, user roles might have changed etc. Safe to re-fetch or just update token state.
-          // For now, let's just make sure isAuthenticated is true and token is current.
           setIsAuthenticated(true);
 
-          // Re-fetch user profile to be safe and ensure state is in sync
           const userProfileResponse = await getCurrentUserApi();
           setUser(userProfileResponse.user);
           safelyStoreUser(userProfileResponse.user);
         }
       } catch (error) {
         console.error("Failed to sync state after auth refresh", error);
-        // If sync fails, do nothing? Or force logout?
-        // Better to stay safe, if we can't get user, maybe something is wrong.
-        // But interceptor just succeeded refesh.
       }
     };
 
@@ -185,7 +172,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         setIsAuthenticated(true);
         setError(null);
         localStorage.setItem("token", response.token);
-        // Clear notification modal shown flag so it shows on new login
         sessionStorage.removeItem("notification_modal_shown");
 
         if (isRefreshing) {
@@ -252,11 +238,26 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const forceLogout = useCallback(() => {
-    console.log("Buộc đăng xuất do lỗi xác thực");
-    logout();
+    // Clear local state
+    setUser(null);
+    setToken(null);
+    setIsAuthenticated(false);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
     toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
-    window.location.href = "/login";
-  }, [logout]);
+    setTimeout(() => {
+      window.location.replace("/login");
+    }, 1000);
+  }, []);
+
+  // Lắng nghe sự kiện force-logout từ axios interceptor
+  useEffect(() => {
+    window.addEventListener("auth:force-logout", forceLogout);
+    return () => {
+      window.removeEventListener("auth:force-logout", forceLogout);
+    };
+  }, [forceLogout]);
 
   const refreshToken = useCallback(
     async (currentToken: string) => {
@@ -324,7 +325,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible" && isAuthenticated) {
-        console.log("Ứng dụng trở nên hiển thị. Kiểm tra trạng thái token...");
+        // console.log("Ứng dụng trở nên hiển thị. Kiểm tra trạng thái token...");
         // Clear existing timeout and reschedule/refresh immediately if needed
         if (refreshTimeout) clearTimeout(refreshTimeout);
         scheduleRefresh();

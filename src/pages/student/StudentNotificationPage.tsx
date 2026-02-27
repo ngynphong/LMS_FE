@@ -5,12 +5,8 @@ import {
   useMarkNotificationRead,
   useMarkAllNotificationsRead,
 } from "../../hooks/useNotifications";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import "dayjs/locale/vi";
-
-dayjs.extend(relativeTime);
-dayjs.locale("vi");
+import { formatDistanceToNow } from "date-fns";
+import { vi } from "date-fns/locale";
 
 const StudentNotificationPage = () => {
   const navigate = useNavigate();
@@ -131,7 +127,10 @@ const StudentNotificationPage = () => {
                       <span className="material-symbols-outlined text-[14px]">
                         schedule
                       </span>
-                      {dayjs(notif.createdAt).fromNow()}
+                      {formatDistanceToNow(new Date(notif.createdAt), {
+                        addSuffix: true,
+                        locale: vi,
+                      })}
                     </span>
                   </div>
                   <h4

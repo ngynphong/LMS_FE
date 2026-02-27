@@ -122,10 +122,7 @@ axiosInstance.interceptors.response.use(
                 localStorage.removeItem('user');
                 
                 // Determine if we should redirect. 
-                // Usually yes, but verify we are not already on login page
-                 if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/register')) {
-                    window.location.href = '/login';
-                 }
+                window.dispatchEvent(new CustomEvent('auth:force-logout'));
                 
                 return Promise.reject(refreshError);
             } finally {
@@ -133,16 +130,6 @@ axiosInstance.interceptors.response.use(
             }
         }
 
-        // For other errors, log detailed error information and reject
-        console.error('API Error Details:', {
-            url: error.config?.url,
-            method: error.config?.method,
-            status: error.response?.status,
-            statusText: error.response?.statusText,
-            data: error.response?.data,
-            message: error.message,
-            fullError: error
-        });
         return Promise.reject(error);
     }
 );

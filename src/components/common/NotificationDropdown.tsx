@@ -6,12 +6,8 @@ import {
   useMarkNotificationRead,
 } from "../../hooks/useNotifications";
 import { Link, useNavigate } from "react-router-dom";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import "dayjs/locale/vi";
-
-dayjs.extend(relativeTime);
-dayjs.locale("vi");
+import { formatDistanceToNow } from "date-fns";
+import { vi } from "date-fns/locale";
 
 export const NotificationDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -164,7 +160,10 @@ export const NotificationDropdown = () => {
                         <span className="material-symbols-outlined text-[12px] opacity-70">
                           schedule
                         </span>
-                        {dayjs(notif.createdAt).fromNow()}
+                        {formatDistanceToNow(new Date(notif.createdAt), {
+                          addSuffix: true,
+                          locale: vi,
+                        })}
                       </p>
                     </div>
                     {!notif.read && (
