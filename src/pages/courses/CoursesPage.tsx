@@ -194,7 +194,8 @@ const CoursesPage = () => {
               </div>
             ) : (
               <>
-                {courses.length > 0 ? (
+              {isAuthenticated ? (
+                courses.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {courses.map((course) => (
                       <CourseCard
@@ -216,8 +217,13 @@ const CoursesPage = () => {
                   <div className="text-center py-20 text-gray-500">
                     Không tìm thấy khóa học nào phù hợp.
                   </div>
-                )}
-
+                )
+              ) : (
+                <div className="text-center py-20 text-gray-500">
+                  Vui lòng đăng nhập để xem danh sách khóa học.
+                </div>
+              )}
+  
                 {/* Pagination */}
                 {courses.length > 0 && (
                   <div className="flex justify-center mt-8">

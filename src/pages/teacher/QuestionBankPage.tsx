@@ -14,7 +14,7 @@ const QuestionBankPage = () => {
     pageSize: 10,
   });
 
-  const [difficultyFilter, setDifficultyFilter] = useState("all");
+  // const [difficultyFilter, setDifficultyFilter] = useState("all");
   const [selectedCourseId, setSelectedCourseId] = useState("");
   const [selectedLessonId, setSelectedLessonId] = useState("");
 
@@ -34,7 +34,7 @@ const QuestionBankPage = () => {
     page: pagination.pageNo,
     size: pagination.pageSize,
     // content: searchQuery,
-    difficulty: difficultyFilter === "all" ? undefined : difficultyFilter,
+    // difficulty: difficultyFilter === "all" ? undefined : difficultyFilter,
     lessonId: selectedLessonId || undefined,
   });
 
@@ -178,7 +178,7 @@ const QuestionBankPage = () => {
           </div>
 
           {/* Difficulty Filter */}
-          <div className="relative min-w-[150px]">
+          {/* <div className="relative min-w-[150px]">
             <select
               value={difficultyFilter}
               onChange={(e) => {
@@ -195,7 +195,7 @@ const QuestionBankPage = () => {
             <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-lg">
               expand_more
             </span>
-          </div>
+          </div> */}
         </div>
       </div>
 

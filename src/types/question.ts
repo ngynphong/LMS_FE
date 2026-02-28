@@ -62,7 +62,7 @@ export interface GetQuestionsParams {
     page?: number;
     size?: number;
     // content?: string;
-    difficulty?: string;
+    // difficulty?: string;
     lessonId?: string;
     type?: string;
 }
