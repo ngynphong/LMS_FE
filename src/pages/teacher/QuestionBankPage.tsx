@@ -6,6 +6,7 @@ import { useMyCourses, useCourseDetail } from "../../hooks/useCourses";
 import ImportQuestionsModal from "../../components/question/ImportQuestionsModal";
 import { ConfirmationModal } from "../../components/common/ConfirmationModal";
 import PaginationControl from "../../components/common/PaginationControl";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 const QuestionBankPage = () => {
   const [pagination, setPagination] = useState({
@@ -13,7 +14,6 @@ const QuestionBankPage = () => {
     pageSize: 10,
   });
 
-  const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState("all");
   const [selectedCourseId, setSelectedCourseId] = useState("");
   const [selectedLessonId, setSelectedLessonId] = useState("");
@@ -31,9 +31,9 @@ const QuestionBankPage = () => {
     isLoading: loading,
     error,
   } = useQuestions({
-    pageNo: pagination.pageNo,
-    pageSize: pagination.pageSize,
-    content: searchQuery,
+    page: pagination.pageNo,
+    size: pagination.pageSize,
+    // content: searchQuery,
     difficulty: difficultyFilter === "all" ? undefined : difficultyFilter,
     lessonId: selectedLessonId || undefined,
   });
@@ -85,14 +85,13 @@ const QuestionBankPage = () => {
   };
 
   if (loading)
-    return (
-      <div className="p-8 text-center text-slate-500">Đang tải dữ liệu...</div>
-    );
+    return <LoadingOverlay isLoading={loading} message="Đang tải câu hỏi..." />;
   if (error)
     return (
-      <div className="p-8 text-center text-red-500">
-        Đã xảy ra lỗi khi tải câu hỏi.
-      </div>
+      <LoadingOverlay
+        isLoading={true}
+        message="Đã xảy ra lỗi khi tải câu hỏi."
+      />
     );
 
   return (
@@ -131,23 +130,6 @@ const QuestionBankPage = () => {
 
       {/* Search and Filters */}
       <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-        <div className="flex-1 min-w-[250px]">
-          <div className="relative">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-              search
-            </span>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setPagination((prev) => ({ ...prev, pageNo: 1 }));
-              }}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm"
-              placeholder="Tìm kiếm câu hỏi..."
-            />
-          </div>
-        </div>
         <div className="flex flex-wrap gap-3">
           {/* Course Filter */}
           <div className="relative min-w-[200px]">

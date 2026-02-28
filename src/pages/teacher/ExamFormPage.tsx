@@ -101,9 +101,9 @@ const ExamFormPage = () => {
 
   const { data: availableQuestionsResponse, isLoading: loadingQuestions } =
     useQuestions({
-      content: questionSearch,
-      pageNo: qPage,
-      pageSize: qPageSize,
+      // content: questionSearch,
+      page: qPage,
+      size: qPageSize,
       lessonId: qLessonId || undefined, // Use specific filter, removed fallback to quiz lesson to allow wider search
     });
   const availableQuestions = availableQuestionsResponse?.items || [];
@@ -299,6 +299,30 @@ const ExamFormPage = () => {
           order: staticQuestions.length + 1,
         },
       ]);
+    }
+  };
+
+  const isAllDisplayedSelected =
+    availableQuestions.length > 0 &&
+    availableQuestions.every((q) =>
+      staticQuestions.some((sq) => sq.questionId === q.id),
+    );
+
+  const handleSelectAllDisplayed = () => {
+    if (isAllDisplayedSelected) {
+      const displayedIds = new Set(availableQuestions.map((q) => q.id));
+      setStaticQuestions(
+        staticQuestions.filter((sq) => !displayedIds.has(sq.questionId)),
+      );
+    } else {
+      const newSelections = availableQuestions
+        .filter((q) => !staticQuestions.some((sq) => sq.questionId === q.id))
+        .map((q, index) => ({
+          questionId: q.id,
+          score: q.defaultScore || 1,
+          order: staticQuestions.length + index + 1,
+        }));
+      setStaticQuestions([...staticQuestions, ...newSelections]);
     }
   };
 
@@ -899,7 +923,19 @@ const ExamFormPage = () => {
                   <table className="w-full text-sm text-left">
                     <thead className="bg-slate-50 text-slate-700 font-semibold border-b">
                       <tr>
-                        <th className="px-4 py-3 w-10">Chọn</th>
+                        <th className="px-4 py-3 w-10">
+                          <input
+                            type="checkbox"
+                            checked={isAllDisplayedSelected}
+                            onChange={handleSelectAllDisplayed}
+                            disabled={
+                              !availableQuestions ||
+                              availableQuestions.length === 0
+                            }
+                            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer disabled:cursor-not-allowed"
+                            title="Chọn tất cả trang này"
+                          />
+                        </th>
                         <th className="px-4 py-3">Nội dung câu hỏi</th>
                         <th className="px-4 py-3 w-28">Loại</th>
                         <th className="px-4 py-3 w-28">Độ khó</th>

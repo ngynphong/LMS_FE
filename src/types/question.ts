@@ -59,9 +59,9 @@ export interface QuestionListResponse {
 }
 
 export interface GetQuestionsParams {
-    pageNo?: number;
-    pageSize?: number;
-    content?: string;
+    page?: number;
+    size?: number;
+    // content?: string;
     difficulty?: string;
     lessonId?: string;
     type?: string;
