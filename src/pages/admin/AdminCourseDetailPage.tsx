@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "@/components/common/Toast";
 import {
   useCourseDetail,
   useApproveCourse,
   useBanCourse,
-} from "../../hooks/useCourses";
-import { getLessonById, getLessonItemById } from "../../services/lessonService";
-import type { LessonItem, ApiLesson } from "../../types/learningTypes";
-import { ConfirmationModal } from "../../components/common/ConfirmationModal";
-import LoadingOverlay from "../../components/common/LoadingOverlay";
+} from "@/hooks/useCourses";
+import { getLessonById, getLessonItemById } from "@/services/lessonService";
+import type { LessonItem, ApiLesson } from "@/types/learningTypes";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 const AdminCourseDetailPage = () => {
   const { id } = useParams();

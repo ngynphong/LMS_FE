@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useCreateTeacher } from "../../hooks/useAdmin";
-import type { CreateTeacherRequest } from "../../types/admin";
+import { useCreateTeacher } from "@/hooks/useAdmin";
+import type { CreateTeacherRequest } from "@/types/admin";
 import {
   MdArrowBack,
   MdSave,

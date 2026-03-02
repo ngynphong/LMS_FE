@@ -1,4 +1,4 @@
-import type { AtRiskStudentResponse } from "../../../types/teacherDashboard";
+import type { AtRiskStudentResponse } from "@/types/teacherDashboard";
 
 interface AtRiskStudentsTableProps {
   data: AtRiskStudentResponse[] | undefined;

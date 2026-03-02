@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useStudents, useImportStudents } from "../../hooks/useTeacher";
-import PaginationControl from "../../components/common/PaginationControl";
-import { toast } from "../../components/common/Toast";
+import { useStudents, useImportStudents } from "@/hooks/useTeacher";
+import PaginationControl from "@/components/common/PaginationControl";
+import { toast } from "@/components/common/Toast";
 import { FaCircleNotch } from "react-icons/fa";
 import { getInitials } from "@/utils/initialsName";
 

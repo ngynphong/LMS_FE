@@ -1,4 +1,4 @@
-import axiosInstance from "../config/axios";
+import axiosInstance from "@/config/axios";
 import type { 
     AdminDashboardData, 
     CreateTeacherRequest, 
@@ -6,7 +6,7 @@ import type {
     ResetPasswordRequest,
     ResetPasswordResponse,
     SystemLogResponse 
-} from "../types/admin";
+} from "@/types/admin";
 import axios from "axios";
 
 // Helper for error handling

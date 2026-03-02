@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import type { ApiLesson } from "../../../types/learningTypes";
-import type { ApiCourse } from "../../../types/learningTypes";
-import DraggableLesson from "./DraggableLesson";
+import type { ApiLesson } from "@/types/learningTypes";
+import type { ApiCourse } from "@/types/learningTypes";
+import DraggableLesson from "@/components/teacher/courses/DraggableLesson";
 
 interface OutlineItem {
   type: "course" | "lesson" | "item";

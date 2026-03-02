@@ -4,14 +4,14 @@ import type {
   QuestionDifficulty,
   QuestionType,
   Question,
-} from "../../types/question";
+} from "@/types/question";
 import {
   useCreateQuestion,
   useUpdateQuestion,
   useQuestions,
-} from "../../hooks/useQuestions";
-import { useMyCourses, useCourseDetail } from "../../hooks/useCourses";
-import LoadingOverlay from "../../components/common/LoadingOverlay";
+} from "@/hooks/useQuestions";
+import { useMyCourses, useCourseDetail } from "@/hooks/useCourses";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 const QuestionFormPage = () => {
   const { id } = useParams();

@@ -1,8 +1,8 @@
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import { ItemTypes } from "../../../types/dndTypes";
-import type { OutlineItem } from "./CourseOutline";
-import type { LessonItem } from "../../../types/learningTypes";
+import { ItemTypes } from "@/types/dndTypes";
+import type { OutlineItem } from "@/components/teacher/courses/CourseOutline";
+import type { LessonItem } from "@/types/learningTypes";
 
 interface DraggableItemProps {
   item: LessonItem;

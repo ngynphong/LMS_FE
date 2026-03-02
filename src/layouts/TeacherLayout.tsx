@@ -2,10 +2,10 @@ import type { ReactNode } from "react";
 import { useState, useCallback } from "react";
 import { Outlet } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
-import TeacherSidebar from "../components/teacher/TeacherSidebar";
-// import AIChatbot from "../components/common/AIChatbot";
-import { useAuth } from "../hooks/useAuth";
-import { NotificationDropdown } from "../components/common/NotificationDropdown";
+import TeacherSidebar from "@/components/teacher/TeacherSidebar";
+// import AIChatbot from "@/components/common/AIChatbot";
+import { useAuth } from "@/hooks/useAuth";
+import { NotificationDropdown } from "@/components/common/NotificationDropdown";
 
 interface TeacherLayoutProps {
   children?: ReactNode;

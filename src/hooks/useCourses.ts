@@ -13,9 +13,9 @@ import {
     createInviteCode, 
     getStudentCourses,
     getCourseStudents
-} from '../services/courseService';
-import type { GetCoursesParams, CreateCourseRequest, UpdateCourseRequest } from '../types/courseApi';
-import type { EnrollCourseRequest, CreateInviteCodeRequest } from '../types/learningTypes';
+} from '@/services/courseService';
+import type { GetCoursesParams, CreateCourseRequest, UpdateCourseRequest } from '@/types/courseApi';
+import type { EnrollCourseRequest, CreateInviteCodeRequest } from '@/types/learningTypes';
 
 // ==================== Queries ====================
 

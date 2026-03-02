@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import { IoAppsOutline, IoSchool, IoMenu, IoClose } from "react-icons/io5";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
-import { PhoneCall } from "./animate-ui/icons/phone-call";
-import { Mail } from "./animate-ui/icons/mail";
-import { NotificationDropdown } from "./common/NotificationDropdown";
+import { PhoneCall } from "@/components/animate-ui/icons/phone-call";
+import { Mail } from "@/components/animate-ui/icons/mail";
+import { NotificationDropdown } from "@/components/common/NotificationDropdown";
 
 const Header = () => {
   const { user } = useAuth();

@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
-import { sendChatMessageApi } from '../services/chatService';
-import type { ChatMessage } from '../types/chat';
+import { sendChatMessageApi } from '@/services/chatService';
+import type { ChatMessage } from '@/types/chat';
 
 // Generate unique ID for messages
 const generateId = () => `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;

@@ -10,7 +10,7 @@ import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import PaginationControl from "@/components/common/PaginationControl";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { FaCircleNotch } from "react-icons/fa";
-import CourseCard from "../../components/courses/CourseCard";
+import CourseCard from "@/components/courses/CourseCard";
 
 const CourseListPage = () => {
   const [filters, setFilters] = useState({

@@ -4,7 +4,7 @@ import {
   StaggerContainer,
   StaggerItem,
   fadeInUp,
-} from "../ui/ScrollReveal";
+} from "@/components/ui/ScrollReveal";
 
 interface Testimonial {
   id: number;

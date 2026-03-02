@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useStudentDetail, useUpdateStudent } from "../../hooks/useTeacher";
-import type { UpdateStudentRequest } from "../../types/student";
+import { useStudentDetail, useUpdateStudent } from "@/hooks/useTeacher";
+import type { UpdateStudentRequest } from "@/types/student";
 import { FaCircleNotch } from "react-icons/fa";
-import Breadcrumb from "../../components/common/Breadcrumb";
+import Breadcrumb from "@/components/common/Breadcrumb";
 
 const StudentDetailPage = () => {
   const { id } = useParams<{ id: string }>();

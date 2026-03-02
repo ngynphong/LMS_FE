@@ -2,10 +2,10 @@ import { useState } from "react";
 import {
   useGetBatchResetPasswordRequests,
   useApproveBatchResetPassword,
-} from "../../hooks/useBatchPasswordReset";
-import PaginationControl from "../../components/common/PaginationControl";
-import { ConfirmationModal } from "../../components/common/ConfirmationModal";
-import { toast } from "../../components/common/Toast";
+} from "@/hooks/useBatchPasswordReset";
+import PaginationControl from "@/components/common/PaginationControl";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
+import { toast } from "@/components/common/Toast";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { getInitials } from "@/utils/initialsName";
 

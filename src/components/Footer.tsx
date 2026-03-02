@@ -1,8 +1,8 @@
 import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { Link } from "react-router-dom";
-import { PhoneCall } from "./animate-ui/icons/phone-call";
-import { Mail } from "./animate-ui/icons/mail";
+import { PhoneCall } from "@/components/animate-ui/icons/phone-call";
+import { Mail } from "@/components/animate-ui/icons/mail";
 
 const Footer = () => {
   return (

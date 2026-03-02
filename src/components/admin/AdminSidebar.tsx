@@ -2,12 +2,12 @@ import { Link, useLocation } from "react-router-dom";
 import { MdDashboard, MdAnalytics, MdSettings } from "react-icons/md";
 import { FaChalkboardTeacher, FaUsers, FaKey } from "react-icons/fa";
 import { FaCalendar, FaTimes } from "react-icons/fa";
-import { useAuth } from "../../hooks/useAuth";
-import { ConfirmationModal } from "../common/ConfirmationModal";
+import { useAuth } from "@/hooks/useAuth";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import { useState, useEffect } from "react";
-import { ChevronRight } from "../animate-ui/icons/chevron-right";
-import { ChevronLeft } from "../animate-ui/icons/chevron-left";
-import { LogOut } from "../animate-ui/icons/log-out";
+import { ChevronRight } from "@/components/animate-ui/icons/chevron-right";
+import { ChevronLeft } from "@/components/animate-ui/icons/chevron-left";
+import { LogOut } from "@/components/animate-ui/icons/log-out";
 
 interface NavItem {
   path: string;

@@ -4,8 +4,8 @@ import {
   StaggerContainer,
   StaggerItem,
   fadeInUp,
-} from "../ui/ScrollReveal";
-import { useCourses } from "../../hooks/useCourses";
+} from "@/components/ui/ScrollReveal";
+import { useCourses } from "@/hooks/useCourses";
 import { useAuth } from "@/hooks/useAuth";
 
 const FeaturedCoursesSection = () => {

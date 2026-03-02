@@ -3,13 +3,13 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import TeacherSidebar from "../../components/teacher/TeacherSidebar";
+import TeacherSidebar from "@/components/teacher/TeacherSidebar";
 import CourseOutline, {
   type OutlineItem,
-} from "../../components/teacher/courses/CourseOutline";
-import CourseForm from "../../components/teacher/courses/CourseForm";
-import LessonForm from "../../components/teacher/courses/LessonForm";
-import LessonItemForm from "../../components/teacher/courses/LessonItemForm";
+} from "@/components/teacher/courses/CourseOutline";
+import CourseForm from "@/components/teacher/courses/CourseForm";
+import LessonForm from "@/components/teacher/courses/LessonForm";
+import LessonItemForm from "@/components/teacher/courses/LessonItemForm";
 import {
   useCreateCourse,
   useUpdateCourse,

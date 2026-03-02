@@ -1,6 +1,6 @@
 import { FaArrowRight, FaStar, FaBolt, FaRocket } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { ScrollReveal, fadeInLeft, fadeInRight } from "../ui/ScrollReveal";
+import { ScrollReveal, fadeInLeft, fadeInRight } from "@/components/ui/ScrollReveal";
 
 const HeroSection = () => {
   return (

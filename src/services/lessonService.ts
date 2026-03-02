@@ -1,6 +1,6 @@
-import axiosInstance from '../config/axios';
-import type { CreateLessonRequest } from '../types/courseApi';
-import type { ApiLesson, LessonQuiz, LessonItem, VideoHeartbeatRequest } from '../types/learningTypes';
+import axiosInstance from "@/config/axios";
+import type { CreateLessonRequest } from "@/types/courseApi";
+import type { ApiLesson, LessonQuiz, LessonItem, VideoHeartbeatRequest } from "@/types/learningTypes";
 
 // ==================== Lesson APIs ====================
 

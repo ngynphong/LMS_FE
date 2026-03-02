@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import type { QuestionDifficulty } from "../../types/question";
-import { useQuestions, useDeleteQuestion } from "../../hooks/useQuestions";
-import { useMyCourses, useCourseDetail } from "../../hooks/useCourses";
-import ImportQuestionsModal from "../../components/question/ImportQuestionsModal";
-import { ConfirmationModal } from "../../components/common/ConfirmationModal";
-import PaginationControl from "../../components/common/PaginationControl";
+import type { QuestionDifficulty } from "@/types/question";
+import { useQuestions, useDeleteQuestion } from "@/hooks/useQuestions";
+import { useMyCourses, useCourseDetail } from "@/hooks/useCourses";
+import ImportQuestionsModal from "@/components/question/ImportQuestionsModal";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
+import PaginationControl from "@/components/common/PaginationControl";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 const QuestionBankPage = () => {

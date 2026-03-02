@@ -6,7 +6,7 @@ import {
   MdCancel,
   MdInfoOutline,
 } from "react-icons/md";
-import { useQuizReview } from "../../hooks/useQuizzes";
+import { useQuizReview } from "@/hooks/useQuizzes";
 
 interface QuizReviewModalProps {
   isOpen: boolean;

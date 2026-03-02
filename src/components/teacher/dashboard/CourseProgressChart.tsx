@@ -1,4 +1,4 @@
-import type { CourseHealthResponse } from "../../../types/teacherDashboard";
+import type { CourseHealthResponse } from "@/types/teacherDashboard";
 
 interface CourseProgressChartProps {
   data: CourseHealthResponse[] | undefined;

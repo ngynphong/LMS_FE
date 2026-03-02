@@ -2,47 +2,47 @@ import React from "react";
 import type { RouteObject } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 
-const TeacherLayout = React.lazy(() => import("../layouts/TeacherLayout"));
+const TeacherLayout = React.lazy(() => import("@/layouts/TeacherLayout"));
 const TeacherDashboardPage = React.lazy(
-  () => import("../pages/teacher/TeacherDashboardPage"),
+  () => import("@/pages/teacher/TeacherDashboardPage"),
 );
 const CourseListPage = React.lazy(
-  () => import("../pages/teacher/CourseListPage"),
+  () => import("@/pages/teacher/CourseListPage"),
 );
 const CourseBuilderPage = React.lazy(
-  () => import("../pages/teacher/CourseBuilderPage"),
+  () => import("@/pages/teacher/CourseBuilderPage"),
 );
 const TeacherCourseDetailPage = React.lazy(
-  () => import("../pages/teacher/TeacherCourseDetailPage"),
+  () => import("@/pages/teacher/TeacherCourseDetailPage"),
 );
 const StudentListPage = React.lazy(
-  () => import("../pages/teacher/StudentListPage"),
+  () => import("@/pages/teacher/StudentListPage"),
 );
 const StudentDetailPage = React.lazy(
-  () => import("../pages/teacher/StudentDetailPage"),
+  () => import("@/pages/teacher/StudentDetailPage"),
 );
 const QuestionBankPage = React.lazy(
-  () => import("../pages/teacher/QuestionBankPage"),
+  () => import("@/pages/teacher/QuestionBankPage"),
 );
 const QuestionFormPage = React.lazy(
-  () => import("../pages/teacher/QuestionFormPage"),
+  () => import("@/pages/teacher/QuestionFormPage"),
 );
-const ExamListPage = React.lazy(() => import("../pages/teacher/ExamListPage"));
-const ExamFormPage = React.lazy(() => import("../pages/teacher/ExamFormPage"));
+const ExamListPage = React.lazy(() => import("@/pages/teacher/ExamListPage"));
+const ExamFormPage = React.lazy(() => import("@/pages/teacher/ExamFormPage"));
 const ReportsListPage = React.lazy(
-  () => import("../pages/teacher/ReportsListPage"),
+  () => import("@/pages/teacher/ReportsListPage"),
 );
 const ExamReportDetailPage = React.lazy(
-  () => import("../pages/teacher/ExamReportDetailPage"),
+  () => import("@/pages/teacher/ExamReportDetailPage"),
 );
 const TeacherLessonItemPreviewPage = React.lazy(
-  () => import("../pages/teacher/TeacherLessonItemPreviewPage"),
+  () => import("@/pages/teacher/TeacherLessonItemPreviewPage"),
 );
 const TeacherSettingsPage = React.lazy(
-  () => import("../pages/teacher/TeacherSettingsPage"),
+  () => import("@/pages/teacher/TeacherSettingsPage"),
 );
 const TeacherNotificationPage = React.lazy(
-  () => import("../pages/teacher/TeacherNotificationPage"),
+  () => import("@/pages/teacher/TeacherNotificationPage"),
 );
 
 /**

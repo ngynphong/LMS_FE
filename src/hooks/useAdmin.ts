@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import * as adminService from "../services/adminService";
-import type { CreateTeacherRequest, ResetPasswordRequest } from "../types/admin";
-import { toast } from "react-toastify"; // Hook to fetch dashboard stats
+import * as adminService from "@/services/adminService";
+import type { CreateTeacherRequest, ResetPasswordRequest } from "@/types/admin";
+import { toast } from "@/components/common/Toast"; // Hook to fetch dashboard stats
 export const useAdminDashboard = () => {
   return useQuery({
     queryKey: ["admin", "dashboard"],

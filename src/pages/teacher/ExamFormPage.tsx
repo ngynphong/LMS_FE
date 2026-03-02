@@ -2,24 +2,24 @@ import { useState, useEffect } from "react";
 import { format, isValid } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useCreateQuiz, useUpdateQuiz, useQuiz } from "../../hooks/useQuizzes";
-import { useMyCourses, useCourseDetail } from "../../hooks/useCourses";
-import { useQuestions } from "../../hooks/useQuestions";
+import { useCreateQuiz, useUpdateQuiz, useQuiz } from "@/hooks/useQuizzes";
+import { useMyCourses, useCourseDetail } from "@/hooks/useCourses";
+import { useQuestions } from "@/hooks/useQuestions";
 import {
   getLessonById,
   getLessonItemById,
   getLessonsByCourseId,
-} from "../../services/lessonService";
+} from "@/services/lessonService";
 import type {
   CreateQuizRequest,
   DynamicConfig,
   StaticQuestion,
-} from "../../types/quiz";
-import type { Question } from "../../types/question";
+} from "@/types/quiz";
+import type { Question } from "@/types/question";
 import { toast } from "@/components/common/Toast";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { FaCircleNotch } from "react-icons/fa";
-import Breadcrumb from "../../components/common/Breadcrumb";
+import Breadcrumb from "@/components/common/Breadcrumb";
 
 const ExamFormPage = () => {
   const { id } = useParams();

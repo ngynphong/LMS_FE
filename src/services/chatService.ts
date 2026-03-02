@@ -1,5 +1,5 @@
-import axiosInstance from "../config/axios";
-import type { ChatResponse } from "../types/chat";
+import axiosInstance from "@/config/axios";
+import type { ChatResponse } from "@/types/chat";
 import axios from "axios";
 
 // Helper function to handle API errors

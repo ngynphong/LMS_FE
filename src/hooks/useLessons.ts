@@ -12,9 +12,9 @@ import {
   deleteLessonItem,
   trackVideoHeartbeat,
   markLessonItemComplete,
-} from '../services/lessonService';
-import type { CreateLessonRequest, CreateLessonItemValues } from '../types/courseApi';
-import type { VideoHeartbeatRequest } from '../types/learningTypes';
+} from '@/services/lessonService';
+import type { CreateLessonRequest, CreateLessonItemValues } from '@/types/courseApi';
+import type { VideoHeartbeatRequest } from '@/types/learningTypes';
 
 export const useCreateLesson = () => {
   const queryClient = useQueryClient();

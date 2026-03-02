@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, type KeyboardEvent } from "react";
 import ReactMarkdown from "react-markdown";
-import { useChat } from "../../hooks/useChat";
+import { useChat } from "@/hooks/useChat";
 import { RiRobot2Line } from "react-icons/ri";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";

@@ -1,5 +1,5 @@
 // ... imports
-import axiosInstance from '../config/axios';
+import axiosInstance from "@/config/axios";
 import type { 
     CreateQuizRequest, 
     QuizSummary, 
@@ -14,7 +14,7 @@ import type {
     StudentTeacherQuiz,
     UpdateQuizRequest,
     QuizDetailResponse
-} from '../types/quiz';
+} from "@/types/quiz";
 
 // ==================== Quiz APIs ====================
 

@@ -15,14 +15,14 @@ import {
   MdVisibility,
   MdVisibilityOff,
 } from "react-icons/md";
-import PaginationControl from "../../components/common/PaginationControl";
-import type { UserRole, UserStatus } from "../../types/admin";
-import { useUsers } from "../../hooks/useUsers";
-import type { AdminUserListItem } from "../../types/user";
-import { ConfirmationModal } from "../../components/common/ConfirmationModal";
-import { UpdateRoleModal } from "../../components/admin/UpdateRoleModal";
-import { useResetUserPassword } from "../../hooks/useAdmin";
-import Breadcrumb from "../../components/common/Breadcrumb";
+import PaginationControl from "@/components/common/PaginationControl";
+import type { UserRole, UserStatus } from "@/types/admin";
+import { useUsers } from "@/hooks/useUsers";
+import type { AdminUserListItem } from "@/types/user";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
+import { UpdateRoleModal } from "@/components/admin/UpdateRoleModal";
+import { useResetUserPassword } from "@/hooks/useAdmin";
+import Breadcrumb from "@/components/common/Breadcrumb";
 
 const AdminUserManagementPage = () => {
   const [searchQuery, setSearchQuery] = useState("");

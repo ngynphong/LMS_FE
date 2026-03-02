@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import type { ApiLesson, LessonItem } from "../../types/learningTypes";
+import type { ApiLesson, LessonItem } from "@/types/learningTypes";
 
 interface LessonSidebarProps {
   lessons: ApiLesson[];

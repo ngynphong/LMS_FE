@@ -1,5 +1,5 @@
-import axiosInstance from "../config/axios";
-import type { NotificationResponse, GetNotificationsParams } from "../types/notification";
+import axiosInstance from "@/config/axios";
+import type { NotificationResponse, GetNotificationsParams } from "@/types/notification";
 
 export const notificationService = {
   getNotifications: async (params?: GetNotificationsParams): Promise<NotificationResponse> => {

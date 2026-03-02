@@ -2,27 +2,27 @@ import React from "react";
 import type { RouteObject } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 
-const AdminLayout = React.lazy(() => import("../layouts/AdminLayout"));
+const AdminLayout = React.lazy(() => import("@/layouts/AdminLayout"));
 const AdminDashboardPage = React.lazy(
-  () => import("../pages/admin/AdminDashboardPage"),
+  () => import("@/pages/admin/AdminDashboardPage"),
 );
 const AdminUserManagementPage = React.lazy(
-  () => import("../pages/admin/AdminUserManagementPage"),
+  () => import("@/pages/admin/AdminUserManagementPage"),
 );
 const AdminCourseListPage = React.lazy(
-  () => import("../pages/admin/AdminCourseListPage"),
+  () => import("@/pages/admin/AdminCourseListPage"),
 );
 const AdminCourseDetailPage = React.lazy(
-  () => import("../pages/admin/AdminCourseDetailPage"),
+  () => import("@/pages/admin/AdminCourseDetailPage"),
 );
 const CreateTeacherPage = React.lazy(
-  () => import("../pages/admin/CreateTeacherPage"),
+  () => import("@/pages/admin/CreateTeacherPage"),
 );
 const AdminSettingsPage = React.lazy(
-  () => import("../pages/admin/AdminSettingsPage"),
+  () => import("@/pages/admin/AdminSettingsPage"),
 );
 const AdminPasswordRequestsPage = React.lazy(
-  () => import("../pages/admin/AdminPasswordRequestsPage"),
+  () => import("@/pages/admin/AdminPasswordRequestsPage"),
 );
 
 /**

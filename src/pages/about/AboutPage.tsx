@@ -5,7 +5,7 @@ import {
   fadeInUp,
   fadeInLeft,
   fadeInRight,
-} from "../../components/ui/ScrollReveal";
+} from "@/components/ui/ScrollReveal";
 
 const AboutPage = () => {
   return (

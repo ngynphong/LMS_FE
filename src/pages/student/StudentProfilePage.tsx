@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { FaUser, FaLock } from "react-icons/fa";
-import { AvatarUpload } from "../../components/common/AvatarUpload";
-import { updateProfileApi } from "../../services/authService";
+import { AvatarUpload } from "@/components/common/AvatarUpload";
+import { updateProfileApi } from "@/services/authService";
 import { toast } from "react-toastify";
 import { StudentPasswordChangeForm } from "./StudentPasswordChangeForm";
 

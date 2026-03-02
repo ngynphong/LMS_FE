@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { type StompSubscription } from "@stomp/stompjs";
-import { useAuth } from "../hooks/useAuth";
-import { socketService } from "../services/websocketService";
-import { WebSocketContext } from "./WebSocketContext";
+import { useAuth } from "@/hooks/useAuth";
+import { socketService } from "@/services/websocketService";
+import { WebSocketContext } from "@/contexts/WebSocketContext";
 
 interface WebSocketProviderProps {
   children: React.ReactNode;
