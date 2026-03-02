@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import type { Student } from "../../../types/student";
+import type { Student } from "@/types/student";
 import { getInitials } from "@/utils/initialsName";
 
 interface StudentCardProps {

@@ -5,7 +5,7 @@ import {
   useNotifications,
   useMarkNotificationRead,
   useMarkAllNotificationsRead,
-} from "../../hooks/useNotifications";
+} from "@/hooks/useNotifications";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 

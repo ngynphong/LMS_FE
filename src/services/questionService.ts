@@ -1,5 +1,5 @@
-import axiosInstance from '../config/axios';
-import type { CreateQuestionRequest, ImportQuestionResult, Question, UpdateQuestionRequest, QuestionListResponse, GetQuestionsParams } from '../types/question';
+import axiosInstance from "@/config/axios";
+import type { CreateQuestionRequest, ImportQuestionResult, Question, UpdateQuestionRequest, QuestionListResponse, GetQuestionsParams } from "@/types/question";
 
 // ==================== Question APIs ====================
 

@@ -1,9 +1,9 @@
 import React from "react";
 import { BrowserRouter, useRoutes } from "react-router-dom";
-import ScrollToTop from "./components/common/ScrollToTop";
-import routes from "./routes";
-import "./App.css";
-import LoadingOverlay from "./components/common/LoadingOverlay";
+import ScrollToTop from "@/components/common/ScrollToTop";
+import routes from "@/routes";
+import "@/App.css";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 function AppRoutes() {
   const element = useRoutes(routes);

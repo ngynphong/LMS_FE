@@ -1,14 +1,14 @@
-import { useAuth } from "../../hooks/useAuth";
-import QuickStats from "../../components/teacher/dashboard/QuickStats";
-import CourseProgressChart from "../../components/teacher/dashboard/CourseProgressChart";
-import QuizPerformanceSection from "../../components/teacher/dashboard/QuizPerformanceSection";
-import AtRiskStudentsTable from "../../components/teacher/dashboard/NewStudentsTable";
+import { useAuth } from "@/hooks/useAuth";
+import QuickStats from "@/components/teacher/dashboard/QuickStats";
+import CourseProgressChart from "@/components/teacher/dashboard/CourseProgressChart";
+import QuizPerformanceSection from "@/components/teacher/dashboard/QuizPerformanceSection";
+import AtRiskStudentsTable from "@/components/teacher/dashboard/NewStudentsTable";
 import {
   useTeacherDashboardSummary,
   useAtRiskStudents,
   useQuizPerformance,
   useCourseHealth,
-} from "../../hooks/useTeacher";
+} from "@/hooks/useTeacher";
 
 const TeacherDashboardPage = () => {
   const { user } = useAuth();

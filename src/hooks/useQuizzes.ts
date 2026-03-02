@@ -18,14 +18,14 @@ import {
     getQuizById,
     updateQuiz,
     getQuizByLessonItem
-} from '../services/quizService';
+} from '@/services/quizService';
 import type { 
     CreateQuizRequest, 
     CheckPracticeAnswerRequest, 
     SubmitQuizRequest, 
     SaveProgressRequest, 
     UpdateQuizRequest,
-} from '../types/quiz';
+} from '@/types/quiz';
 
 export const useCreateQuiz = () => {
     const queryClient = useQueryClient();

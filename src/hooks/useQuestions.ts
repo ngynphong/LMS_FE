@@ -6,14 +6,14 @@ import {
     deleteQuestion, 
     importQuestions, 
     getQuestionTemplate 
-} from '../services/questionService';
+} from '@/services/questionService';
 import type { 
     // Question, 
     CreateQuestionRequest, 
     UpdateQuestionRequest,
     // ImportQuestionResult,
     GetQuestionsParams
-} from '../types/question';
+} from '@/types/question';
 
 export const useQuestions = (params?: GetQuestionsParams) => {
     return useQuery({

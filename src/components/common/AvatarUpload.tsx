@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { FaCamera, FaSpinner } from "react-icons/fa";
-import { uploadAvatarApi } from "../../services/authService";
-import { toast } from "./Toast";
+import { uploadAvatarApi } from "@/services/authService";
+import { toast } from "@/components/common/Toast";
 
 interface AvatarUploadProps {
   currentImageUrl?: string;

@@ -1,9 +1,9 @@
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import { ItemTypes } from "../../../types/dndTypes";
-import type { OutlineItem } from "./CourseOutline";
-import DraggableItem from "./DraggableItem";
-import type { ApiLesson, LessonItem } from "../../../types/learningTypes";
+import { ItemTypes } from "@/types/dndTypes";
+import type { OutlineItem } from "@/components/teacher/courses/CourseOutline";
+import DraggableItem from "@/components/teacher/courses/DraggableItem";
+import type { ApiLesson, LessonItem } from "@/types/learningTypes";
 
 interface DraggableLessonProps {
   lesson: ApiLesson;

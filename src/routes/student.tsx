@@ -1,27 +1,27 @@
 import React from "react";
 import type { RouteObject } from "react-router-dom";
 
-const StudentLayout = React.lazy(() => import("../layouts/StudentLayout"));
+const StudentLayout = React.lazy(() => import("@/layouts/StudentLayout"));
 const StudentDashboardPage = React.lazy(
-  () => import("../pages/student/StudentDashboardPage"),
+  () => import("@/pages/student/StudentDashboardPage"),
 );
 const StudentMyCoursesPage = React.lazy(
-  () => import("../pages/student/StudentMyCoursesPage"),
+  () => import("@/pages/student/StudentMyCoursesPage"),
 );
 const StudentCourseLearningPage = React.lazy(
-  () => import("../pages/student/CourseLearningPage"),
+  () => import("@/pages/student/CourseLearningPage"),
 );
 const StudentProfilePage = React.lazy(
-  () => import("../pages/student/StudentProfilePage"),
+  () => import("@/pages/student/StudentProfilePage"),
 );
 const StudentAvailableQuizzesPage = React.lazy(
-  () => import("../pages/student/StudentAvailableQuizzesPage"),
+  () => import("@/pages/student/StudentAvailableQuizzesPage"),
 );
 const StudentQuizTakingPage = React.lazy(
-  () => import("../pages/student/StudentQuizTakingPage"),
+  () => import("@/pages/student/StudentQuizTakingPage"),
 );
 const StudentNotificationPage = React.lazy(
-  () => import("../pages/student/StudentNotificationPage"),
+  () => import("@/pages/student/StudentNotificationPage"),
 );
 
 const studentRoutes: RouteObject[] = [

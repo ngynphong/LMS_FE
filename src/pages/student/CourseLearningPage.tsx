@@ -5,16 +5,16 @@ import { vi } from "date-fns/locale";
 import LessonSidebar, {
   getItemTypeIcon,
   getItemTypeColor,
-} from "../../components/student/LessonSidebar";
-import { useCourseDetail } from "../../hooks/useCourses";
-import { useQuizByLessonItem } from "../../hooks/useQuizzes";
+} from "@/components/student/LessonSidebar";
+import { useCourseDetail } from "@/hooks/useCourses";
+import { useQuizByLessonItem } from "@/hooks/useQuizzes";
 import {
   getLessonById,
   getLessonItemById,
   trackVideoHeartbeat,
   markLessonItemComplete,
-} from "../../services/lessonService";
-import type { ApiLesson, LessonItem } from "../../types/learningTypes";
+} from "@/services/lessonService";
+import type { ApiLesson, LessonItem } from "@/types/learningTypes";
 import PdfSlideshow from "@/components/common/PdfSlideshow";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { FaCircleNotch } from "react-icons/fa";

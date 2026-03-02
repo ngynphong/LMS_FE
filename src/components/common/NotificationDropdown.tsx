@@ -4,7 +4,7 @@ import {
   useNotifications,
   useMarkAllNotificationsRead,
   useMarkNotificationRead,
-} from "../../hooks/useNotifications";
+} from "@/hooks/useNotifications";
 import { Link, useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";

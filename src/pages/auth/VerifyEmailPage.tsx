@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 import { FaCheckCircle, FaTimesCircle, FaSpinner } from 'react-icons/fa';
 
 const VerifyEmailPage = () => {

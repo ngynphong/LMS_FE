@@ -11,10 +11,10 @@ import {
 import {
   useStudentTeacherQuizzes,
   useMyOngoingQuizzes,
-} from "../../hooks/useQuizzes";
-import { QuizHistoryModal } from "../../components/student/QuizHistoryModal";
-import { QuizReviewModal } from "../../components/student/QuizReviewModal";
-import type { StudentTeacherQuiz } from "../../types/quiz";
+} from "@/hooks/useQuizzes";
+import { QuizHistoryModal } from "@/components/student/QuizHistoryModal";
+import { QuizReviewModal } from "@/components/student/QuizReviewModal";
+import type { StudentTeacherQuiz } from "@/types/quiz";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 

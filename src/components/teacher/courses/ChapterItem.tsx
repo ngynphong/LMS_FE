@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import LessonItem from './LessonItem';
-import type { Lesson } from './LessonItem';
+import LessonItem from '@/components/teacher/courses/LessonItem';
+import type { Lesson } from '@/components/teacher/courses/LessonItem';
 
 interface Chapter {
   id: string;

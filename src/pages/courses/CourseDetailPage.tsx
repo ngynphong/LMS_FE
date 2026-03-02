@@ -15,10 +15,10 @@ import {
   MdAllInclusive,
   MdDevices,
 } from "react-icons/md";
-import { useCourseDetail, useStudentCourses } from "../../hooks/useCourses";
-import { getLessonById } from "../../services/lessonService";
-import type { ApiLesson, LessonItem } from "../../types/learningTypes";
-import Breadcrumb from "../../components/common/Breadcrumb";
+import { useCourseDetail, useStudentCourses } from "@/hooks/useCourses";
+import { getLessonById } from "@/services/lessonService";
+import type { ApiLesson, LessonItem } from "@/types/learningTypes";
+import Breadcrumb from "@/components/common/Breadcrumb";
 
 const relatedCourses = [
   {

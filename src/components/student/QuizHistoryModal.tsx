@@ -7,7 +7,7 @@ import {
   MdPending,
   MdPlayArrow,
 } from "react-icons/md";
-import { useQuizHistory } from "../../hooks/useQuizzes";
+import { useQuizHistory } from "@/hooks/useQuizzes";
 
 interface QuizHistoryModalProps {
   isOpen: boolean;

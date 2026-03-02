@@ -1,10 +1,10 @@
-import axiosInstance from '../config/axios';
-import type { CourseListResponse, GetCoursesParams, CreateCourseRequest, UpdateCourseRequest, CourseStudentsResponse } from '../types/courseApi';
+import axiosInstance from "@/config/axios";
+import type { CourseListResponse, GetCoursesParams, CreateCourseRequest, UpdateCourseRequest, CourseStudentsResponse } from "@/types/courseApi";
 import type { 
   ApiCourse, 
   EnrollCourseRequest,
   CreateInviteCodeRequest
-} from '../types/learningTypes';
+} from "@/types/learningTypes";
 
 export const getCourses = async (params: GetCoursesParams): Promise<CourseListResponse> => {
     try {

@@ -11,12 +11,12 @@ import {
   getCurrentUserApi,
   logoutApi,
   loginWithCustomToken,
-} from "../services/authService";
-import type { User, AuthResponse, ChangePasswordRequest } from "../types/auth";
-import { AuthContext } from "./AuthContext";
-import { toast } from "../components/common/Toast";
+} from "@/services/authService";
+import type { User, AuthResponse, ChangePasswordRequest } from "@/types/auth";
+import { AuthContext } from "@/contexts/AuthContext";
+import { toast } from "@/components/common/Toast";
 import axios from "axios";
-import { decodeJWT } from "../utils/decodeJWT";
+import { decodeJWT } from "@/utils/decodeJWT";
 
 interface AuthProviderProps {
   children: React.ReactNode;

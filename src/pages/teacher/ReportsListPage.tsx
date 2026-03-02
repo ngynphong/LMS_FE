@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useTeacherQuizzes } from "../../hooks/useQuizzes";
+import { useTeacherQuizzes } from "@/hooks/useQuizzes";
 import { FaCircleNotch } from "react-icons/fa";
 
 const ReportsListPage = () => {

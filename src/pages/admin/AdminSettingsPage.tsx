@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSystemLogs } from "../../hooks/useAdmin";
+import { useSystemLogs } from "@/hooks/useAdmin";
 import { format } from "date-fns";
 import { MdSettings, MdHistory } from "react-icons/md";
 import PaginationControl from "@/components/common/PaginationControl";

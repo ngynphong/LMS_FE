@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { useStudentCourses } from "../../hooks/useCourses";
+import { useStudentCourses } from "@/hooks/useCourses";
 import PaginationControl from "@/components/common/PaginationControl";
 import StudentCourseCard, {
   StudentCourseCardSkeleton,

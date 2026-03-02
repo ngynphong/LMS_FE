@@ -2,9 +2,9 @@ import { useState } from "react";
 import {
   useImportQuestions,
   useQuestionTemplate,
-} from "../../hooks/useQuestions";
-import { useMyCourses, useCourseDetail } from "../../hooks/useCourses";
-import { toast } from "../common/Toast";
+} from "@/hooks/useQuestions";
+import { useMyCourses, useCourseDetail } from "@/hooks/useCourses";
+import { toast } from "@/components/common/Toast";
 import { FaCircleNotch } from "react-icons/fa";
 
 interface ImportQuestionsModalProps {

@@ -6,8 +6,8 @@ import {
   MdCalendarToday,
   MdDownload,
 } from "react-icons/md";
-import { approvalRequests } from "../../data/admin";
-import { useAdminDashboard } from "../../hooks/useAdmin";
+import { approvalRequests } from "@/data/admin";
+import { useAdminDashboard } from "@/hooks/useAdmin";
 
 const AdminDashboardPage = () => {
   const { data: dashboardData, isLoading, error } = useAdminDashboard();

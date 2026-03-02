@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { notificationService } from "../services/notificationService";
+import { notificationService } from "@/services/notificationService";
 import { useEffect } from "react";
-import { useAuth } from "./useAuth";
-import { useWebSocket } from "./useWebSocket";
+import { useAuth } from "@/hooks/useAuth";
+import { useWebSocket } from "@/hooks/useWebSocket";
 
 export const useNotifications = (page = 0, size = 10, sort = "createdAt,desc") => {
   const queryClient = useQueryClient();

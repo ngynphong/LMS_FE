@@ -9,13 +9,13 @@ import {
 } from "react-icons/md";
 import { FaDatabase, FaBell } from "react-icons/fa";
 import { IoPeople } from "react-icons/io5";
-import { useAuth } from "../../hooks/useAuth";
-import { useNotifications } from "../../hooks/useNotifications";
-import { ConfirmationModal } from "../common/ConfirmationModal";
+import { useAuth } from "@/hooks/useAuth";
+import { useNotifications } from "@/hooks/useNotifications";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import { useState, useEffect } from "react";
-import { ChevronLeft } from "../animate-ui/icons/chevron-left";
-import { ChevronRight } from "../animate-ui/icons/chevron-right";
-import { LogOut } from "../animate-ui/icons/log-out";
+import { ChevronLeft } from "@/components/animate-ui/icons/chevron-left";
+import { ChevronRight } from "@/components/animate-ui/icons/chevron-right";
+import { LogOut } from "@/components/animate-ui/icons/log-out";
 
 interface NavItem {
   path: string;

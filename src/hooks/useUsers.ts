@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getUsersApi, deleteUserApi, updateUserRolesApi } from '../services/userService';
-import type { AdminUserPaginationData, UserDashboardParams, UpdateUserRoleRequest } from '../types/user';
+import { getUsersApi, deleteUserApi, updateUserRolesApi } from '@/services/userService';
+import type { AdminUserPaginationData, UserDashboardParams, UpdateUserRoleRequest } from '@/types/user';
 
 export const useUsers = (initialParams: UserDashboardParams) => {
     const [data, setData] = useState<AdminUserPaginationData | null>(null);

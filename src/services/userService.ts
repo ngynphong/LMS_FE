@@ -1,5 +1,5 @@
-import axiosInstance from "../config/axios";
-import type { AdminUserListResponse, UserDashboardParams, UpdateUserRoleRequest, BatchResetPasswordRequest } from "../types/user";
+import axiosInstance from "@/config/axios";
+import type { AdminUserListResponse, UserDashboardParams, UpdateUserRoleRequest, BatchResetPasswordRequest } from "@/types/user";
 import axios from "axios";
 
 // Helper function to handle API errors (reused from authService or similar)

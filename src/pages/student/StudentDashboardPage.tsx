@@ -8,12 +8,12 @@ import {
 } from "react-icons/fa";
 import { MdLocationOn } from "react-icons/md";
 // import { notifications } from "../../data/notification";
-import { useAuth } from "../../hooks/useAuth";
-import { useStudentCourses } from "../../hooks/useCourses";
+import { useAuth } from "@/hooks/useAuth";
+import { useStudentCourses } from "@/hooks/useCourses";
 import {
   useNotifications,
   useMarkNotificationRead,
-} from "../../hooks/useNotifications";
+} from "@/hooks/useNotifications";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 

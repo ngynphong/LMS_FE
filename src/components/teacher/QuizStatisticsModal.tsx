@@ -9,7 +9,7 @@ import {
   MdTrendingUp,
   MdTrendingDown,
 } from "react-icons/md";
-import { useQuizStatistics } from "../../hooks/useQuizzes";
+import { useQuizStatistics } from "@/hooks/useQuizzes";
 
 interface QuizStatisticsModalProps {
   isOpen: boolean;

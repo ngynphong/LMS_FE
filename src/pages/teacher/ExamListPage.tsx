@@ -6,8 +6,8 @@ import {
   useTeacherQuizzes,
   useGenerateQuizCode,
   usePublishQuiz,
-} from "../../hooks/useQuizzes";
-import { toast } from "../../components/common/Toast";
+} from "@/hooks/useQuizzes";
+import { toast } from "@/components/common/Toast";
 
 const ExamListPage = () => {
   const { data: exams, isLoading: loading, error } = useTeacherQuizzes();

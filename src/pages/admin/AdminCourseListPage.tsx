@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "@/components/common/Toast";
 import {
   useAdminCourses,
   useBanCourse,
   useApproveCourse,
-} from "../../hooks/useCourses";
-import type { ApiCourse } from "../../types/learningTypes";
-import LoadingOverlay from "../../components/common/LoadingOverlay";
+} from "@/hooks/useCourses";
+import type { ApiCourse } from "@/types/learningTypes";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 
-import { ConfirmationModal } from "../../components/common/ConfirmationModal";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import { FaCircleNotch } from "react-icons/fa";
 
 const AdminCourseListPage = () => {

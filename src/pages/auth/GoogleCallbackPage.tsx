@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { googleLoginApi } from '../../services/authService';
-import { useAuth } from '../../hooks/useAuth';
+import { googleLoginApi } from '@/services/authService';
+import { useAuth } from '@/hooks/useAuth';
 import { FaSpinner } from 'react-icons/fa';
 
 const GoogleCallbackPage: React.FC = () => {

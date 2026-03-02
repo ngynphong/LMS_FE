@@ -3,7 +3,7 @@ import type {
   LessonQuiz as LessonQuizType,
   QuizAttempt,
   QuizResult,
-} from "../../types/learningTypes";
+} from "@/types/learningTypes";
 
 interface LessonQuizProps {
   quiz: LessonQuizType;

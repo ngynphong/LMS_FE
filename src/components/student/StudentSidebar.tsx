@@ -7,16 +7,16 @@ import {
   FaTimes,
   FaBell,
 } from "react-icons/fa";
-import { useAuth } from "../../hooks/useAuth";
-import { useNotifications } from "../../hooks/useNotifications";
-import { ConfirmationModal } from "../common/ConfirmationModal";
+import { useAuth } from "@/hooks/useAuth";
+import { useNotifications } from "@/hooks/useNotifications";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import { useState, useEffect } from "react";
-import { ChevronLeft } from "../animate-ui/icons/chevron-left";
-import { ChevronRight } from "../animate-ui/icons/chevron-right";
-import { LogOut } from "../animate-ui/icons/log-out";
-import { Dashboard } from "../animate-ui/icons/dashboard";
-import { LibraryBooks } from "../animate-ui/icons/library-books";
-import { Quiz } from "../animate-ui/icons/quiz";
+import { ChevronLeft } from "@/components/animate-ui/icons/chevron-left";
+import { ChevronRight } from "@/components/animate-ui/icons/chevron-right";
+import { LogOut } from "@/components/animate-ui/icons/log-out";
+import { Dashboard } from "@/components/animate-ui/icons/dashboard";
+import { LibraryBooks } from "@/components/animate-ui/icons/library-books";
+import { Quiz } from "@/components/animate-ui/icons/quiz";
 
 interface NavItem {
   path: string;

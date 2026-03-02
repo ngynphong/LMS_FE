@@ -7,9 +7,9 @@ import type {
     UploadAvatarResponse,
     ChangePasswordRequest,
     ProfileResponse
-} from "../types/auth";
-import type { AdminBatchResetPasswordRequest } from "../types/user";
-import axiosInstance, { publicAxios } from "../config/axios";
+} from "@/types/auth";
+import type { AdminBatchResetPasswordRequest } from "@/types/user";
+import axiosInstance, { publicAxios } from "@/config/axios";
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;

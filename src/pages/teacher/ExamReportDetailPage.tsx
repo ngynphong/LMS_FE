@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { useQuizStatistics } from "../../hooks/useQuizzes";
+import { useQuizStatistics } from "@/hooks/useQuizzes";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 const ExamReportDetailPage = () => {

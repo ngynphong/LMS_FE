@@ -1,4 +1,4 @@
-import type { DashboardSummaryResponse } from "../../../types/teacherDashboard";
+import type { DashboardSummaryResponse } from "@/types/teacherDashboard";
 
 interface QuickStatsProps {
   data: DashboardSummaryResponse | undefined;

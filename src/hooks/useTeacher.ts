@@ -8,9 +8,9 @@ import {
   getAtRiskStudentsApi,
   getQuizPerformanceApi,
   getCourseHealthApi,
-} from '../services/teacherService';
-import type { UpdateStudentRequest } from '../types/student';
-import { toast } from '../components/common/Toast';
+} from '@/services/teacherService';
+import type { UpdateStudentRequest } from '@/types/student';
+import { toast } from '@/components/common/Toast';
 
 // Query keys for cache management
 export const teacherKeys = {

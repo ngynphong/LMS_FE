@@ -1,16 +1,16 @@
-import axiosInstance from "../config/axios";
+import axiosInstance from "@/config/axios";
 import type { 
   ImportStudentResponse, 
   StudentListResponse, 
   StudentDetailResponse, 
   UpdateStudentRequest 
-} from "../types/student";
+} from "@/types/student";
 import type {
   ApiResponseDashboardSummary,
   ApiResponseAtRiskStudents,
   ApiResponseQuizPerformance,
   ApiResponseCourseHealth
-} from "../types/teacherDashboard";
+} from "@/types/teacherDashboard";
 import axios from "axios";
 
 // Helper for error handling

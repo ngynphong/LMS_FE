@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import type { QuizPerformanceResponse } from "../../../types/teacherDashboard";
+import type { QuizPerformanceResponse } from "@/types/teacherDashboard";
 
 interface QuizPerformanceSectionProps {
   data: QuizPerformanceResponse[] | undefined;

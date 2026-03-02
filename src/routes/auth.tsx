@@ -1,10 +1,10 @@
 import React from "react";
 import type { RouteObject } from "react-router-dom";
 
-const LoginPage = React.lazy(() => import("../pages/auth/LoginPage"));
-const RegisterPage = React.lazy(() => import("../pages/auth/RegisterPage"));
+const LoginPage = React.lazy(() => import("@/pages/auth/LoginPage"));
+const RegisterPage = React.lazy(() => import("@/pages/auth/RegisterPage"));
 const ForgotPasswordPage = React.lazy(
-  () => import("../pages/auth/ForgotPasswordPage"),
+  () => import("@/pages/auth/ForgotPasswordPage"),
 );
 const ResetPasswordPage = React.lazy(
   () => import("../pages/auth/ResetPasswordPage"),

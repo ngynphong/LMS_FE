@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { MdTimer, MdFlag, MdArrowBack, MdArrowForward } from "react-icons/md";
-import { ConfirmationModal } from "../../components/common/ConfirmationModal";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import {
   useStartQuiz,
   useSubmitQuiz,

@@ -6,8 +6,8 @@ import {
   // FaGoogle
 } from "react-icons/fa";
 // import { FaFacebookF } from "react-icons/fa6";
-import { useAuth } from "../../hooks/useAuth";
-import { toast } from "../../components/common/Toast";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "@/components/common/Toast";
 
 const LoginPage = () => {
   const navigate = useNavigate();

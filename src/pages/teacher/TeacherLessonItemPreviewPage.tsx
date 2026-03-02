@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getLessonItemById } from "../../services/lessonService";
-import type { LessonItem } from "../../types/learningTypes";
+import { getLessonItemById } from "@/services/lessonService";
+import type { LessonItem } from "@/types/learningTypes";
 import PdfSlideshow from "@/components/common/PdfSlideshow";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 

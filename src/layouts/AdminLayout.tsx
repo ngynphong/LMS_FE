@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { useState, useCallback } from "react";
 import { Outlet } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
-import AdminSidebar from "../components/admin/AdminSidebar";
+import AdminSidebar from "@/components/admin/AdminSidebar";
 
 interface AdminLayoutProps {
   children?: ReactNode;

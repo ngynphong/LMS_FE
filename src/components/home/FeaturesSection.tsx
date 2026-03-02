@@ -1,12 +1,12 @@
 import { MdVerified } from "react-icons/md";
 import { TbCertificate } from "react-icons/tb";
-import { Clock5 } from "../animate-ui/icons/clock-5";
+import { Clock5 } from "@/components/animate-ui/icons/clock-5";
 import {
   ScrollReveal,
   StaggerContainer,
   StaggerItem,
   fadeInUp,
-} from "../ui/ScrollReveal";
+} from "@/components/ui/ScrollReveal";
 
 const features = [
   {

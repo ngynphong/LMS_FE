@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
-import { useAuth } from "../../hooks/useAuth";
-import { toast } from "react-toastify";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "@/components/common/Toast";
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();

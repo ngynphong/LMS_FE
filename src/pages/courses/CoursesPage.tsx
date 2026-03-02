@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
-import Breadcrumb from "../../components/common/Breadcrumb";
-import FilterSidebar from "../../components/courses/FilterSidebar";
-import CourseCard from "../../components/courses/CourseCard";
+import Breadcrumb from "@/components/common/Breadcrumb";
+import FilterSidebar from "@/components/courses/FilterSidebar";
+import CourseCard from "@/components/courses/CourseCard";
 import PaginationControl from "@/components/common/PaginationControl";
 import {
   useCourses,
   useStudentCourses,
   useEnrollCourse,
-} from "../../hooks/useCourses";
+} from "@/hooks/useCourses";
 import { FaCircleNotch, FaSearch } from "react-icons/fa";
 import { toast } from "@/components/common/Toast";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { FaHome } from "react-icons/fa";
 
 const CoursesPage = () => {
