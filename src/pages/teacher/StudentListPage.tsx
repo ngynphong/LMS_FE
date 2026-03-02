@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useStudents, useImportStudents } from "@/hooks/useTeacher";
 import PaginationControl from "@/components/common/PaginationControl";
-import { toast } from "@/components/common/Toast";
 import { FaCircleNotch } from "react-icons/fa";
 import { getInitials } from "@/utils/initialsName";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 const StudentListPage = () => {
   // Local state for UI
@@ -60,24 +60,29 @@ const StudentListPage = () => {
 
     try {
       await importStudent(importFile);
-      toast.success("Nhập danh sách học viên thành công!");
       setIsImportModalOpen(false);
       setImportFile(null);
     } catch (error) {
-      toast.error("Tải lên thất bại. Vui lòng kiểm tra định dạng file.");
+      console.error(error);
     }
   };
 
   return (
     <div className="space-y-6">
+      {importing && (
+        <LoadingOverlay
+          isLoading={importing}
+          message="Đang nhập danh sách học sinh..."
+        />
+      )}
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-[#101518] text-2xl font-bold tracking-tight">
-            Quản lý học viên
+            Quản lý học sinh
           </h1>
           <p className="text-slate-500 text-sm mt-1">
-            Theo dõi tiến độ và hoạt động của học viên
+            Theo dõi tiến độ và hoạt động của học sinh
           </p>
         </div>
         <button
@@ -97,7 +102,7 @@ const StudentListPage = () => {
           </span>
           <input
             type="text"
-            placeholder="Tìm kiếm học viên..."
+            placeholder="Tìm kiếm học sinh..."
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
@@ -138,7 +143,7 @@ const StudentListPage = () => {
               group
             </span>
             <span className="text-xs font-medium">
-              Tổng học viên (Hiện tại)
+              Tổng học sinh (Hiện tại)
             </span>
           </div>
           <p className="text-[#101518] text-2xl font-bold mt-1">
@@ -155,7 +160,7 @@ const StudentListPage = () => {
             <thead className="bg-slate-50">
               <tr>
                 <th className="px-6 py-4 text-slate-500 text-xs font-bold uppercase tracking-wider">
-                  Học viên
+                  Học sinh
                 </th>
                 <th className="px-6 py-4 text-slate-500 text-xs font-bold uppercase tracking-wider">
                   Email
@@ -256,7 +261,7 @@ const StudentListPage = () => {
                     colSpan={7}
                     className="px-6 py-8 text-center text-slate-500"
                   >
-                    Chưa có dữ liệu học viên
+                    Chưa có dữ liệu học sinh
                   </td>
                 </tr>
               )}
