@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import type { Course } from "../../types/course";
 
 // Props for student variant (can be spread from CourseData)
 interface StudentCourseProps {
@@ -15,8 +14,10 @@ interface StudentCourseProps {
 
 // Props for teacher variant (uses course object)
 interface TeacherCourseProps {
-  course: Course;
+  course: any;
   variant: "teacher";
+  onInvite?: () => void;
+  onDelete?: () => void;
 }
 
 // Union type for CourseCardProps
@@ -25,80 +26,87 @@ type CourseCardProps =
   | TeacherCourseProps;
 
 const CourseCard = (props: CourseCardProps) => {
-  // Teacher variant status config
-  const statusConfig = {
-    published: {
-      label: "Đã xuất bản",
-      className: "bg-green-100 text-green-700",
-    },
-    draft: {
-      label: "Bản nháp",
-      className: "bg-amber-100 text-amber-700",
-    },
-  };
 
   if (props.variant === "teacher" && props.course) {
     const { course } = props;
-    const status = statusConfig[course.status];
 
     return (
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow">
         {/* Thumbnail */}
-        <div
-          className="w-full h-full bg-center bg-cover bg-slate-100"
-          style={{ backgroundImage: `url("${course.thumbnail}")` }}
-        >
-          {!course.thumbnail && (
-            <div className="w-full h-full flex items-center justify-center">
-              <img
-                src="/img/default-course.jpg"
-                alt={course.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
+        <div className="aspect-video relative">
+          <div
+            className="w-full h-full bg-center bg-cover bg-slate-100"
+            style={{
+              backgroundImage: `url("${course.thumbnailUrl || course.thumbnail}")`,
+            }}
+          >
+            {!(course.thumbnailUrl || course.thumbnail) && (
+              <div className="w-full h-full flex items-center justify-center">
+                <img
+                  src="/img/default-course.jpg"
+                  alt={course.name || course.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+          </div>
+          <div className="absolute top-3 right-3">
+            <span
+              className={`px-2 py-1 rounded text-xs font-medium ${course.status === "PUBLISHED" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}
+            >
+              {course.status === "PUBLISHED" ? "Công khai" : "Bản nháp"}
+            </span>
+          </div>
         </div>
 
         {/* Content */}
         <div className="p-4">
-          <div className="flex items-start justify-between gap-2 mb-3">
-            <h3 className="text-[#101518] text-base font-bold leading-tight line-clamp-2">
-              {course.title}
-            </h3>
-            <span
-              className={`shrink-0 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${status.className}`}
-            >
-              {status.label}
+          <h3 className="font-semibold text-slate-900 line-clamp-2 mb-2">
+            {course.name || course.title}
+          </h3>
+          <p className="text-sm text-slate-500 line-clamp-2 mb-3">
+            {course.description}
+          </p>
+
+          <div className="flex items-center gap-4 text-xs text-slate-500 mb-4">
+            <span className="flex items-center gap-1">
+              <span className="material-symbols-outlined text-sm">
+                menu_book
+              </span>
+              {course.lessonCount || 0} bài học
             </span>
           </div>
 
-          {/* Stats */}
-          <div className="flex items-center gap-4 text-sm text-[#5e7b8d] mb-4">
-            <div className="flex items-center gap-1">
-              <span className="material-symbols-outlined text-base">group</span>
-              <span>{course.studentCount} học viên</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span className="material-symbols-outlined text-base">
-                play_circle
-              </span>
-              <span>{course.lessonCount} bài học</span>
-            </div>
-          </div>
-
-          {/* Actions */}
           <div className="flex gap-2">
             <Link
               to={`/teacher/courses/${course.id}/edit`}
-              className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg bg-[#0074bd]/10 text-[#0074bd] text-sm font-bold hover:bg-[#0074bd]/20 transition-colors"
+              className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-100 hover:translate-y-[-2px] duration-300 transition-all"
             >
-              <span className="material-symbols-outlined text-base">edit</span>
-              Chỉnh sửa
+              <span className="material-symbols-outlined text-sm">edit</span>
+              Sửa
             </Link>
-            <button className="p-2 rounded-lg border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 transition-colors">
-              <span className="material-symbols-outlined text-base">
-                delete
+            <button
+              onClick={() => props.onInvite?.()}
+              className="flex items-center justify-center px-3 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-200 hover:translate-y-[-2px] duration-300 transition-all"
+              title="Tạo mã mời"
+            >
+              <span className="material-symbols-outlined text-sm">key</span>
+            </button>
+            <Link
+              to={`/teacher/courses/${course.id}`}
+              className="flex items-center justify-center px-3 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-200 hover:translate-y-[-2px] duration-300 transition-all"
+              title="Xem khóa học"
+            >
+              <span className="material-symbols-outlined text-sm">
+                visibility
               </span>
+            </Link>
+            <button
+              onClick={() => props.onDelete?.()}
+              className="flex items-center justify-center px-3 py-2 bg-red-50 text-red-600 rounded-lg text-sm font-medium hover:bg-red-100 hover:translate-y-[-2px] duration-300 transition-all"
+              title="Xóa khóa học"
+            >
+              <span className="material-symbols-outlined text-sm">delete</span>
             </button>
           </div>
         </div>
@@ -162,15 +170,15 @@ const CourseCard = (props: CourseCardProps) => {
             <span className="text-gray-600 text-sm">GV: {instructor}</span>
           )}
           {onClick ? (
-            <button
-              className="color-primary text-sm font-bold hover:underline ml-auto"
-              onClick={(e) => {
-                e.stopPropagation();
-                onClick();
-              }}
-            >
-              Tham gia
-            </button>
+              <button
+                className="color-primary text-sm font-bold hover:underline ml-auto"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClick();
+                }}
+              >
+                Tham gia
+              </button>                             
           ) : (
             <Link
               className="color-primary text-sm font-bold hover:underline ml-auto"

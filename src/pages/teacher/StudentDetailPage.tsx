@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useStudentDetail, useUpdateStudent } from "../../hooks/useTeacher";
 import type { UpdateStudentRequest } from "../../types/student";
 import { FaCircleNotch } from "react-icons/fa";
+import Breadcrumb from "../../components/common/Breadcrumb";
 
 const StudentDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -77,22 +78,17 @@ const StudentDetailPage = () => {
     <div className="space-y-6">
       {/* Breadcrumbs */}
       <div className="bg-white border-b border-slate-200 -mx-8 -mt-8 px-8 py-4 mb-6">
-        <div className="flex flex-wrap items-center gap-2">
-          <Link
-            to="/teacher/students"
-            className="text-slate-500 text-sm font-medium hover:text-[#0074bd] transition-colors"
-          >
-            Quản lý học viên
-          </Link>
-          <span className="text-slate-400 text-sm">/</span>
-          <span className="text-slate-500 text-sm font-medium">
-            Chi tiết học viên
-          </span>
-          <span className="text-slate-400 text-sm">/</span>
-          <span className="text-[#101518] text-sm font-bold">
-            {student.firstName} {student.lastName}
-          </span>
-        </div>
+        <Breadcrumb
+          items={[
+            { label: "Quản lý học viên", url: "/teacher/students" },
+            { label: "Chi tiết học viên", url: `/teacher/students/${id}` },
+            { label: `${student.firstName} ${student.lastName}` },
+          ]}
+          className="flex flex-wrap items-center gap-2"
+          itemClassName="text-slate-500 text-sm font-medium hover:text-[#0074bd] transition-colors"
+          activeItemClassName="text-[#101518] text-sm font-bold"
+          separator={<span className="text-slate-400 text-sm">/</span>}
+        />
       </div>
 
       {/* Profile Header */}

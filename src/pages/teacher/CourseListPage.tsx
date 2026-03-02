@@ -10,6 +10,7 @@ import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import PaginationControl from "@/components/common/PaginationControl";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { FaCircleNotch } from "react-icons/fa";
+import CourseCard from "../../components/courses/CourseCard";
 
 const CourseListPage = () => {
   const [filters, setFilters] = useState({
@@ -105,9 +106,7 @@ const CourseListPage = () => {
   };
 
   if (loading && !coursesData) {
-    return (
-      <LoadingOverlay isLoading={true} message="Đang tải khóa học..." />
-    );
+    return <LoadingOverlay isLoading={true} message="Đang tải khóa học..." />;
   }
 
   if (error) {
@@ -217,93 +216,13 @@ const CourseListPage = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {courseList.map((course) => (
-            <div
+            <CourseCard
               key={course.id}
-              className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow"
-            >
-              {/* Thumbnail */}
-              <div className="aspect-video relative">
-                <div
-                  className="w-full h-full bg-center bg-cover bg-slate-100"
-                  style={{ backgroundImage: `url("${course.thumbnailUrl}")` }}
-                >
-                  {!course.thumbnailUrl && (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <img
-                        src="/img/default-course.jpg"
-                        alt={course.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
-                </div>
-                <div className="absolute top-3 right-3">
-                  <span
-                    className={`px-2 py-1 rounded text-xs font-medium ${course.status === "PUBLISHED" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}
-                  >
-                    {course.status === "PUBLISHED" ? "Công khai" : "Bản nháp"}
-                  </span>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-4">
-                <h3 className="font-semibold text-slate-900 line-clamp-2 mb-2">
-                  {course.name}
-                </h3>
-                <p className="text-sm text-slate-500 line-clamp-2 mb-3">
-                  {course.description}
-                </p>
-
-                <div className="flex items-center gap-4 text-xs text-slate-500 mb-4">
-                  <span className="flex items-center gap-1">
-                    <span className="material-symbols-outlined text-sm">
-                      menu_book
-                    </span>
-                    {course.lessonCount || 0} bài học
-                  </span>
-                </div>
-
-                <div className="flex gap-2">
-                  <Link
-                    to={`/teacher/courses/${course.id}/edit`}
-                    className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-100 hover:translate-y-[-2px] duration-300 transition-all"
-                  >
-                    <span className="material-symbols-outlined text-sm">
-                      edit
-                    </span>
-                    Sửa
-                  </Link>
-                  <button
-                    onClick={() => openInviteModal(course.id)}
-                    className="flex items-center justify-center px-3 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-200 hover:translate-y-[-2px] duration-300 transition-all"
-                    title="Tạo mã mời"
-                  >
-                    <span className="material-symbols-outlined text-sm">
-                      key
-                    </span>
-                  </button>
-                  <Link
-                    to={`/teacher/courses/${course.id}`}
-                    className="flex items-center justify-center px-3 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-200 hover:translate-y-[-2px] duration-300 transition-all"
-                    title="Xem khóa học"
-                  >
-                    <span className="material-symbols-outlined text-sm">
-                      visibility
-                    </span>
-                  </Link>
-                  <button
-                    onClick={() => openDeleteModal(course.id)}
-                    className="flex items-center justify-center px-3 py-2 bg-red-50 text-red-600 rounded-lg text-sm font-medium hover:bg-red-100 hover:translate-y-[-2px] duration-300 transition-all"
-                    title="Xóa khóa học"
-                  >
-                    <span className="material-symbols-outlined text-sm">
-                      delete
-                    </span>
-                  </button>
-                </div>
-              </div>
-            </div>
+              variant="teacher"
+              course={course}
+              onInvite={() => openInviteModal(course.id)}
+              onDelete={() => openDeleteModal(course.id)}
+            />
           ))}
         </div>
       )}

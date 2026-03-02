@@ -22,6 +22,7 @@ import type { AdminUserListItem } from "../../types/user";
 import { ConfirmationModal } from "../../components/common/ConfirmationModal";
 import { UpdateRoleModal } from "../../components/admin/UpdateRoleModal";
 import { useResetUserPassword } from "../../hooks/useAdmin";
+import Breadcrumb from "../../components/common/Breadcrumb";
 
 const AdminUserManagementPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -236,16 +237,16 @@ const AdminUserManagementPage = () => {
     <div className="flex flex-col min-h-screen">
       {/* Header/Breadcrumbs */}
       <div className="pb-6">
-        <div className="flex items-center gap-2 text-sm text-[#607b8a] mb-2">
-          <Link
-            to="/admin/dashboard"
-            className="hover:text-[#0078bd] transition-colors"
-          >
-            Hệ thống
-          </Link>
-          <span>/</span>
-          <span className="text-[#111518] font-medium">Quản lý người dùng</span>
-        </div>
+        <Breadcrumb
+          items={[
+            { label: "Hệ thống", url: "/admin/dashboard" },
+            { label: "Quản lý người dùng" },
+          ]}
+          className="flex items-center gap-2 mb-2"
+          itemClassName="text-sm text-[#607b8a] font-medium hover:text-[#0078bd] transition-colors"
+          activeItemClassName="text-sm text-[#111518] font-medium"
+          separator={<span className="text-[#607b8a] text-sm">/</span>}
+        />
         <div className="flex flex-wrap justify-between items-end gap-4">
           <div className="max-w-2xl">
             <h2 className="text-[#111518] text-4xl font-black tracking-tight mb-2">
