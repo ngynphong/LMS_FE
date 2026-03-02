@@ -1,5 +1,6 @@
 import React from "react";
 import type { RouteObject } from "react-router-dom";
+import ProtectedRoute from "./ProtectedRoute";
 
 const StudentLayout = React.lazy(() => import("@/layouts/StudentLayout"));
 const StudentDashboardPage = React.lazy(
@@ -39,7 +40,11 @@ const studentRoutes: RouteObject[] = [
   },
   {
     path: "/student",
-    element: <StudentLayout />,
+    element: (
+      <ProtectedRoute allowedRoles={["STUDENT"]}>
+        <StudentLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: "dashboard",

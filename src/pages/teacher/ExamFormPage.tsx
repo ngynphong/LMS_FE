@@ -31,23 +31,23 @@ const ExamFormPage = () => {
   const {
     data: quizDetail,
     isLoading: quizLoading,
-    error: quizError,
+    // error: quizError,
   } = useQuiz(id);
 
   // Lesson Selection
 
   // Debug logs
-  useEffect(() => {
-    if (isEditMode) {
-      console.log("Edit Mode ID:", id);
-      console.log("Quiz Detail:", quizDetail);
-      console.log("Quiz Loading:", quizLoading);
-      console.log("Quiz Error:", quizError);
-      if (quizError && "response" in quizError) {
-        console.log("Error Response Data:", (quizError as any).response?.data);
-      }
-    }
-  }, [id, isEditMode, quizDetail, quizLoading, quizError]);
+  // useEffect(() => {
+  //   if (isEditMode) {
+  //     console.log("Edit Mode ID:", id);
+  //     console.log("Quiz Detail:", quizDetail);
+  //     console.log("Quiz Loading:", quizLoading);
+  //     console.log("Quiz Error:", quizError);
+  //     if (quizError && "response" in quizError) {
+  //       console.log("Error Response Data:", (quizError as any).response?.data);
+  //     }
+  //   }
+  // }, [id, isEditMode, quizDetail, quizLoading, quizError]);
 
   // Basic Form Data
   const [formData, setFormData] = useState<{
@@ -115,7 +115,7 @@ const ExamFormPage = () => {
   // const { data: questionsResponse } = useQuestions({ pageSize: 1000 }); // Fetch all questions for selection
   // const questions = questionsResponse?.items || [];
   // Fetch courses
-  const { data: coursesData } = useMyCourses({ pageSize: 100 });
+  const { data: coursesData } = useMyCourses({ pageNo: 1, pageSize: 100 });
   const courses = coursesData?.items || [];
   const { data: courseDetail } = useCourseDetail(selectedCourseId || undefined);
   const lessons = courseDetail?.lessons || [];
@@ -163,22 +163,22 @@ const ExamFormPage = () => {
       if (!isEditMode || !quizDetail?.lessonItemId) return;
       if (!courses || courses.length === 0) return;
 
-      console.log(
-        "Resolving hierarchy for lessonItemId:",
-        quizDetail.lessonItemId,
-      );
+      // console.log(
+      //   "Resolving hierarchy for lessonItemId:",
+      //   quizDetail.lessonItemId,
+      // );
 
       try {
         // Method 1: Try to get lessonId from lesson-items API
         const lessonItem = await getLessonItemById(quizDetail.lessonItemId);
-        console.log("Resolved Lesson Item:", lessonItem);
+        // console.log("Resolved Lesson Item:", lessonItem);
 
         if (lessonItem && (lessonItem as any).lessonId) {
           const lessonId = (lessonItem as any).lessonId;
           setSelectedLessonId(lessonId);
 
           const lesson = await getLessonById(lessonId);
-          console.log("Resolved Lesson:", lesson);
+          // console.log("Resolved Lesson:", lesson);
 
           if (lesson && lesson.courseId) {
             setSelectedCourseId(lesson.courseId);
@@ -187,35 +187,35 @@ const ExamFormPage = () => {
         }
 
         // Method 2: Fallback - Search through all courses to find the lessonItem
-        console.log(
-          "lessonId not in API response, searching through",
-          courses.length,
-          "courses...",
-        );
+        // console.log(
+        //   "lessonId not in API response, searching through",
+        //   courses.length,
+        //   "courses...",
+        // );
 
         for (const course of courses) {
           try {
             // Use getLessonsByCourseId to get lessons with lessonItems
             const lessons = await getLessonsByCourseId(course.id);
-            console.log("Course", course.id, "has", lessons.length, "lessons");
+            // console.log("Course", course.id, "has", lessons.length, "lessons");
 
             if (!lessons || lessons.length === 0) continue;
 
             for (const lesson of lessons) {
               const items = lesson.lessonItems || [];
-              console.log("Lesson", lesson.id, "has", items.length, "items");
+              // console.log("Lesson", lesson.id, "has", items.length, "items");
 
               const found = items.some(
                 (item) => item.id === quizDetail.lessonItemId,
               );
 
               if (found) {
-                console.log(
-                  "✅ Found in course:",
-                  course.id,
-                  "lesson:",
-                  lesson.id,
-                );
+                // console.log(
+                //   "✅ Found in course:",
+                //   course.id,
+                //   "lesson:",
+                //   lesson.id,
+                // );
                 setSelectedCourseId(course.id);
                 setSelectedLessonId(lesson.id);
                 return;
