@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -34,6 +34,7 @@ import type {
 } from "../../types/learningTypes";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { FaCircleNotch } from "react-icons/fa";
+import Breadcrumb from "../../components/common/Breadcrumb";
 
 const CourseBuilderPage = () => {
   const { id } = useParams();
@@ -538,20 +539,20 @@ const CourseBuilderPage = () => {
           <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
             <div className="px-8 py-4">
               {/* Breadcrumbs */}
-              <div className="flex items-center gap-2 mb-2 text-slate-500">
-                <Link
-                  to="/teacher/courses"
-                  className="text-sm font-medium hover:text-blue-600 transition-colors"
-                >
-                  Khóa học
-                </Link>
-                <span className="material-symbols-outlined text-sm">
-                  chevron_right
-                </span>
-                <span className="text-sm font-medium text-slate-900">
-                  {isEditMode ? "Chỉnh sửa" : "Tạo mới"}
-                </span>
-              </div>
+              <Breadcrumb
+                items={[
+                  { label: "Khóa học", url: "/teacher/courses" },
+                  { label: isEditMode ? "Chỉnh sửa" : "Tạo mới" },
+                ]}
+                className="flex items-center gap-2 mb-2"
+                itemClassName="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors"
+                activeItemClassName="text-sm font-medium text-slate-900"
+                separator={
+                  <span className="material-symbols-outlined text-sm text-slate-500">
+                    chevron_right
+                  </span>
+                }
+              />
 
               {/* Title & Actions */}
               <div className="flex items-center justify-between">

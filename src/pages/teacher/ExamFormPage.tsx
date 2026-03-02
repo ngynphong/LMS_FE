@@ -19,6 +19,7 @@ import type { Question } from "../../types/question";
 import { toast } from "@/components/common/Toast";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { FaCircleNotch } from "react-icons/fa";
+import Breadcrumb from "../../components/common/Breadcrumb";
 
 const ExamFormPage = () => {
   const { id } = useParams();
@@ -403,18 +404,16 @@ const ExamFormPage = () => {
         message={isEditMode ? "Đang cập nhật..." : "Đang tạo bài thi..."}
       />
       {/* Breadcrumbs */}
-      <nav className="flex items-center gap-2 text-sm font-medium">
-        <Link
-          to="/teacher/quizzes"
-          className="text-slate-500 hover:text-[#0074bd] transition-colors"
-        >
-          Đề thi
-        </Link>
-        <span className="text-slate-400">/</span>
-        <span className="text-[#111518]">
-          {isEditMode ? "Chỉnh sửa" : "Tạo mới"}
-        </span>
-      </nav>
+      <Breadcrumb
+        items={[
+          { label: "Đề thi", url: "/teacher/quizzes" },
+          { label: isEditMode ? "Chỉnh sửa" : "Tạo mới" },
+        ]}
+        className="flex items-center gap-2 text-sm font-medium"
+        itemClassName="text-slate-500 hover:text-[#0074bd] transition-colors"
+        activeItemClassName="text-[#111518]"
+        separator={<span className="text-slate-400">/</span>}
+      />
 
       {/* Page Heading */}
       <div>

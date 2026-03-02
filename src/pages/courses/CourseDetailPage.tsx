@@ -18,6 +18,7 @@ import {
 import { useCourseDetail, useStudentCourses } from "../../hooks/useCourses";
 import { getLessonById } from "../../services/lessonService";
 import type { ApiLesson, LessonItem } from "../../types/learningTypes";
+import Breadcrumb from "../../components/common/Breadcrumb";
 
 const relatedCourses = [
   {
@@ -73,7 +74,6 @@ const CourseDetailPage = () => {
   const [loadingItems, setLoadingItems] = useState<Record<string, boolean>>({});
 
   const toggleSection = async (index: number) => {
-
     const isOpen = openSections.includes(index);
     if (isOpen) {
       setOpenSections((prev) => prev.filter((i) => i !== index));
@@ -133,7 +133,6 @@ const CourseDetailPage = () => {
     (course.teacher
       ? `${course.teacher.firstName} ${course.teacher.lastName}`
       : "Giảng viên");
-  const studentCount = 0; // Placeholder
   const schoolName = course.school?.name || "LMS Platform";
 
   const includes = [
@@ -142,15 +141,15 @@ const CourseDetailPage = () => {
       text: `${course?.lessons?.length || 0} chương học`,
     },
     { icon: <MdSchedule />, text: "Truy cập mọi lúc" },
-    { icon: <MdWorkspacePremium />, text: "Chứng chỉ hoàn tất" },
-    { icon: <MdAllInclusive />, text: "Truy cập trọn đời" },
+    { icon: <MdWorkspacePremium />, text: "Khoá học chất lượng" },
+    { icon: <MdAllInclusive />, text: "Học mọi lúc mọi nơi" },
     { icon: <MdDevices />, text: "Học trên mọi thiết bị" },
   ];
 
   const learningPoints = [
-    "Nắm vững kiến thức nền tảng và nâng cao",
+    "Nắm vững kiến thức nền tảng",
     "Làm chủ các công cụ và kỹ thuật mới nhất",
-    "Xây dựng dự án thực tế",
+    "Học tập linh hoạt mọi lúc mọi nơi",
     "Phát triển tư duy giải quyết vấn đề",
   ];
 
@@ -159,17 +158,17 @@ const CourseDetailPage = () => {
       {/* Breadcrumb */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-[1280px] mx-auto px-6 py-4">
-          <nav className="flex text-sm text-gray-600">
-            <Link to="/" className="hover:color-primary">
-              Trang chủ
-            </Link>
-            <span className="mx-2">/</span>
-            <Link to="/courses" className="hover:color-primary">
-              {schoolName}
-            </Link>
-            <span className="mx-2">/</span>
-            <span className="font-medium text-gray-900">{course.name}</span>
-          </nav>
+          <Breadcrumb
+            items={[
+              { label: "Trang chủ", url: "/" },
+              { label: schoolName, url: "/courses" },
+              { label: course.name },
+            ]}
+            className="flex text-sm text-gray-600"
+            itemClassName="hover:color-primary"
+            activeItemClassName="font-medium text-gray-900"
+            separator={<span className="mx-2">/</span>}
+          />
         </div>
       </div>
 
@@ -233,12 +232,6 @@ const CourseDetailPage = () => {
                     <h1 className="text-3xl font-bold tracking-tight">
                       {course.name}
                     </h1>
-
-                    <div className="flex items-center gap-4 flex-wrap">
-                      <span className="text-gray-600 text-sm">
-                        {studentCount} học viên
-                      </span>
-                    </div>
 
                     <p className="text-gray-700 leading-relaxed">
                       {course.description || "Chưa có mô tả chi tiết."}
