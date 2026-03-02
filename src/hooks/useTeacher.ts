@@ -92,11 +92,10 @@ export const useImportStudents = () => {
       if (data.failed > 0) {
         toast.warning(`Lỗi khi nhập ${data.failed} dòng. Hãy kiểm tra lỗi`);
       }
-      // Invalidate students list to refetch
       queryClient.invalidateQueries({ queryKey: teacherKeys.all });
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Nhập thất bại');
+      toast.error(error.message || 'Nhập học sinh thất bại');
     },
   });
 };
@@ -119,13 +118,13 @@ export const useUpdateStudent = () => {
       return id;
     },
     onSuccess: (id) => {
-      toast.success('Cập nhật thông tin học viên thành công');
+      toast.success('Cập nhật thông tin học sinh thành công');
       // Invalidate specific student and list
       queryClient.invalidateQueries({ queryKey: teacherKeys.student(id) });
       queryClient.invalidateQueries({ queryKey: teacherKeys.all });
     },
     onError: () => {
-      toast.error('Lỗi khi cập nhật thông tin học viên');
+      toast.error('Lỗi khi cập nhật thông tin học sinh');
     },
   });
 };
