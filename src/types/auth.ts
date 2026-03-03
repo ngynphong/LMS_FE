@@ -118,14 +118,20 @@ export interface ProfileUser {
 
 export interface ProfileData {
     id: string;
-    schoolName: string | null;
-    goal: string | null;
-    emergencyContact: string | null;
-    createdAt: string;
-    updatedAt: string;
-    deleted: boolean;
-    user: ProfileUser;
-    stats: ProfileStats;
+    email: string;
+    firstName: string;
+    lastName: string;
+    imgUrl: string | null;
+    dob: string;
+    roles: string[];
+    teacherProfile: TeacherProfileData | null;
+    studentProfile: {
+        id: string;
+        schoolName: string;
+        emergencyContact: string;
+        goal: string;
+        stats?: ProfileStats;
+    } | null;
 }
 
 export interface ProfileResponse {

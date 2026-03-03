@@ -3,11 +3,14 @@ import { useAuth } from "@/hooks/useAuth";
 import { FaUser, FaLock } from "react-icons/fa";
 import { AvatarUpload } from "@/components/common/AvatarUpload";
 import { updateProfileApi } from "@/services/authService";
+import { useUpdateStudentProfile } from "@/hooks/useProfile";
 import { toast } from "react-toastify";
 import { StudentPasswordChangeForm } from "./StudentPasswordChangeForm";
 
 const StudentProfilePage = () => {
   const { user } = useAuth();
+  const { mutateAsync: updateStudentProfile, isPending: updatingProfile } =
+    useUpdateStudentProfile();
   const [activeTab, setActiveTab] = useState<
     "info" | "password" | "payment" | "certificates"
   >("info");
@@ -18,6 +21,7 @@ const StudentProfilePage = () => {
     email: "",
     schoolName: "",
     goal: "",
+    emergencyContact: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -30,6 +34,7 @@ const StudentProfilePage = () => {
         email: user.email || "",
         schoolName: user.studentProfile?.schoolName || "",
         goal: user.studentProfile?.goal || "",
+        emergencyContact: user.studentProfile?.emergencyContact || "",
       });
     }
   }, [user]);
@@ -60,14 +65,22 @@ const StudentProfilePage = () => {
       return;
     }
 
-    const updatedUser = {
-      ...user,
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      dob: formData.dob,
-    };
     try {
+      // Cập nhật thông tin user (firstName, lastName, dob)
+      const updatedUser = {
+        ...user,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        dob: formData.dob,
+      };
       await updateProfileApi(updatedUser);
+
+      // Cập nhật student profile (goal, emergencyContact)
+      await updateStudentProfile({
+        goal: formData.goal,
+        emergencyContact: formData.emergencyContact,
+      });
+
       toast.success("Cập nhật hồ sơ thành công");
     } catch (error) {
       console.error("Lỗi cập nhật hồ sơ:", error);
@@ -234,6 +247,21 @@ const StudentProfilePage = () => {
                   />
                 </div>
               </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="flex flex-col gap-2">
+                  <label className="text-gray-900 text-sm font-semibold">
+                    Liên hệ khẩn cấp
+                  </label>
+                  <input
+                    className="w-full rounded-lg border border-gray-300 h-12 px-4 text-sm transition-all outline-none focus:ring-2 focus:ring-[#27A4F2] focus:border-[#27A4F2]"
+                    type="text"
+                    name="emergencyContact"
+                    placeholder="Số điện thoại hoặc email liên hệ khẩn cấp"
+                    value={formData.emergencyContact}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
               <div className="flex flex-col gap-2">
                 <label className="text-gray-900 text-sm font-semibold">
                   Mục tiêu học tập
@@ -244,16 +272,16 @@ const StudentProfilePage = () => {
                   rows={4}
                   name="goal"
                   value={formData.goal}
-                  disabled
                   onChange={handleChange}
                 />
               </div>
               <div className="flex justify-end pt-4">
                 <button
-                  className="flex items-center justify-center min-w-[140px] px-6 py-3 rounded-lg color-primary-bg text-white font-semibold hover:bg-[#0066a3] transition-all shadow-md shadow-[#0077BE]/20"
+                  className="flex items-center justify-center min-w-[140px] px-6 py-3 rounded-lg color-primary-bg text-white font-semibold hover:bg-[#0066a3] transition-all shadow-md shadow-[#0077BE]/20 disabled:opacity-50"
                   type="submit"
+                  disabled={updatingProfile}
                 >
-                  Lưu thay đổi
+                  {updatingProfile ? "Đang lưu..." : "Lưu thay đổi"}
                 </button>
               </div>
             </form>
