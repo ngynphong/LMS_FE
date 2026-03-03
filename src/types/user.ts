@@ -23,7 +23,6 @@ export interface StudentProfile {
 }
 
 export interface UpdateStudentProfileRequest {
-  schoolName: string;
   emergencyContact: string;
   goal: string;
 }

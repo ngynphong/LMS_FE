@@ -2,6 +2,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   getMyStudentsApi,
   importStudentApi,
+  downloadImportTemplateApi,
+  cancelImportJobApi,
+  getImportJobApi,
+  getImportJobErrorsApi,
   getStudentDetailApi,
   updateStudentApi,
   getDashboardSummaryApi,
@@ -83,20 +87,92 @@ export const useImportStudents = () => {
     mutationFn: async (file: File) => {
       const response = await importStudentApi(file);
       if (response.code === 0 || response.code === 1000) {
-        return response.data;
+        return response.data; // string: "Import job submitted successfully with job : {jobId}"
       }
       throw new Error(response.message || 'Import failed');
     },
     onSuccess: (data) => {
-      toast.success(`Nhập thành công: ${data.success} học sinh.`);
-      if (data.failed > 0) {
-        toast.warning(`Lỗi khi nhập ${data.failed} dòng. Hãy kiểm tra lỗi`);
-      }
+      toast.success(data);
       queryClient.invalidateQueries({ queryKey: teacherKeys.all });
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Nhập học sinh thất bại');
     },
+  });
+};
+
+/**
+ * Hook to download import student template
+ */
+export const useDownloadImportTemplate = () => {
+  return useMutation({
+    mutationFn: () => downloadImportTemplateApi(),
+    onSuccess: () => {
+      toast.success('Tải template thành công');
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Tải template thất bại');
+    },
+  });
+};
+
+/**
+ * Hook to cancel an import job
+ */
+export const useCancelImportJob = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (jobId: string) => {
+      const response = await cancelImportJobApi(jobId);
+      if (response.code === 0 || response.code === 1000) {
+        return response.data;
+      }
+      throw new Error(response.message || 'Cancel failed');
+    },
+    onSuccess: (data) => {
+      toast.success(data || 'Đã huỷ import thành công');
+      queryClient.invalidateQueries({ queryKey: teacherKeys.all });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Huỷ import thất bại');
+    },
+  });
+};
+
+/**
+ * Hook to get import job details
+ */
+export const useImportJob = (jobId: string | null) => {
+  return useQuery({
+    queryKey: [...teacherKeys.all, 'import-job', jobId],
+    queryFn: async () => {
+      if (!jobId) throw new Error('Job ID is required');
+      const response = await getImportJobApi(jobId);
+      if (response.code === 0 || response.code === 1000) {
+        return response.data;
+      }
+      throw new Error(response.message || 'Failed to fetch import job');
+    },
+    enabled: !!jobId,
+  });
+};
+
+/**
+ * Hook to get import job errors
+ */
+export const useImportJobErrors = (jobId: string | null, page: number = 0, size: number = 20) => {
+  return useQuery({
+    queryKey: [...teacherKeys.all, 'import-job-errors', jobId, page, size],
+    queryFn: async () => {
+      if (!jobId) throw new Error('Job ID is required');
+      const response = await getImportJobErrorsApi(jobId, page, size);
+      if (response.code === 0 || response.code === 1000) {
+        return response.data;
+      }
+      throw new Error(response.message || 'Failed to fetch import errors');
+    },
+    enabled: !!jobId,
   });
 };
 

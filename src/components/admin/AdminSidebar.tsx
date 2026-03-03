@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { MdDashboard, MdAnalytics, MdSettings } from "react-icons/md";
+import { MdDashboard, MdSettings } from "react-icons/md";
 import { FaChalkboardTeacher, FaUsers, FaKey } from "react-icons/fa";
 import { FaCalendar, FaTimes } from "react-icons/fa";
 import { useAuth } from "@/hooks/useAuth";
@@ -40,11 +40,6 @@ const navItems: NavItem[] = [
     path: "/admin/courses",
     icon: <FaCalendar className="text-xl" />,
     label: "Quản lý khóa học",
-  },
-  {
-    path: "/admin/reports",
-    icon: <MdAnalytics className="text-xl" />,
-    label: "Quản lý báo cáo",
   },
   {
     path: "/admin/settings",

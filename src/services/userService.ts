@@ -1,5 +1,6 @@
 import axiosInstance from "@/config/axios";
-import type { AdminUserListResponse, UserDashboardParams, UpdateUserRoleRequest, BatchResetPasswordRequest } from "@/types/user";
+import type { AdminUserListResponse, UserDashboardParams, UpdateUserRoleRequest, BatchResetPasswordRequest, UpdateStudentProfileRequest, UpdateStudentProfileResponse } from "@/types/user";
+import type { UpdateTeacherProfileRequest } from "@/types/teacherProfile";
 import axios from "axios";
 
 // Helper function to handle API errors (reused from authService or similar)
@@ -75,3 +76,21 @@ export const getBatchResetPasswordRequestsApi = async (params: { pageNo?: number
 };
 
 
+// ==================== Profile Update APIs ====================
+
+export const updateStudentProfileApi = async (data: UpdateStudentProfileRequest): Promise<UpdateStudentProfileResponse> => {
+    try {
+        const response = await axiosInstance.put<UpdateStudentProfileResponse>('/student-profiles', data);
+        return response.data;
+    } catch (error) {
+        return handleApiError(error, 'Cập nhật hồ sơ học viên thất bại');
+    }
+};
+
+export const updateTeacherProfileApi = async (data: UpdateTeacherProfileRequest): Promise<void> => {
+    try {
+        await axiosInstance.put('/teacher', data);
+    } catch (error) {
+        return handleApiError(error, 'Cập nhật hồ sơ giảng viên thất bại');
+    }
+};

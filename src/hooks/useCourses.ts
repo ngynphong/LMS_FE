@@ -31,6 +31,7 @@ export const useAdminCourses = (params: GetCoursesParams = {}, ) => {
     return useQuery({
         queryKey: ['admin-courses', params],
         queryFn: () => getAdminCourses(params),
+        staleTime: 30 * 1000, // 30s - tránh refetch liên tục
     });
 };
 

@@ -39,15 +39,46 @@ export interface StudentListResponse {
 export interface ImportStudentResponse {
   code: number;
   message: string;
+  data: string; // "Import job submitted successfully with job : {jobId}"
+}
+
+export interface ImportJobData {
+  id: string;
+  fileName: string;
+  fileUrlMinio: string;
+  fileSize: number;
+  createdBy: string;
+  schoolId: string | null;
+  status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
+  totalRows: number;
+  processedRows: number;
+  successCount: number;
+  errorCount: number;
+  createdAt: string;
+  startedAt: string | null;
+  completedAt: string | null;
+  failureReason: string | null;
+}
+
+export interface ImportJobResponse {
+  code: number;
+  message: string;
+  data: ImportJobData;
+}
+
+export interface ImportJobError {
+  rowNumber: number;
+  email: string;
+  errorMessage: string;
+}
+
+export interface ImportJobErrorsResponse {
+  code: number;
+  message: string;
   data: {
-    total: number;
-    success: number;
-    failed: number;
-    errors: Array<{
-      row: number;
-      email: string;
-      reason: string;
-    }>;
+    totalPages: number;
+    totalElements: number;
+    content: ImportJobError[];
   };
 }
 

@@ -51,25 +51,19 @@ export const loginApi = async (email: string, password: string): Promise<AuthRes
 
         // Fetch profile data from API
         try {
-            const profileResponse = await axiosInstance.get<ProfileResponse>('/my-profile');
+            const profileResponse = await axiosInstance.get<ProfileResponse>('/users/my-profile');
             if (profileResponse.data.code === 1000 || profileResponse.data.code === 0) {
                 const profileData = profileResponse.data.data;
-                const userData = profileData.user;
                 const user: User = {
-                    id: userData.id,
-                    firstName: userData.firstName || '',
-                    lastName: userData.lastName || '',
-                    email: userData.email || email,
-                    urlImg: userData.imgUrl || '',
-                    dob: userData.dob || '',
-                    role: mapRolesToUserRole(userData.roles || roles),
-                    studentProfile: {
-                        id: profileData.id,
-                        schoolName: profileData.schoolName || '',
-                        emergencyContact: profileData.emergencyContact || '',
-                        goal: profileData.goal || '',
-                        stats: profileData.stats
-                    },
+                    id: profileData.id,
+                    firstName: profileData.firstName || '',
+                    lastName: profileData.lastName || '',
+                    email: profileData.email || email,
+                    urlImg: profileData.imgUrl || '',
+                    dob: profileData.dob || '',
+                    role: mapRolesToUserRole(profileData.roles || roles),
+                    teacherProfile: profileData.teacherProfile || undefined,
+                    studentProfile: profileData.studentProfile || undefined,
                 };
                 return { user, token };
             }
@@ -132,25 +126,19 @@ export const googleLoginApi = async (code: string): Promise<AuthResponse> => {
 
         // Fetch profile data from API
         try {
-            const profileResponse = await axiosInstance.get<ProfileResponse>('/my-profile');
+            const profileResponse = await axiosInstance.get<ProfileResponse>('/users/my-profile');
             if (profileResponse.data.code === 1000 || profileResponse.data.code === 0) {
                 const profileData = profileResponse.data.data;
-                const userData = profileData.user;
                 const user: User = {
-                    id: userData.id,
-                    firstName: userData.firstName || '',
-                    lastName: userData.lastName || '',
-                    email: userData.email || '',
-                    urlImg: userData.imgUrl || '',
-                    dob: userData.dob || '',
-                    role: mapRolesToUserRole(userData.roles || roles),
-                    studentProfile: {
-                        id: profileData.id,
-                        schoolName: profileData.schoolName || '',
-                        emergencyContact: profileData.emergencyContact || '',
-                        goal: profileData.goal || '',
-                        stats: profileData.stats
-                    },
+                    id: profileData.id,
+                    firstName: profileData.firstName || '',
+                    lastName: profileData.lastName || '',
+                    email: profileData.email || '',
+                    urlImg: profileData.imgUrl || '',
+                    dob: profileData.dob || '',
+                    role: mapRolesToUserRole(profileData.roles || roles),
+                    teacherProfile: profileData.teacherProfile || undefined,
+                    studentProfile: profileData.studentProfile || undefined,
                 };
                 return { user, token };
             }
@@ -305,7 +293,7 @@ export const logoutApi = async (token: string): Promise<void> => {
 
 export const getCurrentUserApi = async (): Promise<AuthResponse> => {
     try {
-        const response = await axiosInstance.get<ProfileResponse>('/my-profile');
+        const response = await axiosInstance.get<ProfileResponse>('/users/my-profile');
 
         if (response.data.code !== 1000 && response.data.code !== 0) {
             throw new Error(response.data.message || 'Failed to fetch user profile');
@@ -313,26 +301,20 @@ export const getCurrentUserApi = async (): Promise<AuthResponse> => {
 
         const profileData = response.data.data;
         const currentToken = localStorage.getItem('token');
-        const userData = profileData.user;
 
         // Get roles from user data (API response)
-        const roles = userData.roles || [];
+        const roles = profileData.roles || [];
 
         const user: User = {
-            id: userData.id,
-            firstName: userData.firstName || '',
-            lastName: userData.lastName || '',
-            email: userData.email || '',
-            urlImg: userData.imgUrl || '',
-            dob: userData.dob || '',
+            id: profileData.id,
+            firstName: profileData.firstName || '',
+            lastName: profileData.lastName || '',
+            email: profileData.email || '',
+            urlImg: profileData.imgUrl || '',
+            dob: profileData.dob || '',
             role: mapRolesToUserRole(roles),
-            studentProfile: {
-                id: profileData.id,
-                schoolName: profileData.schoolName || '',
-                emergencyContact: profileData.emergencyContact || '',
-                goal: profileData.goal || '',
-                stats: profileData.stats
-            },
+            teacherProfile: profileData.teacherProfile || undefined,
+            studentProfile: profileData.studentProfile || undefined,
         };
 
         return { user, token: currentToken || '' };
@@ -347,29 +329,23 @@ export const loginWithCustomToken = async (token: string): Promise<AuthResponse>
         localStorage.setItem('token', token);
 
         // Fetch profile data
-        const profileResponse = await axiosInstance.get<ProfileResponse>('/my-profile');
+        const profileResponse = await axiosInstance.get<ProfileResponse>('/users/my-profile');
         
         if (profileResponse.data.code !== 1000 && profileResponse.data.code !== 0) {
              throw new Error(profileResponse.data.message || 'Failed to fetch user profile with custom token');
         }
         
         const profileData = profileResponse.data.data;
-        const userData = profileData.user;
         const user: User = {
-             id: userData.id,
-             firstName: userData.firstName || '',
-             lastName: userData.lastName || '',
-             email: userData.email || '',
-             urlImg: userData.imgUrl || '',
-             dob: userData.dob || '',
-             role: mapRolesToUserRole(userData.roles || []),
-             studentProfile: {
-                 id: profileData.id,
-                 schoolName: profileData.schoolName || '',
-                 emergencyContact: profileData.emergencyContact || '',
-                 goal: profileData.goal || '',
-                 stats: profileData.stats
-             },
+             id: profileData.id,
+             firstName: profileData.firstName || '',
+             lastName: profileData.lastName || '',
+             email: profileData.email || '',
+             urlImg: profileData.imgUrl || '',
+             dob: profileData.dob || '',
+             role: mapRolesToUserRole(profileData.roles || []),
+             teacherProfile: profileData.teacherProfile || undefined,
+             studentProfile: profileData.studentProfile || undefined,
          };
 
          return { user, token };

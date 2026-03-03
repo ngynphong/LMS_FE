@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useStudents, useImportStudents } from "@/hooks/useTeacher";
+import {
+  useStudents,
+  useImportStudents,
+  useDownloadImportTemplate,
+  useCancelImportJob,
+} from "@/hooks/useTeacher";
 import PaginationControl from "@/components/common/PaginationControl";
 import { FaCircleNotch } from "react-icons/fa";
 import { getInitials } from "@/utils/initialsName";
@@ -18,6 +23,7 @@ const StudentListPage = () => {
   // Import state
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [importFile, setImportFile] = useState<File | null>(null);
+  const [lastImportJobId, setLastImportJobId] = useState<string | null>(null);
 
   // React Query hooks
   const { data: studentsData, isLoading: loading } = useStudents(
@@ -30,6 +36,10 @@ const StudentListPage = () => {
 
   const { mutateAsync: importStudent, isPending: importing } =
     useImportStudents();
+  const { mutateAsync: downloadTemplate, isPending: downloadingTemplate } =
+    useDownloadImportTemplate();
+  const { mutateAsync: cancelImport, isPending: cancelling } =
+    useCancelImportJob();
 
   const students = studentsData?.students || [];
   const totalPages = studentsData?.totalPages || 1;
@@ -59,9 +69,25 @@ const StudentListPage = () => {
     if (!importFile) return;
 
     try {
-      await importStudent(importFile);
+      const responseData = await importStudent(importFile);
       setIsImportModalOpen(false);
       setImportFile(null);
+
+      // Extract jobId from response: "Import job submitted successfully with job : {jobId}"
+      const jobIdMatch = responseData?.match(/job\s*:\s*([\w-]+)/);
+      if (jobIdMatch?.[1]) {
+        setLastImportJobId(jobIdMatch[1]);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleCancelImport = async () => {
+    if (!lastImportJobId) return;
+    try {
+      await cancelImport(lastImportJobId);
+      setLastImportJobId(null);
     } catch (error) {
       console.error(error);
     }
@@ -74,6 +100,28 @@ const StudentListPage = () => {
           isLoading={importing}
           message="Đang nhập danh sách học sinh..."
         />
+      )}
+
+      {/* Cancel Import Banner */}
+      {lastImportJobId && (
+        <div className="flex items-center justify-between gap-4 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl">
+          <div className="flex items-center gap-2 text-sm text-amber-800">
+            <span className="material-symbols-outlined text-lg">info</span>
+            <span>Đã gửi lệnh import. Kiểm tra thông báo để xem kết quả.</span>
+          </div>
+          <button
+            onClick={handleCancelImport}
+            disabled={cancelling}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500 text-white text-xs font-bold hover:bg-red-600 disabled:opacity-50 transition-colors shrink-0"
+          >
+            {cancelling ? (
+              <FaCircleNotch className="animate-spin text-xs" />
+            ) : (
+              <span className="material-symbols-outlined text-sm">cancel</span>
+            )}
+            Huỷ import
+          </button>
+        </div>
       )}
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -189,7 +237,7 @@ const StudentListPage = () => {
                     colSpan={7}
                     className="px-6 py-8 text-center text-slate-500"
                   >
-                    Loading...
+                    Đang tải...
                   </td>
                 </tr>
               ) : students.length > 0 ? (
@@ -245,7 +293,7 @@ const StudentListPage = () => {
                     <td className="px-6 py-4 text-right">
                       <Link
                         to={`/teacher/students/${student.id}`}
-                        className="inline-flex items-center gap-1 text-[#0074bd] text-sm font-semibold hover:underline"
+                        className="inline-flex items-center gap-1 text-[#0074bd] text-sm font-semibold cursor-pointer"
                       >
                         Chi tiết
                         <span className="material-symbols-outlined text-sm">
@@ -312,6 +360,17 @@ const StudentListPage = () => {
                 <p className="text-xs text-slate-500">
                   Chấp nhận file .xlsx, .xls, .csv
                 </p>
+                <button
+                  type="button"
+                  onClick={() => downloadTemplate()}
+                  disabled={downloadingTemplate}
+                  className="inline-flex items-center gap-1.5 text-sm font-medium color-primary cursor-pointer disabled:opacity-50 mt-1"
+                >
+                  <span className="material-symbols-outlined text-base">
+                    download
+                  </span>
+                  {downloadingTemplate ? "Đang tải..." : "Tải template mẫu"}
+                </button>
               </div>
               <div className="flex justify-end gap-3 pt-2">
                 <button
