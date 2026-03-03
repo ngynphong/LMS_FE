@@ -7,6 +7,13 @@ export interface TeacherProfilePayload {
     certificateUrls: string[];
 }
 
+export interface UpdateTeacherProfileRequest {
+    qualification: string;
+    specialization: string;
+    experience: string;
+    biography: string;
+}
+
 export interface TeacherProfileData {
     id: string;
     dateOfBirth: string;

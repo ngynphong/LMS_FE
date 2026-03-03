@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaBell } from "react-icons/fa";
 import { FaCircleNotch } from "react-icons/fa";
@@ -8,9 +9,11 @@ import {
 } from "@/hooks/useNotifications";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
+import { ImportJobDetailModal } from "@/components/teacher/ImportJobDetailModal";
 
 const TeacherNotificationPage = () => {
   const navigate = useNavigate();
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   // We can add state for pagination if needed
   const { data: notificationData, isLoading } = useNotifications(
     0,
@@ -35,6 +38,8 @@ const TeacherNotificationPage = () => {
         return "color-primary-bg ring-blue-50";
       case "SYSTEM":
         return "bg-green-500 ring-green-50";
+      case "Import Student":
+        return "bg-indigo-500 ring-indigo-50";
       case "SCHEDULE":
         return "bg-yellow-500 ring-yellow-50";
       default:
@@ -50,6 +55,8 @@ const TeacherNotificationPage = () => {
         return "color-primary";
       case "SYSTEM":
         return "text-green-500";
+      case "Import Student":
+        return "text-indigo-500";
       case "SCHEDULE":
         return "text-yellow-500";
       default:
@@ -58,105 +65,121 @@ const TeacherNotificationPage = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-slate-900">
-              Thông báo hệ thống
-            </h1>
-          </div>
-          <p className="text-sm text-slate-500 mt-1">
-            Theo dõi tất cả các thông báo và cảnh báo từ hệ thống
-          </p>
-        </div>
-
-        {notifications.some((n: any) => !n.read) && (
-          <button
-            onClick={() => markAllRead.mutate()}
-            disabled={markAllRead.isPending}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 font-medium transition-colors text-sm shadow-sm disabled:opacity-50"
-          >
-            <span className="material-symbols-outlined text-[18px]">
-              done_all
-            </span>
-            Đánh dấu đã đọc tất cả
-          </button>
-        )}
-      </div>
-
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        {isLoading ? (
-          <div className="p-12 flex justify-center items-center">
-            <span className="animate-spin text-4xl color-primary">
-              <FaCircleNotch />
-            </span>
-          </div>
-        ) : notifications.length === 0 ? (
-          <div className="p-16 text-center text-slate-500">
-            <FaBell className="text-6xl text-slate-200 mx-auto mb-4" />
-            <h3 className="text-lg font-bold text-slate-700 mb-1">
-              Bạn chưa có thông báo nào.
-            </h3>
-            <p className="text-sm">
-              Khi có thông báo hệ thống, chúng sẽ xuất hiện ở đây.
+    <>
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold text-slate-900">
+                Thông báo hệ thống
+              </h1>
+            </div>
+            <p className="text-sm text-slate-500 mt-1">
+              Theo dõi tất cả các thông báo và cảnh báo từ hệ thống
             </p>
           </div>
-        ) : (
-          <div className="divide-y divide-slate-100">
-            {notifications.map((notif) => (
-              <div
-                key={notif.id}
-                className={`p-5 flex gap-4 transition-colors cursor-pointer hover:bg-slate-50 ${!notif.read ? "bg-blue-50/20" : ""}`}
-                onClick={() => {
-                  if (!notif.read) markRead.mutate(notif.id);
-                  if (notif.link) navigate(notif.link);
-                }}
-              >
-                <div className="shrink-0 mt-1">
-                  <div
-                    className={`w-3 h-3 rounded-full mt-1.5 ring-4 ${getNotificationColor(notif.type)}`}
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-1">
-                    <span
-                      className={`text-[11px] font-bold uppercase tracking-wider ${getNotificationTextColor(notif.type)}`}
-                    >
-                      {notif.type}
-                    </span>
-                    <span className="text-xs text-slate-400 flex items-center gap-1.5 whitespace-nowrap">
-                      <span className="material-symbols-outlined text-[14px]">
-                        schedule
+
+          {notifications.some((n: any) => !n.read) && (
+            <button
+              onClick={() => markAllRead.mutate()}
+              disabled={markAllRead.isPending}
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 font-medium transition-colors text-sm shadow-sm disabled:opacity-50"
+            >
+              <span className="material-symbols-outlined text-[18px]">
+                done_all
+              </span>
+              Đánh dấu đã đọc tất cả
+            </button>
+          )}
+        </div>
+
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          {isLoading ? (
+            <div className="p-12 flex justify-center items-center">
+              <span className="animate-spin text-4xl color-primary">
+                <FaCircleNotch />
+              </span>
+            </div>
+          ) : notifications.length === 0 ? (
+            <div className="p-16 text-center text-slate-500">
+              <FaBell className="text-6xl text-slate-200 mx-auto mb-4" />
+              <h3 className="text-lg font-bold text-slate-700 mb-1">
+                Bạn chưa có thông báo nào.
+              </h3>
+              <p className="text-sm">
+                Khi có thông báo hệ thống, chúng sẽ xuất hiện ở đây.
+              </p>
+            </div>
+          ) : (
+            <div className="divide-y divide-slate-100">
+              {notifications.map((notif) => (
+                <div
+                  key={notif.id}
+                  className={`p-5 flex gap-4 transition-colors cursor-pointer hover:bg-slate-50 ${!notif.read ? "bg-blue-50/20" : ""}`}
+                  onClick={() => {
+                    if (!notif.read) markRead.mutate(notif.id);
+                    if (notif.type === "Import Student" && notif.jobId) {
+                      setSelectedJobId(notif.jobId);
+                      return;
+                    }
+                    if (notif.link) navigate(notif.link);
+                  }}
+                >
+                  {!notif.read && (
+                    <div className="shrink-0 mt-1">
+                      <div
+                        className={`w-2 h-2 rounded-full mt-1.5 ring-4 animate-ping duration-1700 ${getNotificationColor(notif.type)}`}
+                      />
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-1">
+                      <span
+                        className={`text-[11px] font-bold uppercase tracking-wider ${getNotificationTextColor(notif.type)}`}
+                      >
+                        {notif.type}
                       </span>
-                      {formatDistanceToNow(new Date(notif.createdAt), {
-                        addSuffix: true,
-                        locale: vi,
-                      })}
-                    </span>
+                      <span className="text-xs text-slate-400 flex items-center gap-1.5 whitespace-nowrap">
+                        <span className="material-symbols-outlined text-[14px]">
+                          schedule
+                        </span>
+                        {formatDistanceToNow(new Date(notif.createdAt), {
+                          addSuffix: true,
+                          locale: vi,
+                        })}
+                      </span>
+                    </div>
+                    <h4
+                      className={`text-base font-semibold text-slate-900 mb-1 ${!notif.read ? "text-blue-900" : "text-slate-800"}`}
+                    >
+                      {notif.title || notif.content}
+                    </h4>
+                    {notif.title && notif.content && (
+                      <p className="text-sm text-slate-600 line-clamp-2">
+                        {notif.content}
+                      </p>
+                    )}
                   </div>
-                  <h4
-                    className={`text-base font-semibold text-slate-900 mb-1 ${!notif.read ? "text-blue-900" : "text-slate-800"}`}
-                  >
-                    {notif.title || notif.content}
-                  </h4>
-                  {notif.title && notif.content && (
-                    <p className="text-sm text-slate-600 line-clamp-2">
-                      {notif.content}
-                    </p>
+                  {!notif.read && (
+                    <div className="shrink-0 self-center">
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#1E90FF]"></div>
+                    </div>
                   )}
                 </div>
-                {!notif.read && (
-                  <div className="shrink-0 self-center">
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#1E90FF]"></div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+
+      {/* Import Job Detail Modal */}
+      {selectedJobId && (
+        <ImportJobDetailModal
+          jobId={selectedJobId}
+          onClose={() => setSelectedJobId(null)}
+        />
+      )}
+    </>
   );
 };
 

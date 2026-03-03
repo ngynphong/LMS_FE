@@ -2,7 +2,8 @@ export interface NotificationItem {
   id: string;
   title: string;
   content: string;
-  type: "SYSTEM" | "COURSE" | "ASSIGNMENT" | "INTERACTION" | "SCHEDULE" | "DEADLINE" | string;
+  type: "SYSTEM" | "COURSE" | "ASSIGNMENT" | "INTERACTION" | "SCHEDULE" | "DEADLINE" | "Import Student" | string;
+  jobId?: string | null;
   read: boolean;
   link?: string;
   createdAt: string;
