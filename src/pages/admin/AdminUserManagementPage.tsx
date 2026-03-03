@@ -4,7 +4,6 @@ import {
   MdSearch,
   MdFilterList,
   MdRestartAlt,
-  MdLock,
   MdEdit,
   MdVpnKey,
   MdDelete,
@@ -414,12 +413,12 @@ const AdminUserManagementPage = () => {
               {data?.items.filter((u) => u.roles.includes("ADMIN")).length})
             </button>
           </div>
-          <div className="pb-3">
+          {/* <div className="pb-3">
             <button className="px-4 py-2 bg-red-50 text-red-600 font-semibold text-xs rounded-lg flex items-center gap-2 hover:bg-red-100 transition-all border border-red-100">
               <MdLock className="text-lg" />
               Khóa tài khoản hàng loạt
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Table Container */}

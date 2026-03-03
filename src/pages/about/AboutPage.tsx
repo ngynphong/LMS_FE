@@ -21,7 +21,10 @@ const AboutPage = () => {
 
         {/* Container: px-4 cho mobile, px-6 cho tablet/desktop */}
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10 py-12 lg:py-20">
-          <ScrollReveal variant={fadeInLeft} className="space-y-6 lg:space-y-8">
+          <ScrollReveal
+            variant={fadeInLeft}
+            className="space-y-2 lg:space-y-4"
+          >
             <div className="inline-flex items-center gap-3 bg-blue-50 color-primary px-3 py-1.5 lg:px-4 lg:py-2 rounded-full font-bold text-[10px] lg:text-xs uppercase tracking-widest border border-blue-100 w-fit">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full color-primary opacity-75"></span>
@@ -30,8 +33,11 @@ const AboutPage = () => {
               Chào mừng đến với IES EDU
             </div>
 
-            <h1 className="text-slate-900 text-start text-3xl sm:text-4xl lg:text-5xl font-black leading-[1.2] lg:leading-[1.1] tracking-tight">
-              Viện Khoa Học Sáng Tạo Khởi Nghiệp
+            <h1 className="text-slate-900 text-start text-2xl sm:text-3xl lg:text-5xl font-black leading-[1.2] lg:leading-[1.1] tracking-tight">
+              Viện Khoa Học
+            </h1>
+            <h1 className="text-slate-900 text-start text-2xl sm:text-3xl lg:text-5xl font-black leading-[1.2] lg:leading-[1.1] tracking-tight">
+              Sáng Tạo Khởi Nghiệp
             </h1>
 
             <p className="text-base lg:text-xl text-start text-slate-600 leading-relaxed max-w-xl">

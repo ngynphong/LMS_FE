@@ -305,7 +305,7 @@ export const logoutApi = async (token: string): Promise<void> => {
 
 export const getCurrentUserApi = async (): Promise<AuthResponse> => {
     try {
-        const response = await axiosInstance.get<ProfileResponse>('/my-profile');
+        const response = await axiosInstance.get<ProfileResponse>('/users/my-profile');
 
         if (response.data.code !== 1000 && response.data.code !== 0) {
             throw new Error(response.data.message || 'Failed to fetch user profile');

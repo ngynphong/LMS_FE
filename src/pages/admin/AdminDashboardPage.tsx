@@ -3,10 +3,7 @@ import {
   MdLocalLibrary,
   MdPayments,
   MdVisibility,
-  MdCalendarToday,
-  MdDownload,
 } from "react-icons/md";
-import { approvalRequests } from "@/data/admin";
 import { useAdminDashboard } from "@/hooks/useAdmin";
 
 const AdminDashboardPage = () => {
@@ -40,15 +37,6 @@ const AdminDashboardPage = () => {
           <p className="text-[#5e7c8d] text-sm">
             Cập nhật lúc: {new Date().toLocaleString("vi-VN")}
           </p>
-        </div>
-        <div className="flex gap-3">
-          <button className="flex items-center gap-2 bg-white border border-slate-200 text-[#101518] px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors shadow-sm">
-            <MdCalendarToday className="text-lg" />7 ngày qua
-          </button>
-          <button className="flex items-center gap-2 bg-[#0078bd] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#0078bd]/90 transition-colors shadow-md shadow-[#0078bd]/20">
-            <MdDownload className="text-lg" />
-            Xuất báo cáo
-          </button>
         </div>
       </div>
 
@@ -128,11 +116,8 @@ const AdminDashboardPage = () => {
         <div className="p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
           <div>
             <h3 className="text-lg font-bold text-[#101518]">
-              Tăng trưởng Người dùng & Doanh thu
+              Tăng trưởng Người dùng
             </h3>
-            <p className="text-sm text-[#5e7c8d] mt-1">
-              Dữ liệu biểu đồ (Demo)
-            </p>
           </div>
           <div className="flex gap-4">
             <div className="flex items-center gap-2">
@@ -149,7 +134,7 @@ const AdminDashboardPage = () => {
             </div>
           </div>
         </div>
-        <div className="p-6">
+        <div className="p-6 mb-6">
           <div className="h-[300px] w-full relative">
             <svg
               fill="none"
@@ -180,7 +165,7 @@ const AdminDashboardPage = () => {
 
               {/* User Growth Line (Primary) */}
               <path
-                d="M0 250 C 150 220, 300 200, 450 120 S 750 100, 900 40 L 1000 30"
+                d="M0 250 C 150 220, 300 200, 450 120 S 750 100, 900 40 L 1000 30m"
                 fill="none"
                 stroke="#0078bd"
                 strokeLinecap="round"
@@ -193,6 +178,14 @@ const AdminDashboardPage = () => {
                 [450, 120],
                 [750, 100],
                 [900, 40],
+                [1050, 20],
+                [1200, 60],
+                [1350, 100],
+                [1500, 140],
+                [1650, 180],
+                [1800, 220],
+                [1950, 260],
+                [2100, 300],
               ].map(([cx, cy], i) => (
                 <circle
                   key={i}
@@ -213,6 +206,12 @@ const AdminDashboardPage = () => {
                 "THÁNG 4",
                 "THÁNG 5",
                 "THÁNG 6",
+                "THÁNG 7",
+                "THÁNG 8",
+                "THÁNG 9",
+                "THÁNG 10",
+                "THÁNG 11",
+                "THÁNG 12",
               ].map((month) => (
                 <span key={month} className="text-xs font-bold text-[#5e7c8d]">
                   {month}
@@ -220,83 +219,6 @@ const AdminDashboardPage = () => {
               ))}
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Course Approvals Table Section */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
-          <h3 className="text-lg font-bold text-[#101518]">
-            Yêu cầu phê duyệt khóa học
-          </h3>
-          <button className="text-[#0078bd] text-sm font-bold hover:underline">
-            Xem tất cả yêu cầu
-          </button>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50 border-b border-slate-200">
-                <th className="px-6 py-4 text-xs font-bold text-[#5e7c8d] uppercase tracking-wider">
-                  Tên khóa học
-                </th>
-                <th className="px-6 py-4 text-xs font-bold text-[#5e7c8d] uppercase tracking-wider">
-                  Giảng viên
-                </th>
-                <th className="px-6 py-4 text-xs font-bold text-[#5e7c8d] uppercase tracking-wider">
-                  Ngày gửi
-                </th>
-                <th className="px-6 py-4 text-xs font-bold text-[#5e7c8d] uppercase tracking-wider text-center">
-                  Trạng thái
-                </th>
-                <th className="px-6 py-4 text-xs font-bold text-[#5e7c8d] uppercase tracking-wider text-right">
-                  Thao tác
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {approvalRequests.map((request) => (
-                <tr
-                  key={request.id}
-                  className="hover:bg-slate-50 transition-colors"
-                >
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="size-10 bg-slate-100 rounded-lg flex items-center justify-center border border-slate-200 text-slate-400">
-                        <span className="material-symbols-outlined text-xl">
-                          image
-                        </span>
-                      </div>
-                      <span className="text-sm font-bold text-[#101518]">
-                        {request.courseName}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-[#5e7c8d] font-medium">
-                    {request.instructorName}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-[#5e7c8d]">
-                    {request.submittedDate}
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 uppercase tracking-wide">
-                      Chờ duyệt
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex justify-end gap-2">
-                      <button className="px-3 py-1.5 bg-[#078836] text-white text-xs font-bold rounded-lg hover:bg-[#078836]/90 transition-colors shadow-sm">
-                        Phê duyệt
-                      </button>
-                      <button className="px-3 py-1.5 bg-white border border-slate-200 text-red-500 text-xs font-bold rounded-lg hover:bg-red-50 hover:border-red-200 transition-colors">
-                        Từ chối
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>

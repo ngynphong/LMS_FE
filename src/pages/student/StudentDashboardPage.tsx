@@ -2,12 +2,9 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   FaBook,
   FaBell,
-  FaCalendar,
   FaCheckCircle,
   FaChartPie,
 } from "react-icons/fa";
-import { MdLocationOn } from "react-icons/md";
-// import { notifications } from "../../data/notification";
 import { useAuth } from "@/hooks/useAuth";
 import { useStudentCourses } from "@/hooks/useCourses";
 import {
@@ -286,25 +283,6 @@ const StudentDashboardPage = () => {
           </div>
           <button className="w-full mt-6 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
             Xem toàn bộ thông báo
-          </button>
-        </div>
-
-        {/* Next Class */}
-        <div className="color-primary-bg rounded-xl p-6 text-white shadow-lg shadow-[#0077BE]/20">
-          <p className="text-white/80 text-sm font-medium">
-            Buổi học tiếp theo
-          </p>
-          <h3 className="text-xl font-bold mt-1">Kỹ năng thuyết trình</h3>
-          <div className="flex items-center gap-2 mt-4 text-sm opacity-90">
-            <FaCalendar className="text-sm" />
-            <span>Ngày mai, 08:30 AM</span>
-          </div>
-          <div className="flex items-center gap-2 mt-2 text-sm opacity-90">
-            <MdLocationOn className="text-sm" />
-            <span>Phòng Lab A2 - Lầu 3</span>
-          </div>
-          <button className="w-full mt-6 py-2 bg-white color-primary rounded-lg text-sm font-bold hover:bg-gray-100 transition-colors">
-            Xem chi tiết lịch
           </button>
         </div>
       </div>

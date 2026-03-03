@@ -13,11 +13,13 @@ import { vi } from "date-fns/locale";
 
 import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import { FaCircleNotch } from "react-icons/fa";
+import PaginationControl from "@/components/common/PaginationControl";
 
 const AdminCourseListPage = () => {
   // State
   const [keyword, setKeyword] = useState("");
   const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [debouncedKeyword, setDebouncedKeyword] = useState("");
 
@@ -54,19 +56,19 @@ const AdminCourseListPage = () => {
     refetch,
   } = useAdminCourses({
     pageNo: page,
-    pageSize: 10,
+    pageSize,
     keyword: debouncedKeyword,
     status: statusFilter,
     sorts: ["createdAt:desc"],
   });
 
-  // Stats Hooks (Independent of filters)
-  const { data: allCoursesData } = useAdminCourses({ pageSize: 1 });
-  const { data: pendingCoursesData } = useAdminCourses({
+  // Stats Hooks - staleTime đã được set ở hook level (30s), tránh refetch liên tục
+  const { data: statsData } = useAdminCourses({ pageSize: 1 });
+  const { data: publishedStats } = useAdminCourses({
     status: "PUBLISHED",
     pageSize: 1,
   });
-  const { data: bannedCoursesData } = useAdminCourses({
+  const { data: bannedStats } = useAdminCourses({
     status: "BANNED",
     pageSize: 1,
   });
@@ -174,7 +176,7 @@ const AdminCourseListPage = () => {
           </div>
           <div className="flex items-baseline gap-2">
             <p className="text-3xl font-bold">
-              {allCoursesData?.data.totalElement || 0}
+              {statsData?.data.totalElement || 0}
             </p>
           </div>
         </div>
@@ -189,7 +191,7 @@ const AdminCourseListPage = () => {
           </div>
           <div className="flex items-baseline gap-2">
             <p className="text-3xl font-bold">
-              {pendingCoursesData?.data.totalElement || 0}
+              {publishedStats?.data.totalElement || 0}
             </p>
           </div>
         </div>
@@ -204,7 +206,7 @@ const AdminCourseListPage = () => {
           </div>
           <div className="flex items-baseline gap-2">
             <p className="text-3xl font-bold">
-              {bannedCoursesData?.data.totalElement || 0}
+              {bannedStats?.data.totalElement || 0}
             </p>
           </div>
         </div>
@@ -237,18 +239,11 @@ const AdminCourseListPage = () => {
             >
               <option value="">Tất cả trạng thái</option>
               <option value="PUBLISHED">Đang hoạt động</option>
-              <option value="PENDING">Chờ phê duyệt</option>
               <option value="BANNED">Đã bị khóa</option>
             </select>
           </div>
           {/* Chips Filter */}
           <div className="flex gap-2">
-            <button
-              onClick={() => setStatusFilter("PENDING")}
-              className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-colors ${statusFilter === "PENDING" ? "bg-primary/10 text-primary" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}
-            >
-              Chờ duyệt
-            </button>
             <button
               onClick={() => setStatusFilter("PUBLISHED")}
               className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-colors ${statusFilter === "PUBLISHED" ? "bg-primary/10 text-primary" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}
@@ -260,7 +255,7 @@ const AdminCourseListPage = () => {
       </div>
 
       {/* Course Table */}
-      <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden min-h-[400px]">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="flex flex-col items-center gap-3">
@@ -274,7 +269,7 @@ const AdminCourseListPage = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-800">
+                <tr className="bg-gray-50 border-b border-gray-200">
                   <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-500">
                     Khóa học
                   </th>
@@ -292,11 +287,11 @@ const AdminCourseListPage = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+              <tbody className="divide-y divide-gray-100">
                 {data?.data.items.map((course: ApiCourse) => (
                   <tr
                     key={course.id}
-                    className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors"
+                    className="hover:bg-gray-50/50 transition-colors"
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -377,69 +372,19 @@ const AdminCourseListPage = () => {
         )}
 
         {/* Pagination */}
-        {data && data.data.totalPage > 1 && (
-          <div className="px-6 py-4 bg-gray-50 dark:bg-gray-800/30 flex items-center justify-between border-t border-gray-100 dark:border-gray-800">
-            <p className="text-xs text-gray-500">
-              Hiển thị{" "}
-              <span className="font-bold text-navy-dark dark:text-white">
-                {page * 10 + 1} -{" "}
-                {Math.min((page + 1) * 10, data.data.totalElement)}
-              </span>{" "}
-              trong{" "}
-              <span className="font-bold text-navy-dark dark:text-white">
-                {data.data.totalElement}
-              </span>{" "}
-              khóa học
-            </p>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setPage((p) => Math.max(0, p - 1))}
-                disabled={page === 0}
-                className="size-8 flex items-center justify-center rounded bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-400 hover:text-primary transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <span className="material-symbols-outlined text-lg">
-                  chevron_left
-                </span>
-              </button>
-              {Array.from(
-                { length: Math.min(5, data.data.totalPage) },
-                (_, i) => {
-                  let pageNum = page;
-                  if (data.data.totalPage <= 5) pageNum = i;
-                  else if (page < 2) pageNum = i;
-                  else if (page > data.data.totalPage - 3)
-                    pageNum = data.data.totalPage - 5 + i;
-                  else pageNum = page - 2 + i;
-
-                  return (
-                    <button
-                      key={pageNum}
-                      onClick={() => setPage(pageNum)}
-                      className={`size-8 flex items-center justify-center rounded text-xs font-bold transition-all ${
-                        page === pageNum
-                          ? "bg-primary text-white"
-                          : "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-primary"
-                      }`}
-                    >
-                      {pageNum + 1}
-                    </button>
-                  );
-                },
-              )}
-              <button
-                onClick={() =>
-                  setPage((p) => Math.min(data.data.totalPage - 1, p + 1))
-                }
-                disabled={page === data.data.totalPage - 1}
-                className="size-8 flex items-center justify-center rounded bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-400 hover:text-primary transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <span className="material-symbols-outlined text-lg">
-                  chevron_right
-                </span>
-              </button>
-            </div>
-          </div>
-        )}
+        <div className="flex justify-end mt-4 p-2">
+          <PaginationControl
+            currentPage={page + 1}
+            totalPages={data?.data.totalPage || 0}
+            onPageChange={(p) => setPage(p - 1)}
+            pageSize={pageSize}
+            onPageSizeChange={(size) => {
+              setPageSize(size);
+              setPage(0);
+            }}
+            pageSizeOptions={[10, 20, 50, 100, 1000]}
+          />
+        </div>
       </div>
 
       <ConfirmationModal
