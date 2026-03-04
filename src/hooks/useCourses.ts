@@ -41,9 +41,9 @@ export const useMyCourses = (params: {
     pageNo?: number;
     pageSize?: number;
     sorts?: string;
-    keyword?: string;
-    status?: string;
-    visibility?: string;
+    keyword?: string | undefined;
+    status?: string | undefined;
+    visibility?: string | undefined;
 } = {}) => {
     return useQuery({
         queryKey: ['my-courses', params],

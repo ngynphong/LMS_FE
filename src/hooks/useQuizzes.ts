@@ -17,7 +17,8 @@ import {
     getStudentTeacherQuizzes,
     getQuizById,
     updateQuiz,
-    getQuizByLessonItem
+    getQuizByLessonItem,
+    getMyAllQuizHistory
 } from '@/services/quizService';
 import type { 
     CreateQuizRequest, 
@@ -158,6 +159,13 @@ export const useMyOngoingQuizzes = () => {
     return useQuery({
         queryKey: ['ongoing-quizzes'],
         queryFn: getMyOngoingQuizzes,
+    });
+};
+
+export const useMyAllQuizHistory = () => {
+    return useQuery({
+        queryKey: ['my-all-quiz-history'],
+        queryFn: getMyAllQuizHistory,
     });
 };
 

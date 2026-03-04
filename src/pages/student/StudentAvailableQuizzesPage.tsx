@@ -11,6 +11,7 @@ import {
 import {
   useStudentTeacherQuizzes,
   useMyOngoingQuizzes,
+  useMyAllQuizHistory,
 } from "@/hooks/useQuizzes";
 import { QuizHistoryModal } from "@/components/student/QuizHistoryModal";
 import { QuizReviewModal } from "@/components/student/QuizReviewModal";
@@ -26,6 +27,9 @@ const StudentAvailableQuizzesPage = () => {
   const { data: ongoingQuizzesData, isLoading: ongoingLoading } =
     useMyOngoingQuizzes();
   const ongoingQuizzes = ongoingQuizzesData || [];
+  const { data: historyQuizzesData, isLoading: historyLoading } =
+    useMyAllQuizHistory();
+  const historyQuizzes = historyQuizzesData || [];
 
   // Modal States
   const [historyQuiz, setHistoryQuiz] = useState<{
@@ -62,6 +66,24 @@ const StudentAvailableQuizzesPage = () => {
       }));
     }
 
+    if (filter === "history") {
+      return historyQuizzes.map((q) => ({
+        id: q.quizId,
+        attemptId: q.id,
+        title: q.quizTitle,
+        duration: q.durationInMinutes,
+        questionCount: q.questions?.length || 0,
+        status: q.status, // PASSED, FAILED, COMPLETED, IN_PROGRESS
+        isAvailable: false,
+        original: q,
+        viewType: "history",
+        type: "QUIZ" as const,
+        closeTime: q.startedAt, // Map startedAt into closeTime to easily re-use UI component
+        maxAttempts: undefined,
+        attemptsCount: undefined,
+      }));
+    }
+
     const availableList = quizzes.map((q) => {
       const status = getQuizStatus(q);
       return {
@@ -86,7 +108,12 @@ const StudentAvailableQuizzesPage = () => {
   };
 
   const displayList = getDisplayData();
-  const isLoading = filter === "ongoing" ? ongoingLoading : loading;
+  const isLoading =
+    filter === "ongoing"
+      ? ongoingLoading
+      : filter === "history"
+        ? historyLoading
+        : loading;
 
   return (
     <div className="flex flex-col w-full min-h-[calc(100vh-100px)]">
@@ -110,6 +137,7 @@ const StudentAvailableQuizzesPage = () => {
                 { id: "ongoing", label: "Đang làm dở" },
                 { id: "open", label: "Đang mở" },
                 { id: "closed", label: "Đã kết thúc" },
+                { id: "history", label: "Lịch sử của tôi" },
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -143,10 +171,11 @@ const StudentAvailableQuizzesPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-4 md:gap-6 px-2 pb-10">
           {displayList.map((quiz) => {
             const isOngoing = quiz.viewType === "ongoing";
+            const isHistory = quiz.viewType === "history";
 
             return (
               <div
-                key={isOngoing ? quiz.attemptId : quiz.id}
+                key={isOngoing || isHistory ? quiz.attemptId : quiz.id}
                 className={`
                 group bg-white border border-gray-200 rounded-2xl 
                 p-5 md:p-6 
@@ -222,6 +251,21 @@ const StudentAvailableQuizzesPage = () => {
                       </span>
                     </div>
                   )}
+                  {isHistory && quiz.closeTime && (
+                    <div className="flex items-center gap-3 text-gray-600 text-sm">
+                      <MdAccessTime className="text-lg text-gray-400 shrink-0" />
+                      <span className="truncate">
+                        Bắt đầu lúc:{" "}
+                        <span className="font-semibold text-gray-700">
+                          {format(
+                            new Date(quiz.closeTime),
+                            "HH:mm 'ngày' dd/MM/yyyy",
+                            { locale: vi },
+                          )}
+                        </span>
+                      </span>
+                    </div>
+                  )}
                   {quiz.viewType === "available" &&
                     (quiz.maxAttempts || 0) > 0 && (
                       <div className="flex items-center gap-3 text-gray-600 text-sm">
@@ -244,10 +288,25 @@ const StudentAvailableQuizzesPage = () => {
                       </span>
                     </div>
                   )}
+                  {isHistory && (
+                    <div className="flex items-center gap-3 text-gray-600 text-sm">
+                      <MdFormatListBulleted className="text-lg text-blue-500 shrink-0" />
+                      <span className="truncate text-blue-700 font-medium whitespace-nowrap">
+                        Trạng thái:
+                        {quiz.status === "PASSED"
+                          ? " Đạt"
+                          : quiz.status === "FAILED"
+                            ? " Trượt"
+                            : quiz.status === "SUBMITTED"
+                              ? " Đã nộp"
+                              : " Đang làm"}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex gap-2 mt-auto">
-                  {!isOngoing && (
+                  {!isOngoing && !isHistory && (
                     <button
                       onClick={() =>
                         setHistoryQuiz({ id: quiz.id, title: quiz.title })
@@ -258,15 +317,26 @@ const StudentAvailableQuizzesPage = () => {
                       Lịch sử
                     </button>
                   )}
-                  <button
-                    disabled={
-                      (!quiz.isAvailable && !isOngoing) ||
-                      (quiz.viewType === "available" &&
-                        (quiz.maxAttempts || 0) > 0 &&
-                        (quiz.attemptsCount || 0) >= (quiz.maxAttempts || 0))
-                    }
-                    onClick={() => navigate(`/student/quizzes/${quiz.id}/take`)}
-                    className={`
+                  {isHistory && quiz.status !== "IN_PROGRESS" && (
+                    <button
+                      onClick={() => setReviewAttemptId(quiz.attemptId)}
+                      className="w-full py-2.5 rounded-xl font-bold text-sm color-primary-bg text-white hover:opacity-80 transition-all cursor-pointer"
+                    >
+                      Xem chi tiết điểm
+                    </button>
+                  )}
+                  {!isHistory && (
+                    <button
+                      disabled={
+                        (!quiz.isAvailable && !isOngoing) ||
+                        (quiz.viewType === "available" &&
+                          (quiz.maxAttempts || 0) > 0 &&
+                          (quiz.attemptsCount || 0) >= (quiz.maxAttempts || 0))
+                      }
+                      onClick={() =>
+                        navigate(`/student/quizzes/${quiz.id}/take`)
+                      }
+                      className={`
                     ${isOngoing ? "w-full" : "flex-[1.5]"} py-2.5 rounded-xl font-bold text-sm
                     flex items-center justify-center gap-2 transition-all
                     ${
@@ -275,20 +345,21 @@ const StudentAvailableQuizzesPage = () => {
                         : "bg-gray-100 text-gray-400 cursor-not-allowed hidden"
                     }
                     `}
-                  >
-                    {quiz.isAvailable || isOngoing ? (
-                      <>
-                        <span>
-                          {isOngoing ? "Tiếp tục làm bài" : "Làm bài"}
-                        </span>
-                        <MdArrowForward
-                          className={`text-lg ${isOngoing ? "animate-pulse" : ""}`}
-                        />
-                      </>
-                    ) : (
-                      <span>Chưa mở</span>
-                    )}
-                  </button>
+                    >
+                      {quiz.isAvailable || isOngoing ? (
+                        <>
+                          <span>
+                            {isOngoing ? "Tiếp tục làm bài" : "Làm bài"}
+                          </span>
+                          <MdArrowForward
+                            className={`text-lg ${isOngoing ? "animate-pulse" : ""}`}
+                          />
+                        </>
+                      ) : (
+                        <span>Chưa mở</span>
+                      )}
+                    </button>
+                  )}
                 </div>
               </div>
             );
@@ -302,7 +373,9 @@ const StudentAvailableQuizzesPage = () => {
           <h3 className="text-lg font-bold text-gray-900">
             {filter === "ongoing"
               ? "Không có bài thi nào đang làm dở"
-              : "Không tìm thấy bài thi nào"}
+              : filter === "history"
+                ? "Bạn chưa có lịch sử làm bài nào"
+                : "Không tìm thấy bài thi nào"}
           </h3>
           <p className="text-gray-500 mt-2 text-sm max-w-xs">
             Thử thay đổi bộ lọc hoặc quay lại sau.

@@ -150,21 +150,6 @@ const ExamFormPage = () => {
     // error: quizError,
   } = useQuiz(id);
 
-  // Lesson Selection
-
-  // Debug logs
-  // useEffect(() => {
-  //   if (isEditMode) {
-  //     console.log("Edit Mode ID:", id);
-  //     console.log("Quiz Detail:", quizDetail);
-  //     console.log("Quiz Loading:", quizLoading);
-  //     console.log("Quiz Error:", quizError);
-  //     if (quizError && "response" in quizError) {
-  //       console.log("Error Response Data:", (quizError as any).response?.data);
-  //     }
-  //   }
-  // }, [id, isEditMode, quizDetail, quizLoading, quizError]);
-
   // Basic Form Data
   const [formData, setFormData] = useState<{
     title: string;

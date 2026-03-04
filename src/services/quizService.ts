@@ -10,7 +10,6 @@ import type {
     QuizStatistics,
     GenerateCodeResponse,
     JoinQuizResponse,
-
     StudentTeacherQuiz,
     UpdateQuizRequest,
     QuizDetailResponse
@@ -130,6 +129,16 @@ export const getMyOngoingQuizzes = async (): Promise<ApiOngoingQuiz[]> => {
         return response.data.data;
     } catch (error) {
         console.error('Failed to fetch ongoing quizzes:', error);
+        throw error;
+    }
+};
+
+export const getMyAllQuizHistory = async (): Promise<ApiOngoingQuiz[]> => {
+    try {
+        const response = await axiosInstance.get<{ code: number; message: string; data: ApiOngoingQuiz[] }>('/quiz/attempts/my-history');
+        return response.data.data;
+    } catch (error) {
+        console.error('Failed to fetch all my quiz history:', error);
         throw error;
     }
 };
