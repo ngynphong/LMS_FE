@@ -16,9 +16,9 @@ const TeacherNotificationPage = () => {
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   // We can add state for pagination if needed
   const { data: notificationData, isLoading } = useNotifications(
-    0,
+    1,
     50,
-    "createdAt,desc",
+    "createdAt:desc",
   );
   const markRead = useMarkNotificationRead();
   const markAllRead = useMarkAllNotificationsRead();

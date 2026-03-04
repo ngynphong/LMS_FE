@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   useTeacherQuizzes,
   useGenerateQuizCode,
   usePublishQuiz,
 } from "@/hooks/useQuizzes";
+import { useHostLiveQuiz } from "@/hooks/useLiveQuiz";
 import { toast } from "@/components/common/Toast";
 
 const ExamListPage = () => {
@@ -14,6 +15,8 @@ const ExamListPage = () => {
   const { mutateAsync: generate, isPending: isGenerating } =
     useGenerateQuizCode();
   const { mutateAsync: publish, isPending: isPublishing } = usePublishQuiz();
+  const hostLiveQuiz = useHostLiveQuiz();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleGenerateCode = async (quizId: string) => {
@@ -33,6 +36,19 @@ const ExamListPage = () => {
       toast.success("Đã xuất bản bài kiểm tra");
     } catch (e) {
       toast.error("Có lỗi xảy ra khi xuất bản");
+    }
+  };
+
+  const handleHostLiveQuiz = async (quizId: string) => {
+    try {
+      const res = await hostLiveQuiz.mutateAsync(quizId);
+      // Save host info just in case
+      localStorage.setItem("host_live_quiz_pin", res.pin);
+      navigate(`/teacher/live-quiz/lobby/${res.pin}`);
+    } catch (error: any) {
+      toast.error(
+        error.response?.data?.message || "Không thể tải phòng Live Quiz",
+      );
     }
   };
 
@@ -170,6 +186,19 @@ const ExamListPage = () => {
                   </span>
                   {exam.isPublished ? "Đã công khai" : "Công khai"}
                 </button>
+                {exam.isPublished && (
+                  <button
+                    onClick={() => handleHostLiveQuiz(exam.id)}
+                    disabled={hostLiveQuiz.isPending}
+                    className="flex items-center justify-center gap-1 p-2 rounded-lg bg-indigo-50 text-indigo-600 font-bold hover:bg-indigo-100 transition-colors shadow-sm ml-auto border border-indigo-200 group"
+                    title="Mở phòng chơi trực tiếp"
+                  >
+                    <span className="material-symbols-outlined text-lg group-hover:animate-spin-slow">
+                      all_inclusive
+                    </span>
+                    Live Quiz
+                  </button>
+                )}
               </div>
 
               <div className="flex gap-2 pt-3 border-t border-slate-100 mt-3">

@@ -43,9 +43,6 @@ const CourseProgressChart = ({ data, isLoading }: CourseProgressChartProps) => {
         <h2 className="text-[#111518] text-lg font-bold">
           Sức khỏe các khóa học
         </h2>
-        <span className="text-[#0b8eda] text-sm font-medium flex items-center gap-1 cursor-pointer hover:underline">
-          Chi tiết
-        </span>
       </div>
 
       <div className="flex flex-col gap-2">

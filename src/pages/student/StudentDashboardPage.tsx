@@ -1,10 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import {
-  FaBook,
-  FaBell,
-  FaCheckCircle,
-  FaChartPie,
-} from "react-icons/fa";
+import { FaBook, FaBell, FaCheckCircle, FaChartPie } from "react-icons/fa";
 import { useAuth } from "@/hooks/useAuth";
 import { useStudentCourses } from "@/hooks/useCourses";
 import {
@@ -205,6 +200,35 @@ const StudentDashboardPage = () => {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Live Quiz Quick Access Widget */}
+        <div className="bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between shadow-lg text-white border-0 mt-2 relative overflow-hidden group hover:shadow-xl transition-all">
+          {/* Background glow animation */}
+          <div className="absolute inset-0 bg-white/10 skew-x-12 translate-x-[-150%] group-hover:animate-shine"></div>
+
+          <div className="flex items-center gap-6 mb-4 sm:mb-0 z-10 w-full sm:w-auto">
+            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shrink-0 shadow-inner backdrop-blur-sm">
+              <span className="material-symbols-outlined text-4xl animate-bounce-slow">
+                sports_esports
+              </span>
+            </div>
+            <div>
+              <h3 className="text-2xl font-black mb-1 drop-shadow-md">
+                CodeQuiz Live!
+              </h3>
+              <p className="text-white/90 font-medium text-sm sm:text-base">
+                Tham gia trận chiến tri thức, đua top realtime.
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => navigate("/student/live-quiz/join")}
+            className="z-10 w-full sm:w-auto bg-white text-purple-600 hover:bg-gray-50 focus:ring-4 focus:ring-white/30 font-bold px-8 py-3 rounded-xl transition-all shadow-md active:scale-95 group-hover:-translate-y-1"
+          >
+            Nhập mã PIN
+          </button>
         </div>
       </div>
 

@@ -45,6 +45,17 @@ const TeacherNotificationPage = React.lazy(
   () => import("@/pages/teacher/TeacherNotificationPage"),
 );
 
+// Live Quiz Host
+const LiveQuizHostLobbyPage = React.lazy(
+  () => import("@/pages/teacher/live-quiz/LiveQuizHostLobbyPage"),
+);
+const LiveQuizHostPlayPage = React.lazy(
+  () => import("@/pages/teacher/live-quiz/LiveQuizHostPlayPage"),
+);
+const LiveQuizHostResultPage = React.lazy(
+  () => import("@/pages/teacher/live-quiz/LiveQuizHostResultPage"),
+);
+
 /**
  * Teacher Routes
  * Protected routes for authenticated teachers
@@ -97,6 +108,30 @@ const finalTeacherRoutes: RouteObject[] = [
     element: (
       <ProtectedRoute allowedRoles={["TEACHER", "ADMIN"]}>
         <TeacherLessonItemPreviewPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/teacher/live-quiz/lobby/:pin",
+    element: (
+      <ProtectedRoute allowedRoles={["TEACHER", "ADMIN"]}>
+        <LiveQuizHostLobbyPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/teacher/live-quiz/play/:pin",
+    element: (
+      <ProtectedRoute allowedRoles={["TEACHER", "ADMIN"]}>
+        <LiveQuizHostPlayPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/teacher/live-quiz/result/:pin",
+    element: (
+      <ProtectedRoute allowedRoles={["TEACHER", "ADMIN"]}>
+        <LiveQuizHostResultPage />
       </ProtectedRoute>
     ),
   },

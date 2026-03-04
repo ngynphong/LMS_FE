@@ -29,7 +29,7 @@ export type NotificationResponse = NotificationItem[] | {
 };
 
 export interface GetNotificationsParams {
-  page?: number;
-  size?: number;
+  pageNo?: number;
+  pageSize?: number;
   sort?: string;
 }
