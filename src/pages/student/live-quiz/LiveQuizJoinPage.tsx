@@ -76,7 +76,7 @@ const LiveQuizJoinPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 flex flex-col items-center justify-center p-4">
       {/* Header / Logo Area */}
       <div className="text-center mb-8 animate-bounce-slow">
         <h1 className="text-5xl md:text-6xl font-black text-white drop-shadow-lg tracking-tight">

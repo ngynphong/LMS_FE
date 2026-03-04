@@ -46,7 +46,7 @@ const LiveQuizLobbyPage = () => {
   }, [lastPlayerEvent, navigate, pin, stateQuery.data?.state]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-tr from-purple-500 via-pink-500 to-yellow-400 flex flex-col items-center justify-center p-6 text-white relative overflow-hidden">
+    <div className="min-h-screen bg-linear-to-r from-purple-500 via-pink-500 to-yellow-400 flex flex-col items-center justify-center p-6 text-white relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
       <div
@@ -68,10 +68,10 @@ const LiveQuizLobbyPage = () => {
         )}
 
         <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-3xl w-full shadow-2xl relative overflow-hidden group">
-          <div className="absolute -inset-2 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12 group-hover:animate-shine"></div>
+          <div className="absolute -inset-2 bg-linear-to-r from-transparent via-white/5 to-transparent skew-x-12 group-hover:animate-shine"></div>
 
           <h2 className="text-2xl font-bold text-white/90 mb-2">Xin chào,</h2>
-          <h1 className="text-4xl md:text-5xl font-black mb-8 text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-200">
+          <h1 className="text-4xl md:text-5xl font-black mb-8 text-transparent bg-clip-text bg-linear-to-r from-white to-gray-200">
             {playerName}
           </h1>
 

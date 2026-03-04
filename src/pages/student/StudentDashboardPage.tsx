@@ -203,7 +203,7 @@ const StudentDashboardPage = () => {
         </div>
 
         {/* Live Quiz Quick Access Widget */}
-        <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between shadow-lg text-white border-0 mt-2 relative overflow-hidden group hover:shadow-xl transition-all">
+        <div className="bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between shadow-lg text-white border-0 mt-2 relative overflow-hidden group hover:shadow-xl transition-all">
           {/* Background glow animation */}
           <div className="absolute inset-0 bg-white/10 skew-x-12 translate-x-[-150%] group-hover:animate-shine"></div>
 

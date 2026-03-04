@@ -91,7 +91,7 @@ const LiveQuizHostLobbyPage = () => {
         {/* Left Side: PIN Info */}
         <div className="w-full md:w-1/2 flex flex-col items-center justify-center animate-fade-in-up">
           <div className="bg-white rounded-3xl p-10 md:p-16 shadow-2xl relative w-full text-center overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+            <div className="absolute top-0 left-0 w-full h-2 bg-linear-to-r from-blue-500 to-purple-500"></div>
 
             <p className="text-gray-500 font-bold text-xl mb-2">
               Truy cập để tham gia:
@@ -103,7 +103,7 @@ const LiveQuizHostLobbyPage = () => {
             <p className="text-gray-500 font-bold text-xl mb-4">
               Mã số Game (PIN)
             </p>
-            <h2 className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 to-purple-600 tracking-widest drop-shadow-sm select-all">
+            <h2 className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-linear-to-br from-indigo-600 to-purple-600 tracking-widest drop-shadow-sm select-all">
               {pin}
             </h2>
 

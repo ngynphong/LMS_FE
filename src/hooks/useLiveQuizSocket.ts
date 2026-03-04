@@ -4,6 +4,7 @@ import { Client } from '@stomp/stompjs';
 import type {
     WsPlayerEvent,
     WsPlayerJoinedData,
+    WsPlayerJoinedEvent,
     LiveQuizLeaderboardItem
 } from '@/types/live-quiz';
 import { useAuth } from './useAuth';
@@ -16,7 +17,7 @@ export const useLiveQuizSocket = (pin: string | null, role: 'HOST' | 'PLAYER') =
     const clientRef = useRef<Client | null>(null);
 
     // Host States
-    const [playersList, setPlayersList] = useState<WsPlayerJoinedData['data'][]>([]);
+    const [playersList, setPlayersList] = useState<WsPlayerJoinedData[]>([]);
 
     // Player States
     const [lastPlayerEvent, setLastPlayerEvent] = useState<WsPlayerEvent | null>(null);
@@ -54,7 +55,7 @@ export const useLiveQuizSocket = (pin: string | null, role: 'HOST' | 'PLAYER') =
                 if (role === 'HOST') {
                     client.subscribe(`/topic/quiz.${pin}.host`, (message) => {
                         try {
-                            const event: WsPlayerJoinedData = JSON.parse(message.body);
+                            const event: WsPlayerJoinedEvent = JSON.parse(message.body);
                             if (event.type === 'PLAYER_JOINED') {
                                 setPlayersList(prev => {
                                     if (prev.find(p => p.studentId === event.data.studentId)) return prev;
@@ -68,8 +69,14 @@ export const useLiveQuizSocket = (pin: string | null, role: 'HOST' | 'PLAYER') =
                 } else if (role === 'PLAYER') {
                     client.subscribe(`/topic/quiz.${pin}.players`, (message) => {
                         try {
-                            const data: WsPlayerEvent = JSON.parse(message.body);
-                            setLastPlayerEvent(data);
+                            const rawData = JSON.parse(message.body);
+                            // If backend wraps in { code, message, data } format:
+                            const event: WsPlayerEvent = rawData.code !== undefined && rawData.data ? rawData.data : rawData;
+                            
+                            // Prevent setting null/undefined event
+                            if (event && event.type) {
+                                setLastPlayerEvent(event);
+                            }
                         } catch (e) {
                             console.error('Failed to parse player message', e);
                         }

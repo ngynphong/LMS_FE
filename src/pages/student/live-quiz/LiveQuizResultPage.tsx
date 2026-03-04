@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  useParams,
+  useNavigate,
+  useSearchParams,
+  useLocation,
+} from "react-router-dom";
 import { useLiveQuizSocket } from "@/hooks/useLiveQuizSocket";
 import { LiveLeaderboard } from "@/components/live-quiz/LiveLeaderboard";
 import { useLiveQuizResults } from "@/hooks/useLiveQuiz";
@@ -9,6 +14,9 @@ const LiveQuizResultPage = () => {
   const { pin } = useParams<{ pin: string }>();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const routerLeaderboard: LiveQuizLeaderboardItem[] =
+    (location.state as any)?.leaderboard || [];
 
   // Check if the game is completely finished via URL param
   const isGameEnded = searchParams.get("ended") === "true";
@@ -40,7 +48,9 @@ const LiveQuizResultPage = () => {
 
     // If teacher moves to next question, redirect back to play page
     if (lastPlayerEvent.type === "NEXT_QUESTION") {
-      navigate(`/student/live-quiz/play/${pin}`);
+      navigate(`/student/live-quiz/play/${pin}`, {
+        state: { initialQuestion: lastPlayerEvent.data },
+      });
     } else if (lastPlayerEvent.type === "FINISH_GAME") {
       navigate(`/student/live-quiz/result/${pin}?ended=true`, {
         replace: true,
@@ -58,7 +68,8 @@ const LiveQuizResultPage = () => {
       score: r.totalScore,
     }));
   } else {
-    displayLeaderboard = leaderboard;
+    displayLeaderboard =
+      leaderboard.length > 0 ? leaderboard : routerLeaderboard;
   }
 
   // Find my position

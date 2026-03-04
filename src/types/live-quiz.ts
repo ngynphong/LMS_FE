@@ -83,12 +83,14 @@ export interface LiveQuizLeaderboardItem {
 
 // WebSocket Event Data Types
 export interface WsPlayerJoinedData {
+    studentId: string;
+    studentName: string;
+    totalPlayers: number;
+}
+
+export interface WsPlayerJoinedEvent {
     type: "PLAYER_JOINED";
-    data: {
-        studentId: string;
-        studentName: string;
-        totalPlayers: number;
-    }
+    data: WsPlayerJoinedData;
 }
 
 export interface WsStartGameData {

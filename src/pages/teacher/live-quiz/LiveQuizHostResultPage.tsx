@@ -43,7 +43,7 @@ const LiveQuizHostResultPage = () => {
 
       {/* Header */}
       <div className="w-full max-w-5xl flex justify-between items-center z-10 mb-8 md:mb-12">
-        <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-200 drop-shadow-md">
+        <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-linear-to-r from-yellow-400 to-yellow-200 drop-shadow-md">
           Tổng Kết Trận Đấu
         </h1>
         <button
@@ -70,7 +70,7 @@ const LiveQuizHostResultPage = () => {
                 {top3[1].studentName}
               </div>
             </div>
-            <div className="w-full bg-gradient-to-t from-slate-400 to-slate-300 h-24 md:h-32 rounded-t-lg shadow-2xl flex flex-col items-center justify-start pt-4 relative overflow-hidden">
+            <div className="w-full bg-linear-to-t from-slate-400 to-slate-300 h-24 md:h-32 rounded-t-lg shadow-2xl flex flex-col items-center justify-start pt-4 relative overflow-hidden">
               <div className="absolute inset-0 bg-white/20 skew-x-12 translate-x-[-150%] animate-shine"></div>
               <span className="text-slate-700 font-black text-xl md:text-2xl">
                 {Math.round(top3[1].score)}
@@ -97,7 +97,7 @@ const LiveQuizHostResultPage = () => {
                 {top3[0].studentName}
               </div>
             </div>
-            <div className="w-full bg-gradient-to-t from-yellow-500 to-yellow-300 h-32 md:h-48 rounded-t-lg shadow-2xl flex flex-col items-center justify-start pt-6 relative overflow-hidden">
+            <div className="w-full bg-linear-to-t from-yellow-500 to-yellow-300 h-32 md:h-48 rounded-t-lg shadow-2xl flex flex-col items-center justify-start pt-6 relative overflow-hidden">
               <div className="absolute inset-0 bg-white/30 skew-x-12 translate-x-[-150%] animate-shine delay-500"></div>
               <span className="text-yellow-900 font-black text-2xl md:text-4xl drop-shadow-sm">
                 {Math.round(top3[0].score)}
@@ -123,7 +123,7 @@ const LiveQuizHostResultPage = () => {
                 {top3[2].studentName}
               </div>
             </div>
-            <div className="w-full bg-gradient-to-t from-orange-400 to-orange-300 h-16 md:h-24 rounded-t-lg shadow-2xl flex flex-col items-center justify-start pt-3 relative overflow-hidden">
+            <div className="w-full bg-linear-to-t from-orange-400 to-orange-300 h-16 md:h-24 rounded-t-lg shadow-2xl flex flex-col items-center justify-start pt-3 relative overflow-hidden">
               <span className="text-orange-900 font-black text-lg md:text-xl">
                 {Math.round(top3[2].score)}
               </span>

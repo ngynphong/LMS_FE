@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useLiveQuizSocket } from "@/hooks/useLiveQuizSocket";
-import { useSubmitLiveAnswer } from "@/hooks/useLiveQuiz";
+import { useSubmitLiveAnswer, useLiveQuizState } from "@/hooks/useLiveQuiz";
 import { LiveQuestionDisplay } from "@/components/live-quiz/LiveQuestionDisplay";
 import type { LiveQuestion } from "@/types/live-quiz";
 import { toast } from "@/components/common/Toast";
@@ -41,6 +41,21 @@ const LiveQuizPlayPage = () => {
     pin || null,
     "PLAYER",
   );
+
+  // Fallback: fetch current question from API when WS connected but question was missed
+  // (happens when lobby navigates here after receiving START_GAME - the event is consumed before play page subscribes)
+  const { data: gameState } = useLiveQuizState(
+    pin,
+    isConnected && !currentQuestion,
+  );
+
+  useEffect(() => {
+    if (gameState?.currentQuestion && !currentQuestion) {
+      setCurrentQuestion(gameState.currentQuestion);
+      startTimer(gameState.currentQuestion.timeLimitSeconds);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameState]);
 
   useEffect(() => {
     const storedId = localStorage.getItem("live_quiz_player_id");
@@ -161,7 +176,6 @@ const LiveQuizPlayPage = () => {
             <p className="text-lg leading-none">{playerName}</p>
           </div>
         </div>
-
         <div className="text-right">
           <p className="text-sm text-gray-500 font-medium">Điểm số</p>
           <p className="text-2xl font-black text-indigo-600 leading-none">

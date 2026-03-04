@@ -88,9 +88,6 @@ const LiveQuizHostPlayPage = () => {
     if (!pin) return;
     try {
       await showLeaderboardMutation.mutateAsync(pin);
-      // After showing leaderboard briefly on host, we can transition to next question
-      // In a more complex app we'd have a separate Leaderboard view for Host too.
-      // For now, let's keep it simple: Host sees stats, then clicks Next.
       toast.success("Đã bật bảng xếp hạng trên máy người chơi.");
     } catch (error) {
       toast.error("Lỗi khi hiển thị bảng xếp hạng");
@@ -137,9 +134,6 @@ const LiveQuizHostPlayPage = () => {
     );
   }
 
-  // Since Host doesn't know the exact correct answer from the initial 'details' API call
-  // due to security, the Host's view of 'SHOW_RESULT' doesn't highlight correct answer
-  // locally unless we had another API for Host to fetch it.
   // We pass empty array for correct answers and rely purely on 'READ_ONLY' visual.
 
   return (
