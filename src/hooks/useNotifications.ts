@@ -4,14 +4,14 @@ import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useWebSocket } from "@/hooks/useWebSocket";
 
-export const useNotifications = (page = 0, size = 10, sort = "createdAt,desc") => {
+export const useNotifications = (pageNo = 1, pageSize = 10, sort = "createdAt:desc") => {
   const queryClient = useQueryClient();
   const { user } = useAuth(); // Only hook if user is logged in
   const { isConnected, subscribe } = useWebSocket();
 
   const query = useQuery({
-    queryKey: ["notifications", { page, size, sort }],
-    queryFn: () => notificationService.getNotifications({ page, size, sort }),
+    queryKey: ["notifications", { pageNo: pageNo, pageSize: pageSize, sort }],
+    queryFn: () => notificationService.getNotifications({ pageNo: pageNo, pageSize: pageSize, sort }),
     enabled: !!user, // Enable only when authenticated
     refetchInterval: 60000, // Refetch every minute as fallback
   });

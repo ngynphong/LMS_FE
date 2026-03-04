@@ -19,9 +19,9 @@ export const NotificationDropdown = () => {
   const { user } = useAuth();
 
   const { data: notificationData, isLoading } = useNotifications(
-    0,
+    1,
     50,
-    "createdAt,desc",
+    "createdAt:desc",
   );
   const markAllRead = useMarkAllNotificationsRead();
   const markRead = useMarkNotificationRead();
@@ -155,11 +155,13 @@ export const NotificationDropdown = () => {
                         !notif.read ? "bg-blue-50/30" : ""
                       }`}
                     >
-                      <div className="shrink-0 mt-1">
-                        <div
-                          className={`size-2.5 rounded-full ring-4 ${getNotificationColor(notif.type)}`}
-                        />
-                      </div>
+                      {!notif.read && (
+                        <div className="shrink-0 mt-1">
+                          <div
+                            className={`w-2 h-2 rounded-full mt-1.5 ring-4 animate-ping duration-1700 ${getNotificationColor(notif.type)}`}
+                          />
+                        </div>
+                      )}
                       <div className="flex-1 min-w-0">
                         <p
                           className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${getNotificationTextColor(notif.type)}`}

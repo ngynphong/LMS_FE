@@ -11,9 +11,9 @@ import { vi } from "date-fns/locale";
 const StudentNotificationPage = () => {
   const navigate = useNavigate();
   const { data: notificationData, isLoading } = useNotifications(
-    0,
+    1,
     50,
-    "createdAt,desc",
+    "createdAt:desc",
   );
   const markRead = useMarkNotificationRead();
   const markAllRead = useMarkAllNotificationsRead();
