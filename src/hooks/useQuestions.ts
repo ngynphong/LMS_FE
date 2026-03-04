@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { 
     getQuestions, 
     createQuestion, 
@@ -19,6 +19,7 @@ export const useQuestions = (params?: GetQuestionsParams) => {
     return useQuery({
         queryKey: ['questions', params],
         queryFn: () => getQuestions(params),
+        placeholderData: keepPreviousData,
     });
 };
 

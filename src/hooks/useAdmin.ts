@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import * as adminService from "@/services/adminService";
 import type { CreateTeacherRequest, ResetPasswordRequest } from "@/types/admin";
 import { toast } from "@/components/common/Toast"; // Hook to fetch dashboard stats
@@ -13,7 +13,7 @@ export const useSystemLogs = (page: number, size: number) => {
     return useQuery({
         queryKey: ['admin', 'logs', page, size],
         queryFn: () => adminService.getSystemLogs(page, size),
-        placeholderData: (previousData) => previousData, // Keep previous data while fetching new page
+        placeholderData: keepPreviousData, // Keep previous data while fetching new page
     });
 };
 

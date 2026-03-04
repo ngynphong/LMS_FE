@@ -35,6 +35,7 @@ const CourseListPage = () => {
   const {
     data: coursesData,
     isLoading: loading,
+    isFetching: fetching,
     error,
     refetch,
   } = useMyCourses({
@@ -214,7 +215,9 @@ const CourseListPage = () => {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 transition-opacity duration-200 ${fetching && !loading ? "opacity-50 pointer-events-none" : ""}`}
+        >
           {courseList.map((course) => (
             <CourseCard
               key={course.id}

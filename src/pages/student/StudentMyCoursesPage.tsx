@@ -36,6 +36,7 @@ const StudentMyCoursesPage = () => {
   const {
     data: coursesData,
     isLoading: loading,
+    isFetching: fetching,
     error,
     refetch,
   } = useStudentCourses({
@@ -194,7 +195,9 @@ const StudentMyCoursesPage = () => {
       </div>
 
       {/* Course Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+      <div
+        className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 transition-opacity duration-200 ${fetching && !loading ? "opacity-50 pointer-events-none" : ""}`}
+      >
         {loading && !courses
           ? // Skeleton loading if initial load
             Array.from({ length: 6 }).map((_, i) => (

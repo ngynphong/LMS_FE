@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { requestBatchResetPasswordApi, getBatchResetPasswordRequestsApi } from '@/services/userService';
 import { approveBatchResetPasswordApi } from '@/services/authService';
 import type { BatchResetPasswordRequest, AdminBatchResetPasswordRequest } from '@/types/user';
@@ -13,6 +13,7 @@ export const useGetBatchResetPasswordRequests = (params: { pageNo?: number; page
     return useQuery({
         queryKey: ['batch-reset-password-requests', params],
         queryFn: () => getBatchResetPasswordRequestsApi(params),
+        placeholderData: keepPreviousData,
     });
 };
 

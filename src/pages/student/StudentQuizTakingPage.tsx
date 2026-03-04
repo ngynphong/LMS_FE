@@ -39,10 +39,65 @@ const StudentQuizTakingPage = () => {
   >({});
   const [timeLeft, setTimeLeft] = useState(0);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Auto-save refs
   const lastSavedAnswersRef = useRef<Record<string, string[]>>({});
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const answersRef = useRef<Record<string, string[]>>(answers);
+
+  useEffect(() => {
+    answersRef.current = answers;
+  }, [answers]);
+
+  // Network Listeners
+  useEffect(() => {
+    const handleOffline = () => {
+      setIsOffline(true);
+      toast.warning("Bạn đang offline. Đáp án vẫn được lưu tạm trên máy", {
+        autoClose: false,
+      });
+    };
+
+    const handleOnline = () => {
+      setIsOffline(false);
+      toast.success("Đã kết nối lại mạng. Đang đồng bộ...");
+
+      if (!attempt) return;
+
+      const currentAnswers = answersRef.current;
+      const hasChanges = Object.keys(currentAnswers).some(
+        (qId) =>
+          JSON.stringify(currentAnswers[qId]) !==
+          JSON.stringify(lastSavedAnswersRef.current[qId]),
+      );
+
+      if (hasChanges) {
+        const formattedAnswers = Object.entries(currentAnswers).map(
+          ([qId, selectedIds]) => ({
+            questionId: qId,
+            selectedAnswerIds: selectedIds,
+          }),
+        );
+        saveProgress({ attemptId: attempt.id, answers: formattedAnswers })
+          .then(() => {
+            lastSavedAnswersRef.current = JSON.parse(
+              JSON.stringify(currentAnswers),
+            );
+          })
+          .catch((err) => console.error("Sync failed on reconnect", err));
+      }
+    };
+
+    window.addEventListener("offline", handleOffline);
+    window.addEventListener("online", handleOnline);
+
+    return () => {
+      window.removeEventListener("offline", handleOffline);
+      window.removeEventListener("online", handleOnline);
+    };
+  }, [attempt, saveProgress]);
 
   // Initialize Quiz
   useEffect(() => {
@@ -53,14 +108,27 @@ const StudentQuizTakingPage = () => {
         setAttempt(data);
 
         // Pre-fill answers if resuming an attempt
-        const initialAnswers: Record<string, string[]> = {};
-        if (data.questions) {
+        let initialAnswers: Record<string, string[]> = {};
+        const storageKey = `ies_quiz_answers_${data.id}`;
+        const storedAnsRaw = localStorage.getItem(storageKey);
+
+        if (storedAnsRaw) {
+          try {
+            initialAnswers = JSON.parse(storedAnsRaw);
+          } catch (e) {
+            console.error("Lỗi parse dữ liệu từ localStorage", e);
+          }
+        }
+
+        // Nếu LocalStorage trống, thử tải từ API trả về
+        if (Object.keys(initialAnswers).length === 0 && data.questions) {
           data.questions.forEach((q) => {
             if (q.selectedAnswerIds && q.selectedAnswerIds.length > 0) {
               initialAnswers[q.id] = q.selectedAnswerIds;
             }
           });
         }
+
         setAnswers(initialAnswers);
         lastSavedAnswersRef.current = JSON.parse(
           JSON.stringify(initialAnswers),
@@ -106,7 +174,7 @@ const StudentQuizTakingPage = () => {
 
   // Auto Save
   useEffect(() => {
-    if (!attempt || Object.keys(answers).length === 0) return;
+    if (!attempt || Object.keys(answers).length === 0 || isOffline) return;
 
     // Check if answers changed significantly (simple check)
     const hasChanges = Object.keys(answers).some(
@@ -124,18 +192,18 @@ const StudentQuizTakingPage = () => {
             selectedAnswerIds: selectedIds,
           }),
         );
-        saveProgress({ attemptId: attempt.id, answers: formattedAnswers }).then(
-          () => {
+        saveProgress({ attemptId: attempt.id, answers: formattedAnswers })
+          .then(() => {
             lastSavedAnswersRef.current = JSON.parse(JSON.stringify(answers));
-          },
-        );
-      }, 5000); // 2 seconds debounce
+          })
+          .catch((err) => console.error("Background sync failed", err));
+      }, 30000); // 30 seconds debounce
     }
 
     return () => {
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     };
-  }, [answers, attempt]);
+  }, [answers, attempt, isOffline, saveProgress]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -172,11 +240,47 @@ const StudentQuizTakingPage = () => {
         newSelected = [optionId];
       }
 
-      return {
+      const nextAnswers = {
         ...prev,
         [questionId]: newSelected,
       };
+
+      if (attempt) {
+        localStorage.setItem(
+          `ies_quiz_answers_${attempt.id}`,
+          JSON.stringify(nextAnswers),
+        );
+      }
+
+      return nextAnswers;
     });
+  };
+
+  const handleSaveProgress = async () => {
+    if (!attempt || Object.keys(answers).length === 0 || isOffline) {
+      if (isOffline)
+        toast.warning("Bạn đang offline. Không thể lưu ngay lúc này.");
+      else toast.info("Không có dữ liệu mới để lưu.");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const formattedAnswers = Object.entries(answers).map(
+        ([qId, selectedIds]) => ({
+          questionId: qId,
+          selectedAnswerIds: selectedIds,
+        }),
+      );
+      await saveProgress({ attemptId: attempt.id, answers: formattedAnswers });
+      lastSavedAnswersRef.current = JSON.parse(JSON.stringify(answers));
+      toast.success("Đã lưu bài làm thành công!");
+    } catch (error) {
+      toast.error("Lưu bài làm thất bại, vui lòng thử lại sau.");
+      console.error("Manual save failed", error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleCheckAnswer = async (questionId: string) => {
@@ -217,6 +321,7 @@ const StudentQuizTakingPage = () => {
         }),
       );
       await submitQuiz({ attemptId: attempt.id, answers: formattedAnswers });
+      localStorage.removeItem(`ies_quiz_answers_${attempt.id}`);
       toast.success("Nộp bài thành công!");
       navigate("/student/quizzes"); // Or result page?
     } catch (error) {
@@ -292,6 +397,13 @@ const StudentQuizTakingPage = () => {
               <MdTimer className="text-[18px]" />
               <span>{formatTime(timeLeft)}</span>
             </div>
+            <button
+              onClick={handleSaveProgress}
+              className="px-6 py-2 bg-indigo-50 text-indigo-700 font-bold rounded-lg hover:bg-indigo-100 transition-colors border border-indigo-200 disabled:opacity-50 text-sm"
+              disabled={isSaving || isOffline}
+            >
+              {isSaving ? "Đang lưu..." : "Lưu bài"}
+            </button>
             <button
               onClick={() => setIsSubmitModalOpen(true)}
               className="color-primary-bg hover:bg-primary/90 text-white px-6 py-2 rounded-lg text-sm font-bold transition-all disabled:opacity-50"

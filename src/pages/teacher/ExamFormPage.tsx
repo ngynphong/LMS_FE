@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { format, isValid } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -20,6 +20,122 @@ import { toast } from "@/components/common/Toast";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { FaCircleNotch } from "react-icons/fa";
 import Breadcrumb from "@/components/common/Breadcrumb";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+
+const DRAG_TYPE = "QUESTION_ROW";
+
+interface DraggableRowProps {
+  index: number;
+  sq: StaticQuestion;
+  cachedContent: string | undefined;
+  onMove: (from: number, to: number) => void;
+  onScoreChange: (questionId: string, score: number) => void;
+  onDelete: (questionId: string) => void;
+}
+
+const DraggableRow = ({
+  index,
+  sq,
+  cachedContent,
+  onMove,
+  onScoreChange,
+  onDelete,
+}: DraggableRowProps) => {
+  const ref = useRef<HTMLTableRowElement>(null);
+
+  const [{ isDragging }, drag, dragPreview] = useDrag({
+    type: DRAG_TYPE,
+    item: { index },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  const [{ isOver }, drop] = useDrop<
+    { index: number },
+    void,
+    { isOver: boolean }
+  >({
+    accept: DRAG_TYPE,
+    hover(item) {
+      if (item.index === index) return;
+      onMove(item.index, index);
+      item.index = index;
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+
+  dragPreview(drop(ref));
+
+  return (
+    <tr
+      ref={ref}
+      style={{ opacity: isDragging ? 0.4 : 1 }}
+      className={`transition-colors ${
+        isOver ? "bg-blue-50" : "hover:bg-slate-50"
+      }`}
+    >
+      {/* Drag Handle */}
+      <td className="px-3 py-3 w-8">
+        <div
+          ref={drag as unknown as React.Ref<HTMLDivElement>}
+          className="cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-600 flex items-center justify-center"
+          title="Kéo để sắp xếp"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <circle cx="5" cy="4" r="1.5" />
+            <circle cx="11" cy="4" r="1.5" />
+            <circle cx="5" cy="8" r="1.5" />
+            <circle cx="11" cy="8" r="1.5" />
+            <circle cx="5" cy="12" r="1.5" />
+            <circle cx="11" cy="12" r="1.5" />
+          </svg>
+        </div>
+      </td>
+      {/* Order number badge */}
+      <td className="py-3 w-8">
+        <span className="text-xs font-bold text-slate-400">{index + 1}</span>
+      </td>
+      {/* Question content */}
+      <td className="px-4 py-3">
+        <div
+          className="line-clamp-1"
+          dangerouslySetInnerHTML={{
+            __html:
+              cachedContent || sq.questionContent || "(Không có nội dung)",
+          }}
+        />
+      </td>
+      {/* Score input */}
+      <td className="px-4 py-3">
+        <input
+          type="number"
+          className="w-16 h-8 border border-slate-200 rounded px-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-400"
+          value={sq.score}
+          onChange={(e) =>
+            onScoreChange(sq.questionId, parseFloat(e.target.value))
+          }
+          min={0.5}
+          step={0.5}
+        />
+      </td>
+      {/* Delete button */}
+      <td className="px-4 py-3 text-center">
+        <button
+          type="button"
+          onClick={() => onDelete(sq.questionId)}
+          className="text-red-400 hover:text-red-600 transition-colors"
+          title="Xóa câu hỏi"
+        >
+          <span className="material-symbols-outlined text-lg">delete</span>
+        </button>
+      </td>
+    </tr>
+  );
+};
 
 const ExamFormPage = () => {
   const { id } = useParams();
@@ -33,21 +149,6 @@ const ExamFormPage = () => {
     isLoading: quizLoading,
     // error: quizError,
   } = useQuiz(id);
-
-  // Lesson Selection
-
-  // Debug logs
-  // useEffect(() => {
-  //   if (isEditMode) {
-  //     console.log("Edit Mode ID:", id);
-  //     console.log("Quiz Detail:", quizDetail);
-  //     console.log("Quiz Loading:", quizLoading);
-  //     console.log("Quiz Error:", quizError);
-  //     if (quizError && "response" in quizError) {
-  //       console.log("Error Response Data:", (quizError as any).response?.data);
-  //     }
-  //   }
-  // }, [id, isEditMode, quizDetail, quizLoading, quizError]);
 
   // Basic Form Data
   const [formData, setFormData] = useState<{
@@ -93,27 +194,27 @@ const ExamFormPage = () => {
 
   // Static Question State
   const [staticQuestions, setStaticQuestions] = useState<StaticQuestion[]>([]);
-  // Question Bank Fetching
+  // Cache content câu hỏi đã chọn — persist qua mọi trang (dùng ref để không trigger re-render)
+  const questionContentCacheRef = useRef<Record<string, string>>({});
   // Question Bank Fetching
   const [questionSearch, setQuestionSearch] = useState("");
   const [qPage, setQPage] = useState(1);
   const [qPageSize, setQPageSize] = useState(10);
   const [qLessonId, setQLessonId] = useState<string>("");
 
-  const { data: availableQuestionsResponse, isLoading: loadingQuestions } =
-    useQuestions({
-      // content: questionSearch,
-      page: qPage,
-      size: qPageSize,
-      lessonId: qLessonId || undefined, // Use specific filter, removed fallback to quiz lesson to allow wider search
-    });
+  const {
+    data: availableQuestionsResponse,
+    isLoading: loadingQuestions,
+    isFetching: fetchingQuestions,
+  } = useQuestions({
+    // content: questionSearch,
+    page: qPage,
+    size: qPageSize,
+    lessonId: qLessonId || undefined, // Use specific filter, removed fallback to quiz lesson to allow wider search
+  });
   const availableQuestions = availableQuestionsResponse?.items || [];
   const qTotalPages = availableQuestionsResponse?.totalPage || 0;
-  // const qTotalElements = availableQuestionsResponse?.totalElement || 0;
 
-  // Questions for manual selection
-  // const { data: questionsResponse } = useQuestions({ pageSize: 1000 }); // Fetch all questions for selection
-  // const questions = questionsResponse?.items || [];
   // Fetch courses
   const { data: coursesData } = useMyCourses({ pageNo: 1, pageSize: 100 });
   const courses = coursesData?.items || [];
@@ -163,11 +264,6 @@ const ExamFormPage = () => {
       if (!isEditMode || !quizDetail?.lessonItemId) return;
       if (!courses || courses.length === 0) return;
 
-      // console.log(
-      //   "Resolving hierarchy for lessonItemId:",
-      //   quizDetail.lessonItemId,
-      // );
-
       try {
         // Method 1: Try to get lessonId from lesson-items API
         const lessonItem = await getLessonItemById(quizDetail.lessonItemId);
@@ -186,13 +282,6 @@ const ExamFormPage = () => {
           return; // Success, exit early
         }
 
-        // Method 2: Fallback - Search through all courses to find the lessonItem
-        // console.log(
-        //   "lessonId not in API response, searching through",
-        //   courses.length,
-        //   "courses...",
-        // );
-
         for (const course of courses) {
           try {
             // Use getLessonsByCourseId to get lessons with lessonItems
@@ -210,12 +299,6 @@ const ExamFormPage = () => {
               );
 
               if (found) {
-                // console.log(
-                //   "✅ Found in course:",
-                //   course.id,
-                //   "lesson:",
-                //   lesson.id,
-                // );
                 setSelectedCourseId(course.id);
                 setSelectedLessonId(lesson.id);
                 return;
@@ -279,6 +362,7 @@ const ExamFormPage = () => {
           questionId: sq.id,
           score: sq.defaultScore || 1,
           order: index + 1,
+          questionContent: sq.content,
         }));
         setStaticQuestions(mappedQuestions);
       }
@@ -291,13 +375,19 @@ const ExamFormPage = () => {
       setStaticQuestions(
         staticQuestions.filter((sq) => sq.questionId !== question.id),
       );
+      // Không xóa khỏi cache — giữ lại phòng trường hợp người dùng chọn lại
     } else {
+      // Lưu content vào cache ref ngay khi chọn
+      if (question.content) {
+        questionContentCacheRef.current[question.id] = question.content;
+      }
       setStaticQuestions([
         ...staticQuestions,
         {
           questionId: question.id,
           score: question.defaultScore || 1,
           order: staticQuestions.length + 1,
+          questionContent: question.content,
         },
       ]);
     }
@@ -316,13 +406,21 @@ const ExamFormPage = () => {
         staticQuestions.filter((sq) => !displayedIds.has(sq.questionId)),
       );
     } else {
-      const newSelections = availableQuestions
-        .filter((q) => !staticQuestions.some((sq) => sq.questionId === q.id))
-        .map((q, index) => ({
-          questionId: q.id,
-          score: q.defaultScore || 1,
-          order: staticQuestions.length + index + 1,
-        }));
+      const notYetSelected = availableQuestions.filter(
+        (q) => !staticQuestions.some((sq) => sq.questionId === q.id),
+      );
+      // Lưu content tất cả câu hỏi trang này vào cache ref
+      notYetSelected.forEach((q) => {
+        if (q.content) {
+          questionContentCacheRef.current[q.id] = q.content;
+        }
+      });
+      const newSelections = notYetSelected.map((q, index) => ({
+        questionId: q.id,
+        score: q.defaultScore || 1,
+        order: staticQuestions.length + index + 1,
+        questionContent: q.content,
+      }));
       setStaticQuestions([...staticQuestions, ...newSelections]);
     }
   };
@@ -338,6 +436,17 @@ const ExamFormPage = () => {
       ),
     );
   };
+
+  // Reorder handler: kéo từ vị trí `from` sang `to`, cập nhật lại `order`
+  const moveQuestion = useCallback((from: number, to: number) => {
+    setStaticQuestions((prev) => {
+      const updated = [...prev];
+      const [moved] = updated.splice(from, 1);
+      updated.splice(to, 0, moved);
+      // Recalculate order theo vị trí mới
+      return updated.map((sq, idx) => ({ ...sq, order: idx + 1 }));
+    });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -379,7 +488,9 @@ const ExamFormPage = () => {
             },
           ]
         : [],
-      staticQuestions: formData.isDynamic ? [] : staticQuestions,
+      staticQuestions: formData.isDynamic
+        ? []
+        : staticQuestions.map(({ questionContent, ...rest }) => rest),
     };
 
     try {
@@ -940,7 +1051,9 @@ const ExamFormPage = () => {
                         <th className="px-4 py-3 w-28">Độ khó</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody
+                      className={`divide-y divide-slate-100 transition-opacity duration-200 ${fetchingQuestions && !loadingQuestions ? "opacity-50 pointer-events-none" : ""}`}
+                    >
                       {loadingQuestions ? (
                         <tr>
                           <td colSpan={4} className="p-4 text-center">
@@ -1062,83 +1175,47 @@ const ExamFormPage = () => {
 
                 {staticQuestions.length > 0 && (
                   <div className="mt-8">
-                    <h4 className="font-bold text-[#111518] mb-3">
+                    <h4 className="font-bold text-[#111518] mb-3 flex items-center gap-2">
                       Câu hỏi đã chọn ({staticQuestions.length})
+                      <span className="text-xs font-normal text-slate-400">
+                        — kéo để sắp xếp thứ tự
+                      </span>
                     </h4>
                     <div className="border rounded-lg overflow-hidden">
-                      <table className="w-full text-sm text-left">
-                        <thead className="bg-slate-50 text-slate-700 font-semibold border-b">
-                          <tr>
-                            <th className="px-4 py-3">Câu hỏi</th>
-                            <th className="px-4 py-3 w-24">Điểm</th>
-                            <th className="px-4 py-3 w-24">Thứ tự</th>
-                            <th className="px-4 py-3 w-10"></th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100">
-                          {staticQuestions.map((sq) => {
-                            const question = availableQuestions?.find(
-                              (q) => q.id === sq.questionId,
-                            );
-                            return (
-                              <tr key={sq.questionId}>
-                                <td className="px-4 py-3">
-                                  <div
-                                    className="line-clamp-1"
-                                    dangerouslySetInnerHTML={{
-                                      __html: question?.content || "Loading...",
-                                    }}
-                                  />
-                                </td>
-                                <td className="px-4 py-3">
-                                  <input
-                                    type="number"
-                                    className="w-16 h-8 border rounded px-2"
-                                    value={sq.score}
-                                    onChange={(e) =>
-                                      updateStaticQuestion(
-                                        sq.questionId,
-                                        "score",
-                                        parseFloat(e.target.value),
-                                      )
-                                    }
-                                    min={0.5}
-                                    step={0.5}
-                                  />
-                                </td>
-                                <td className="px-4 py-3">
-                                  <input
-                                    type="number"
-                                    className="w-16 h-8 border rounded px-2"
-                                    value={sq.order}
-                                    onChange={(e) =>
-                                      updateStaticQuestion(
-                                        sq.questionId,
-                                        "order",
-                                        parseInt(e.target.value),
-                                      )
-                                    }
-                                  />
-                                </td>
-                                <td className="px-4 py-3 text-center">
-                                  <button
-                                    onClick={() =>
-                                      toggleStaticQuestion({
-                                        id: sq.questionId,
-                                      } as any)
-                                    }
-                                    className="text-red-500 hover:text-red-700"
-                                  >
-                                    <span className="material-symbols-outlined text-lg">
-                                      delete
-                                    </span>
-                                  </button>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
+                      <DndProvider backend={HTML5Backend}>
+                        <table className="w-full text-sm text-left">
+                          <thead className="bg-slate-50 text-slate-700 font-semibold border-b">
+                            <tr>
+                              <th className="px-3 py-3 w-8"></th>
+                              <th className="py-3 w-8">#</th>
+                              <th className="px-4 py-3">Câu hỏi</th>
+                              <th className="px-4 py-3 w-24">Điểm</th>
+                              <th className="px-4 py-3 w-10"></th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-100">
+                            {staticQuestions.map((sq, index) => (
+                              <DraggableRow
+                                key={sq.questionId}
+                                index={index}
+                                sq={sq}
+                                cachedContent={
+                                  questionContentCacheRef.current[sq.questionId]
+                                }
+                                onMove={moveQuestion}
+                                onScoreChange={(id, score) =>
+                                  updateStaticQuestion(id, "score", score)
+                                }
+                                onDelete={(questionId) =>
+                                  toggleStaticQuestion({
+                                    id: questionId,
+                                  } as any)
+                                }
+                              />
+                            ))}
+                          </tbody>
+                        </table>
+                      </DndProvider>
                     </div>
                   </div>
                 )}

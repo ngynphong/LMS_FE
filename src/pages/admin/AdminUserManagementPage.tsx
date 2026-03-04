@@ -449,8 +449,10 @@ const AdminUserManagementPage = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
-              {loading ? (
+            <tbody
+              className={`divide-y divide-slate-100 transition-opacity duration-200 ${loading ? "opacity-50 pointer-events-none" : ""}`}
+            >
+              {!filteredUsers.length && loading ? (
                 <tr>
                   <td colSpan={7} className="p-8 text-center text-slate-500">
                     Đang tải...
