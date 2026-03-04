@@ -15,12 +15,17 @@ const AdminPasswordRequestsPage = () => {
   const [selectedEmails, setSelectedEmails] = useState<string[]>([]);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [action, setAction] = useState<"APPROVE" | "REJECT">("APPROVE");
-  const { data, isLoading, isError, error, refetch } =
-    useGetBatchResetPasswordRequests({
-      pageNo: currentPage,
-      pageSize,
-      sorts: ["createdAt,desc"], // Provide sorts cautiously, backend standard. We'll leave it empty unless needed. Let's omit sorts, wait maybe just pageNo, pageSize.
-    });
+  const {
+    data,
+    isLoading,
+    isFetching: fetching,
+    isError,
+    error,
+    refetch,
+  } = useGetBatchResetPasswordRequests({
+    pageNo: currentPage,
+    pageSize,
+  });
 
   const approveMutation = useApproveBatchResetPassword();
 
@@ -83,7 +88,10 @@ const AdminPasswordRequestsPage = () => {
 
   if (isLoading) {
     return (
-      <LoadingOverlay isLoading={true} message="Đang tải danh sách yêu cầu..." />
+      <LoadingOverlay
+        isLoading={true}
+        message="Đang tải danh sách yêu cầu..."
+      />
     );
   }
 
@@ -168,7 +176,9 @@ const AdminPasswordRequestsPage = () => {
                   <th className="px-6 py-4">Ngày sinh</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody
+                className={`divide-y divide-slate-100 transition-opacity duration-200 ${fetching && !isLoading ? "opacity-50 pointer-events-none" : ""}`}
+              >
                 {requests.map((request) => (
                   <tr
                     key={request.id}

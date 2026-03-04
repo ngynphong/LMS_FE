@@ -53,6 +53,7 @@ const AdminCourseListPage = () => {
   const {
     data,
     isLoading: loading,
+    isFetching: fetching,
     refetch,
   } = useAdminCourses({
     pageNo: page,
@@ -266,7 +267,9 @@ const AdminCourseListPage = () => {
             </div>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div
+            className={`overflow-x-auto transition-opacity duration-200 ${fetching && !loading ? "opacity-50 pointer-events-none" : ""}`}
+          >
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-200">

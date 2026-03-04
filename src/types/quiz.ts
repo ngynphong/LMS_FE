@@ -12,6 +12,8 @@ export interface StaticQuestion {
     questionId: string;
     score: number;
     order: number;
+    // Metadata for UI rendering when selecting questions
+    questionContent?: string;
 }
 
 export interface CreateQuizRequest {

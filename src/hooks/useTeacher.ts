@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import {
   getMyStudentsApi,
   importStudentApi,
@@ -56,6 +56,7 @@ export const useStudents = (
       }
       throw new Error(response.message || 'Failed to fetch students');
     },
+    placeholderData: keepPreviousData,
   });
 };
 
@@ -173,6 +174,7 @@ export const useImportJobErrors = (jobId: string | null, page: number = 0, size:
       throw new Error(response.message || 'Failed to fetch import errors');
     },
     enabled: !!jobId,
+    placeholderData: keepPreviousData,
   });
 };
 

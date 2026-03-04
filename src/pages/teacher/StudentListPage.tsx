@@ -26,13 +26,11 @@ const StudentListPage = () => {
   const [lastImportJobId, setLastImportJobId] = useState<string | null>(null);
 
   // React Query hooks
-  const { data: studentsData, isLoading: loading } = useStudents(
-    page,
-    pageSize,
-    debouncedKeyword,
-    sortBy,
-    order,
-  );
+  const {
+    data: studentsData,
+    isLoading: loading,
+    isFetching: fetching,
+  } = useStudents(page, pageSize, debouncedKeyword, sortBy, order);
 
   const { mutateAsync: importStudent, isPending: importing } =
     useImportStudents();
@@ -230,7 +228,9 @@ const StudentListPage = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody
+              className={`divide-y divide-slate-100 transition-opacity duration-200 ${fetching && !loading ? "opacity-50 pointer-events-none" : ""}`}
+            >
               {loading ? (
                 <tr>
                   <td

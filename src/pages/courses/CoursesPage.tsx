@@ -32,6 +32,7 @@ const CoursesPage = () => {
   const {
     data,
     isLoading: loading,
+    isFetching: fetching,
     error,
   } = useCourses({
     pageNo: currentPage - 1, // API is 0-indexed
@@ -172,7 +173,9 @@ const CoursesPage = () => {
             ) : (
               <>
                 {courses.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  <div
+                    className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 transition-opacity duration-200 ${fetching && !loading ? "opacity-50 pointer-events-none" : ""}`}
+                  >
                     {courses.map((course) => (
                       <CourseCard
                         key={course.id}

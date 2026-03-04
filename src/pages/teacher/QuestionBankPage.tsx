@@ -29,6 +29,7 @@ const QuestionBankPage = () => {
   const {
     data: questionsResponse,
     isLoading: loading,
+    isFetching: fetching,
     error,
   } = useQuestions({
     page: pagination.pageNo,
@@ -243,7 +244,9 @@ const QuestionBankPage = () => {
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody
+            className={`divide-y divide-slate-100 transition-opacity duration-200 ${fetching && !loading ? "opacity-50 pointer-events-none" : ""}`}
+          >
             {questions.map((question) => {
               const badge = getDifficultyBadge(question.difficulty);
               return (

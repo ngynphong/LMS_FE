@@ -9,7 +9,12 @@ const AdminSettingsPage = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const { data: logsData, isLoading, isError } = useSystemLogs(page, pageSize);
+  const {
+    data: logsData,
+    isLoading,
+    isFetching: fetching,
+    isError,
+  } = useSystemLogs(page, pageSize);
 
   const handleTabChange = (tab: "general" | "logs") => {
     setActiveTab(tab);
@@ -88,8 +93,10 @@ const AdminSettingsPage = () => {
             </div>
 
             {/* Table */}
-            <div className="overflow-x-auto">
-              {isLoading ? (
+            <div
+              className={`overflow-x-auto transition-opacity duration-200 ${fetching && !isLoading ? "opacity-50 pointer-events-none" : ""}`}
+            >
+              {isLoading && !logsData ? (
                 <div className="p-12 text-center">
                   <div className="size-8 border-2 border-[#0078bd]/30 border-t-[#0078bd] rounded-full animate-spin mx-auto mb-3"></div>
                   <p className="text-slate-500">Đang tải dữ liệu...</p>

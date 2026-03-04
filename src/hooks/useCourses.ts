@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { 
     getCourses, 
     getAdminCourses, 
@@ -24,6 +24,7 @@ export const useCourses = (params: GetCoursesParams = {}, options: { enabled?: b
         queryKey: ['courses', params],
         queryFn: () => getCourses(params),
         enabled: options.enabled,
+        placeholderData: keepPreviousData,
     });
 };
 
@@ -32,6 +33,7 @@ export const useAdminCourses = (params: GetCoursesParams = {}, ) => {
         queryKey: ['admin-courses', params],
         queryFn: () => getAdminCourses(params),
         staleTime: 30 * 1000, // 30s - tránh refetch liên tục
+        placeholderData: keepPreviousData,
     });
 };
 
@@ -46,6 +48,7 @@ export const useMyCourses = (params: {
     return useQuery({
         queryKey: ['my-courses', params],
         queryFn: () => getMyCourses(params),
+        placeholderData: keepPreviousData,
     });
 };
 
@@ -62,6 +65,7 @@ export const useStudentCourses = (params: {
         queryKey: ['student-courses', params],
         queryFn: () => getStudentCourses(params),
         enabled: options.enabled,
+        placeholderData: keepPreviousData,
     });
 };
 
