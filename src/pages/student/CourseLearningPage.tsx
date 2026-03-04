@@ -1,23 +1,17 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
 import LessonSidebar, {
   getItemTypeIcon,
   getItemTypeColor,
 } from "@/components/student/LessonSidebar";
 import { useCourseDetail } from "@/hooks/useCourses";
 import { useQuizByLessonItem } from "@/hooks/useQuizzes";
-import {
-  getLessonById,
-  getLessonItemById,
-  trackVideoHeartbeat,
-  markLessonItemComplete,
-} from "@/services/lessonService";
+import { getLessonById, getLessonItemById } from "@/services/lessonService";
 import type { ApiLesson, LessonItem } from "@/types/learningTypes";
-import PdfSlideshow from "@/components/common/PdfSlideshow";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
-import { FaCircleNotch } from "react-icons/fa";
+import CourseLearningHeader from "@/components/student/course-learning/CourseLearningHeader";
+import CourseContentViewer from "@/components/student/course-learning/CourseContentViewer";
+import CourseQuizTab from "@/components/student/course-learning/CourseQuizTab";
 
 type TabType = "overview" | "quiz";
 
@@ -52,10 +46,6 @@ const CourseLearningPage = () => {
   const [completedItemIds, setCompletedItemIds] = useState<Set<string>>(
     new Set(),
   );
-  const [markingComplete, setMarkingComplete] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const heartbeatIntervalRef = useRef<number | null>(null);
-  const lastValidTimeRef = useRef<number>(0);
 
   // UI states
   const [activeTab, setActiveTab] = useState<TabType>("overview");
@@ -163,117 +153,19 @@ const CourseLearningPage = () => {
     [lessonsWithItems, courseId, navigate, handleItemSelect],
   );
 
-  // Handle mark item complete (for TEXT, PDF, PPT)
-  const handleMarkComplete = useCallback(async () => {
-    if (!currentItem || completedItemIds.has(currentItem.id)) return;
-
-    setMarkingComplete(true);
-    try {
-      await markLessonItemComplete(currentItem.id);
-      setCompletedItemIds((prev) => new Set(prev).add(currentItem.id));
-    } catch (error) {
-      console.error("Failed to mark item complete:", error);
-    } finally {
-      setMarkingComplete(false);
-    }
-  }, [currentItem, completedItemIds, courseId, lessonsWithItems.length]);
-
-  // Video heartbeat tracking
-  const startVideoHeartbeat = useCallback(() => {
-    if (heartbeatIntervalRef.current) {
-      clearInterval(heartbeatIntervalRef.current);
-    }
-
-    heartbeatIntervalRef.current = window.setInterval(() => {
-      const video = videoRef.current;
-      if (video && currentItem && !video.paused) {
-        trackVideoHeartbeat({
-          lessonItemId: currentItem.id,
-          currentSecond: Math.floor(video.currentTime),
-          totalDuration: Math.floor(video.duration),
-        }).catch((err) => console.error("Heartbeat failed:", err));
-      }
-    }, 10000); // Every 10 seconds
-  }, [currentItem]);
-
-  const stopVideoHeartbeat = useCallback(() => {
-    if (heartbeatIntervalRef.current) {
-      clearInterval(heartbeatIntervalRef.current);
-      heartbeatIntervalRef.current = null;
-    }
+  const handleItemCompleted = useCallback((itemId: string) => {
+    setCompletedItemIds((prev) => new Set(prev).add(itemId));
   }, []);
 
-  // Handle video ended - mark as complete
-  const handleVideoEnded = useCallback(async () => {
-    stopVideoHeartbeat();
-    if (currentItem && !completedItemIds.has(currentItem.id)) {
-      try {
-        await markLessonItemComplete(currentItem.id);
-        setCompletedItemIds((prev) => new Set(prev).add(currentItem.id));
-      } catch (error) {
-        console.error("Failed to mark video complete:", error);
-      }
-    }
-  }, [
-    currentItem,
-    completedItemIds,
-    courseId,
-    lessonsWithItems.length,
-    stopVideoHeartbeat,
-  ]);
-
-  // Cleanup heartbeat on unmount or item change
-  useEffect(() => {
-    return () => {
-      stopVideoHeartbeat();
-    };
-  }, [currentItem, stopVideoHeartbeat]);
-
-  // Video handlers
-  const handleVideoLoadedMetadata = useCallback(
-    (e: React.SyntheticEvent<HTMLVideoElement>) => {
-      const video = e.currentTarget;
-      if (
-        currentItem?.type === "VIDEO" &&
-        currentItem.content?.lastWatchedSecond
-      ) {
-        video.currentTime = currentItem.content.lastWatchedSecond;
-        lastValidTimeRef.current = currentItem.content.lastWatchedSecond;
-      } else {
-        lastValidTimeRef.current = 0;
-      }
-    },
-    [currentItem],
-  );
-
-  const handleVideoSeeking = useCallback(
-    (e: React.SyntheticEvent<HTMLVideoElement>) => {
-      const video = e.currentTarget;
-      // Skip check if item is completed
-      if (
-        currentItem &&
-        (currentItem.completed || completedItemIds.has(currentItem.id))
-      )
-        return;
-
-      // If user tries to seek forward beyond what they've watched + buffer, reset to last valid position
-      if (video.currentTime > lastValidTimeRef.current + 2) {
-        video.currentTime = lastValidTimeRef.current;
-      }
-    },
-    [currentItem, completedItemIds],
-  );
-
-  const handleVideoTimeUpdate = useCallback(
-    (e: React.SyntheticEvent<HTMLVideoElement>) => {
-      const video = e.currentTarget;
-      // Only update lastValidTime if current time is greater (moving forward naturally)
-      if (video.currentTime > lastValidTimeRef.current) {
-        lastValidTimeRef.current = video.currentTime;
-      }
-    },
-    [],
-  );
+  // Determine if the current lesson is complete
+  const isCurrentLessonComplete = currentLesson
+    ? currentLesson.completed ||
+      (currentLesson.lessonItems && currentLesson.lessonItems.length > 0
+        ? currentLesson.lessonItems.every((item) =>
+            completedItemIds.has(item.id),
+          )
+        : true)
+    : false;
 
   // Navigate to next/previous lesson
   const handleNavigateLesson = (direction: "prev" | "next") => {
@@ -285,6 +177,10 @@ const CourseLearningPage = () => {
       direction === "prev" ? currentIndex - 1 : currentIndex + 1;
 
     if (targetIndex >= 0 && targetIndex < lessonsWithItems.length) {
+      if (direction === "next" && !isCurrentLessonComplete) {
+        return;
+      }
+
       const targetLesson = lessonsWithItems[targetIndex];
       if (!targetLesson.isLocked) {
         handleLessonSelect(targetLesson.id);
@@ -304,9 +200,7 @@ const CourseLearningPage = () => {
 
   // Loading state
   if (courseLoading || isLoading) {
-    return (
-      <LoadingOverlay isLoading={true} message="Đang tải bài học..." />
-    );
+    return <LoadingOverlay isLoading={true} message="Đang tải bài học..." />;
   }
 
   // Error state
@@ -329,279 +223,20 @@ const CourseLearningPage = () => {
     );
   }
 
-  // Content Viewer
-  const renderContentViewer = () => {
-    if (!currentItem) {
-      return (
-        <div className="flex items-center justify-center h-64 bg-slate-100 rounded-xl">
-          <div className="text-center text-gray-500">
-            <span className="material-symbols-outlined text-5xl mb-2">
-              play_lesson
-            </span>
-            <p>Chọn một nội dung từ danh sách bên trái để bắt đầu học</p>
-          </div>
-        </div>
-      );
-    }
-
-    if (loadingItem) {
-      return (
-        <div className="flex items-center justify-center h-64 bg-slate-100 rounded-xl">
-          <span className="animate-spin text-3xl text-blue-600">
-            <FaCircleNotch />
-          </span>
-        </div>
-      );
-    }
-
-    const content = currentItem.content;
-    const isCompleted =
-      currentItem.completed || completedItemIds.has(currentItem.id);
-
-    if (currentItem.type === "VIDEO" && content?.resourceUrl) {
-      return (
-        <div className="space-y-4">
-          <div className="rounded-xl overflow-hidden bg-black relative">
-            <video
-              ref={videoRef}
-              src={content.resourceUrl}
-              controls
-              controlsList="nodownload"
-              className="w-full aspect-video"
-              poster={course.thumbnailUrl}
-              onPlay={startVideoHeartbeat}
-              onPause={stopVideoHeartbeat}
-              onEnded={handleVideoEnded}
-              onSeeking={handleVideoSeeking}
-              onTimeUpdate={handleVideoTimeUpdate}
-              onLoadedMetadata={handleVideoLoadedMetadata}
-            />
-            {isCompleted && (
-              <div className="absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1.5 bg-green-500/90 text-white rounded-full text-sm font-medium">
-                <span className="material-symbols-outlined text-sm">check</span>
-                Đã xem
-              </div>
-            )}
-          </div>
-          {!isCompleted && (
-            <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 text-amber-700 rounded-lg text-sm">
-              <span className="material-symbols-outlined text-lg">info</span>
-              <span>
-                Xem video đến hết để hoàn thành bài học. Video không thể tua
-                nhanh.
-              </span>
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    if (currentItem.type === "PDF" && content?.resourceUrl) {
-      return (
-        <div className="space-y-4">
-          <div className="rounded-xl overflow-hidden border border-slate-200">
-            <PdfSlideshow fileUrl={content.resourceUrl} />
-          </div>
-          {!isCompleted && (
-            <button
-              onClick={handleMarkComplete}
-              disabled={markingComplete}
-              className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
-            >
-              {markingComplete ? (
-                <>
-                  <span className="animate-spin text-lg">
-                    <FaCircleNotch />
-                  </span>
-                  Đang xử lý...
-                </>
-              ) : (
-                <>
-                  <span className="material-symbols-outlined text-lg">
-                    check_circle
-                  </span>
-                  Đánh dấu đã học xong
-                </>
-              )}
-            </button>
-          )}
-          {isCompleted && (
-            <div className="flex items-center justify-center gap-2 py-3 bg-green-100 text-green-700 rounded-lg font-medium">
-              <span className="material-symbols-outlined text-lg">check</span>
-              Đã hoàn thành
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    if (currentItem.type === "PPT" && content?.resourceUrl) {
-      return (
-        <div className="space-y-4">
-          <div className="rounded-xl overflow-hidden border border-slate-200">
-            <PdfSlideshow fileUrl={content.resourceUrl} />
-          </div>
-          {!isCompleted && (
-            <button
-              onClick={handleMarkComplete}
-              disabled={markingComplete}
-              className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
-            >
-              {markingComplete ? (
-                <>
-                  <span className="animate-spin text-lg">
-                    <FaCircleNotch />
-                  </span>
-                  Đang xử lý...
-                </>
-              ) : (
-                <>
-                  <span className="material-symbols-outlined text-lg">
-                    check_circle
-                  </span>
-                  Đánh dấu đã học xong
-                </>
-              )}
-            </button>
-          )}
-          {isCompleted && (
-            <div className="flex items-center justify-center gap-2 py-3 bg-green-100 text-green-700 rounded-lg font-medium">
-              <span className="material-symbols-outlined text-lg">check</span>
-              Đã hoàn thành
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    if (currentItem.type === "TEXT") {
-      return (
-        <div className="space-y-4">
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <div className="prose prose-sm max-w-none">
-              {content?.textContent || "Không có nội dung văn bản"}
-            </div>
-          </div>
-          {!isCompleted && (
-            <button
-              onClick={handleMarkComplete}
-              disabled={markingComplete}
-              className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
-            >
-              {markingComplete ? (
-                <>
-                  <span className="animate-spin text-lg">
-                    <FaCircleNotch />
-                  </span>
-                  Đang xử lý...
-                </>
-              ) : (
-                <>
-                  <span className="material-symbols-outlined text-lg">
-                    check_circle
-                  </span>
-                  Đánh dấu đã học xong
-                </>
-              )}
-            </button>
-          )}
-          {isCompleted && (
-            <div className="flex items-center justify-center gap-2 py-3 bg-green-100 text-green-700 rounded-lg font-medium">
-              <span className="material-symbols-outlined text-lg">check</span>
-              Đã hoàn thành
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    return (
-      <div className="flex items-center justify-center h-64 bg-slate-100 rounded-xl">
-        <div className="text-center text-gray-500">
-          <span className="material-symbols-outlined text-5xl mb-2">
-            description
-          </span>
-          <p>Không thể hiển thị nội dung này</p>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-white">
       {/* Header */}
-      <header className="flex h-16 shrink-0 items-center justify-between border-b rounded-lg border-gray-200 bg-white px-4 md:px-6 py-3 shadow-sm z-10">
-        <div className="flex items-center gap-3 md:gap-6">
-          <button
-            onClick={() => setIsLessonSidebarOpen(true)}
-            className="lg:hidden text-gray-500 hover:color-primary"
-          >
-            <span className="material-symbols-outlined">menu_open</span>
-          </button>
-
-          {!isDesktopSidebarOpen && (
-            <button
-              onClick={() => setIsDesktopSidebarOpen(true)}
-              className="hidden lg:block text-gray-500 hover:color-primary transition-colors mr-2"
-              title="Mở rộng nội dung"
-            >
-              <span className="material-symbols-outlined">menu</span>
-            </button>
-          )}
-
-          <Link
-            to="/student/my-courses"
-            className="flex items-center gap-2 text-sm font-medium text-[#4A5568] hover:color-primary transition-colors"
-          >
-            <span className="material-symbols-outlined text-[18px]">
-              chevron_left
-            </span>
-            <span className="hidden sm:inline">Quay lại</span>
-          </Link>
-          <div className="hidden sm:block h-6 w-px bg-gray-200"></div>
-          <h2 className="text-base font-semibold leading-tight tracking-tight text-[#1A2B3C] line-clamp-1 max-w-[150px] sm:max-w-xs md:max-w-md">
-            {course.name}
-          </h2>
-        </div>
-
-        {/* Progress */}
-        <div className="hidden lg:flex flex-col items-center gap-1 min-w-[200px]">
-          <div className="flex w-full justify-between text-[11px] text-[#4A5568]">
-            <span>Tiến độ học tập</span>
-            <span className="font-bold color-primary">{progressPercent}%</span>
-          </div>
-          <div className="h-1.5 w-full rounded-full bg-gray-100">
-            <div
-              className="h-full rounded-full color-primary-bg transition-all"
-              style={{ width: `${progressPercent}%` }}
-            />
-          </div>
-        </div>
-
-        {/* Navigation */}
-        <div className="flex items-center gap-2 md:gap-4">
-          <button
-            onClick={() => handleNavigateLesson("prev")}
-            disabled={currentLessonIndex === 0}
-            className="flex items-center gap-1 text-sm font-medium text-[#4A5568] hover:text-[#1A2B3C] px-2 md:px-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span className="hidden sm:inline">Bài trước</span>
-            <span className="sm:hidden material-symbols-outlined">
-              chevron_left
-            </span>
-          </button>
-          <button
-            onClick={() => handleNavigateLesson("next")}
-            disabled={currentLessonIndex === lessonsWithItems.length - 1}
-            className="flex min-w-[40px] md:min-w-[120px] cursor-pointer items-center justify-center rounded-lg color-primary-bg px-3 md:px-4 py-2 text-sm font-bold text-white shadow-md hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span className="hidden sm:inline">Bài tiếp theo</span>
-            <span className="sm:hidden material-symbols-outlined">
-              chevron_right
-            </span>
-          </button>
-        </div>
-      </header>
+      <CourseLearningHeader
+        courseName={course.name}
+        progressPercent={progressPercent}
+        currentLessonIndex={currentLessonIndex}
+        totalLessons={lessonsWithItems.length}
+        isCurrentLessonComplete={isCurrentLessonComplete}
+        onNavigateLesson={handleNavigateLesson}
+        isDesktopSidebarOpen={isDesktopSidebarOpen}
+        onToggleDesktopSidebar={() => setIsDesktopSidebarOpen(true)}
+        onToggleMobileSidebar={() => setIsLessonSidebarOpen(true)}
+      />
 
       {/* Main Content */}
       <div className="flex flex-1 overflow-hidden relative">
@@ -623,7 +258,13 @@ const CourseLearningPage = () => {
         <main className="flex flex-1 flex-col overflow-y-auto bg-[#f5f7fa] w-full">
           <div className="w-full max-w-[1100px] mx-auto p-4 md:p-6 flex flex-col gap-4">
             {/* Content Viewer */}
-            {renderContentViewer()}
+            <CourseContentViewer
+              currentItem={currentItem}
+              courseThumbnailUrl={course.thumbnailUrl}
+              loadingItem={loadingItem}
+              completedItemIds={completedItemIds}
+              onItemCompleted={handleItemCompleted}
+            />
 
             {/* Current Item Info */}
             {currentItem && (
@@ -651,8 +292,6 @@ const CourseLearningPage = () => {
               <div className="flex gap-6 sm:gap-8 border-b border-gray-200 scrollbar-hide -mx-4 sm:mx-0 px-0 sm:px-2">
                 {[
                   { id: "overview", label: "Tổng quan" },
-                  // { id: "materials", label: "Tài liệu" },
-                  // { id: "discussion", label: "Thảo luận" },
                   { id: "quiz", label: "Bài kiểm tra" },
                 ].map((tab) => (
                   <button
@@ -685,128 +324,11 @@ const CourseLearningPage = () => {
                 )}
 
                 {activeTab === "quiz" && (
-                  <div className="max-w-2xl space-y-4">
-                    {quizLoading ? (
-                      <div className="flex justify-center p-8">
-                        <span className="animate-spin text-3xl color-primary">
-                          <FaCircleNotch />
-                        </span>
-                      </div>
-                    ) : lessonQuizzes && lessonQuizzes.length > 0 ? (
-                      lessonQuizzes.map((quiz) => (
-                        <div
-                          key={quiz.id}
-                          className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow"
-                        >
-                          <div className="flex justify-between items-start mb-4">
-                            <div>
-                              <div className="flex items-center gap-2 mb-1">
-                                <h3 className="text-lg font-semibold text-[#1A2B3C]">
-                                  {quiz.title}
-                                </h3>
-                                <span
-                                  className={`text-xs px-2 py-0.5 rounded font-bold uppercase ${
-                                    quiz.type === "PRACTICE"
-                                      ? "bg-indigo-100 text-indigo-700"
-                                      : "bg-red-100 text-red-700"
-                                  }`}
-                                >
-                                  {quiz.type === "PRACTICE"
-                                    ? "Luyện tập"
-                                    : "Kiểm tra"}
-                                </span>
-                              </div>
-                              <span className="text-sm text-gray-500 mb-2">
-                                {quiz.description}
-                              </span>
-                              <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-500">
-                                <span className="flex items-center gap-1">
-                                  <span className="material-symbols-outlined text-base">
-                                    timer
-                                  </span>
-                                  {quiz.durationInMinutes} phút
-                                </span>
-                                <span className="flex items-center gap-1">
-                                  <span className="material-symbols-outlined text-base">
-                                    help
-                                  </span>
-                                  {quiz.totalQuestions} câu hỏi
-                                </span>
-                                {(quiz.maxAttempts || 0) > 0 && (
-                                  <span className="flex items-center gap-1">
-                                    <span className="material-symbols-outlined text-base">
-                                      repeat
-                                    </span>
-                                    {quiz.maxAttempts} lần
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-base text-gray-500 font-semibold">
-                              Hạn chót:
-                            </span>
-                            <p className="text-sm text-gray-500">
-                              {quiz.closeTime
-                                ? format(
-                                    new Date(quiz.closeTime),
-                                    "HH:mm 'ngày' dd/MM/yyyy (EEEE)",
-                                    {
-                                      locale: vi,
-                                    },
-                                  )
-                                : "Chưa đặt"}
-                            </p>
-                          </div>
-
-                          {/* Actions Section */}
-                          <div className="flex items-center gap-3 mt-4 pt-4 border-t border-gray-100 flex-wrap">
-                            {(() => {
-                              const isClosed =
-                                quiz.closeTime &&
-                                new Date(quiz.closeTime) < new Date();
-
-                              return (
-                                <>
-                                  {/* Primary Action: Start Immediately */}
-                                  <button
-                                    onClick={() => handleStartQuiz(quiz.id)}
-                                    disabled={isClosed || false}
-                                    className={`px-5 py-2.5 text-white font-bold rounded-xl shadow-sm transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed ${
-                                      isClosed
-                                        ? "bg-gray-400 hover:bg-gray-400"
-                                        : "color-primary-bg hover:bg-[#006da8] hover:shadow-md"
-                                    }`}
-                                  >
-                                    <span className="material-symbols-outlined text-[20px]">
-                                      {isClosed ? "lock" : "play_arrow"}
-                                    </span>
-                                    {isClosed ? "Đã đóng" : "Bắt đầu làm bài"}
-                                  </button>
-
-                                  {isClosed && (
-                                    <span className="text-red-500 text-sm font-medium">
-                                      Bài quiz này đã đóng
-                                    </span>
-                                  )}
-                                </>
-                              );
-                            })()}
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="flex items-center justify-center h-48 bg-slate-50 rounded-xl border border-dashed border-slate-300">
-                        <div className="text-center text-gray-500">
-                          <span className="material-symbols-outlined text-4xl mb-2 opacity-50">
-                            quiz
-                          </span>
-                          <p>Không có bài kiểm tra nào cho nội dung này.</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  <CourseQuizTab
+                    lessonQuizzes={lessonQuizzes as any}
+                    quizLoading={quizLoading}
+                    onStartQuiz={handleStartQuiz}
+                  />
                 )}
               </div>
             </div>
