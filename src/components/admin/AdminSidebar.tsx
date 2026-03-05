@@ -1,6 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import { MdDashboard, MdSettings } from "react-icons/md";
-import { FaChalkboardTeacher, FaUsers, FaKey } from "react-icons/fa";
+import {
+  FaChalkboardTeacher,
+  FaUsers,
+  FaKey,
+  FaBullhorn,
+} from "react-icons/fa";
 import { FaCalendar, FaTimes } from "react-icons/fa";
 import { useAuth } from "@/hooks/useAuth";
 import { ConfirmationModal } from "@/components/common/ConfirmationModal";
@@ -45,6 +50,11 @@ const navItems: NavItem[] = [
     path: "/admin/settings",
     icon: <MdSettings className="text-xl" />,
     label: "Cài đặt hệ thống",
+  },
+  {
+    path: "/admin/banners",
+    icon: <FaBullhorn className="text-xl" />,
+    label: "Quản lý Banner",
   },
 ];
 

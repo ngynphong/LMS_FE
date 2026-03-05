@@ -7,6 +7,7 @@ import ImportQuestionsModal from "@/components/question/ImportQuestionsModal";
 import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import PaginationControl from "@/components/common/PaginationControl";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
+import { toast } from "@/components/common/Toast";
 
 const QuestionBankPage = () => {
   const [pagination, setPagination] = useState({
@@ -80,7 +81,7 @@ const QuestionBankPage = () => {
         setDeleteModal({ isOpen: false, questionId: null });
       } catch (error) {
         console.error("Failed to delete question:", error);
-        alert("Xóa câu hỏi thất bại");
+        toast.error("Xóa câu hỏi thất bại");
       }
     }
   };
