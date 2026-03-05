@@ -62,11 +62,12 @@ export const useFinishLiveQuiz = () => {
     });
 };
 
-export const useLiveQuizResults = (pin?: string) => {
+export const useLiveQuizResults = (pin?: string, refetchInterval: number | false | ((query: any) => number | false) = false) => {
     return useQuery({
         queryKey: ['live-quiz-results', pin],
         queryFn: () => getLiveQuizResults(pin!),
         enabled: !!pin,
+        refetchInterval,
     });
 };
 

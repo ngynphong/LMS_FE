@@ -1,4 +1,4 @@
-import axiosInstance from "@/config/axios";
+import axiosInstance, { publicAxios } from "@/config/axios";
 import type {
     LiveQuizHostResponse,
     LiveQuizDetails,
@@ -54,28 +54,28 @@ export const getLiveQuizResults = async (pin: string): Promise<LiveQuizResult[]>
 // ==================== Player (Student) APIs ====================
 
 export const checkPinInfo = async (pin: string): Promise<{ valid: boolean }> => {
-    const response = await axiosInstance.get<{ code: number; message: string; data: { valid: boolean } }>(`${BASE_URL}/${pin}/check`);
+    const response = await publicAxios.get<{ code: number; message: string; data: { valid: boolean } }>(`${BASE_URL}/${pin}/check`);
     return response.data.data;
 };
 
 export const joinLiveQuiz = async (data: LiveQuizJoinRequest): Promise<LiveQuizJoinResponse> => {
-    const response = await axiosInstance.post<{ code: number; message: string; data: LiveQuizJoinResponse }>(`${BASE_URL}/join`, data);
+    const response = await publicAxios.post<{ code: number; message: string; data: LiveQuizJoinResponse }>(`${BASE_URL}/join`, data);
     return response.data.data;
 };
 
 export const submitLiveAnswer = async (pin: string, data: LiveQuizSubmitRequest): Promise<LiveQuizSubmitResponse> => {
-    const response = await axiosInstance.post<{ code: number; message: string; data: LiveQuizSubmitResponse }>(`${BASE_URL}/${pin}/submit`, data);
+    const response = await publicAxios.post<{ code: number; message: string; data: LiveQuizSubmitResponse }>(`${BASE_URL}/${pin}/submit`, data);
     return response.data.data;
 };
 
 // ==================== General APIs ====================
 
 export const getLiveQuizState = async (pin: string): Promise<LiveQuizStateResponse> => {
-    const response = await axiosInstance.get<{ code: number; message: string; data: LiveQuizStateResponse }>(`${BASE_URL}/${pin}/state`);
+    const response = await publicAxios.get<{ code: number; message: string; data: LiveQuizStateResponse }>(`${BASE_URL}/${pin}/state`);
     return response.data.data;
 };
 
 export const getLiveQuizPlayers = async (pin: string): Promise<LiveQuizPlayer[]> => {
-    const response = await axiosInstance.get<{ code: number; message: string; data: LiveQuizPlayer[] }>(`${BASE_URL}/${pin}/players`);
+    const response = await publicAxios.get<{ code: number; message: string; data: LiveQuizPlayer[] }>(`${BASE_URL}/${pin}/players`);
     return response.data.data;
 };

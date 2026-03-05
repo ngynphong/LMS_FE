@@ -41,6 +41,7 @@ export interface LiveQuizSubmitRequest {
     questionId: string;
     answerId: string;
     timeTakenMs: number;
+    maxTimeMs: number;
 }
 
 export interface LiveQuizSubmitResponse {

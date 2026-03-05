@@ -31,11 +31,22 @@ const LiveQuizPlayPage = () => {
   const [answerFeedback, setAnswerFeedback] = useState<{
     correct: boolean;
     points: number;
+    pendingTotalScore?: number;
   } | null>(null);
 
   // Refs for state accessed in WS event handler to avoid unnecessary dependencies
+  const answerFeedbackRef = useRef<{
+    correct: boolean;
+    points: number;
+    pendingTotalScore?: number;
+  } | null>(null);
+
   const selectedAnswerIdRef = useRef<string | null>(null);
   const isTimeOutRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    answerFeedbackRef.current = answerFeedback;
+  }, [answerFeedback]);
 
   useEffect(() => {
     selectedAnswerIdRef.current = selectedAnswerId;
@@ -71,7 +82,9 @@ const LiveQuizPlayPage = () => {
       setCorrectAnswerIds([]);
       setDisplayMode("INTERACTIVE");
       setAnswerFeedback(null);
-      startTimer(gameState.currentQuestion.timeLimitSeconds);
+      setTimeRemaining(20);
+      setIsTimeOut(false);
+      startTimer(20);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState]);
@@ -126,13 +139,24 @@ const LiveQuizPlayPage = () => {
         setCorrectAnswerIds([]);
         setDisplayMode("INTERACTIVE");
         setAnswerFeedback(null);
-        startTimer(questionData.timeLimitSeconds);
+        setTimeRemaining(20);
+        setIsTimeOut(false);
+        startTimer(20);
         break;
 
       case "SHOW_ANSWER":
         if (timerRef.current) clearInterval(timerRef.current);
         setCorrectAnswerIds(lastPlayerEvent.data.correctAnswerIds);
         setDisplayMode("SHOW_RESULT");
+
+        // If they guessed right, update their official total score now
+        if (
+          answerFeedbackRef.current &&
+          answerFeedbackRef.current.correct &&
+          answerFeedbackRef.current.pendingTotalScore !== undefined
+        ) {
+          setScore(answerFeedbackRef.current.pendingTotalScore);
+        }
 
         // If they didn't answer in time
         if (!selectedAnswerIdRef.current && isTimeOutRef.current) {
@@ -167,13 +191,16 @@ const LiveQuizPlayPage = () => {
           questionId: currentQuestion.id,
           answerId,
           timeTakenMs,
+          maxTimeMs: 20000,
         },
       });
 
-      setScore(res.totalScore);
+      // Do not update main score immediately to build suspense
+      // setScore(res.totalScore);
       setAnswerFeedback({
         correct: res.correct,
         points: res.scoreEarned,
+        pendingTotalScore: res.totalScore,
       });
     } catch (error) {
       toast.error("Không thể ghi nhận câu trả lời");
@@ -213,6 +240,17 @@ const LiveQuizPlayPage = () => {
       {/* Main Game Area */}
       {currentQuestion ? (
         <div className="w-full flex-1 flex flex-col justify-center relative">
+          {/* Timer Large Display */}
+          {displayMode === "INTERACTIVE" && !isTimeOut && (
+            <div className="absolute top-8 left-8 w-20 h-20 md:w-24 md:h-24 bg-white rounded-full shadow-lg flex items-center justify-center border-4 border-indigo-100 z-20">
+              <span
+                className={`text-3xl md:text-4xl font-black ${timeRemaining < 5 ? "text-red-500 animate-pulse" : "text-slate-800"}`}
+              >
+                {Math.ceil(timeRemaining)}
+              </span>
+            </div>
+          )}
+
           {/* Feedback Overlay while waiting for teacher to show answer */}
           {selectedAnswerId && displayMode === "INTERACTIVE" && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm rounded-2xl animate-fade-in">
@@ -252,7 +290,7 @@ const LiveQuizPlayPage = () => {
             selectedAnswerId={selectedAnswerId}
             correctAnswerIds={correctAnswerIds}
             timeRemaining={timeRemaining}
-            totalTime={currentQuestion.timeLimitSeconds}
+            totalTime={20}
             disabled={isTimeOut || submitAnswerMutation.isPending}
           />
         </div>

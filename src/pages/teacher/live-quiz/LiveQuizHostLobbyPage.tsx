@@ -96,8 +96,8 @@ const LiveQuizHostLobbyPage = () => {
             <p className="text-gray-500 font-bold text-xl mb-2">
               Truy cập để tham gia:
             </p>
-            <p className="text-3xl md:text-5xl font-black text-gray-800 mb-8 border-b-2 border-gray-100 pb-8 tracking-tight">
-              www.codedy.vn
+            <p className="text-2xl md:text-2xl font-black text-gray-800 mb-8 border-b-2 border-gray-100 pb-8 tracking-tight">
+              iesfocus.edu.vn/join
             </p>
 
             <p className="text-gray-500 font-bold text-xl mb-4">

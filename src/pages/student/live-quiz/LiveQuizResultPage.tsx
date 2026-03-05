@@ -23,9 +23,9 @@ const LiveQuizResultPage = () => {
 
   const [playerId, setPlayerId] = useState<string>("");
 
-  // If game ended, fetch final results from API
-  // If not ended (just in between questions), rely on WebSocket leaderboard prop
-  const resultsQuery = useLiveQuizResults(isGameEnded ? pin : undefined);
+  // If game ended, fetch final results.
+  // If not ended (just in between questions), poll every 3 seconds to recover from missed WebSocket events.
+  const resultsQuery = useLiveQuizResults(pin, isGameEnded ? false : 3000);
 
   const { lastPlayerEvent, leaderboard } = useLiveQuizSocket(
     // Only connect socket if game hasn't ended completely
@@ -60,7 +60,7 @@ const LiveQuizResultPage = () => {
 
   // Format data depending on source
   let displayLeaderboard: LiveQuizLeaderboardItem[] = [];
-  if (isGameEnded && resultsQuery.data) {
+  if (resultsQuery.data && resultsQuery.data.length > 0) {
     displayLeaderboard = resultsQuery.data.map((r) => ({
       rank: r.rankPosition,
       studentId: r.playerId,
@@ -134,7 +134,9 @@ const LiveQuizResultPage = () => {
         className="w-full max-w-3xl animate-fade-in-up"
         style={{ animationDelay: "0.2s" }}
       >
-        {isGameEnded && resultsQuery.isLoading ? (
+        {isGameEnded &&
+        resultsQuery.isLoading &&
+        displayLeaderboard.length === 0 ? (
           <div className="text-center py-10">Đang tải kết quả...</div>
         ) : (
           <LiveLeaderboard
