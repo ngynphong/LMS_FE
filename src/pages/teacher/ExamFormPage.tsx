@@ -216,7 +216,7 @@ const ExamFormPage = () => {
   const qTotalPages = availableQuestionsResponse?.totalPage || 0;
 
   // Fetch courses
-  const { data: coursesData } = useMyCourses({ pageNo: 1, pageSize: 100 });
+  const { data: coursesData } = useMyCourses({ pageNo: 1, pageSize: 50 });
   const courses = coursesData?.items || [];
   const { data: courseDetail } = useCourseDetail(selectedCourseId || undefined);
   const lessons = courseDetail?.lessons || [];

@@ -43,12 +43,12 @@ const LiveQuizHostResultPage = () => {
 
       {/* Header */}
       <div className="w-full max-w-5xl flex justify-between items-center z-10 mb-8 md:mb-12">
-        <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-linear-to-r from-yellow-400 to-yellow-200 drop-shadow-md">
+        <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-linear-to-r from-yellow-400 to-yellow-200 drop-shadow-md p-1">
           Tổng Kết Trận Đấu
         </h1>
         <button
           onClick={() => navigate("/teacher/quizzes")}
-          className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-6 py-2.5 rounded-xl font-bold transition-all"
+          className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-6 py-2.5 rounded-xl font-bold transition-all cursor-pointer"
         >
           Đóng Phòng
         </button>

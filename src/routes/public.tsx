@@ -1,4 +1,5 @@
 import NotFoundPage from "@/pages/error/NotFoundPage";
+import LiveQuizJoinPage from "@/pages/student/live-quiz/LiveQuizJoinPage";
 import React from "react";
 import type { RouteObject } from "react-router-dom";
 
@@ -55,6 +56,10 @@ const publicRoutes: RouteObject[] = [
   {
     path: "*",
     element: <NotFoundPage />,
+  },
+  {
+    path: "/join",
+    element: <LiveQuizJoinPage />,
   },
 ];
 

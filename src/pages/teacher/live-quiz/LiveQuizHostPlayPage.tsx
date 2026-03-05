@@ -4,11 +4,12 @@ import { useLiveQuizSocket } from "@/hooks/useLiveQuizSocket";
 import {
   useLiveQuizDetails,
   useShowLiveAnswer,
-  useShowLiveLeaderboard,
   useNextLiveQuestion,
   useFinishLiveQuiz,
+  useLiveQuizPlayers,
 } from "@/hooks/useLiveQuiz";
 import { LiveQuestionDisplay } from "@/components/live-quiz/LiveQuestionDisplay";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import { toast } from "@/components/common/Toast";
 import type { LiveQuestion } from "@/types/live-quiz";
 
@@ -18,11 +19,17 @@ const LiveQuizHostPlayPage = () => {
 
   const { data: quizDetails, isLoading } = useLiveQuizDetails(pin);
   const showAnswerMutation = useShowLiveAnswer();
-  const showLeaderboardMutation = useShowLiveLeaderboard();
   const nextQuestionMutation = useNextLiveQuestion();
   const finishQuizMutation = useFinishLiveQuiz();
 
+  const { data: initialPlayers } = useLiveQuizPlayers(pin, true);
   const { isConnected, playersList } = useLiveQuizSocket(pin || null, "HOST");
+
+  // Combined player count (socket + initial fetch)
+  const totalPlayersCount = Math.max(
+    playersList.length,
+    initialPlayers?.length || 0,
+  );
 
   // Controls State
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
@@ -35,14 +42,16 @@ const LiveQuizHostPlayPage = () => {
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Modal State
+  const [isEndGameModalOpen, setIsEndGameModalOpen] = useState(false);
+
   // Initialization and Question Sync
   useEffect(() => {
     if (quizDetails && quizDetails.questions.length > 0) {
       setCurrentQuestion(quizDetails.questions[currentQuestionIndex]);
+      setTimeRemaining(20);
       if (gameState === "QUESTION") {
-        startTimer(
-          quizDetails.questions[currentQuestionIndex].timeLimitSeconds,
-        );
+        startTimer(20);
       }
     }
   }, [quizDetails, currentQuestionIndex, gameState]);
@@ -69,6 +78,14 @@ const LiveQuizHostPlayPage = () => {
     };
   }, []);
 
+  // Auto-reveal answer when time runs out
+  useEffect(() => {
+    if (gameState === "QUESTION" && timeRemaining <= 0.1 && currentQuestion) {
+      handleShowAnswer();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeRemaining, gameState]); // DO NOT depend on currentQuestion to avoid re-triggering when question switches
+
   // Actions
   const handleShowAnswer = async () => {
     if (!pin || !currentQuestion) return;
@@ -81,16 +98,6 @@ const LiveQuizHostPlayPage = () => {
       if (timerRef.current) clearInterval(timerRef.current);
     } catch (error) {
       toast.error("Không thể hiển thị đáp án");
-    }
-  };
-
-  const handleShowLeaderboard = async () => {
-    if (!pin) return;
-    try {
-      await showLeaderboardMutation.mutateAsync(pin);
-      toast.success("Đã bật bảng xếp hạng trên máy người chơi.");
-    } catch (error) {
-      toast.error("Lỗi khi hiển thị bảng xếp hạng");
     }
   };
 
@@ -114,12 +121,16 @@ const LiveQuizHostPlayPage = () => {
     }
   };
 
-  const handleFinishGame = async () => {
+  const handleFinishGame = () => {
+    setIsEndGameModalOpen(true);
+  };
+
+  const confirmFinishGame = async () => {
     if (!pin) return;
-    if (!window.confirm("Bạn có chắc chắn muốn kết thúc trò chơi này?")) return;
 
     try {
       await finishQuizMutation.mutateAsync(pin);
+      setIsEndGameModalOpen(false);
       navigate(`/teacher/live-quiz/result/${pin}`);
     } catch (error) {
       toast.error("Không thể kết thúc game");
@@ -146,7 +157,7 @@ const LiveQuizHostPlayPage = () => {
           </div>
           <div className="flex items-center gap-2 text-slate-300 font-medium">
             <span className="material-symbols-outlined">group</span>
-            {playersList.length} Học sinh
+            {totalPlayersCount} Học sinh
           </div>
         </div>
 
@@ -167,7 +178,7 @@ const LiveQuizHostPlayPage = () => {
         <div className="flex gap-2">
           <button
             onClick={handleFinishGame}
-            className="px-4 py-2 rounded-lg bg-red-500/10 text-red-500 font-bold hover:bg-red-500/20 transition-colors border border-red-500/30"
+            className="px-4 py-2 rounded-lg bg-red-500/10 text-red-500 font-bold hover:bg-red-500/20 transition-colors border border-red-500/30 cursor-pointer"
           >
             Kết thúc Sớm
           </button>
@@ -192,7 +203,7 @@ const LiveQuizHostPlayPage = () => {
             question={currentQuestion}
             mode="READ_ONLY"
             timeRemaining={gameState === "QUESTION" ? timeRemaining : 0}
-            totalTime={currentQuestion.timeLimitSeconds}
+            totalTime={20}
           />
         </div>
       </div>
@@ -203,25 +214,16 @@ const LiveQuizHostPlayPage = () => {
           <button
             onClick={handleShowAnswer}
             disabled={showAnswerMutation.isPending}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-bold py-4 px-12 rounded-xl shadow-lg transition-transform active:scale-95 disabled:bg-slate-400"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-bold py-4 px-12 rounded-xl shadow-lg transition-transform active:scale-95 disabled:bg-slate-400 cursor-pointer"
           >
             Hiện Đáp Án
           </button>
         ) : (
           <>
             <button
-              onClick={handleShowLeaderboard}
-              disabled={showLeaderboardMutation.isPending}
-              className="bg-purple-600 hover:bg-purple-700 text-white text-lg font-bold py-4 px-8 rounded-xl shadow-md transition-transform active:scale-95 disabled:bg-slate-400 flex items-center gap-2"
-            >
-              <span className="material-symbols-outlined">leaderboard</span>
-              Bật BXH trên máy học sinh
-            </button>
-
-            <button
               onClick={handleNextQuestion}
               disabled={nextQuestionMutation.isPending}
-              className="bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold py-4 px-12 rounded-xl shadow-md transition-transform active:scale-95 disabled:bg-slate-400 flex items-center gap-2"
+              className="bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold py-4 px-12 rounded-xl shadow-md transition-transform active:scale-95 disabled:bg-slate-400 flex items-center gap-2 cursor-pointer"
             >
               {currentQuestionIndex + 1 >=
               (quizDetails?.questions.length || 0) ? (
@@ -241,6 +243,18 @@ const LiveQuizHostPlayPage = () => {
           </>
         )}
       </div>
+
+      <ConfirmationModal
+        isOpen={isEndGameModalOpen}
+        onClose={() => setIsEndGameModalOpen(false)}
+        onConfirm={confirmFinishGame}
+        title="Kết thúc trò chơi"
+        message="Bạn có chắc chắn muốn kết thúc trò chơi này sớm không? Hành động này không thể hoàn tác."
+        confirmLabel="Kết thúc"
+        cancelLabel="Hủy"
+        variant="danger"
+        isLoading={finishQuizMutation.isPending}
+      />
     </div>
   );
 };
