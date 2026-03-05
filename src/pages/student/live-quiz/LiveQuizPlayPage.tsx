@@ -33,6 +33,18 @@ const LiveQuizPlayPage = () => {
     points: number;
   } | null>(null);
 
+  // Refs for state accessed in WS event handler to avoid unnecessary dependencies
+  const selectedAnswerIdRef = useRef<string | null>(null);
+  const isTimeOutRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    selectedAnswerIdRef.current = selectedAnswerId;
+  }, [selectedAnswerId]);
+
+  useEffect(() => {
+    isTimeOutRef.current = isTimeOut;
+  }, [isTimeOut]);
+
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const questionStartTimeRef = useRef<number>(0);
 
@@ -44,14 +56,21 @@ const LiveQuizPlayPage = () => {
 
   // Fallback: fetch current question from API when WS connected but question was missed
   // (happens when lobby navigates here after receiving START_GAME - the event is consumed before play page subscribes)
+  // Fallback: fetch current question from API when WS connected but question was missed
+  // Constantly poll every 2 seconds if currentQuestion is null to recover from missed events
   const { data: gameState } = useLiveQuizState(
     pin,
-    isConnected && !currentQuestion,
+    isConnected,
+    !currentQuestion ? 2000 : false,
   );
 
   useEffect(() => {
     if (gameState?.currentQuestion && !currentQuestion) {
       setCurrentQuestion(gameState.currentQuestion);
+      setSelectedAnswerId(null);
+      setCorrectAnswerIds([]);
+      setDisplayMode("INTERACTIVE");
+      setAnswerFeedback(null);
       startTimer(gameState.currentQuestion.timeLimitSeconds);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -116,7 +135,7 @@ const LiveQuizPlayPage = () => {
         setDisplayMode("SHOW_RESULT");
 
         // If they didn't answer in time
-        if (!selectedAnswerId && isTimeOut) {
+        if (!selectedAnswerIdRef.current && isTimeOutRef.current) {
           setAnswerFeedback({ correct: false, points: 0 });
         }
         break;
@@ -129,14 +148,14 @@ const LiveQuizPlayPage = () => {
         navigate(`/student/live-quiz/result/${pin}?ended=true`);
         break;
     }
-  }, [lastPlayerEvent, navigate, pin, selectedAnswerId, isTimeOut]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastPlayerEvent, navigate, pin]);
 
   const handleAnswerSelect = async (answerId: string) => {
     if (!currentQuestion || !playerId || !pin || selectedAnswerId || isTimeOut)
       return;
 
     const timeTakenMs = Date.now() - questionStartTimeRef.current;
-    const maxTimeMs = currentQuestion.timeLimitSeconds * 1000;
 
     setSelectedAnswerId(answerId);
 
@@ -148,7 +167,6 @@ const LiveQuizPlayPage = () => {
           questionId: currentQuestion.id,
           answerId,
           timeTakenMs,
-          maxTimeMs,
         },
       });
 

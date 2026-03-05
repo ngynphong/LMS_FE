@@ -92,11 +92,12 @@ export const useSubmitLiveAnswer = () => {
 
 // ==================== General Hooks ====================
 
-export const useLiveQuizState = (pin?: string, enabled: boolean = false) => {
+export const useLiveQuizState = (pin?: string, enabled: boolean = false, refetchInterval: number | false | ((query: any) => number | false) = false) => {
     return useQuery({
         queryKey: ['live-quiz-state', pin],
         queryFn: () => getLiveQuizState(pin!),
         enabled: !!pin && enabled,
+        refetchInterval,
     });
 };
 
