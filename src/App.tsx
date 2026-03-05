@@ -4,6 +4,7 @@ import ScrollToTop from "@/components/common/ScrollToTop";
 import routes from "@/routes";
 import "@/App.css";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
+import { PublicBannerWrapper } from "./components/banners/public/PublicBannerWrapper";
 
 function AppRoutes() {
   const element = useRoutes(routes);
@@ -14,6 +15,7 @@ function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <PublicBannerWrapper />
       <div className="min-h-screen font-['Lexend'] text-[#111418]">
         <React.Suspense
           fallback={

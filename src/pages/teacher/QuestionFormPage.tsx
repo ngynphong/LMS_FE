@@ -12,6 +12,7 @@ import {
 } from "@/hooks/useQuestions";
 import { useMyCourses, useCourseDetail } from "@/hooks/useCourses";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
+import { toast } from "@/components/common/Toast";
 
 const QuestionFormPage = () => {
   const { id } = useParams();
@@ -147,11 +148,11 @@ const QuestionFormPage = () => {
       .filter((ans) => ans.content.trim() !== "");
 
     if (answers.length < 2) {
-      alert("Vui lòng nhập ít nhất 2 đáp án hợp lệ.");
+      toast.error("Vui lòng nhập ít nhất 2 đáp án hợp lệ.");
       return;
     }
     if (!answers.some((a) => a.correct)) {
-      alert("Vui lòng chọn ít nhất 1 đáp án đúng.");
+      toast.error("Vui lòng chọn ít nhất 1 đáp án đúng.");
       return;
     }
 
@@ -173,7 +174,7 @@ const QuestionFormPage = () => {
       }
       navigate("/teacher/questions");
     } catch (error) {
-      alert("Có lỗi xảy ra khi lưu câu hỏi");
+      toast.error("Có lỗi xảy ra khi lưu câu hỏi");
       console.error(error);
     }
   };

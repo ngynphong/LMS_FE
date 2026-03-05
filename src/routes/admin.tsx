@@ -25,6 +25,23 @@ const AdminPasswordRequestsPage = React.lazy(
   () => import("@/pages/admin/AdminPasswordRequestsPage"),
 );
 
+// Banner Admin Pages
+const BannerListPage = React.lazy(() =>
+  import("@/pages/admin/banners/BannerListPage").then((module) => ({
+    default: module.BannerListPage,
+  })),
+);
+const BannerCreatePage = React.lazy(() =>
+  import("@/pages/admin/banners/BannerCreatePage").then((module) => ({
+    default: module.BannerCreatePage,
+  })),
+);
+const BannerEditPage = React.lazy(() =>
+  import("@/pages/admin/banners/BannerEditPage").then((module) => ({
+    default: module.BannerEditPage,
+  })),
+);
+
 /**
  * Admin Routes
  * Protected routes for authenticated admin users
@@ -73,6 +90,18 @@ const adminRoutes: RouteObject[] = [
       {
         path: "settings",
         element: <AdminSettingsPage />,
+      },
+      {
+        path: "banners",
+        element: <BannerListPage />,
+      },
+      {
+        path: "banners/create",
+        element: <BannerCreatePage />,
+      },
+      {
+        path: "banners/edit/:id",
+        element: <BannerEditPage />,
       },
       {
         path: "reports",
