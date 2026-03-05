@@ -1,6 +1,8 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { useCallback } from 'react';
 import { bannerService } from '../services/bannerService';
-import type { BannerTrackingRequest } from '../types/banner.types';
+import type { BannerTrackingRequest, Banner } from '../types/banner.types';
+import { useBannerWebSocket } from './useBannerWebSocket';
 
 export const useBanners = () => {
   // const queryClient = useQueryClient();
@@ -18,6 +20,12 @@ export const useBanners = () => {
     gcTime: 10 * 60 * 1000, 
     retry: 2,
   });
+
+  // Listen for real-time updates
+  useBannerWebSocket(useCallback(() => {
+    console.log('[useBanners] Refreshing banners due to WebSocket event');
+    refetch();
+  }, [refetch]));
 
   // Track event mutation
   const trackEventMutation = useMutation({
@@ -53,7 +61,7 @@ export const useBanners = () => {
   };
 
   const getFilteredBanners = () => {
-    const allBanners = bannersResponse?.data || [];
+    const allBanners = (bannersResponse?.data as Banner[]) || [];
     
     // Retrieve user from localStorage
     const userStr = localStorage.getItem('user');

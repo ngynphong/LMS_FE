@@ -55,15 +55,14 @@ export const TopBannerBar: React.FC<TopBannerBarProps> = ({ banner }) => {
     }
   };
 
-  // Adjust body padding so banner doesn't overlap absolute/fixed top headers
+  // Adjust body padding and CSS variables so banner doesn't overlap header
   useEffect(() => {
-    if (isVisible) {
-      document.body.style.paddingTop = "60px"; // Adjust based on your banner height
-    } else {
-      document.body.style.paddingTop = "0px";
-    }
+    const bannerHeight = isVisible ? "60px" : "0px";
+    document.documentElement.style.setProperty("--banner-height", bannerHeight);
+    document.body.style.paddingTop = bannerHeight;
 
     return () => {
+      document.documentElement.style.setProperty("--banner-height", "0px");
       document.body.style.paddingTop = "0px";
     };
   }, [isVisible]);
@@ -77,50 +76,76 @@ export const TopBannerBar: React.FC<TopBannerBarProps> = ({ banner }) => {
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -100, opacity: 0 }}
-          transition={{ type: "spring", damping: 20, stiffness: 300 }}
-          className="fixed top-0 left-0 right-0 w-full z-100 cursor-pointer overflow-hidden group shadow-md"
+          transition={{
+            type: "spring",
+            damping: 25,
+            stiffness: 200,
+            mass: 0.8,
+          }}
+          className="fixed top-0 left-0 right-0 w-full z-100 cursor-pointer overflow-hidden group border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.1)]"
           onClick={handleClick}
           role="banner"
           aria-label={banner.ariaLabel || banner.title}
         >
-          {/* Background Image or Gradient */}
+          {/* Enhanced Background with Mesh Gradient and Glassmorphism */}
           {imageUrl ? (
-            <div
-              className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-500 group-hover:scale-105"
-              style={{ backgroundImage: `url(${imageUrl})` }}
-            />
+            <>
+              <div
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 group-hover:scale-110"
+                style={{ backgroundImage: `url(${imageUrl})` }}
+              />
+              <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
+            </>
           ) : (
-            <div className="absolute inset-0 bg-linear-to-r from-blue-600 to-indigo-700" />
+            <div className="absolute inset-0 bg-linear-to-r from-[#1e40af] via-[#3b82f6] to-[#1e40af] bg-size-[200%_auto] animate-[gradient_8s_ease_infinite]" />
           )}
 
-          {/* Overlay to ensure text readability if there's an image */}
-          {imageUrl && <div className="absolute inset-0 bg-black/40" />}
+          {/* Glass Overlay Effect */}
+          <div className="absolute inset-0 bg-white/5 backdrop-blur-md opacity-50" />
 
-          <div className="relative px-4 py-3 md:py-2 flex items-center justify-between min-h-[50px] md:min-h-[60px] max-w-7xl mx-auto">
-            <div className="flex items-center gap-3 flex-1">
-              <div className="hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm text-white shrink-0 animate-pulse">
-                <Bell size={16} />
+          <div className="relative px-6 py-4 md:py-3 flex items-center justify-between min-h-[50px] md:min-h-[56px] max-w-7xl mx-auto">
+            <div className="flex items-center gap-4 flex-1">
+              <div className="hidden sm:flex items-center justify-center w-9 h-9 rounded-xl bg-white/15 backdrop-blur-sm text-white shrink-0 border border-white/20 shadow-inner group-hover:scale-105 transition-transform">
+                <Bell size={18} className="animate-bounce" />
               </div>
 
-              <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-3 text-white">
-                <span className="font-semibold text-sm md:text-base line-clamp-1">
+              <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4 text-white">
+                <h3 className="font-bold text-sm md:text-lg tracking-tight line-clamp-1 drop-shadow-sm">
                   {banner.title}
-                </span>
+                </h3>
                 {banner.description && (
-                  <span className="text-xs md:text-sm text-white/90 line-clamp-1 border-l-0 md:border-l border-white/30 md:pl-3">
-                    {banner.description}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <div className="hidden md:block w-1 h-4 bg-white/30 rounded-full" />
+                    <p className="text-xs md:text-sm text-white/80 line-clamp-1 font-medium italic">
+                      {banner.description}
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
 
-            <button
-              onClick={handleClose}
-              className="ml-4 p-1.5 rounded-full text-white/80 hover:text-white hover:bg-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-white/50"
-              aria-label="Close banner"
-            >
-              <X size={18} />
-            </button>
+            <div className="flex items-center gap-4">
+              <button className="hidden md:flex px-4 py-1.5 bg-white text-[#1e40af] text-sm font-bold rounded-lg hover:bg-blue-50 transition-all shadow-lg active:scale-95">
+                Khám phá ngay
+              </button>
+
+              <button
+                onClick={handleClose}
+                className="p-2 rounded-xl text-white/70 hover:text-white hover:bg-white/20 transition-all focus:outline-none border border-transparent hover:border-white/20"
+                aria-label="Close banner"
+              >
+                <X size={20} />
+              </button>
+            </div>
+          </div>
+
+          {/* Simple slide highlight animation */}
+          <div className="absolute bottom-0 left-0 h-[2px] bg-white/30 w-full overflow-hidden">
+            <motion.div
+              className="h-full bg-white/60 w-1/3"
+              animate={{ x: ["-100%", "300%"] }}
+              transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+            />
           </div>
         </motion.div>
       )}

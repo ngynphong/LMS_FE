@@ -31,13 +31,16 @@ const Header = () => {
   return (
     <>
       {/* Top Bar */}
-      <div className="w-full color-primary-bg text-white py-2 px-4 md:px-10 z-50 text-xs flex justify-end md:justify-between items-center fixed transition-all duration-300">
+      <div
+        style={{ top: "var(--banner-height, 0px)" }}
+        className="w-full color-primary-bg text-white py-2 px-4 md:px-10 z-60 text-xs flex justify-end md:justify-between items-center fixed transition-all duration-300"
+      >
         <div className="hidden md:flex gap-6 items-center">
           <span className="flex items-center gap-1">
             <span className="material-symbols-outlined text-[14px]">
               <PhoneCall animateOnHover size={18} />
             </span>{" "}
-            (+84) 096 524 8115
+            (+84) 96 524 8115
           </span>
           <span className="flex items-center gap-1">
             <span className="material-symbols-outlined text-[14px]">
@@ -82,7 +85,10 @@ const Header = () => {
       </div>
 
       {/* Main Header */}
-      <header className="w-full px-4 md:px-10 mb-8 md:mb-12 mt-2 sticky top-14 z-40">
+      <header
+        style={{ top: "calc(var(--banner-height, 0px) + 3.5rem)" }}
+        className="w-full px-4 md:px-10 mb-8 md:mb-12 mt-2 sticky z-40"
+      >
         <div className="max-w-[1280px] mx-auto bg-white  rounded-2xl shadow-lg border border-white/40 px-4 md:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4 lg:gap-12">
             {/* Mobile Menu Button */}

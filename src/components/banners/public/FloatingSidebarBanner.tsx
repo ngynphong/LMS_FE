@@ -110,7 +110,7 @@ export const FloatingSidebarBanner: React.FC<FloatingSidebarBannerProps> = ({
           initial="hidden"
           animate={isExpanded ? "expanded" : "collapsed"}
           exit="exit"
-          className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-999 bg-white shadow-2xl overflow-hidden cursor-pointer"
+          className="fixed bottom-24 sm:bottom-28 right-4 sm:right-6 z-9999 bg-white shadow-2xl overflow-hidden cursor-pointer"
           style={{
             backgroundImage: isExpanded
               ? "none"
