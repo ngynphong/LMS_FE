@@ -13,8 +13,8 @@ export const getCourses = async (params: GetCoursesParams): Promise<CourseListRe
                 pageNo: params.pageNo || 0,
                 pageSize: params.pageSize || 10,
                 sorts: params.sorts,
-                keyword: params.keyword,
-                visibility: params.visibility
+                keyword: params.keyword || undefined,
+                visibility: params.visibility || undefined
             }
         });
         return response.data;
@@ -30,9 +30,9 @@ export const getAdminCourses = async (params: GetCoursesParams): Promise<CourseL
                 pageNo: params.pageNo || 0,
                 pageSize: params.pageSize || 10,
                 sorts: params.sorts,
-                keyword: params.keyword,
-                status: params.status,
-                visibility: params.visibility
+                keyword: params.keyword || undefined,
+                status: params.status || undefined,
+                visibility: params.visibility || undefined
             }
         });
         return response.data;
@@ -92,9 +92,9 @@ export const getMyCourses = async (params?: {
       pageNo: params?.pageNo || 0,
       pageSize: params?.pageSize || 10,
       sorts: params?.sorts || 'createdAt:desc',
-      keyword: params?.keyword,
-      status: params?.status,
-      visibility: params?.visibility
+      keyword: params?.keyword || undefined,
+      status: params?.status || undefined,
+      visibility: params?.visibility || undefined
     }
   });
   return response.data.data;
@@ -115,9 +115,9 @@ export const getStudentCourses = async (params?: {
       pageNo: params?.pageNo || 0,
       pageSize: params?.pageSize || 10,
       sorts: params?.sorts || 'createdAt:desc',
-      keyword: params?.keyword,
-      status: params?.status,
-      visibility: params?.visibility,
+      keyword: params?.keyword || undefined,
+      status: params?.status || undefined,
+      visibility: params?.visibility || undefined,
       completed: params?.completed
     }
   });
