@@ -5,6 +5,7 @@ import { useSubmitLiveAnswer, useLiveQuizState } from "@/hooks/useLiveQuiz";
 import { LiveQuestionDisplay } from "@/components/live-quiz/LiveQuestionDisplay";
 import type { LiveQuestion } from "@/types/live-quiz";
 import { toast } from "@/components/common/Toast";
+import { WifiOff, User, Loader2, CheckCircle2, XCircle } from "lucide-react";
 
 const LiveQuizPlayPage = () => {
   const { pin } = useParams<{ pin: string }>();
@@ -209,21 +210,29 @@ const LiveQuizPlayPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center p-4 md:p-6 pb-24">
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center p-4 md:p-6 pb-24 relative overflow-hidden">
+      {/* Decorative */}
+      <div className="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-[#1E90FF]/5 blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[#1E90FF]/5 blur-[100px] pointer-events-none" />
+
       {/* Top Bar Navigation/Info */}
-      <div className="w-full max-w-5xl flex justify-between items-center mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-        <div className="flex items-center gap-3 font-bold text-gray-700">
-          <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center">
-            <span className="material-symbols-outlined text-xl">face</span>
+      <div className="w-full max-w-5xl flex justify-between items-center mb-6 bg-white/80 backdrop-blur-md p-4 rounded-2xl shadow-sm border border-slate-200 z-10">
+        <div className="flex items-center gap-3 font-bold text-slate-700">
+          <div className="w-12 h-12 rounded-xl bg-[#1E90FF]/10 text-[#1E90FF] flex items-center justify-center">
+            <User className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-sm text-gray-500 font-medium">Player</p>
-            <p className="text-lg leading-none">{playerName}</p>
+            <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider">
+              Người chơi
+            </p>
+            <p className="text-lg leading-none tracking-tight">{playerName}</p>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-sm text-gray-500 font-medium">Điểm số</p>
-          <p className="text-2xl font-black text-indigo-600 leading-none">
+          <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider">
+            Điểm số
+          </p>
+          <p className="text-3xl font-black text-[#1E90FF] leading-none tracking-tight">
             {Math.round(score)}
           </p>
         </div>
@@ -231,34 +240,23 @@ const LiveQuizPlayPage = () => {
 
       {/* Connection Status indicator */}
       {!isConnected && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg z-50 flex items-center gap-2 animate-pulse">
-          <span className="material-symbols-outlined text-sm">wifi_off</span>
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-500/90 backdrop-blur text-white px-5 py-2 rounded-full text-sm font-bold shadow-lg z-50 flex items-center gap-2 animate-pulse">
+          <WifiOff className="w-4 h-4" />
           Mất kết nối
         </div>
       )}
 
       {/* Main Game Area */}
       {currentQuestion ? (
-        <div className="w-full flex-1 flex flex-col justify-center relative">
-          {/* Timer Large Display */}
-          {displayMode === "INTERACTIVE" && !isTimeOut && (
-            <div className="absolute top-8 left-8 w-20 h-20 md:w-24 md:h-24 bg-white rounded-full shadow-lg flex items-center justify-center border-4 border-indigo-100 z-20">
-              <span
-                className={`text-3xl md:text-4xl font-black ${timeRemaining < 5 ? "text-red-500 animate-pulse" : "text-slate-800"}`}
-              >
-                {Math.ceil(timeRemaining)}
-              </span>
-            </div>
-          )}
-
+        <div className="w-full max-w-5xl flex-1 flex flex-col justify-center relative z-10 gap-6">
           {/* Feedback Overlay while waiting for teacher to show answer */}
           {selectedAnswerId && displayMode === "INTERACTIVE" && (
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm rounded-2xl animate-fade-in">
-              <div className="w-24 h-24 mb-6 rounded-full border-4 border-indigo-500 border-t-transparent animate-spin"></div>
-              <h2 className="text-3xl font-bold text-gray-800">
-                Đã nhận câu trả lời!
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/60 backdrop-blur-md rounded-[2.5rem] animate-fade-in border border-white/50 shadow-2xl">
+              <Loader2 className="w-16 h-16 text-[#1E90FF] animate-spin mb-6" />
+              <h2 className="text-3xl font-black text-slate-800 tracking-tight">
+                Đã ghi nhận!
               </h2>
-              <p className="text-lg text-gray-600 mt-2">
+              <p className="text-lg text-slate-500 mt-2 font-medium">
                 Vui lòng đợi giáo viên hiện đáp án...
               </p>
             </div>
@@ -267,16 +265,18 @@ const LiveQuizPlayPage = () => {
           {/* Result Feedback Overlay after teacher shows answer */}
           {displayMode === "SHOW_RESULT" && answerFeedback && (
             <div
-              className={`absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 px-8 py-4 rounded-full shadow-2xl flex items-center gap-4 animate-bounce-short ${answerFeedback.correct ? "bg-green-500 text-white" : "bg-red-500 text-white"}`}
+              className={`absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-4 animate-bounce-short border-2 ${answerFeedback.correct ? "bg-green-50 border-green-200 text-green-700" : "bg-red-50 border-red-200 text-red-700"}`}
             >
-              <span className="material-symbols-outlined text-4xl font-bold">
-                {answerFeedback.correct ? "check_circle" : "cancel"}
-              </span>
+              {answerFeedback.correct ? (
+                <CheckCircle2 className="w-10 h-10 text-green-500" />
+              ) : (
+                <XCircle className="w-10 h-10 text-red-500" />
+              )}
               <div>
-                <h3 className="text-2xl font-black">
+                <h3 className="text-2xl font-black tracking-tight">
                   {answerFeedback.correct ? "Chính xác!" : "Sai rồi!"}
                 </h3>
-                <p className="font-medium opacity-90">
+                <p className="font-bold opacity-90 text-lg">
                   +{Math.round(answerFeedback.points)} điểm
                 </p>
               </div>
@@ -295,16 +295,14 @@ const LiveQuizPlayPage = () => {
           />
         </div>
       ) : (
-        <div className="flex-1 flex flex-col items-center justify-center text-center">
-          <div className="w-20 h-20 mb-6 bg-indigo-100 rounded-full flex items-center justify-center">
-            <span className="material-symbols-outlined text-4xl text-indigo-500 animate-spin-slow">
-              sync
-            </span>
+        <div className="flex-1 flex flex-col items-center justify-center text-center z-10">
+          <div className="w-24 h-24 mb-6 bg-[#1E90FF]/10 rounded-full flex items-center justify-center shadow-inner">
+            <Loader2 className="w-10 h-10 text-[#1E90FF] animate-spin" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 className="text-3xl font-black text-slate-800 tracking-tight">
             Đang chuẩn bị câu hỏi...
           </h2>
-          <p className="text-gray-500 mt-2">
+          <p className="text-slate-500 mt-3 text-lg font-medium">
             Hãy chú ý lên màn hình của giáo viên.
           </p>
         </div>

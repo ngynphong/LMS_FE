@@ -48,7 +48,7 @@ const LiveQuizHostResultPage = () => {
         </h1>
         <button
           onClick={() => navigate("/teacher/quizzes")}
-          className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-6 py-2.5 rounded-xl font-bold transition-all"
+          className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-6 py-2.5 rounded-xl font-bold transition-all cursor-pointer"
         >
           Đóng Phòng
         </button>

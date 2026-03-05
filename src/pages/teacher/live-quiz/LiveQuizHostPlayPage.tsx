@@ -178,7 +178,7 @@ const LiveQuizHostPlayPage = () => {
         <div className="flex gap-2">
           <button
             onClick={handleFinishGame}
-            className="px-4 py-2 rounded-lg bg-red-500/10 text-red-500 font-bold hover:bg-red-500/20 transition-colors border border-red-500/30"
+            className="px-4 py-2 rounded-lg bg-red-500/10 text-red-500 font-bold hover:bg-red-500/20 transition-colors border border-red-500/30 cursor-pointer"
           >
             Kết thúc Sớm
           </button>
@@ -214,7 +214,7 @@ const LiveQuizHostPlayPage = () => {
           <button
             onClick={handleShowAnswer}
             disabled={showAnswerMutation.isPending}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-bold py-4 px-12 rounded-xl shadow-lg transition-transform active:scale-95 disabled:bg-slate-400"
+            className="bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-bold py-4 px-12 rounded-xl shadow-lg transition-transform active:scale-95 disabled:bg-slate-400 cursor-pointer"
           >
             Hiện Đáp Án
           </button>
@@ -223,7 +223,7 @@ const LiveQuizHostPlayPage = () => {
             <button
               onClick={handleNextQuestion}
               disabled={nextQuestionMutation.isPending}
-              className="bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold py-4 px-12 rounded-xl shadow-md transition-transform active:scale-95 disabled:bg-slate-400 flex items-center gap-2"
+              className="bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold py-4 px-12 rounded-xl shadow-md transition-transform active:scale-95 disabled:bg-slate-400 flex items-center gap-2 cursor-pointer"
             >
               {currentQuestionIndex + 1 >=
               (quizDetails?.questions.length || 0) ? (
