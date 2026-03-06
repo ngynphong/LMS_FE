@@ -25,14 +25,24 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   useEffect(() => {
     // Chỉ connect khi đã authenticated và có token
     if (isAuthenticated && token) {
-      // console.log("Initializing WebSocket connection...");
 
       socketService.connect(token, () => {
         setIsConnected(true);
+        const connectTimestamp = Date.now(); // Lưu thời điểm kết nối thành công
 
         // Subscribe to force-logout topic immediately after connection
         socketService.subscribe("/user/queue/force-logout", (data) => {
           if (data.type === "FORCE_LOGOUT") {
+            const timeSinceConnect = Date.now() - connectTimestamp;
+            if (timeSinceConnect < 2000) {
+              // console.warn(
+              //   "[WS] Đã bỏ qua message FORCE_LOGOUT do nhận được quá sớm sau khi kết nối (có thể do Refresh trang/Reconnect):",
+              //   timeSinceConnect,
+              //   "ms",
+              // );
+              return;
+            }
+
             // Hiển thị modal thay vì alert
             setLogoutModal({
               isOpen: true,
