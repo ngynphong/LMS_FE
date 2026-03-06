@@ -3,6 +3,7 @@ import { type StompSubscription } from "@stomp/stompjs";
 import { useAuth } from "@/hooks/useAuth";
 import { socketService } from "@/services/websocketService";
 import { WebSocketContext } from "@/contexts/WebSocketContext";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 
 interface WebSocketProviderProps {
   children: React.ReactNode;
@@ -13,6 +14,13 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 }) => {
   const { token, isAuthenticated } = useAuth();
   const [isConnected, setIsConnected] = useState(false);
+  const [logoutModal, setLogoutModal] = useState<{
+    isOpen: boolean;
+    message: string;
+  }>({
+    isOpen: false,
+    message: "",
+  });
 
   useEffect(() => {
     // Chỉ connect khi đã authenticated và có token
@@ -21,6 +29,17 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
       socketService.connect(token, () => {
         setIsConnected(true);
+
+        // Subscribe to force-logout topic immediately after connection
+        socketService.subscribe("/user/queue/force-logout", (data) => {
+          if (data.type === "FORCE_LOGOUT") {
+            // Hiển thị modal thay vì alert
+            setLogoutModal({
+              isOpen: true,
+              message: data.message || "Tài khoản đã đăng nhập ở thiết bị khác",
+            });
+          }
+        });
       });
 
       return () => {
@@ -51,9 +70,31 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     socketService.send(destination, body);
   }, []);
 
+  const handleLogoutConfirm = () => {
+    // Disconnect WebSocket
+    socketService.disconnect();
+
+    // Xóa token, user và redirect về login
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    // Chuyển hướng
+    window.location.href = "/login";
+  };
+
   return (
     <WebSocketContext.Provider value={{ isConnected, subscribe, sendMessage }}>
       {children}
+      <ConfirmationModal
+        isOpen={logoutModal.isOpen}
+        title="Thông báo đăng nhập"
+        message={logoutModal.message}
+        onConfirm={handleLogoutConfirm}
+        onClose={handleLogoutConfirm}
+        confirmLabel="Đăng nhập lại"
+        cancelLabel="Đóng"
+        variant="warning"
+      />
     </WebSocketContext.Provider>
   );
 };
