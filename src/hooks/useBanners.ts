@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { bannerService } from '../services/bannerService';
 import type { BannerTrackingRequest, Banner } from '../types/banner.types';
 import { useBannerWebSocket } from './useBannerWebSocket';
+import { saveLastShownTime, saveDismissedTime } from '../utils/bannerUtils';
 
 export const useBanners = () => {
   // const queryClient = useQueryClient();
@@ -28,7 +29,7 @@ export const useBanners = () => {
   }, [refetch]));
 
   // Track event mutation
-  const trackEventMutation = useMutation({
+  const { mutate: mutateTrackEvent } = useMutation({
     mutationFn: ({ bannerId, eventType }: { bannerId: string; eventType: BannerTrackingRequest['eventType'] }) => {
       // Create request payload
       const request: BannerTrackingRequest = {
@@ -56,9 +57,16 @@ export const useBanners = () => {
     }
   });
 
-  const trackEvent = (bannerId: string, eventType: BannerTrackingRequest['eventType']) => {
-    trackEventMutation.mutate({ bannerId, eventType });
-  };
+  const trackEvent = useCallback((bannerId: string, eventType: BannerTrackingRequest['eventType']) => {
+    mutateTrackEvent({ bannerId, eventType });
+    
+    // Đồng bộ trạng thái lưu LocalStorage
+    if (eventType === 'IMPRESSION') {
+      saveLastShownTime(bannerId);
+    } else if (eventType === 'CLOSE') {
+      saveDismissedTime(bannerId);
+    }
+  }, [mutateTrackEvent]);
 
   const getFilteredBanners = () => {
     const allBanners = (bannersResponse?.data as Banner[]) || [];
@@ -81,6 +89,11 @@ export const useBanners = () => {
 
     return allBanners.filter(banner => {
       // 1. Check Visibility Target
+      // If PUBLIC, everyone can see it regardless of role
+      if (banner.targetVisibility === 'PUBLIC') {
+        return true;
+      }
+
       // If it's explicitly AUTHENTICATED but user is not logged in, hide it.
       if (banner.targetVisibility === 'AUTHENTICATED' && !isAuthenticated) {
         return false;

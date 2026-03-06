@@ -11,13 +11,17 @@ interface HeroBadgeProps {
 
 export const HeroBadge: React.FC<HeroBadgeProps> = ({ banner }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [hasTracked, setHasTracked] = useState(false);
   const { trackEvent } = useBanners();
 
   // For HeroBadge, impression can be tracked immediately or on view
   // Let's assume impression is recorded when the component mounts
   React.useEffect(() => {
-    trackEvent(banner.id, "IMPRESSION");
-  }, [banner.id, trackEvent]);
+    if (!hasTracked) {
+      trackEvent(banner.id, "IMPRESSION");
+      setHasTracked(true);
+    }
+  }, [banner.id, trackEvent, hasTracked]);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
