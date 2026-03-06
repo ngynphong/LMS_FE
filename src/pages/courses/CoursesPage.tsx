@@ -15,6 +15,11 @@ const CoursesPage = () => {
   const [visibilityFilter, setVisibilityFilter] = useState<
     "" | "PUBLIC" | "PRIVATE"
   >("");
+  const [teacherName, setTeacherName] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [sortOrder, setSortOrder] = useState<"desc" | "asc">("desc");
+
   const coursesPerPage = 9;
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
@@ -38,9 +43,12 @@ const CoursesPage = () => {
     pageNo: currentPage - 1, // API is 0-indexed
     pageSize: coursesPerPage,
     keyword: debouncedSearchQuery,
-    sorts: ["createdAt:desc"], // Correct: array of strings
-    status: "PUBLISHED", // Public courses should be published
-    visibility: visibilityFilter || undefined, // Filter by visibility if selected
+    sorts: [`createdAt:${sortOrder}`],
+    status: "PUBLISHED",
+    visibility: visibilityFilter || undefined,
+    teacherName: teacherName || undefined,
+    fromDate: fromDate || undefined,
+    toDate: toDate || undefined,
   });
 
   // Student Enrollment Data
@@ -77,6 +85,25 @@ const CoursesPage = () => {
 
   const handleVisibilityChange = (value: "" | "PUBLIC" | "PRIVATE") => {
     setVisibilityFilter(value);
+    setCurrentPage(1);
+  };
+
+  const handleApplyFilters = () => {
+    setCurrentPage(1);
+  };
+
+  const handleClearFilters = () => {
+    setVisibilityFilter("");
+    setSearchQuery("");
+    setSortOrder("desc");
+    setTeacherName("");
+    setFromDate("");
+    setToDate("");
+    setCurrentPage(1);
+  };
+
+  const handleSortChange = (value: "desc" | "asc") => {
+    setSortOrder(value);
     setCurrentPage(1);
   };
 
@@ -131,7 +158,16 @@ const CoursesPage = () => {
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar Filter */}
-          <FilterSidebar />
+          <FilterSidebar
+            teacherName={teacherName}
+            setTeacherName={setTeacherName}
+            fromDate={fromDate}
+            setFromDate={setFromDate}
+            toDate={toDate}
+            setToDate={setToDate}
+            onApply={handleApplyFilters}
+            onClearFilters={handleClearFilters}
+          />
 
           {/* Content Grid */}
           <div className="flex-1">
@@ -148,12 +184,25 @@ const CoursesPage = () => {
                       e.target.value as "" | "PUBLIC" | "PRIVATE",
                     )
                   }
-                  className="px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-1 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF] bg-white"
+                  className="px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-1 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF] bg-white cursor-pointer"
                 >
                   <option value="">Tất cả</option>
                   <option value="PUBLIC">Công khai</option>
                   <option value="PRIVATE">Riêng tư</option>
                 </select>
+
+                {/* Sort Order */}
+                <select
+                  value={sortOrder}
+                  onChange={(e) =>
+                    handleSortChange(e.target.value as "desc" | "asc")
+                  }
+                  className="px-3 py-2 text-sm border border-slate-200 rounded-lg focus:ring-1 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF] bg-white cursor-pointer"
+                >
+                  <option value="desc">Mới nhất</option>
+                  <option value="asc">Cũ nhất</option>
+                </select>
+
                 <span className="text-sm text-gray-500">
                   Tìm thấy {totalCourses} khóa học
                 </span>
@@ -189,6 +238,7 @@ const CoursesPage = () => {
                           handleCourseClick(course.id, course.visibility)
                         }
                         isEnrolled={enrolledCourseIds.has(course.id)}
+                        visibility={course.visibility}
                       />
                     ))}
                   </div>

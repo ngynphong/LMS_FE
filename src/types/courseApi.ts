@@ -7,8 +7,15 @@ export interface CourseItem {
     visibility: string; // e.g., "PUBLIC", "PRIVATE"
     teacherName: string;
     schoolName: string;
+    lessonCount: number;
     updatedAt: string;
     createdAt: string;
+}
+
+export interface TopEnrolledCoursesResponse {
+    code: number;
+    message: string;
+    data: CourseItem[];
 }
 
 export interface CourseListResponse {
@@ -31,6 +38,9 @@ export interface GetCoursesParams {
     keyword?: string;
     status?: string;
     visibility?: string;
+    teacherName?: string;
+    fromDate?: string;
+    toDate?: string;
 }
 
 export interface UpdateCourseStatusRequest {
@@ -110,4 +120,15 @@ export interface CourseStudentsResponse {
     code: number;
     message: string;
     data: CourseStudent[];
+}
+
+export interface CourseTeacher {
+    id: string;
+    fullName: string;
+}
+
+export interface CourseTeacherResponse {
+    code: number;
+    message: string;
+    data: CourseTeacher[];
 }

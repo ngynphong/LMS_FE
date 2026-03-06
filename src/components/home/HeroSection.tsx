@@ -1,4 +1,4 @@
-import { FaArrowRight, FaStar, FaBolt, FaRocket } from "react-icons/fa";
+import { FaArrowRight, FaBolt, FaRocket } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { ScrollReveal, fadeInLeft, fadeInRight } from "@/components/ui/ScrollReveal";
 
@@ -39,31 +39,6 @@ const HeroSection = () => {
             >
               Khám phá khóa học
             </Link>
-          </div>
-          <div className="flex flex-wrap items-center gap-4 mt-4 bg-white/60 backdrop-blur-sm p-3 border border-white/50 rounded-2xl w-fit">
-            <div className="flex -space-x-3">
-              {[0, 1, 2, 3].map((i) => (
-                <img
-                  key={i}
-                  alt="Student"
-                  className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-white object-cover"
-                  src={`https://i.pravatar.cc/100?img=${i + 10}`}
-                />
-              ))}
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-white color-primary text-white text-[10px] flex items-center justify-center font-bold">
-                +50
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <div className="flex text-yellow-500 text-xs sm:text-sm">
-                {[...Array(5)].map((_, i) => (
-                  <FaStar key={i} />
-                ))}
-              </div>
-              <span className="text-xs sm:text-sm text-gray-600 font-medium">
-                1,000+ học viên tin dùng
-              </span>
-            </div>
           </div>
         </ScrollReveal>
 
