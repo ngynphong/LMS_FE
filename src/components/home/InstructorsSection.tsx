@@ -1,5 +1,3 @@
-import { FaStar } from "react-icons/fa";
-import { Link } from "react-router-dom";
 import {
   ScrollReveal,
   StaggerContainer,
@@ -14,44 +12,40 @@ interface Instructor {
   rating: number;
   reviews: number;
   image: string;
+  exp: string;
+  goal: string;
 }
 
 const instructors: Instructor[] = [
   {
     id: 1,
-    name: "TS. Trần Văn B",
-    title: "Chuyên gia AI",
+    name: "TS. Tô Hoài Thắng - Viện trưởng",
+    title: "Tiến sĩ chuyên ngành Quản trị Kinh doanh",
     rating: 4.9,
     reviews: 128,
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuB8kBEgVzs2G0kh7zzWUQ1HeMJArc2A2YMj1A3Bz0i91emkpmCFVTH6QnXdZQ0y4OrHZd9oGCCnC0LEBnWzCn_7cmAJE-tEPqItu3iJKGKGr0fE7h2zdOeT_DQMBMZVh9Mlpz9vSCercHxGNMNK3hJMz4fEC73WfyQMcgjZD6ska1Zcp_ml-pCqRUZWBpY-NCwIYQNFSFvbDMcDC4CBkzrMBBgHL_hpj95RRqsElVkgccXPE9RNi89z5lzmBYx5LJ3RAa-f-tVgR90w",
+    image: "/img/thay-thang-avatar.jpg",
+    exp: "10 năm kinh nghiệm trong vai trò quản lý khoa và viện đào tạo Sau Đại học.",
+    goal: "3 Đề tài nghiên cứu khoa học công bố trong nước và quốc tế.",
   },
   {
     id: 2,
-    name: "ThS. Lê Thị D",
-    title: "Lead UI/UX Designer",
+    name: "ThS. Vũ Huy Hoàng",
+    title: "Thạc sĩ chuyên ngành Quản trị Kinh doanh",
     rating: 4.9,
     reviews: 85,
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuAbZbalkEbVISe4Z6h1tHY1oZxp03UR4_VtAp_5WI5xb1KeKTxYDbr3ARRxagcYIe9RvyYVO-zaY-kL0VM93um7UQxNO_76TknHBwW6V5KirAgmLcsCwH8xLpEVVkwHmhw_RN5-_7566-twPb_IymudonMvdHpjn90Ltr_TpgBMS1GzdGp5dcLqmUcPDoSgoM9EySHYjzEKjaqtC_ifD-d8gQHebEER-nifnR8XQ9iHsL5dk6XiuZFTU4C83A19XnU9MpumZWGE9vxd",
+    image: "/img/huy-hoang-avatar.jpg",
+    exp: "Giảng viên AI Trường Quản trị & Công nghệ FSB Đại học FPT ",
+    goal: "Là Founder và CEO công ty truyền thông Hmedia",
   },
   {
     id: 3,
-    name: "Kỹ sư. Nguyễn An",
-    title: "Senior Web Developer",
+    name: "ThS. Nguyễn Thanh Điềm",
+    title: "Thạc sĩ chuyên ngành Công nghệ Sinh học",
     rating: 4.8,
     reviews: 210,
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDuRlxYZlpZvcoT1Yuf_cRskqI4sTJmWXRpHRUJcdtgLWPC7IWZ-4ARv3fpFfnc7EUrOG-tX9XHjz33ckmDoQCGgZOd4mOZhUXTszSJZwsyEmCdx8RpMCMOrwKZ4fP_NipCPWvUCyi6eCvYMH_xLkzTgx_84qqN6Fhnc56vlb9y8UKBgDKCLNkyekvmyWdSb-K-Um45a1M4dgi5nmWjyNGa2sUFB3A6MOj4g3hR5sHJErZWWpzSlngWom-04o2F0gwz2P_gSrej81eT",
-  },
-  {
-    id: 4,
-    name: "TS. Phạm Minh H",
-    title: "Chuyên gia Big Data",
-    rating: 4.9,
-    reviews: 94,
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBMPnsg1AdawuYt7WYBz4S1btH5_0iYRWbglJYMZdPivsvZMXeNOxXVd6Rj8axGvyv9Tpni_D8iMIPIFIp6NNJSXMOYe-85o1qfYO9tiQTfxPuXRQHhN9leyvq7xcIJ46IUfpBHpoVPkrcc9wYlnMFmuo-tsxMwA29pk3mVe_rY3CfNpOnFqYufiAhCWXJqUTIKjsyfVwKeUh92ArBYRZHSebx4YGLNpw2hN3hUG3B3oBmEr3qaHsYUh8f5j1Tjor52UYmR3lxdkl2_",
+    image: "/img/thanh-diem-avatar.jpg",
+    exp: "Hướng dẫn sinh viên thực hiện đề tài nghiên cứu nhỏ và đồ án tốt nghiệp liên quan đến vi sinh vật và ứng dụng sinh học.",
+    goal: "Tham gia giảng dạy các học phần: Vi sinh vật học, Công nghệ sinh học ứng dụng, Sinh học phân tử cơ bản.",
   },
 ];
 
@@ -71,12 +65,9 @@ const InstructorsSection = () => {
               Đội ngũ Giảng viên hàng đầu
             </h2>
           </div>
-          <button className="sm:px-6 px-3 py-2 sm:py-3 rounded-xl border-2 sm:text-base text-sm border-gray-100 font-bold text-gray-600 hover:bg-gray-50 transition-colors">
-            Xem thêm
-          </button>
         </ScrollReveal>
 
-        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {instructors.map((instructor) => (
             <StaggerItem key={instructor.id}>
               <div className="bg-white p-8 rounded-[32px] border border-gray-100 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full">
@@ -94,23 +85,12 @@ const InstructorsSection = () => {
                 <p className="color-primary font-semibold text-sm mb-3">
                   {instructor.title}
                 </p>
-                <div className="flex items-center justify-center gap-1 mb-6">
-                  <span className="text-yellow-400 text-sm">
-                    <FaStar />
-                  </span>
-                  <span className="text-gray-700 font-bold text-sm">
-                    {instructor.rating}/5
-                  </span>
-                  <span className="text-gray-400 text-xs">
-                    ({instructor.reviews} đánh giá)
-                  </span>
-                </div>
-                <Link
-                  className="inline-block color-primary font-bold text-sm hover:underline"
-                  to={`/instructor/${instructor.id}`}
-                >
-                  Xem hồ sơ
-                </Link>
+                <p className="text-gray-600 leading-relaxed italic">
+                  "{instructor.exp}"
+                </p>
+                {/* <p className="text-gray-600 leading-relaxed italic">
+                  "{instructor.goal}"
+                </p> */}
               </div>
             </StaggerItem>
           ))}

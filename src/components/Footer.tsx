@@ -63,11 +63,6 @@ const Footer = () => {
               </Link>
             </li>
             <li>
-              <Link className="hover:text-white transition-colors" to="/">
-                Trở thành giảng viên
-              </Link>
-            </li>
-            <li>
               <Link className="hover:text-white transition-colors" to="/about">
                 Về chúng tôi
               </Link>
@@ -84,22 +79,17 @@ const Footer = () => {
           <h3 className="font-bold text-lg mb-6">Chính sách</h3>
           <ul className="flex flex-col gap-3 text-gray-400 text-sm">
             <li>
-              <Link className="hover:text-white transition-colors" to="/">
+              <Link className="hover:text-white transition-colors" to="/terms">
                 Điều khoản dịch vụ
               </Link>
             </li>
             <li>
-              <Link className="hover:text-white transition-colors" to="/">
+              <Link className="hover:text-white transition-colors" to="/privacy">
                 Chính sách bảo mật
               </Link>
             </li>
             <li>
-              <Link className="hover:text-white transition-colors" to="/">
-                Chính sách hoàn tiền
-              </Link>
-            </li>
-            <li>
-              <Link className="hover:text-white transition-colors" to="/">
+              <Link className="hover:text-white transition-colors" to="/faq">
                 Câu hỏi thường gặp
               </Link>
             </li>

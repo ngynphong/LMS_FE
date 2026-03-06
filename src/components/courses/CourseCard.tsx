@@ -10,6 +10,7 @@ interface StudentCourseProps {
   createdAt?: string;
   onClick?: () => void;
   isEnrolled?: boolean;
+  visibility?: string;
 }
 
 // Props for teacher variant (uses course object)
@@ -55,6 +56,13 @@ const CourseCard = (props: CourseCardProps) => {
               className={`px-2 py-1 rounded text-xs font-medium ${course.status === "PUBLISHED" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}
             >
               {course.status === "PUBLISHED" ? "Công khai" : "Bản nháp"}
+            </span>
+          </div>
+          <div className="absolute top-3 left-3">
+            <span
+              className={`px-2 py-1 rounded text-xs font-medium ${course.visibility === "PUBLIC" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}
+            >
+              {course.visibility === "PUBLIC" ? "Công khai" : "Riêng tư"}
             </span>
           </div>
         </div>
@@ -124,6 +132,7 @@ const CourseCard = (props: CourseCardProps) => {
     instructor,
     onClick,
     isEnrolled,
+    visibility,
   } = props as StudentCourseProps;
 
   return (
@@ -149,6 +158,13 @@ const CourseCard = (props: CourseCardProps) => {
         <div className="absolute top-3 left-3 color-primary-bg text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider">
           {category}
         </div>
+        <div className="absolute top-3 right-3">
+          <span
+            className={`px-2 py-1 rounded text-xs font-medium ${visibility === "PUBLIC" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}
+          >
+            {visibility === "PUBLIC" ? "Công khai" : "Riêng tư"}
+          </span>
+        </div>
         {isEnrolled && (
           <div className="absolute top-3 right-3 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider shadow-md">
             Đã tham gia
@@ -170,15 +186,15 @@ const CourseCard = (props: CourseCardProps) => {
             <span className="text-gray-600 text-sm">GV: {instructor}</span>
           )}
           {onClick ? (
-              <button
-                className="color-primary text-sm font-bold hover:underline ml-auto"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClick();
-                }}
-              >
-                Tham gia
-              </button>                             
+            <button
+              className="color-primary text-sm font-bold hover:underline ml-auto"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClick();
+              }}
+            >
+              Tham gia
+            </button>
           ) : (
             <Link
               className="color-primary text-sm font-bold hover:underline ml-auto"

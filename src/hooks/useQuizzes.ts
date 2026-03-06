@@ -67,10 +67,10 @@ export const useQuizByLessonItem = (lessonItemId?: string) => {
     });
 };
 
-export const useTeacherQuizzes = () => {
+export const useTeacherQuizzes = (params?: { pageNo?: number; pageSize?: number; sorts?: string | string[] }) => {
     return useQuery({
-        queryKey: ['teacher-quizzes'],
-        queryFn: getTeacherQuizzes,
+        queryKey: ['teacher-quizzes', params],
+        queryFn: () => getTeacherQuizzes(params),
     });
 };
 

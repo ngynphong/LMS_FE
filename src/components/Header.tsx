@@ -9,6 +9,14 @@ import { NotificationDropdown } from "@/components/common/NotificationDropdown";
 const Header = () => {
   const { user } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isMobileCategoryOpen, setIsMobileCategoryOpen] = useState(false);
+
+  const categories = [
+    { title: "Điều khoản dịch vụ", to: "/terms", icon: "description" },
+    { title: "Chính sách bảo mật", to: "/privacy", icon: "shield" },
+    { title: "Câu hỏi thường gặp", to: "/faq", icon: "help" },
+  ];
 
   const getDashboardLink = () => {
     if (!user) return "/";
@@ -99,7 +107,11 @@ const Header = () => {
               <IoMenu />
             </button>
 
-            <Link to="/" className="flex items-center">
+            <Link
+              to="/"
+              className="flex items-center"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            >
               <span className="color-primary text-2xl">
                 <img
                   src="/img/logo-app.png"
@@ -111,33 +123,82 @@ const Header = () => {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-6">
-              <button className="flex items-center gap-2 px-3 py-1 hover:bg-gray-100 rounded-lg transition-colors font-medium">
-                <span className="material-symbols-outlined">
-                  <IoAppsOutline />
-                </span>{" "}
-                Danh mục
-              </button>
+              <div
+                className="relative"
+                onMouseEnter={() => setIsCategoryOpen(true)}
+                onMouseLeave={() => setIsCategoryOpen(false)}
+              >
+                <button
+                  onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all font-medium ${
+                    isCategoryOpen
+                      ? "bg-gray-100 color-primary"
+                      : "hover:bg-gray-100"
+                  }`}
+                >
+                  <span className="material-symbols-outlined transition-transform duration-300">
+                    <IoAppsOutline
+                      className={isCategoryOpen ? "rotate-180" : ""}
+                    />
+                  </span>{" "}
+                  Danh mục
+                </button>
+
+                {/* Dropdown Menu */}
+                <div
+                  className={`absolute top-full left-0 w-64 bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-gray-100 py-2 transition-all duration-300 origin-top-left z-50 before:content-[''] before:absolute before:top-[-12px] before:left-0 before:w-full before:h-[12px] ${
+                    isCategoryOpen
+                      ? "opacity-100 scale-100 translate-y-2"
+                      : "opacity-0 scale-95 translate-y-0 pointer-events-none"
+                  }`}
+                >
+                  {categories.map((item, idx) => (
+                    <Link
+                      key={idx}
+                      to={item.to}
+                      onClick={() => {
+                        setIsCategoryOpen(false);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
+                      className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-colors group"
+                    >
+                      <div className="size-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                        <span className="material-symbols-outlined text-xl">
+                          {item.icon}
+                        </span>
+                      </div>
+                      <span className="text-sm font-semibold text-gray-700 group-hover:text-blue-600">
+                        {item.title}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
               <Link
                 className="font-medium hover:color-primary transition-colors"
                 to="/"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               >
                 Trang chủ
               </Link>
               <Link
                 className="font-medium hover:color-primary transition-colors"
                 to="/courses"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               >
                 Khóa học
               </Link>
               <Link
                 className="font-medium hover:color-primary transition-colors"
-                to="/#forum"
+                to="/blog"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               >
-                Diễn đàn
+                Tin tức
               </Link>
               <Link
                 className="font-medium hover:color-primary transition-colors"
                 to="/about"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               >
                 Về chúng tôi
               </Link>
@@ -189,10 +250,37 @@ const Header = () => {
 
           <div className="flex-1 overflow-y-auto py-4">
             <nav className="flex flex-col space-y-1 px-3">
-              <button className="flex items-center gap-3 px-3 py-3 hover:bg-gray-100 rounded-lg transition-colors font-medium text-left w-full">
-                <IoAppsOutline className="text-xl" />
-                Danh mục
+              <button
+                onClick={() => setIsMobileCategoryOpen(!isMobileCategoryOpen)}
+                className="flex items-center justify-between gap-3 px-3 py-3 hover:bg-gray-100 rounded-lg transition-colors font-medium text-left w-full"
+              >
+                <div className="flex items-center gap-3">
+                  <IoAppsOutline className="text-xl" />
+                  Danh mục
+                </div>
+                <span
+                  className={`material-symbols-outlined transition-transform duration-300 ${isMobileCategoryOpen ? "rotate-180" : ""}`}
+                >
+                  expand_more
+                </span>
               </button>
+              {isMobileCategoryOpen && (
+                <div className="pl-9 pr-3 pb-2 space-y-1">
+                  {categories.map((item, idx) => (
+                    <Link
+                      key={idx}
+                      to={item.to}
+                      onClick={toggleMobileMenu}
+                      className="flex items-center gap-3 py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">
+                        {item.icon}
+                      </span>
+                      {item.title}
+                    </Link>
+                  ))}
+                </div>
+              )}
               <Link
                 className="flex items-center gap-3 px-3 py-3 hover:bg-gray-100 rounded-lg transition-colors font-medium"
                 to="/"

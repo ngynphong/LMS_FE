@@ -1,5 +1,5 @@
 import axiosInstance from "@/config/axios";
-import type { CreateQuestionRequest, ImportQuestionResult, Question, UpdateQuestionRequest, QuestionListResponse, GetQuestionsParams } from "@/types/question";
+import type { CreateQuestionRequest, ImportQuestionResult, Question, UpdateQuestionRequest, QuestionListResponse, GetQuestionsParams, GetMyQuestionsParams } from "@/types/question";
 
 // ==================== Question APIs ====================
 
@@ -103,6 +103,50 @@ export const getQuestionTemplate = async (): Promise<Blob> => {
         return response.data;
     } catch (error) {
         console.error('Failed to get question template:', error);
+        throw error;
+    }
+};
+
+export const getMyQuestions = async (params?: GetMyQuestionsParams): Promise<QuestionListResponse> => {
+    try {
+        const response = await axiosInstance.get<{ code: number; message: string; data: any }>('/questions/my-questions', { params });
+        const data = response.data?.data;
+        
+        if (data && 'content' in data && Array.isArray(data.content)) {
+            return {
+                pageNo: data.pageNo,
+                pageSize: data.pageSize,
+                totalPage: data.totalPage,
+                totalElement: data.totalElement,
+                sortBy: data.sortBy ? (Array.isArray(data.sortBy) ? data.sortBy.join(',') : data.sortBy) : null,
+                items: data.content
+            };
+        }
+
+        if (data && 'items' in data && Array.isArray(data.items)) {
+            return data as QuestionListResponse;
+        }
+
+        return {
+            pageNo: 0,
+            pageSize: 0,
+            totalPage: 0,
+            totalElement: 0,
+            sortBy: null,
+            items: []
+        };
+    } catch (error) {
+        console.error('Failed to fetch my questions:', error);
+        throw error;
+    }
+};
+
+export const getMyLessonNames = async (): Promise<string[]> => {
+    try {
+        const response = await axiosInstance.get<{ code: number; message: string; data: string[] }>('/questions/my-lesson-names');
+        return response.data?.data || [];
+    } catch (error) {
+        console.error('Failed to fetch my lesson names:', error);
         throw error;
     }
 };

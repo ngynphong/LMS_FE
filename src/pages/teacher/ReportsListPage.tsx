@@ -2,13 +2,14 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTeacherQuizzes } from "@/hooks/useQuizzes";
 import { FaCircleNotch } from "react-icons/fa";
+import type { QuizSummary } from "@/types/quiz";
 
 const ReportsListPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { data: quizzes, isLoading, error } = useTeacherQuizzes();
 
   const filteredReports =
-    quizzes?.filter((quiz) =>
+    quizzes?.items?.filter((quiz: QuizSummary) =>
       quiz.title.toLowerCase().includes(searchQuery.toLowerCase()),
     ) || [];
 

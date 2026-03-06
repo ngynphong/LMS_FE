@@ -10,9 +10,14 @@ const CourseDetailPage = React.lazy(
   () => import("@/pages/courses/CourseDetailPage"),
 );
 const AboutPage = React.lazy(() => import("@/pages/about/AboutPage"));
+const TermsPage = React.lazy(() => import("@/pages/about/TermsPage"));
+const PrivacyPage = React.lazy(() => import("@/pages/about/PrivacyPage"));
+const FAQPage = React.lazy(() => import("@/pages/about/FAQPage"));
 const UnauthorizedPage = React.lazy(
   () => import("@/pages/error/UnauthorizedPage"),
 );
+const BlogPage = React.lazy(() => import("@/pages/blog/BlogPage"));
+const BlogDetailPage = React.lazy(() => import("@/pages/blog/BlogDetailPage"));
 
 /**
  * Public Routes
@@ -40,8 +45,28 @@ const publicRoutes: RouteObject[] = [
         element: <AboutPage />,
       },
       {
+        path: "terms",
+        element: <TermsPage />,
+      },
+      {
+        path: "privacy",
+        element: <PrivacyPage />,
+      },
+      {
+        path: "faq",
+        element: <FAQPage />,
+      },
+      {
         path: "forum",
         element: <div>Forum Page - Coming Soon</div>,
+      },
+      {
+        path: "blog",
+        element: <BlogPage />,
+      },
+      {
+        path: "blog/:slug",
+        element: <BlogDetailPage />,
       },
       {
         path: "shop",

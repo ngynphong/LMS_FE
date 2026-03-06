@@ -5,14 +5,17 @@ import {
     updateQuestion, 
     deleteQuestion, 
     importQuestions, 
-    getQuestionTemplate 
+    getQuestionTemplate,
+    getMyQuestions,
+    getMyLessonNames
 } from '@/services/questionService';
 import type { 
     // Question, 
     CreateQuestionRequest, 
     UpdateQuestionRequest,
     // ImportQuestionResult,
-    GetQuestionsParams
+    GetQuestionsParams,
+    GetMyQuestionsParams
 } from '@/types/question';
 
 export const useQuestions = (params?: GetQuestionsParams) => {
@@ -66,5 +69,20 @@ export const useImportQuestions = () => {
 export const useQuestionTemplate = () => {
     return useMutation({
         mutationFn: () => getQuestionTemplate(),
+    });
+};
+
+export const useMyQuestions = (params?: GetMyQuestionsParams) => {
+    return useQuery({
+        queryKey: ['my-questions', params],
+        queryFn: () => getMyQuestions(params),
+        placeholderData: keepPreviousData,
+    });
+};
+
+export const useMyLessonNames = () => {
+    return useQuery({
+        queryKey: ['my-lesson-names'],
+        queryFn: () => getMyLessonNames(),
     });
 };

@@ -5,19 +5,21 @@ export const shouldShowBanner = (banner: Banner): boolean => {
   const lastShownTime = getLastShownTime(banner.id);
   const dismissedTime = getDismissedTime(banner.id);
 
-  if (dismissedTime) {
-    // If dismissed, do not show again
-    return false;
-  }
-
-  if (!lastShownTime) {
-    return true; // Never shown
+  if (!lastShownTime && !dismissedTime) {
+    return true; // Never shown and never dismissed
   }
 
   const now = new Date().getTime();
-  const frequencyMs = (banner.displayFrequencyHours || 24) * 60 * 60 * 1000;
+  const frequencyMs = (banner.displayFrequencyHours || 0) * 60 * 60 * 1000;
   
-  return (now - lastShownTime) >= frequencyMs;
+  // If frequency is 0, it means it should not reappear if dismissed
+  if (frequencyMs === 0) {
+    return !dismissedTime;
+  }
+
+  // If frequency > 0, wait for frequencyMs since the LAST interaction (show or dismiss)
+  const lastInteractionTime = Math.max(lastShownTime || 0, dismissedTime || 0);
+  return (now - lastInteractionTime) >= frequencyMs;
 };
 
 export const getResponsiveImageUrl = (banner: Banner, windowWidth: number): string => {

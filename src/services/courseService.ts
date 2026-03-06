@@ -1,5 +1,5 @@
 import axiosInstance from "@/config/axios";
-import type { CourseListResponse, GetCoursesParams, CreateCourseRequest, UpdateCourseRequest, CourseStudentsResponse } from "@/types/courseApi";
+import type { CourseListResponse, GetCoursesParams, CreateCourseRequest, UpdateCourseRequest, CourseStudentsResponse, CourseTeacherResponse, TopEnrolledCoursesResponse } from "@/types/courseApi";
 import type { 
   ApiCourse, 
   EnrollCourseRequest,
@@ -14,7 +14,10 @@ export const getCourses = async (params: GetCoursesParams): Promise<CourseListRe
                 pageSize: params.pageSize || 10,
                 sorts: params.sorts,
                 keyword: params.keyword || undefined,
-                visibility: params.visibility || undefined
+                visibility: params.visibility || undefined,
+                teacherName: params.teacherName || undefined,
+                fromDate: params.fromDate || undefined,
+                toDate: params.toDate || undefined,
             }
         });
         return response.data;
@@ -32,7 +35,10 @@ export const getAdminCourses = async (params: GetCoursesParams): Promise<CourseL
                 sorts: params.sorts,
                 keyword: params.keyword || undefined,
                 status: params.status || undefined,
-                visibility: params.visibility || undefined
+                visibility: params.visibility || undefined,
+                teacherName: params.teacherName || undefined,
+                fromDate: params.fromDate || undefined,
+                toDate: params.toDate || undefined,
             }
         });
         return response.data;
@@ -82,10 +88,13 @@ export const getCourseById = async (courseId: string): Promise<ApiCourse | null>
 export const getMyCourses = async (params?: {
   pageNo?: number;
   pageSize?: number;
-  sorts?: string;
+  sorts?: string | string[];
   keyword?: string;
   status?: string;
   visibility?: string;
+  teacherName?: string;
+  fromDate?: string;
+  toDate?: string;
 }): Promise<{ items: ApiCourse[]; totalElement: number; totalPage: number }> => {
   const response = await axiosInstance.get<{ code: number; message: string; data: { items: ApiCourse[]; totalElement: number; totalPage: number } }>('/courses/my-courses', {
     params: {
@@ -94,7 +103,10 @@ export const getMyCourses = async (params?: {
       sorts: params?.sorts || 'createdAt:desc',
       keyword: params?.keyword || undefined,
       status: params?.status || undefined,
-      visibility: params?.visibility || undefined
+      visibility: params?.visibility || undefined,
+      teacherName: params?.teacherName || undefined,
+      fromDate: params?.fromDate || undefined,
+      toDate: params?.toDate || undefined,
     }
   });
   return response.data.data;
@@ -104,11 +116,14 @@ export const getMyCourses = async (params?: {
 export const getStudentCourses = async (params?: {
   pageNo?: number;
   pageSize?: number;
-  sorts?: string;
+  sorts?: string | string[];
   keyword?: string;
   status?: string;
   visibility?: string;
   completed?: boolean;
+  teacherName?: string;
+  fromDate?: string;
+  toDate?: string;
 }): Promise<{ items: ApiCourse[]; totalElement: number; totalPage: number }> => {
   const response = await axiosInstance.get<{ code: number; message: string; data: { items: ApiCourse[]; totalElement: number; totalPage: number } }>('/courses/students/my-courses', {
     params: {
@@ -118,7 +133,10 @@ export const getStudentCourses = async (params?: {
       keyword: params?.keyword || undefined,
       status: params?.status || undefined,
       visibility: params?.visibility || undefined,
-      completed: params?.completed
+      completed: params?.completed,
+      teacherName: params?.teacherName || undefined,
+      fromDate: params?.fromDate || undefined,
+      toDate: params?.toDate || undefined,
     }
   });
   return response.data.data;
@@ -162,6 +180,24 @@ export const getCourseStudents = async (courseId: string): Promise<CourseStudent
     try {
         const res = await axiosInstance.get<CourseStudentsResponse>(`/courses/${courseId}/students`);
         return res.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getCourseTeachers = async (): Promise<CourseTeacherResponse> => {
+    try {
+        const res = await axiosInstance.get<CourseTeacherResponse>('/courses/teachers');
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const getTopEnrolledCourses = async (): Promise<TopEnrolledCoursesResponse> => {
+    try {
+        const response = await axiosInstance.get<TopEnrolledCoursesResponse>('/courses/top-enrolled');
+        return response.data;
     } catch (error) {
         throw error;
     }

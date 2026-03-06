@@ -24,6 +24,12 @@ const AdminSettingsPage = React.lazy(
 const AdminPasswordRequestsPage = React.lazy(
   () => import("@/pages/admin/AdminPasswordRequestsPage"),
 );
+const AdminBlogPage = React.lazy(() =>
+  import("@/pages/admin/blog/AdminBlogPage")
+);
+const BlogFormPage = React.lazy(
+  () => import("@/pages/admin/blog/BlogFormPage"),
+);
 
 // Banner Admin Pages
 const BannerListPage = React.lazy(() =>
@@ -102,6 +108,18 @@ const adminRoutes: RouteObject[] = [
       {
         path: "banners/edit/:id",
         element: <BannerEditPage />,
+      },
+      {
+        path: "blogs",
+        element: <AdminBlogPage />,
+      },
+      {
+        path: "blogs/create",
+        element: <BlogFormPage />,
+      },
+      {
+        path: "blogs/edit/:id",
+        element: <BlogFormPage />,
       },
       {
         path: "reports",

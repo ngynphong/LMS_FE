@@ -12,7 +12,9 @@ import {
     enrollCourse, 
     createInviteCode, 
     getStudentCourses,
-    getCourseStudents
+    getCourseStudents,
+    getCourseTeachers,
+    getTopEnrolledCourses
 } from '@/services/courseService';
 import type { GetCoursesParams, CreateCourseRequest, UpdateCourseRequest } from '@/types/courseApi';
 import type { EnrollCourseRequest, CreateInviteCodeRequest } from '@/types/learningTypes';
@@ -40,10 +42,13 @@ export const useAdminCourses = (params: GetCoursesParams = {}, ) => {
 export const useMyCourses = (params: {
     pageNo?: number;
     pageSize?: number;
-    sorts?: string;
+    sorts?: string | string[];
     keyword?: string | undefined;
     status?: string | undefined;
     visibility?: string | undefined;
+    teacherName?: string;
+    fromDate?: string;
+    toDate?: string;
 } = {}) => {
     return useQuery({
         queryKey: ['my-courses', params],
@@ -55,11 +60,14 @@ export const useMyCourses = (params: {
 export const useStudentCourses = (params: {
     pageNo?: number;
     pageSize?: number;
-    sorts?: string;
+    sorts?: string | string[];
     keyword?: string;
     status?: string;
     visibility?: string;
     completed?: boolean;
+    teacherName?: string;
+    fromDate?: string;
+    toDate?: string;
 } = {}, options: { enabled?: boolean } = {}) => {
     return useQuery({
         queryKey: ['student-courses', params],
@@ -82,6 +90,22 @@ export const useCourseStudents = (courseId: string | undefined) => {
         queryKey: ['course-students', courseId],
         queryFn: () => courseId ? getCourseStudents(courseId) : Promise.reject(new Error("No courseId provided")),
         enabled: !!courseId,
+    });
+};
+
+export const useCourseTeachers = () => {
+    return useQuery({
+        queryKey: ['course-teachers'],
+        queryFn: () => getCourseTeachers(),
+        staleTime: 5 * 60 * 1000, // 5 mins
+    });
+};
+
+export const useTopEnrolledCourses = (options: { enabled?: boolean } = {}) => {
+    return useQuery({
+        queryKey: ['courses-top-enrolled'],
+        queryFn: getTopEnrolledCourses,
+        enabled: options.enabled,
     });
 };
 
