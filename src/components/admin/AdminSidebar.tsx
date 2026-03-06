@@ -5,6 +5,7 @@ import {
   FaUsers,
   FaKey,
   FaBullhorn,
+  FaNewspaper,
 } from "react-icons/fa";
 import { FaCalendar, FaTimes } from "react-icons/fa";
 import { useAuth } from "@/hooks/useAuth";
@@ -55,6 +56,11 @@ const navItems: NavItem[] = [
     path: "/admin/banners",
     icon: <FaBullhorn className="text-xl" />,
     label: "Quản lý Banner",
+  },
+  {
+    path: "/admin/blogs",
+    icon: <FaNewspaper className="text-xl" />,
+    label: "Quản lý blog",
   },
 ];
 

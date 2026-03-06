@@ -190,7 +190,7 @@ const Header = () => {
               </Link>
               <Link
                 className="font-medium hover:color-primary transition-colors"
-                to="/#news"
+                to="/blog"
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               >
                 Tin tức
