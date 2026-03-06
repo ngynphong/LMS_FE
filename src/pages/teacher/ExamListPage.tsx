@@ -9,9 +9,20 @@ import {
 } from "@/hooks/useQuizzes";
 import { useHostLiveQuiz } from "@/hooks/useLiveQuiz";
 import { toast } from "@/components/common/Toast";
+import PaginationControl from "@/components/common/PaginationControl";
 
 const ExamListPage = () => {
-  const { data: exams, isLoading: loading, error } = useTeacherQuizzes();
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(9);
+  const {
+    data: exams,
+    isLoading: loading,
+    error,
+  } = useTeacherQuizzes({
+    pageNo: page,
+    pageSize,
+    sorts: "createdAt:desc",
+  });
   const { mutateAsync: generate, isPending: isGenerating } =
     useGenerateQuizCode();
   const { mutateAsync: publish, isPending: isPublishing } = usePublishQuiz();
@@ -53,9 +64,18 @@ const ExamListPage = () => {
   };
 
   // Filtered exams
-  const filteredExams = (exams || []).filter((e: any) => {
+  // Validate exams is an array, as API might return paginated object or single object unexpectedly
+  const examsList = Array.isArray(exams)
+    ? exams
+    : (exams as any)?.items
+      ? (exams as any).items
+      : exams
+        ? [exams]
+        : [];
+
+  const filteredExams = examsList.filter((e: any) => {
     const matchesSearch = e.title
-      .toLowerCase()
+      ?.toLowerCase()
       .includes(searchQuery.toLowerCase());
     return matchesSearch;
   });
@@ -112,7 +132,7 @@ const ExamListPage = () => {
 
       {/* Exam Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredExams.map((exam) => (
+        {filteredExams.map((exam: any) => (
           <div
             key={exam.id}
             className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow"
@@ -251,6 +271,17 @@ const ExamListPage = () => {
           </div>
         )}
       </div>
+
+      {/* Pagination */}
+      {(exams?.totalPage || 0) > 1 && (
+        <div className="mt-8 flex justify-center">
+          <PaginationControl
+            currentPage={page}
+            totalPages={exams?.totalPage || 1}
+            onPageChange={setPage}
+          />
+        </div>
+      )}
     </div>
   );
 };

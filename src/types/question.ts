@@ -66,3 +66,10 @@ export interface GetQuestionsParams {
     lessonId?: string;
     type?: string;
 }
+
+export interface GetMyQuestionsParams {
+    lessonName?: string;
+    pageNo?: number;
+    pageSize?: number;
+    sorts?: string[];
+}

@@ -26,9 +26,19 @@ export const createQuiz = async (data: CreateQuizRequest): Promise<void> => {
     }
 };
 
-export const getTeacherQuizzes = async (): Promise<QuizSummary[]> => {
+export const getTeacherQuizzes = async (params?: {
+    pageNo?: number;
+    pageSize?: number;
+    sorts?: string | string[];
+}): Promise<{ items: QuizSummary[]; totalElement: number; totalPage: number }> => {
     try {
-        const response = await axiosInstance.get<{ code: number; message: string; data: QuizSummary[] }>('/quiz/teacher/me');
+        const response = await axiosInstance.get('/quiz/teacher/me', {
+            params: {
+                pageNo: params?.pageNo || 1,
+                pageSize: params?.pageSize || 10,
+                sorts: params?.sorts || 'createdAt:desc',
+            }
+        });
         return response.data.data;
     } catch (error) {
         console.error('Failed to fetch teacher quizzes:', error);

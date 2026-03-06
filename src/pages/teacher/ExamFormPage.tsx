@@ -4,7 +4,7 @@ import { vi } from "date-fns/locale";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useCreateQuiz, useUpdateQuiz, useQuiz } from "@/hooks/useQuizzes";
 import { useMyCourses, useCourseDetail } from "@/hooks/useCourses";
-import { useQuestions } from "@/hooks/useQuestions";
+import { useMyQuestions, useMyLessonNames } from "@/hooks/useQuestions";
 import {
   getLessonById,
   getLessonItemById,
@@ -185,12 +185,14 @@ const ExamFormPage = () => {
   const [selectedLessonItemId, setSelectedLessonItemId] = useState<string>("");
 
   // Dynamic Config State
-  const [dynamicConfig, setDynamicConfig] = useState<DynamicConfig>({
-    targetLessonId: "",
-    difficulty: "EASY",
-    quantity: 10,
-    scorePerQuestion: 1,
-  });
+  const [dynamicConfigs, setDynamicConfigs] = useState<DynamicConfig[]>([
+    {
+      targetLessonId: "",
+      difficulty: "EASY",
+      quantity: 10,
+      scorePerQuestion: 1,
+    },
+  ]);
 
   // Static Question State
   const [staticQuestions, setStaticQuestions] = useState<StaticQuestion[]>([]);
@@ -200,17 +202,18 @@ const ExamFormPage = () => {
   const [questionSearch, setQuestionSearch] = useState("");
   const [qPage, setQPage] = useState(1);
   const [qPageSize, setQPageSize] = useState(10);
-  const [qLessonId, setQLessonId] = useState<string>("");
+  const [qLessonName, setQLessonName] = useState<string>("");
+
+  const { data: myLessonNames = [] } = useMyLessonNames();
 
   const {
     data: availableQuestionsResponse,
     isLoading: loadingQuestions,
     isFetching: fetchingQuestions,
-  } = useQuestions({
-    // content: questionSearch,
-    page: qPage,
-    size: qPageSize,
-    lessonId: qLessonId || undefined, // Use specific filter, removed fallback to quiz lesson to allow wider search
+  } = useMyQuestions({
+    pageNo: qPage - 1 > 0 ? qPage - 1 : 0,
+    pageSize: qPageSize,
+    lessonName: qLessonName || undefined,
   });
   const availableQuestions = availableQuestionsResponse?.items || [];
   const qTotalPages = availableQuestionsResponse?.totalPage || 0;
@@ -343,13 +346,15 @@ const ExamFormPage = () => {
 
       // Populate Dynamic Config - map from API response format to form format
       if (qd.isDynamic && qd.dynamicConfigs && qd.dynamicConfigs.length > 0) {
-        const apiConfig = qd.dynamicConfigs[0];
-        setDynamicConfig({
-          targetLessonId: selectedLessonId || "", // Will be resolved by hierarchy
-          difficulty: apiConfig.difficulty,
-          quantity: apiConfig.quantity,
-          scorePerQuestion: apiConfig.pointsPerQuestion,
-        });
+        setDynamicConfigs(
+          qd.dynamicConfigs.map((apiConfig) => ({
+            targetLessonId:
+              (apiConfig as any).targetLessonId || selectedLessonId || "", // Will be resolved by hierarchy
+            difficulty: apiConfig.difficulty,
+            quantity: apiConfig.quantity,
+            scorePerQuestion: apiConfig.pointsPerQuestion,
+          })),
+        );
       }
 
       // Populate Static Questions - map from API response format to form format
@@ -451,6 +456,21 @@ const ExamFormPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!selectedCourseId) {
+      toast.error("Vui lòng chọn khóa học");
+      return;
+    }
+
+    if (!selectedLessonId) {
+      toast.error("Vui lòng chọn bài học (Module)");
+      return;
+    }
+
+    if (!selectedLessonItemId) {
+      toast.error("Vui lòng chọn nội dung (Quiz)");
+      return;
+    }
+
     if (!formData.isDynamic && staticQuestions.length === 0) {
       toast.error("Vui lòng chọn ít nhất 1 câu hỏi cho chế độ thủ công");
       return;
@@ -479,14 +499,12 @@ const ExamFormPage = () => {
       showResultAfterSubmit: formData.showResultAfterSubmit,
       isPublished: formData.isPublished,
       dynamicConfigs: formData.isDynamic
-        ? [
-            {
-              targetLessonId: dynamicConfig.targetLessonId || selectedLessonId,
-              difficulty: dynamicConfig.difficulty,
-              quantity: dynamicConfig.quantity,
-              scorePerQuestion: dynamicConfig.scorePerQuestion,
-            },
-          ]
+        ? dynamicConfigs.map((config) => ({
+            targetLessonId: config.targetLessonId || selectedLessonId,
+            difficulty: config.difficulty,
+            quantity: config.quantity,
+            scorePerQuestion: config.scorePerQuestion,
+          }))
         : [],
       staticQuestions: formData.isDynamic
         ? []
@@ -911,87 +929,134 @@ const ExamFormPage = () => {
           <div className="p-6">
             {formData.isDynamic ? (
               <div className="space-y-4">
-                <p className="text-sm text-slate-500 mb-4">
-                  Hệ thống sẽ tự động chọn câu hỏi ngẫu nhiên dựa trên cấu hình
-                  dưới đây.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 mb-1">
-                      Độ khó
-                    </label>
-                    <select
-                      value={dynamicConfig.difficulty}
-                      onChange={(e) =>
-                        setDynamicConfig({
-                          ...dynamicConfig,
-                          difficulty: e.target.value as any,
-                        })
-                      }
-                      className="w-full h-10 rounded border border-slate-200 px-3 text-sm"
+                <div className="flex justify-between items-center mb-4">
+                  <p className="text-sm text-slate-500">
+                    Hệ thống sẽ tự động chọn câu hỏi ngẫu nhiên dựa trên các cấu
+                    hình dưới đây.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setDynamicConfigs([
+                        ...dynamicConfigs,
+                        {
+                          targetLessonId: "",
+                          difficulty: "EASY",
+                          quantity: 10,
+                          scorePerQuestion: 1,
+                        },
+                      ])
+                    }
+                    className="text-sm font-semibold text-[#1E90FF] hover:text-[#0074bd] flex items-center gap-1 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors border border-blue-100"
+                  >
+                    <span className="material-symbols-outlined text-base">
+                      add_circle
+                    </span>
+                    Thêm cấu hình
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {dynamicConfigs.map((config, index) => (
+                    <div
+                      key={index}
+                      className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border rounded-xl bg-slate-50 relative group"
                     >
-                      <option value="EASY">Dễ</option>
-                      <option value="MEDIUM">Vừa</option>
-                      <option value="HARD">Khó</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 mb-1">
-                      Số lượng câu
-                    </label>
-                    <input
-                      type="number"
-                      value={dynamicConfig.quantity}
-                      onChange={(e) =>
-                        setDynamicConfig({
-                          ...dynamicConfig,
-                          quantity: parseInt(e.target.value),
-                        })
-                      }
-                      className="w-full h-10 rounded border border-slate-200 px-3 text-sm"
-                      min={1}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 mb-1">
-                      Điểm mỗi câu
-                    </label>
-                    <input
-                      type="number"
-                      value={dynamicConfig.scorePerQuestion}
-                      onChange={(e) =>
-                        setDynamicConfig({
-                          ...dynamicConfig,
-                          scorePerQuestion: parseInt(e.target.value),
-                        })
-                      }
-                      className="w-full h-10 rounded border border-slate-200 px-3 text-sm"
-                      min={0.5}
-                      step={0.5}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 mb-1">
-                      Nguồn câu hỏi (Bài học)
-                    </label>
-                    <select
-                      value={dynamicConfig.targetLessonId || ""}
-                      onChange={(e) =>
-                        setDynamicConfig({
-                          ...dynamicConfig,
-                          targetLessonId: e.target.value,
-                        })
-                      }
-                      className="w-full h-10 rounded border border-slate-200 px-3 text-sm"
-                    >
-                      <option value="">(Tự động theo bài thi)</option>
-                      {lessons.map((l) => (
-                        <option key={l.id} value={l.id}>
-                          {l.title}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                      {dynamicConfigs.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const newConfigs = [...dynamicConfigs];
+                            newConfigs.splice(index, 1);
+                            setDynamicConfigs(newConfigs);
+                          }}
+                          className="absolute -top-3 -right-3 bg-white text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all border shadow-sm"
+                          title="Xóa cấu hình"
+                        >
+                          <span className="material-symbols-outlined text-sm">
+                            close
+                          </span>
+                        </button>
+                      )}
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-1">
+                          Độ khó
+                        </label>
+                        <select
+                          value={config.difficulty}
+                          onChange={(e) => {
+                            const newConfigs = [...dynamicConfigs];
+                            newConfigs[index].difficulty = e.target
+                              .value as any;
+                            setDynamicConfigs(newConfigs);
+                          }}
+                          className="w-full h-10 rounded-lg border border-slate-200 px-3 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
+                        >
+                          <option value="EASY">Dễ</option>
+                          <option value="MEDIUM">Vừa</option>
+                          <option value="HARD">Khó</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-1">
+                          Số lượng câu
+                        </label>
+                        <input
+                          type="number"
+                          value={config.quantity}
+                          onChange={(e) => {
+                            const newConfigs = [...dynamicConfigs];
+                            newConfigs[index].quantity =
+                              parseInt(e.target.value) || 0;
+                            setDynamicConfigs(newConfigs);
+                          }}
+                          className="w-full h-10 rounded-lg border border-slate-200 px-3 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
+                          min={1}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-1">
+                          Điểm mỗi câu
+                        </label>
+                        <input
+                          type="number"
+                          value={config.scorePerQuestion}
+                          onChange={(e) => {
+                            const newConfigs = [...dynamicConfigs];
+                            newConfigs[index].scorePerQuestion =
+                              parseFloat(e.target.value) || 0;
+                            setDynamicConfigs(newConfigs);
+                          }}
+                          className="w-full h-10 rounded-lg border border-slate-200 px-3 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
+                          min={0.5}
+                          step={0.5}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-1">
+                          Nguồn câu hỏi (Bài học)
+                        </label>
+                        <select
+                          value={config.targetLessonId || ""}
+                          onChange={(e) => {
+                            const newConfigs = [...dynamicConfigs];
+                            newConfigs[index].targetLessonId = e.target.value;
+                            setDynamicConfigs(newConfigs);
+                          }}
+                          className="w-full h-10 rounded-lg border border-slate-200 px-3 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
+                        >
+                          <option value="">
+                            (Tự động theo bài học hiện tại)
+                          </option>
+                          {lessons.map((l) => (
+                            <option key={l.id} value={l.id}>
+                              {l.title}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ) : (
@@ -1012,17 +1077,17 @@ const ExamFormPage = () => {
                   </div>
                   <div className="min-w-[200px]">
                     <select
-                      value={qLessonId}
+                      value={qLessonName}
                       onChange={(e) => {
-                        setQLessonId(e.target.value);
+                        setQLessonName(e.target.value);
                         setQPage(1);
                       }}
                       className="w-full h-10 rounded border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1E90FF]"
                     >
                       <option value="">Tất cả bài học</option>
-                      {lessons.map((l) => (
-                        <option key={l.id} value={l.id}>
-                          {l.title}
+                      {myLessonNames.map((name, idx) => (
+                        <option key={idx} value={name}>
+                          {name}
                         </option>
                       ))}
                     </select>
