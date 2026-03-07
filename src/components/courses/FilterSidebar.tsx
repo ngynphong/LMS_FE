@@ -75,6 +75,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               <p className="text-sm font-bold">Giảng viên</p>
             </div>
             <select
+              id="teacherName"
               value={localTeacherName}
               onChange={(e) => setLocalTeacherName(e.target.value)}
               className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1E90FF] focus:border-[#1E90FF] bg-white"
@@ -98,22 +99,24 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-gray-500 font-medium">
+                <label htmlFor="fromDate" className="text-xs text-gray-500 font-medium">
                   Từ ngày:
                 </label>
                 <input
                   type="date"
+                  id="fromDate"
                   value={localFromDate}
                   onChange={(e) => setLocalFromDate(e.target.value)}
                   className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1E90FF] focus:border-[#1E90FF]"
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-gray-500 font-medium">
+                <label htmlFor="toDate" className="text-xs text-gray-500 font-medium">
                   Đến ngày:
                 </label>
                 <input
                   type="date"
+                  id="toDate"
                   value={localToDate}
                   onChange={(e) => setLocalToDate(e.target.value)}
                   className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1E90FF] focus:border-[#1E90FF]"

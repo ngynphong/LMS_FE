@@ -188,9 +188,9 @@ export const useJoinQuizByCode = () => {
     });
 };
 
-export const useStudentTeacherQuizzes = () => {
+export const useStudentTeacherQuizzes = (params?: { pageNo?: number; pageSize?: number }) => {
     return useQuery({
-        queryKey: ['student-teacher-quizzes'],
-        queryFn: getStudentTeacherQuizzes,
+        queryKey: ['student-teacher-quizzes', params],
+        queryFn: () => getStudentTeacherQuizzes(params),
     });
 };

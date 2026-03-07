@@ -6,6 +6,7 @@ import {
   // FaCog,
   FaTimes,
   FaBell,
+  FaUser,
 } from "react-icons/fa";
 import { useAuth } from "@/hooks/useAuth";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -44,6 +45,11 @@ const navItems: NavItem[] = [
     path: "/student/notifications",
     icon: <FaBell />,
     label: "Thông báo",
+  },
+  {
+    path: "/student/profile",
+    icon: <FaUser />,
+    label: "Thông tin cá nhân",
   },
 ];
 

@@ -1,27 +1,23 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useBlogDetail } from "../../hooks/useBlogs";
+import { useBlogDetail, usePublicBlogs } from "../../hooks/useBlogs";
 import BlockRenderer from "../../components/blog/BlockRenderer";
 import { Calendar, Share2 } from "lucide-react";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 const BlogDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { data: response, isLoading, error } = useBlogDetail(slug || "");
+  const { data: latestBlogsResponse } = usePublicBlogs(1, 4); // Lấy 4 bài để phòng trường hợp bài hiện tại nằm trong top 3
 
   useEffect(() => {
     if (response) {
       const result = response.data;
 
-      // 1. KIỂM TRA TÍN HIỆU REDIRECT TỪ BACKEND (SEO Optimization)
       if (result.needsRedirect && result.correctSlug) {
-        /* BẮT BUỘC dùng { replace: true }
-           Việc này giúp đè URL mới lên lịch sử trình duyệt,
-           tránh user bị kẹt trong vòng lặp khi ấn nút "Back",
-           và báo hiệu chuẩn cấu trúc 301 cho Google Bot.
-        */
         navigate(`/blog/${result.correctSlug}`, { replace: true });
       }
     }
@@ -29,16 +25,15 @@ const BlogDetailPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-gray-500 font-medium">Đang tải bài viết...</p>
-        </div>
-      </div>
+      <LoadingOverlay isLoading={isLoading} message="Đang tải bài viết..." />
     );
   }
 
   const blog = response?.data;
+  const latestBlogs =
+    latestBlogsResponse?.data?.items
+      ?.filter((b: any) => b.slug !== slug)
+      ?.slice(0, 3) || [];
 
   if (error || !blog) {
     return (
@@ -66,18 +61,12 @@ const BlogDetailPage: React.FC = () => {
           <nav className="flex text-sm text-gray-500 mb-6 font-medium">
             <button
               onClick={() => navigate("/blog")}
-              className="hover:text-blue-600 transition-colors"
+              className="hover:text-blue-600 transition-colors cursor-pointer"
             >
               Tin tức
             </button>
             <span className="mx-2">›</span>
-            {blog.tags && blog.tags.length > 0 && (
-              <>
-                <span className="text-gray-900">{blog.tags[0]}</span>
-                <span className="mx-2">›</span>
-              </>
-            )}
-            <span className="text-gray-400 line-clamp-1">{blog.title}</span>
+            <span className="text-gray-900 line-clamp-1">{blog.title}</span>
           </nav>
 
           <h1 className="text-4xl md:text-5xl lg:text-[54px] font-extrabold text-gray-900 leading-[1.1] tracking-tight mb-6">
@@ -256,34 +245,36 @@ const BlogDetailPage: React.FC = () => {
                 Tin nổi bật
               </h3>
               <div className="space-y-6">
-                {/* Mock Related Item 1 */}
-                <div className="flex gap-4 group cursor-pointer">
-                  <h4 className="flex-1 font-bold text-gray-900 group-hover:text-blue-600 transition-colors text-sm leading-snug line-clamp-3">
-                    Ứng dụng AI vào giảng dạy: Xu hướng tất yếu của giáo dục
-                    hiện đại
-                  </h4>
-                  <div className="w-24 h-[68px] shrink-0 bg-gray-100 overflow-hidden">
-                    <img
-                      src="https://placehold.co/100x70/e2e8f0/64748b?text=AI"
-                      alt="thumb1"
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform"
-                    />
-                  </div>
-                </div>
-                {/* Mock Related Item 2 */}
-                <div className="flex gap-4 group cursor-pointer">
-                  <h4 className="flex-1 font-bold text-gray-900 group-hover:text-blue-600 transition-colors text-sm leading-snug line-clamp-3">
-                    92% học sinh cải thiện điểm số sau khi tham gia khóa học
-                    tương tác
-                  </h4>
-                  <div className="w-24 h-[68px] shrink-0 bg-gray-100 overflow-hidden">
-                    <img
-                      src="https://placehold.co/100x70/e2e8f0/64748b?text=Edu"
-                      alt="thumb2"
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform"
-                    />
-                  </div>
-                </div>
+                {latestBlogs.length > 0 ? (
+                  latestBlogs.map((item: any) => (
+                    <div
+                      key={item.id}
+                      onClick={() => navigate(`/blog/${item.slug}`)}
+                      className="flex gap-4 group cursor-pointer"
+                    >
+                      <h4 className="flex-1 font-bold text-gray-900 group-hover:text-blue-600 transition-colors text-sm leading-snug line-clamp-3">
+                        {item.title}
+                      </h4>
+                      <div className="w-24 h-[68px] shrink-0 bg-gray-50 overflow-hidden border border-gray-100">
+                        {item.thumbnailUrl ? (
+                          <img
+                            src={item.thumbnailUrl}
+                            alt={item.title}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-300">
+                            No Img
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-400 text-sm italic">
+                    Chưa có bài viết liên quan
+                  </p>
+                )}
               </div>
             </div>
           </aside>

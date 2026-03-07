@@ -160,10 +160,14 @@ const StudentProfilePage = () => {
             <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
-                  <label className="text-gray-900 text-sm font-semibold">
+                  <label
+                    htmlFor="firstName"
+                    className="text-gray-900 text-sm font-semibold"
+                  >
                     Họ <span className="text-red-500">*</span>
                   </label>
                   <input
+                    id="firstName"
                     className={`w-full rounded-lg border h-12 px-4 text-sm transition-all outline-none focus:ring-2 focus:ring-[#27A4F2] ${
                       errors.firstName
                         ? "border-red-500"
@@ -181,10 +185,14 @@ const StudentProfilePage = () => {
                   )}
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="text-gray-900 text-sm font-semibold">
+                  <label
+                    htmlFor="lastName"
+                    className="text-gray-900 text-sm font-semibold"
+                  >
                     Tên <span className="text-red-500">*</span>
                   </label>
                   <input
+                    id="lastName"
                     className={`w-full rounded-lg border h-12 px-4 text-sm transition-all outline-none focus:ring-2 focus:ring-[#27A4F2] ${
                       errors.lastName
                         ? "border-red-500"
@@ -202,10 +210,14 @@ const StudentProfilePage = () => {
                   )}
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="text-gray-900 text-sm font-semibold">
+                  <label
+                    htmlFor="email"
+                    className="text-gray-900 text-sm font-semibold"
+                  >
                     Email
                   </label>
                   <input
+                    id="email"
                     className="w-full rounded-lg border border-gray-300 h-12 px-4 text-sm transition-all bg-gray-50 outline-none focus:ring-2 focus:ring-[#27A4F2] focus:border-[#27A4F2]"
                     type="email"
                     name="email"
@@ -214,10 +226,14 @@ const StudentProfilePage = () => {
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="text-gray-900 text-sm font-semibold">
+                  <label
+                    htmlFor="dob"
+                    className="text-gray-900 text-sm font-semibold"
+                  >
                     Ngày sinh <span className="text-red-500">*</span>
                   </label>
                   <input
+                    id="dob"
                     className={`w-full rounded-lg border h-12 px-4 text-sm transition-all outline-none focus:ring-2 focus:ring-[#27A4F2] ${
                       errors.dob
                         ? "border-red-500"
@@ -233,10 +249,14 @@ const StudentProfilePage = () => {
                   )}
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="text-gray-900 text-sm font-semibold">
+                  <label
+                    htmlFor="schoolName"
+                    className="text-gray-900 text-sm font-semibold"
+                  >
                     Trường học / Nơi làm việc
                   </label>
                   <input
+                    id="schoolName"
                     className="w-full rounded-lg border border-gray-300 h-12 px-4 text-sm transition-all outline-none focus:ring-2 focus:ring-[#27A4F2] focus:border-[#27A4F2]"
                     type="text"
                     name="schoolName"
@@ -249,10 +269,14 @@ const StudentProfilePage = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
-                  <label className="text-gray-900 text-sm font-semibold">
+                  <label
+                    htmlFor="emergencyContact"
+                    className="text-gray-900 text-sm font-semibold"
+                  >
                     Liên hệ khẩn cấp
                   </label>
                   <input
+                    id="emergencyContact"
                     className="w-full rounded-lg border border-gray-300 h-12 px-4 text-sm transition-all outline-none focus:ring-2 focus:ring-[#27A4F2] focus:border-[#27A4F2]"
                     type="text"
                     name="emergencyContact"
@@ -263,10 +287,14 @@ const StudentProfilePage = () => {
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-gray-900 text-sm font-semibold">
+                <label
+                  htmlFor="goal"
+                  className="text-gray-900 text-sm font-semibold"
+                >
                   Mục tiêu học tập
                 </label>
                 <textarea
+                  id="goal"
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm resize-none transition-all outline-none focus:ring-2 focus:ring-[#27A4F2]"
                   placeholder="Chia sẻ mục tiêu của bạn..."
                   rows={4}

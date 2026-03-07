@@ -154,7 +154,7 @@ const StudentMyCoursesPage = () => {
       {/* Search & Filters */}
       <div className="flex flex-col md:flex-row md:items-end gap-3 md:gap-4 mb-6 md:mb-8">
         <div className="flex-1 w-full">
-          <label className="block mb-1.5 md:mb-2">
+          <label htmlFor="searchQuery" className="block mb-1.5 md:mb-2">
             <span className="text-[#111518] text-sm font-semibold">
               Tìm kiếm
             </span>
@@ -165,6 +165,7 @@ const StudentMyCoursesPage = () => {
             </span>
             <input
               type="text"
+              id="searchQuery"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-[#111518] focus:ring-2 focus:ring-[#27A4F2] focus:border-[#27A4F2] outline-none transition-all text-sm"
@@ -173,7 +174,7 @@ const StudentMyCoursesPage = () => {
           </div>
         </div>
         <div className="w-full md:w-64">
-          <label className="block mb-1.5 md:mb-2">
+          <label htmlFor="sortOption" className="block mb-1.5 md:mb-2">
             <span className="text-[#111518] text-sm font-semibold">
               Sắp xếp theo
             </span>
@@ -181,6 +182,7 @@ const StudentMyCoursesPage = () => {
           <div className="relative">
             <select
               value={sortOption}
+              id="sortOption"
               onChange={handleSortChange}
               className="w-full appearance-none pl-3 pr-10 py-2.5 rounded-xl border border-slate-200 bg-white text-[#111518] focus:ring-2 focus:ring-[#27A4F2] focus:border-[#27A4F2] outline-none transition-all cursor-pointer text-sm"
             >

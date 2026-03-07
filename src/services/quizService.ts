@@ -186,9 +186,14 @@ export const joinQuizByCode = async (code: string, joinClass: boolean): Promise<
     }
 }
 
-export const getStudentTeacherQuizzes = async (): Promise<StudentTeacherQuiz[]> => {
+export const getStudentTeacherQuizzes = async (params?: { pageNo?: number; pageSize?: number }): Promise<{ items: StudentTeacherQuiz[]; totalElement: number; totalPage: number }> => {
     try {
-        const response = await axiosInstance.get<{ code: number; message: string; data: StudentTeacherQuiz[] }>('/quiz/student/teacher-quizzes');
+        const response = await axiosInstance.get<{ code: number; message: string; data: { items: StudentTeacherQuiz[]; totalElement: number; totalPage: number } }>('/quiz/student/teacher-quizzes', {
+            params: {
+                pageNo: params?.pageNo || 1,
+                pageSize: params?.pageSize || 10,
+            }
+        });
         return response.data.data;
     } catch (error) {
         console.error('Failed to fetch student teacher quizzes:', error);
