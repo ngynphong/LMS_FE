@@ -99,6 +99,11 @@ const LoginPage = () => {
               navigate("/admin/dashboard");
             } else if (currentUser?.role === "TEACHER") {
               navigate("/teacher/dashboard");
+            } else if (
+              currentUser?.role === "STUDENT" &&
+              currentUser?.requiresTeacherAssignment
+            ) {
+              navigate("/student/my-courses");
             } else {
               navigate("/");
             }

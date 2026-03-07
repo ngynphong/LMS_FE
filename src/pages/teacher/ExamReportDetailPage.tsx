@@ -1,18 +1,43 @@
 import { Link, useParams } from "react-router-dom";
-import { useQuizStatistics } from "@/hooks/useQuizzes";
+import {
+  useQuizStatistics,
+  useQuizStudentStatistics,
+} from "@/hooks/useQuizzes";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
+import { useState } from "react";
+import PaginationControl from "@/components/common/PaginationControl";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const ExamReportDetailPage = () => {
   const { id } = useParams();
-  const { data: stats, isLoading, error } = useQuizStatistics(id);
+  const [studentPage, setStudentPage] = useState(1);
+  const [studentPageSize, setStudentPageSize] = useState(20);
+  const [studentKeyword, setStudentKeyword] = useState("");
+  const debouncedKeyword = useDebounce(studentKeyword, 500);
 
-  if (isLoading) {
-    return (
-      <LoadingOverlay isLoading={true} message="Đang tải báo cáo..." />
-    );
+  const {
+    data: stats,
+    isLoading: isStatsLoading,
+    error: statsError,
+  } = useQuizStatistics(id);
+  const {
+    data: studentStats,
+    isLoading: isStudentsLoading,
+    // error: studentsError,
+  } = useQuizStudentStatistics(id, {
+    pageNo: studentPage,
+    pageSize: studentPageSize,
+    keyword: debouncedKeyword,
+    sorts: "completedAt:desc",
+  });
+
+  if (isStatsLoading) {
+    return <LoadingOverlay isLoading={true} message="Đang tải báo cáo..." />;
   }
 
-  if (error || !stats) {
+  if (statsError || !stats) {
     return (
       <div className="flex flex-col items-center justify-center h-96 gap-4">
         <span className="material-symbols-outlined text-slate-300 text-6xl">
@@ -33,9 +58,6 @@ const ExamReportDetailPage = () => {
       ? Math.round((stats.passedCount / stats.totalAttempts) * 100)
       : 0;
 
-  // Incomplete isn't directly returned, and "totalAttempts" implies completed attempts usually.
-  // We will assume totalAttempts = passed + failed for now, or just show passed/failed counts.
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -54,13 +76,6 @@ const ExamReportDetailPage = () => {
           <h2 className="text-[#111518] text-2xl font-bold leading-tight tracking-tight">
             Báo cáo kết quả: {stats.quizTitle}
           </h2>
-        </div>
-        <div className="flex gap-3">
-          {/* Export button could be re-enabled if backend supports it later */}
-          {/* <button className="flex items-center justify-center rounded-lg h-10 px-5 bg-[#0074bd] text-white text-sm font-bold shadow-md hover:opacity-90 transition-opacity">
-            <span className="material-symbols-outlined mr-2 text-lg">download</span>
-            Xuất báo cáo
-          </button> */}
         </div>
       </div>
 
@@ -156,13 +171,173 @@ const ExamReportDetailPage = () => {
         </div>
       </div>
 
-      <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex gap-3 text-blue-800 text-sm">
-        <span className="material-symbols-outlined text-xl">info</span>
-        <p>
-          Hiện tại hệ thống chỉ hỗ trợ xem báo cáo tổng quan. Tính năng xem chi
-          tiết bài làm của từng học viên và biểu đồ phân tích sâu sẽ được cập
-          nhật trong phiên bản sau.
-        </p>
+      {/* Student List */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="p-6 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4">
+          <h3 className="text-lg font-bold text-[#111518]">
+            Danh sách học viên làm bài
+          </h3>
+          <div className="flex items-center gap-4 flex-1 max-w-md">
+            <div className="relative flex-1">
+              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
+                search
+              </span>
+              <input
+                type="text"
+                placeholder="Tìm kiếm học viên..."
+                value={studentKeyword}
+                onChange={(e) => {
+                  setStudentKeyword(e.target.value);
+                  setStudentPage(1);
+                }}
+                className="w-full pl-9 pr-4 py-2 bg-slate-50 border-none rounded-lg text-sm focus:ring-1 focus:ring-[#0074bd]"
+              />
+            </div>
+            <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-bold whitespace-nowrap">
+              {studentStats?.totalElement || 0} lượt làm bài
+            </span>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto relative min-h-[200px]">
+          {isStudentsLoading && (
+            <div className="absolute inset-0 bg-white/50 z-10 flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0074bd]"></div>
+            </div>
+          )}
+
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50/50 border-b border-slate-100">
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  Học viên
+                </th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">
+                  Điểm số
+                </th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">
+                  Trạng thái
+                </th>
+                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  Thời gian làm bài
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {studentStats?.items?.map((attempt) => (
+                <tr
+                  key={attempt.attemptId}
+                  className="hover:bg-slate-50/50 transition-colors"
+                >
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="size-10 rounded-full bg-[#0074bd]/10 flex items-center justify-center overflow-hidden border border-slate-100">
+                        {attempt.studentImgUrl ? (
+                          <img
+                            src={attempt.studentImgUrl}
+                            alt={attempt.studentName}
+                            className="size-full object-cover"
+                          />
+                        ) : (
+                          <span className="material-symbols-outlined text-[#0074bd]">
+                            person
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-[#111518]">
+                          {attempt.studentName}
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          {attempt.studentEmail}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <span className="text-base font-bold text-[#111518]">
+                      {attempt.totalScore}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex justify-center">
+                      <span
+                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                          attempt.isPassed
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {attempt.isPassed ? "Đạt" : "Chưa đạt"}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-1.5 text-xs text-slate-600">
+                        <span className="material-symbols-outlined text-sm">
+                          play_arrow
+                        </span>
+                        {format(
+                          new Date(attempt.startedAt),
+                          "HH:mm, dd/MM/yyyy",
+                          { locale: vi },
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1.5 text-xs text-slate-400">
+                        <span className="material-symbols-outlined text-sm">
+                          check
+                        </span>
+                        {format(
+                          new Date(attempt.completedAt),
+                          "HH:mm, dd/MM/yyyy",
+                          { locale: vi },
+                        )}
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+
+              {!isStudentsLoading &&
+                (!studentStats?.items || studentStats.items.length === 0) && (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      className="px-6 py-12 text-center text-slate-400"
+                    >
+                      <div className="flex flex-col items-center gap-2">
+                        <span className="material-symbols-outlined text-4xl">
+                          folder_open
+                        </span>
+                        <p>
+                          {studentKeyword
+                            ? "Không tìm thấy học viên nào"
+                            : "Chưa có học viên nào làm bài"}
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        {(studentStats?.totalPage || 0) > 1 && (
+          <div className="p-6 border-t border-slate-100 flex justify-center">
+            <PaginationControl
+              currentPage={studentPage}
+              totalPages={studentStats?.totalPage || 1}
+              onPageChange={setStudentPage}
+              pageSize={studentPageSize}
+              onPageSizeChange={(newSize) => {
+                setStudentPageSize(newSize);
+                setStudentPage(1);
+              }}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

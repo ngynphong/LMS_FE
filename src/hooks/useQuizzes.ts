@@ -18,7 +18,8 @@ import {
     getQuizById,
     updateQuiz,
     getQuizByLessonItem,
-    getMyAllQuizHistory
+    getMyAllQuizHistory,
+    getQuizStudentStatistics
 } from '@/services/quizService';
 import type { 
     CreateQuizRequest, 
@@ -103,6 +104,24 @@ export const useQuizStatistics = (quizId?: string) => {
     });
 };
 
+export const useQuizStudentStatistics = (
+    quizId?: string,
+    params?: {
+        pageNo?: number;
+        pageSize?: number;
+        keyword?: string;
+        fromDate?: string;
+        toDate?: string;
+        sorts?: string | string[];
+    }
+) => {
+    return useQuery({
+        queryKey: ['quiz-statistics-students', quizId, params],
+        queryFn: () => getQuizStudentStatistics(quizId!, params),
+        enabled: !!quizId,
+    });
+};
+
 // ==================== Student Quiz Hooks ====================
 
 export const useStartQuiz = () => {
@@ -162,10 +181,10 @@ export const useMyOngoingQuizzes = () => {
     });
 };
 
-export const useMyAllQuizHistory = () => {
+export const useMyAllQuizHistory = (params?: { pageNo?: number; pageSize?: number }) => {
     return useQuery({
-        queryKey: ['my-all-quiz-history'],
-        queryFn: getMyAllQuizHistory,
+        queryKey: ['my-all-quiz-history', params],
+        queryFn: () => getMyAllQuizHistory(params),
     });
 };
 

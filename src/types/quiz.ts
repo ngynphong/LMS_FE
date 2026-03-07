@@ -148,6 +148,14 @@ export interface ApiOngoingQuiz {
     questions: QuizQuestionAttempt[];
 }
 
+export interface PaginatedHistoryQuizResponse {
+    pageNo: number;
+    pageSize: number;
+    totalPage: number;
+    totalElement: number;
+    items: ApiOngoingQuiz[];
+}
+
 export interface StudentTeacherQuiz {
     id: string;
     title: string;
@@ -164,6 +172,28 @@ export interface StudentTeacherQuiz {
     isPublished: boolean;
     lessonItemId: string;
     attemptsCount: number; // Added field for tracking usage
+}
+
+export interface StudentAttempt {
+    attemptId: string;
+    studentId: string;
+    studentName: string;
+    studentEmail: string;
+    studentImgUrl?: string | null;
+    totalScore: number;
+    isPassed: boolean;
+    startedAt: string;
+    completedAt: string;
+    status: string;
+}
+
+export interface PaginatedStudentStatisticsResponse {
+    pageNo: number;
+    pageSize: number;
+    totalPage: number;
+    totalElement: number;
+    sortBy: string[];
+    items: StudentAttempt[];
 }
 
 export interface QuizStatistics {

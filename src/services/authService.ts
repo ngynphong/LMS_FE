@@ -40,7 +40,7 @@ export const loginApi = async (email: string, password: string): Promise<AuthRes
             throw new Error(response.data.message || 'Login failed');
         }
 
-        const { token, authenticated, roles } = response.data.data;
+        const { token, authenticated, roles, requiresTeacherAssignment } = response.data.data;
 
         if (!authenticated || !token) {
             throw new Error('Authentication failed');
@@ -64,8 +64,9 @@ export const loginApi = async (email: string, password: string): Promise<AuthRes
                     role: mapRolesToUserRole(profileData.roles || roles),
                     teacherProfile: profileData.teacherProfile || undefined,
                     studentProfile: profileData.studentProfile || undefined,
+                    requiresTeacherAssignment,
                 };
-                return { user, token };
+                return { user, token, requiresTeacherAssignment };
             }
         } catch {
             // If profile fetch fails, create minimal user from login response
@@ -81,9 +82,10 @@ export const loginApi = async (email: string, password: string): Promise<AuthRes
             urlImg: '',
             dob: '',
             role: mapRolesToUserRole(roles),
+            requiresTeacherAssignment,
         };
 
-        return { user, token };
+        return { user, token, requiresTeacherAssignment };
     } catch (error) {
         return handleApiError(error, 'Login failed');
     }

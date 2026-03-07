@@ -32,9 +32,10 @@ const StudentAvailableQuizzesPage = () => {
   const { data: ongoingQuizzesData, isLoading: ongoingLoading } =
     useMyOngoingQuizzes();
   const ongoingQuizzes = ongoingQuizzesData || [];
+  // const historyQuizzes = historyQuizzesData || [];
+  const [historyPage, setHistoryPage] = useState(1);
   const { data: historyQuizzesData, isLoading: historyLoading } =
-    useMyAllQuizHistory();
-  const historyQuizzes = historyQuizzesData || [];
+    useMyAllQuizHistory({ pageNo: historyPage, pageSize: 12 });
 
   // Modal States
   const [historyQuiz, setHistoryQuiz] = useState<{
@@ -72,7 +73,8 @@ const StudentAvailableQuizzesPage = () => {
     }
 
     if (filter === "history") {
-      return historyQuizzes.map((q) => ({
+      const historyList = historyQuizzesData?.items || [];
+      return historyList.map((q) => ({
         id: q.quizId,
         attemptId: q.id,
         title: q.quizTitle,
@@ -374,13 +376,23 @@ const StudentAvailableQuizzesPage = () => {
           </div>
 
           {/* Pagination */}
-          {filter === "all" && (quizzesData?.totalPage || 0) > 1 && (
+          {((filter === "all" && (quizzesData?.totalPage || 0) > 1) ||
+            (filter === "history" &&
+              (historyQuizzesData?.totalPage || 0) > 1)) && (
             <div className="mt-8 mb-10 bg-white p-4 rounded-xl border border-gray-200">
               <PaginationControl
-                currentPage={currentPage}
-                totalPages={quizzesData?.totalPage || 0}
+                currentPage={filter === "history" ? historyPage : currentPage}
+                totalPages={
+                  filter === "history"
+                    ? historyQuizzesData?.totalPage || 0
+                    : quizzesData?.totalPage || 0
+                }
                 onPageChange={(page) => {
-                  setCurrentPage(page);
+                  if (filter === "history") {
+                    setHistoryPage(page);
+                  } else {
+                    setCurrentPage(page);
+                  }
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
               />
