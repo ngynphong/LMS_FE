@@ -219,7 +219,7 @@ const ExamFormPage = () => {
   const qTotalPages = availableQuestionsResponse?.totalPage || 0;
 
   // Fetch courses
-  const { data: coursesData } = useMyCourses({ pageNo: 1, pageSize: 50 });
+  const { data: coursesData } = useMyCourses({ pageNo: 0, pageSize: 50 });
   const courses = coursesData?.items || [];
   const { data: courseDetail } = useCourseDetail(selectedCourseId || undefined);
   const lessons = courseDetail?.lessons || [];
@@ -902,29 +902,31 @@ const ExamFormPage = () => {
             <h3 className="text-lg font-bold text-[#111518]">
               Cấu hình câu hỏi
             </h3>
-            <div className="flex items-center gap-2">
-              <span
-                className={`text-sm font-bold ${!formData.isDynamic ? "text-[#0074bd]" : "text-slate-400"}`}
-              >
-                Thủ công
-              </span>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={formData.isDynamic}
-                  onChange={(e) =>
-                    setFormData({ ...formData, isDynamic: e.target.checked })
-                  }
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#1E90FF]"></div>
-              </label>
-              <span
-                className={`text-sm font-bold ${formData.isDynamic ? "text-[#1E90FF]" : "text-slate-400"}`}
-              >
-                Tự động (Dynamic)
-              </span>
-            </div>
+            {!isEditMode && (
+              <div className="flex items-center gap-2">
+                <span
+                  className={`text-sm font-bold ${!formData.isDynamic ? "text-[#0074bd]" : "text-slate-400"}`}
+                >
+                  Thủ công
+                </span>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.isDynamic}
+                    onChange={(e) =>
+                      setFormData({ ...formData, isDynamic: e.target.checked })
+                    }
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#1E90FF]"></div>
+                </label>
+                <span
+                  className={`text-sm font-bold ${formData.isDynamic ? "text-[#1E90FF]" : "text-slate-400"}`}
+                >
+                  Tự động (Dynamic)
+                </span>
+              </div>
+            )}
           </div>
           <div className="p-6">
             {formData.isDynamic ? (
