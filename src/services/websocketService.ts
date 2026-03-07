@@ -5,7 +5,7 @@ import SockJS from 'sockjs-client';
 
 class WebSocketService {
     private client: Client;
-    private isConnected: boolean = false;
+    
 
     constructor() {
         this.client = new Client({
@@ -27,27 +27,34 @@ class WebSocketService {
             // },
         });
 
-        // Callback khi có lỗi
+        // Callback khi có lỗi từ Broker
         this.client.onStompError = (frame) => {
-            if (import.meta.env.MODE === 'development') {
-                console.error('❌ Broker reported error: ' + frame.headers['message']);
+            const errorMessage = frame.headers['message'];
+            // Chỉ log lỗi nếu không phải là thông báo ngắt kết nối thông thường
+            if (import.meta.env.MODE === 'development' && !errorMessage?.includes('closed')) {
+                console.error('❌ Broker reported error: ' + errorMessage);
                 console.error('Additional details: ' + frame.body);
             }
+        };
+
+        // Cập nhật trạng thái khi đóng kết nối
+        this.client.onWebSocketClose = () => {
+        };
+
+        this.client.onDisconnect = () => {
         };
     }
 
     // Hàm kết nối (Gọi khi User Login thành công)
     connect(token: string, onConnectCallback?: () => void) {
-        if (this.isConnected) return;
-
+        if (!token) return;
+        
         // Gửi Token vào Header để UserHeaderInterceptor ở Backend bắt được
         this.client.connectHeaders = {
             Authorization: `Bearer ${token}` 
         };
 
         this.client.onConnect = () => {
-            // console.log('✅ Connected to WebSocket');
-            this.isConnected = true;
             if (onConnectCallback) onConnectCallback();
         };
 
@@ -56,11 +63,7 @@ class WebSocketService {
 
     // Hàm ngắt kết nối (Gọi khi Logout)
     disconnect() {
-        if (this.isConnected) {
-            this.client.deactivate();
-            this.isConnected = false;
-            // console.log('🔌 Disconnected');
-        }
+        this.client.deactivate();
     }
 
     // Hàm Subscribe (Nhận dữ liệu)

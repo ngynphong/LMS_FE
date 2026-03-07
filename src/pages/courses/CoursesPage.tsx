@@ -146,6 +146,7 @@ const CoursesPage = () => {
                   <FaSearch />
                 </div>
                 <input
+                  id="searchQuery"
                   className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-gray-900 focus:outline-0 focus:ring-0 border-none bg-white placeholder:text-gray-500 px-4 rounded-l-none border-l-0 text-base font-normal leading-normal"
                   placeholder="Tìm kiếm khóa học bạn quan tâm..."
                   value={searchQuery}
@@ -179,6 +180,7 @@ const CoursesPage = () => {
                 {/* Visibility Filter */}
                 <select
                   value={visibilityFilter}
+                  id="visibilityFilter"
                   onChange={(e) =>
                     handleVisibilityChange(
                       e.target.value as "" | "PUBLIC" | "PRIVATE",
@@ -194,6 +196,7 @@ const CoursesPage = () => {
                 {/* Sort Order */}
                 <select
                   value={sortOrder}
+                  id="sortOrder"
                   onChange={(e) =>
                     handleSortChange(e.target.value as "desc" | "asc")
                   }

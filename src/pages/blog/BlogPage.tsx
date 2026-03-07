@@ -1,7 +1,17 @@
 import React from "react";
 import { usePublicBlogs } from "@/hooks/useBlogs";
 import { Link } from "react-router-dom";
-import { Calendar, User, ArrowRight, ImageIcon } from "lucide-react";
+import {
+  Calendar,
+  User,
+  ArrowRight,
+  ImageIcon,
+  Search,
+  Filter,
+  SortDesc,
+} from "lucide-react";
+import PaginationControl from "@/components/common/PaginationControl";
+import { useDebounce } from "@/hooks/useDebounce";
 import type { BlogPost, FileBlockData, ParagraphBlockData } from "@/types/blog";
 
 const getThumbnailUrl = (post: BlogPost): string | null => {
@@ -66,7 +76,24 @@ const getSummaryText = (post: BlogPost): string => {
 };
 
 const BlogPage: React.FC = () => {
-  const { data, isLoading, error } = usePublicBlogs(1, 12);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(10);
+  const [searchKeyword, setSearchKeyword] = React.useState("");
+  const debouncedSearch = useDebounce(searchKeyword, 500);
+  const [selectedTag, setSelectedTag] = React.useState<string | undefined>();
+  const [sortOrder, setSortOrder] = React.useState<string>("createdAt:desc");
+
+  const { data, isLoading, error } = usePublicBlogs(
+    currentPage,
+    pageSize,
+    selectedTag,
+    debouncedSearch,
+    [sortOrder],
+  );
+
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedSearch, selectedTag, sortOrder]);
 
   if (isLoading)
     return (
@@ -107,7 +134,65 @@ const BlogPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 -mt-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 -mt-10 relative z-10">
+        <div className="bg-white rounded-3xl shadow-xl shadow-blue-900/5 p-6 md:p-8 border border-gray-100 flex flex-col md:flex-row gap-6 items-center">
+          {/* Search Input */}
+          <div className="relative flex-1 w-full">
+            <Search
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+              size={20}
+            />
+            <input
+              type="text"
+              placeholder="Tìm kiếm bài viết theo tiêu đề, nội dung..."
+              className="w-full pl-12 pr-4 py-4 bg-gray-50 border-none rounded-2xl text-base focus:ring-2 focus:ring-[#1E90FF]/20 transition-all outline-none"
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
+            />
+          </div>
+
+          <div className="flex gap-4 w-full md:w-auto">
+            {/* Tag Filter - For now just a simple input or placeholder if tags list not available */}
+            <div className="relative flex-1 md:w-48">
+              <Filter
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                size={18}
+              />
+              <select
+                className="w-full pl-11 pr-8 py-4 bg-gray-50 border-none rounded-2xl text-sm appearance-none focus:ring-2 focus:ring-[#1E90FF]/20 transition-all outline-none font-medium text-gray-700"
+                value={selectedTag || ""}
+                onChange={(e) => setSelectedTag(e.target.value || undefined)}
+              >
+                <option value="">Tất cả danh mục</option>
+                <option value="Công nghệ">Công nghệ</option>
+                <option value="Khóa học">Khóa học</option>
+                <option value="Sự kiện">Sự kiện</option>
+                <option value="Thông báo">Thông báo</option>
+              </select>
+            </div>
+
+            {/* Sort Dropdown */}
+            <div className="relative flex-1 md:w-48">
+              <SortDesc
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                size={18}
+              />
+              <select
+                className="w-full pl-11 pr-8 py-4 bg-gray-50 border-none rounded-2xl text-sm appearance-none focus:ring-2 focus:ring-[#1E90FF]/20 transition-all outline-none font-medium text-gray-700"
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+              >
+                <option value="createdAt:desc">Mới nhất</option>
+                <option value="createdAt:asc">Cũ nhất</option>
+                <option value="title:asc">A - Z</option>
+                <option value="title:desc">Z - A</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {posts.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm">
             <p className="text-gray-500 text-lg">
@@ -248,6 +333,24 @@ const BlogPage: React.FC = () => {
                 </Link>
               ))}
             </div>
+            {/* Pagination */}
+            {data && data.data.totalPage > 1 && (
+              <div className="mt-16 bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+                <PaginationControl
+                  currentPage={currentPage}
+                  totalPages={data.data.totalPage}
+                  onPageChange={(page) => {
+                    setCurrentPage(page);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  pageSize={pageSize}
+                  onPageSizeChange={(size) => {
+                    setPageSize(size);
+                    setCurrentPage(1);
+                  }}
+                />
+              </div>
+            )}
           </>
         )}
       </div>

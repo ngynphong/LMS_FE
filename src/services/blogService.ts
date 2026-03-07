@@ -3,9 +3,15 @@ import type { BlogPost, BlogListResponse, CreateBlogPayload, ApiResponse, BlogDe
 
 export const blogService = {
   // Public API
-  getPublishedBlogs: async (page = 1, limit = 10, tag?: string) => {
+  getPublishedBlogs: async (page = 1, limit = 10, tag?: string, keyword?: string, sorts?: string[]) => {
     const response = await publicAxios.get<ApiResponse<BlogListResponse>>('/blogs', {
-      params: { pageNo: page, pageSize: limit, tag }
+      params: { 
+        pageNo: page - 1, // Swagger shows 0-based default? Actually Swagger shows 0. Let's check 
+        pageSize: limit, 
+        tag,
+        keyword,
+        sorts
+      }
     });
     return response.data;
   },
@@ -16,9 +22,15 @@ export const blogService = {
   },
 
   // Admin API
-  getAllBlogsAdmin: async (page = 1, limit = 10) => {
+  getAllBlogsAdmin: async (page = 1, limit = 10, tag?: string, keyword?: string, sorts?: string[]) => {
     const response = await axiosInstance.get<ApiResponse<BlogListResponse>>('/blogs', {
-      params: { pageNo: page, pageSize: limit }
+      params: { 
+        pageNo: page - 1, 
+        pageSize: limit,
+        tag,
+        keyword,
+        sorts
+      }
     });
     return response.data;
   },

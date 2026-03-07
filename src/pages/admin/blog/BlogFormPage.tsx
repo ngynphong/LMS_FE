@@ -223,7 +223,7 @@ const BlogFormPage: React.FC = () => {
           <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 space-y-4">
             <textarea
               placeholder="Tiêu đề bài viết..."
-              className="w-full max-w-4xl text-3xl font-bold border-none focus:ring-0 placeholder:text-gray-300"
+              className="w-full max-w-4xl text-3xl font-bold border-none rounded-md focus:ring-2 focus:outline-none focus:ring-blue-500 placeholder:text-gray-300"
               value={formData.title}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, title: e.target.value }))
@@ -298,7 +298,7 @@ const BlogFormPage: React.FC = () => {
                     </select>
                     <textarea
                       placeholder="Tiêu đề đoạn..."
-                      className="w-full max-w-xl text-xl font-bold border-none focus:ring-0 placeholder:text-gray-300 p-0"
+                      className="w-full max-w-xl text-xl font-bold border-none rounded-lg focus:ring-2 focus:outline-none focus:ring-blue-500 placeholder:text-gray-300 p-0"
                       value={(block.data as HeaderBlockData).text}
                       onChange={(e) =>
                         updateBlock(index, { text: e.target.value })
@@ -310,7 +310,7 @@ const BlogFormPage: React.FC = () => {
                 {block.type === "paragraph" && (
                   <textarea
                     placeholder="Viết nội dung ở đây..."
-                    className="w-full max-w-xl text-gray-700 leading-relaxed border-none focus:ring-0 placeholder:text-gray-300 p-0 min-h-[300px]"
+                    className="w-full max-w-xl text-gray-700 leading-relaxed border-none rounded-lg focus:ring-2 focus:outline-none focus:ring-blue-500 placeholder:text-gray-300 p-0 min-h-[300px]"
                     value={(block.data as ParagraphBlockData).text}
                     onChange={(e) =>
                       updateBlock(index, { text: e.target.value })

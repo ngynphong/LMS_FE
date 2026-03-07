@@ -68,8 +68,8 @@ const Footer = () => {
               </Link>
             </li>
             <li>
-              <Link className="hover:text-white transition-colors" to="/">
-                Tin tức công nghệ
+              <Link className="hover:text-white transition-colors" to="/blog">
+                Tin tức
               </Link>
             </li>
           </ul>

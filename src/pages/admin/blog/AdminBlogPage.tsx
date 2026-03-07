@@ -4,6 +4,8 @@ import { useAdminBlogs, useAdminBlogMutations } from "../../../hooks/useBlogs";
 import { Link } from "react-router-dom";
 import PaginationControl from "../../../components/common/PaginationControl";
 import { ConfirmationModal } from "../../../components/common/ConfirmationModal";
+import { useDebounce } from "@/hooks/useDebounce";
+import { Filter, SortDesc } from "lucide-react";
 
 const AdminBlogPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,7 +20,22 @@ const AdminBlogPage: React.FC = () => {
     blogTitle: "",
   });
 
-  const { data: response, isLoading } = useAdminBlogs(currentPage, pageSize);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const debouncedSearch = useDebounce(searchKeyword, 500);
+  const [selectedTag, setSelectedTag] = useState<string | undefined>();
+  const [sortOrder, setSortOrder] = useState<string>("createdAt:desc");
+
+  const { data: response, isLoading } = useAdminBlogs(
+    currentPage,
+    pageSize,
+    selectedTag,
+    debouncedSearch,
+    [sortOrder],
+  );
+
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedSearch, selectedTag, sortOrder]);
   const { deleteBlog } = useAdminBlogMutations();
 
   const handleDeleteClick = (id: string, title: string) => {
@@ -56,7 +73,8 @@ const AdminBlogPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+            {/* Search Input */}
             <div className="relative flex-1 md:w-64">
               <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -64,13 +82,52 @@ const AdminBlogPage: React.FC = () => {
               />
               <input
                 type="text"
-                placeholder="Tìm kiếm bài viết..."
+                placeholder="Tìm bài viết..."
                 className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
               />
             </div>
+
+            {/* Tag Filter */}
+            <div className="relative md:w-40">
+              <Filter
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                size={16}
+              />
+              <select
+                className="w-full pl-9 pr-6 py-2 bg-white border border-slate-200 rounded-xl text-sm appearance-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none font-medium text-slate-700"
+                value={selectedTag || ""}
+                onChange={(e) => setSelectedTag(e.target.value || undefined)}
+              >
+                <option value="">Tất cả tags</option>
+                <option value="Công nghệ">Công nghệ</option>
+                <option value="Khóa học">Khóa học</option>
+                <option value="Sự kiện">Sự kiện</option>
+              </select>
+            </div>
+
+            {/* Sort Dropdown */}
+            <div className="relative md:w-40">
+              <SortDesc
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                size={16}
+              />
+              <select
+                className="w-full pl-9 pr-6 py-2 bg-white border border-slate-200 rounded-xl text-sm appearance-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none font-medium text-slate-700"
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+              >
+                <option value="createdAt:desc">Mới nhất</option>
+                <option value="createdAt:asc">Cũ nhất</option>
+                <option value="title:asc">Tên A-Z</option>
+                <option value="title:desc">Tên Z-A</option>
+              </select>
+            </div>
+
             <Link
               to="/admin/blogs/create"
-              className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 active:scale-95 transition-all shadow-sm shadow-blue-200 font-semibold"
+              className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 active:scale-95 transition-all shadow-sm shadow-blue-200 font-semibold ml-auto md:ml-0"
             >
               <Plus size={18} />
               <span>Tạo mới</span>
