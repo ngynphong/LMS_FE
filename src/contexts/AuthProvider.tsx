@@ -183,8 +183,13 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
               throw new Error("No token found");
             }
             const userProfileResponse = await getCurrentUserApi();
-            setUser(userProfileResponse.user);
-            safelyStoreUser(userProfileResponse.user);
+            const mergedUser = {
+              ...userProfileResponse.user,
+              requiresTeacherAssignment:
+                response.user.requiresTeacherAssignment,
+            };
+            setUser(mergedUser);
+            safelyStoreUser(mergedUser);
           } catch (error) {
             console.error(
               "Lấy thông tin người dùng thất bại, sử dụng dữ liệu từ token:",

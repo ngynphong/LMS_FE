@@ -12,7 +12,9 @@ import type {
     JoinQuizResponse,
     StudentTeacherQuiz,
     UpdateQuizRequest,
-    QuizDetailResponse
+    QuizDetailResponse,
+    PaginatedStudentStatisticsResponse,
+    PaginatedHistoryQuizResponse
 } from "@/types/quiz";
 
 // ==================== Quiz APIs ====================
@@ -25,6 +27,39 @@ export const createQuiz = async (data: CreateQuizRequest): Promise<void> => {
         throw error;
     }
 };
+
+export const getQuizStudentStatistics = async (
+    quizId: string,
+    params?: {
+        pageNo?: number;
+        pageSize?: number;
+        keyword?: string;
+        fromDate?: string;
+        toDate?: string;
+        sorts?: string | string[];
+    }
+): Promise<PaginatedStudentStatisticsResponse> => {
+    try {
+        const response = await axiosInstance.get<{ 
+            code: number; 
+            message: string; 
+            data: PaginatedStudentStatisticsResponse 
+        }>(`/quiz/${quizId}/statistics/students`, {
+            params: {
+                pageNo: params?.pageNo || 1,
+                pageSize: params?.pageSize || 20,
+                keyword: params?.keyword || undefined,
+                fromDate: params?.fromDate || undefined,
+                toDate: params?.toDate || undefined,
+                sorts: params?.sorts || 'completedAt:desc',
+            }
+        });
+        return response.data.data;
+    } catch (error) {
+        console.error('Failed to fetch quiz student statistics:', error);
+        throw error;
+    }
+}
 
 export const getTeacherQuizzes = async (params?: {
     pageNo?: number;
@@ -143,9 +178,14 @@ export const getMyOngoingQuizzes = async (): Promise<ApiOngoingQuiz[]> => {
     }
 };
 
-export const getMyAllQuizHistory = async (): Promise<ApiOngoingQuiz[]> => {
+export const getMyAllQuizHistory = async (params?: { pageNo?: number; pageSize?: number }): Promise<PaginatedHistoryQuizResponse> => {
     try {
-        const response = await axiosInstance.get<{ code: number; message: string; data: ApiOngoingQuiz[] }>('/quiz/attempts/my-history');
+        const response = await axiosInstance.get<{ code: number; message: string; data: PaginatedHistoryQuizResponse }>('/quiz/attempts/my-history', {
+            params: {
+                pageNo: params?.pageNo || 1,
+                pageSize: params?.pageSize || 10,
+            }
+        });
         return response.data.data;
     } catch (error) {
         console.error('Failed to fetch all my quiz history:', error);

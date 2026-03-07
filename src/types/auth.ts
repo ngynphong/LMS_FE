@@ -11,6 +11,7 @@ export interface User {
     role: 'STUDENT' | 'TEACHER' | 'ADMIN';
     teacherProfile?: TeacherProfileData;
     studentProfile?: StudentProfile;
+    requiresTeacherAssignment?: boolean;
 };
 
 export interface LoginApiResponse {
@@ -20,6 +21,7 @@ export interface LoginApiResponse {
         token: string;
         authenticated: boolean;
         roles: string[];
+        requiresTeacherAssignment?: boolean;
     };
 };
 
@@ -40,6 +42,7 @@ export interface JwtPayload {
 export interface AuthResponse {
     user: User;
     token: string;
+    requiresTeacherAssignment?: boolean;
 };
 
 export interface AuthContextType {
