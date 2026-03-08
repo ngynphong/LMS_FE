@@ -1,5 +1,5 @@
 import axiosInstance, { publicAxios } from '../config/axios';
-import type { Banner, BannerTrackingRequest, PagedResponse, ApiResponse, BannerCreationRequest } from '../types/banner.types';
+import type { Banner, BannerTrackingRequest, PagedResponse, ApiResponse, BannerCreationRequest } from '../types/banner';
 
 class BannerService {
   /**

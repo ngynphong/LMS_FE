@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import type { Variants } from "motion/react";
 import { X, Gift } from "lucide-react";
-import type { Banner } from "../../../types/banner.types";
+import type { Banner } from "@/types/banner";
 import {
   shouldShowBanner,
   saveDismissedTime,
   getResponsiveImageUrl,
   isValidUrl,
-} from "../../../utils/bannerUtils";
-import { useBanners } from "../../../hooks/useBanners";
+} from "@/utils/bannerUtils";
+import { useBanners } from "@/hooks/useBanners";
 
 interface FloatingSidebarBannerProps {
   banner: Banner;

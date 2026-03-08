@@ -1,4 +1,4 @@
-import type { Banner } from '../types/banner.types';
+import type { Banner } from '../types/banner';
 import { STORAGE_KEYS } from '../constants/bannerConstants';
 
 export const shouldShowBanner = (banner: Banner): boolean => {

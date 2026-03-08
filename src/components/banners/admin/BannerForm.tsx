@@ -11,7 +11,7 @@ import {
   BannerPosition,
   AnimationType,
   BannerVisibility,
-} from "../../../types/banner.types";
+} from "@/types/banner";
 
 // Zod Schema for validation
 const bannerSchema = z

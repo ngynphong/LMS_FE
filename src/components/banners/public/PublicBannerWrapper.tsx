@@ -1,10 +1,10 @@
 import React from "react";
-import { useBanners } from "../../../hooks/useBanners";
+import { useBanners } from "@/hooks/useBanners";
 import { TopBannerBar } from "./TopBannerBar";
 import { BannerModal } from "./BannerModal";
 import { FloatingSidebarBanner } from "./FloatingSidebarBanner";
-import type { Banner } from "../../../types/banner.types";
-import { BannerType } from "../../../types/banner.types";
+import type { Banner } from "@/types/banner";
+import { BannerType } from "@/types/banner";
 
 export const PublicBannerWrapper: React.FC = () => {
   const { banners, loading } = useBanners();

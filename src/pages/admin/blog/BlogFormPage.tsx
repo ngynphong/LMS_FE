@@ -146,35 +146,6 @@ const BlogFormPage: React.FC = () => {
     }));
   };
 
-  // const handleThumbnailUpload = async (file: File) => {
-  //   try {
-  //     const res = await blogService.uploadFile(file);
-  //     // Support both 1000 and 0 as success codes
-  //     if ((res.code === 1000 || res.code === 0) && res.data) {
-  //       // Handle both object-wrapped and string-direct data
-  //       const fileKey =
-  //         typeof res.data === "string" ? res.data : res.data.fileKey;
-  //       const baseUrl =
-  //         import.meta.env.VITE_MINIO_URL ||
-  //         "https://minio.iesfocus.edu.vn/blog/";
-  //       const separator = baseUrl.endsWith("/") ? "" : "/";
-  //       const finalUrl = fileKey.startsWith("http")
-  //         ? fileKey
-  //         : `${baseUrl}${separator}${fileKey}`;
-
-  //       setFormData((prev) => ({
-  //         ...prev,
-  //         thumbnailUrl: finalUrl,
-  //       }));
-  //       toast.success("Tải ảnh bìa thành công");
-  //     } else {
-  //       toast.error(res.message || "Lỗi khi tải ảnh bìa");
-  //     }
-  //   } catch (error) {
-  //     toast.error("Lỗi khi tải ảnh bìa");
-  //   }
-  // };
-
   const handleFileUpload = async (index: number, file: File) => {
     try {
       const res = await blogService.uploadFile(file);

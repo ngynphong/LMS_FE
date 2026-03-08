@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
-import type { Banner } from "@/types/banner.types";
+import type { Banner } from "@/types/banner";
 import {
   shouldShowBanner,
   saveDismissedTime,

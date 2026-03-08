@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { BannerForm } from "../../../components/banners/admin/BannerForm";
 import { bannerService } from "../../../services/bannerService";
-import type { BannerCreationRequest } from "../../../types/banner.types";
+import type { BannerCreationRequest } from "../../../types/banner";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/components/common/Toast";
 
