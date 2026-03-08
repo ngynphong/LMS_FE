@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Edit, Trash2, Plus, Search } from "lucide-react";
-import { useAdminBlogs, useAdminBlogMutations } from "../../../hooks/useBlogs";
+import { useAdminBlogs, useAdminBlogMutations } from "@/hooks/useBlogs";
 import { Link } from "react-router-dom";
-import PaginationControl from "../../../components/common/PaginationControl";
-import { ConfirmationModal } from "../../../components/common/ConfirmationModal";
+import PaginationControl from "@/components/common/PaginationControl";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Filter, SortDesc } from "lucide-react";
 

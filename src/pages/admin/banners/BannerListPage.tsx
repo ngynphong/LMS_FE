@@ -11,7 +11,7 @@ import {
   ShieldAlert,
 } from "lucide-react";
 import { bannerService } from "../../../services/bannerService";
-import type { Banner } from "../../../types/banner.types";
+import type { Banner } from "../../../types/banner";
 import { toast } from "@/components/common/Toast";
 import { ConfirmationModal } from "../../../components/common/ConfirmationModal";
 

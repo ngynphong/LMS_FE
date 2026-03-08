@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { ArrowRight } from "lucide-react";
-import type { Banner } from "../../../types/banner.types";
-import { useBanners } from "../../../hooks/useBanners";
-import { getResponsiveImageUrl, isValidUrl } from "../../../utils/bannerUtils";
+import type { Banner } from "@/types/banner";
+import { useBanners } from "@/hooks/useBanners";
+import { getResponsiveImageUrl, isValidUrl } from "@/utils/bannerUtils";
 
 interface InContentBannerProps {
   banner: Banner;

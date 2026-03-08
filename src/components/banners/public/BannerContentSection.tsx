@@ -1,7 +1,7 @@
 import React from "react";
-import { useBanners } from "../../../hooks/useBanners";
+import { useBanners } from "@/hooks/useBanners";
 import { InContentBanner } from "./InContentBanner";
-import { BannerType } from "../../../types/banner.types";
+import { BannerType } from "@/types/banner";
 
 export const BannerContentSection: React.FC = () => {
   const { banners, loading } = useBanners();

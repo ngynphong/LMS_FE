@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useBlogDetail, usePublicBlogs } from "../../hooks/useBlogs";
-import BlockRenderer from "../../components/blog/BlockRenderer";
+import { useBlogDetail, usePublicBlogs } from "@/hooks/useBlogs";
+import BlockRenderer from "@/components/blog/BlockRenderer";
 import { Calendar, Share2 } from "lucide-react";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";

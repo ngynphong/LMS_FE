@@ -1,9 +1,9 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useCallback } from 'react';
-import { bannerService } from '../services/bannerService';
-import type { BannerTrackingRequest, Banner } from '../types/banner.types';
+import { bannerService } from '@/services/bannerService';
+import type { BannerTrackingRequest, Banner } from '@/types/banner';
 import { useBannerWebSocket } from './useBannerWebSocket';
-import { saveLastShownTime, saveDismissedTime } from '../utils/bannerUtils';
+import { saveLastShownTime, saveDismissedTime } from '@/utils/bannerUtils';
 
 export const useBanners = () => {
   // const queryClient = useQueryClient();

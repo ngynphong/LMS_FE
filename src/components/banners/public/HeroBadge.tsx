@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight, Info } from "lucide-react";
-import type { Banner } from "../../../types/banner.types";
-import { useBanners } from "../../../hooks/useBanners";
-import { isValidUrl } from "../../../utils/bannerUtils";
+import type { Banner } from "@/types/banner";
+import { useBanners } from "@/hooks/useBanners";
+import { isValidUrl } from "@/utils/bannerUtils";
 
 interface HeroBadgeProps {
   banner: Banner;

@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { BannerForm } from "../../../components/banners/admin/BannerForm";
 import { bannerService } from "../../../services/bannerService";
-import type { BannerCreationRequest } from "../../../types/banner.types";
+import type { BannerCreationRequest } from "../../../types/banner";
 import { toast } from "@/components/common/Toast";
 
 export const BannerEditPage: React.FC = () => {
