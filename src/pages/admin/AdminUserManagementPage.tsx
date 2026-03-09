@@ -399,7 +399,7 @@ const AdminUserManagementPage = () => {
               }`}
             >
               Giảng viên (
-              {data?.items.filter((u) => u.roles.includes("TEACHER")).length}) )
+              {data?.items.filter((u) => u.roles.includes("TEACHER")).length})
             </button>
             <button
               onClick={() => handleTabChange("ADMIN")}
