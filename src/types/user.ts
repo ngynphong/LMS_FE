@@ -175,6 +175,9 @@ export interface AdminUserPaginationData {
   pageSize: number;
   totalPage: number;
   totalElement: number;
+  totalStudents?: number;
+  totalTeachers?: number;
+  totalAdmins?: number;
   sortBy: string[];
   items: AdminUserListItem[];
 }

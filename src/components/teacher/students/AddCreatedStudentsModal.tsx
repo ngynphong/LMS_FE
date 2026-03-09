@@ -250,7 +250,7 @@ const AddCreatedStudentsModal = ({
                 onPageChange={setPage}
                 pageSize={pageSize}
                 onPageSizeChange={setPageSize}
-                pageSizeOptions={[5, 10, 20]}
+                pageSizeOptions={[10, 20, 50, 100, 1000]}
               />
             </div>
           </div>
@@ -271,7 +271,7 @@ const AddCreatedStudentsModal = ({
               addMutation.isPending ||
               referMutation.isPending
             }
-            className="px-8 py-2.5 rounded-xl bg-[#0074bd] text-white font-bold hover:bg-[#0074bd]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md shadow-blue-200 flex items-center gap-2 shrink-0"
+            className="px-8 py-2.5 rounded-xl color-primary-bg text-white font-bold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md shadow-blue-200 flex items-center gap-2 shrink-0"
           >
             {(addMutation.isPending || referMutation.isPending) && (
               <FaCircleNotch className="animate-spin" />

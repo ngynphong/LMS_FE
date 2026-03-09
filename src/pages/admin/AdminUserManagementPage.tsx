@@ -387,8 +387,7 @@ const AdminUserManagementPage = () => {
                   : "border-transparent text-[#607b8a] hover:text-[#111518]"
               }`}
             >
-              Học viên (
-              {data?.items.filter((u) => u.roles.includes("STUDENT")).length})
+              Học viên ({data?.totalStudents || 0})
             </button>
             <button
               onClick={() => handleTabChange("TEACHER")}
@@ -398,8 +397,7 @@ const AdminUserManagementPage = () => {
                   : "border-transparent text-[#607b8a] hover:text-[#111518]"
               }`}
             >
-              Giảng viên (
-              {data?.items.filter((u) => u.roles.includes("TEACHER")).length}) )
+              Giảng viên ({data?.totalTeachers || 0})
             </button>
             <button
               onClick={() => handleTabChange("ADMIN")}
@@ -409,8 +407,7 @@ const AdminUserManagementPage = () => {
                   : "border-transparent text-[#607b8a] hover:text-[#111518]"
               }`}
             >
-              Admin (
-              {data?.items.filter((u) => u.roles.includes("ADMIN")).length})
+              Admin ({data?.totalAdmins || 0})
             </button>
           </div>
           {/* <div className="pb-3">

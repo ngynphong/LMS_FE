@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useLiveQuizSocket } from "@/hooks/useLiveQuizSocket";
 import { useLiveQuizDetails, useStartLiveQuiz } from "@/hooks/useLiveQuiz";
+import { QRCodeSVG } from "qrcode.react";
 import { toast } from "@/components/common/Toast";
 
 const LiveQuizHostLobbyPage = () => {
@@ -101,7 +102,14 @@ const LiveQuizHostLobbyPage = () => {
             <p className="text-slate-500 font-bold text-xl mb-2">
               Truy cập trình duyệt để thi:
             </p>
-            <img src="/img/qr-page.png" alt="QR Code" className="w-1/2" />
+            <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center">
+              <QRCodeSVG
+                value={`https://iesfocus.edu.vn/join?pin=${pin}`}
+                size={220}
+                level={"H"}
+                includeMargin={false}
+              />
+            </div>
             <p className="text-2xl md:text-3xl font-black text-slate-800 mb-8 pb-8 tracking-tight">
               iesfocus.edu.vn/join
             </p>

@@ -583,7 +583,7 @@ const StudentListPage = () => {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setSelectedIds([])}
-                className="px-4 py-2 text-sm font-bold text-slate-400 hover:text-white transition-colors"
+                className="px-4 py-2 text-sm font-bold text-slate-400 hover:text-white transition-colors cursor-pointer"
               >
                 Hủy chọn
               </button>
@@ -594,7 +594,7 @@ const StudentListPage = () => {
                     setReferralMode("DIRECT_ADD");
                     setIsReferralModalOpen(true);
                   }}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-white/10 hover:bg-white/20 text-white text-sm font-bold rounded-xl transition-all active:scale-95"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-white/10 hover:bg-white/20 text-white text-sm font-bold rounded-xl transition-all active:scale-95 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[20px] text-[#0074bd]">
                     person_add
@@ -607,7 +607,7 @@ const StudentListPage = () => {
                     setReferralMode("REFERRAL");
                     setIsReferralModalOpen(true);
                   }}
-                  className="flex items-center gap-2 px-6 py-2.5 color-primary-bg hover:opacity-90 text-white text-sm font-bold rounded-xl transition-all shadow-lg active:scale-95"
+                  className="flex items-center gap-2 px-6 py-2.5 color-primary-bg hover:opacity-90 text-white text-sm font-bold rounded-xl transition-all shadow-lg active:scale-95 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[20px]">
                     share_reviews
