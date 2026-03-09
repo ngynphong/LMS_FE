@@ -12,6 +12,7 @@ import { FaCircleNotch } from "react-icons/fa";
 import { getInitials } from "@/utils/initialsName";
 import AddCreatedStudentsModal from "@/components/teacher/students/AddCreatedStudentsModal";
 import CourseReferralRequestsSection from "@/components/teacher/courses/CourseReferralRequestsSection";
+import { motion, AnimatePresence } from "motion/react";
 
 const TeacherCourseDetailPage = () => {
   const { id } = useParams();
@@ -38,6 +39,7 @@ const TeacherCourseDetailPage = () => {
   const requestResetMutation = useRequestBatchResetPassword();
   const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
   const [isReferralMode, setIsReferralMode] = useState(false);
+  const [isLessonsExpanded, setIsLessonsExpanded] = useState(true);
 
   useEffect(() => {
     if (course?.lessons) {
@@ -279,98 +281,133 @@ const TeacherCourseDetailPage = () => {
       </div>
 
       {/* Lessons Section */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold text-slate-900">
-            Nội dung khóa học
-          </h2>
-          <Link
-            to={`/teacher/courses/${id}/edit`}
-            className="flex items-center gap-1 text-sm color-primary hover:opacity-90 font-medium"
-          >
-            <span className="material-symbols-outlined text-sm">add</span>
-            Thêm bài học
-          </Link>
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+        <div
+          onClick={() => setIsLessonsExpanded(!isLessonsExpanded)}
+          className="p-6 flex items-center justify-between cursor-pointer hover:bg-slate-50/50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg font-bold text-slate-900">
+              Nội dung khóa học
+            </h2>
+            <span className="text-xs font-bold px-2 py-0.5 bg-slate-100 text-slate-500 rounded-full">
+              {lessonsWithItems?.length || 0} bài học
+            </span>
+          </div>
+          <div className="flex items-center gap-4">
+            <Link
+              to={`/teacher/courses/${id}/edit`}
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-1 text-sm color-primary hover:opacity-90 font-medium"
+            >
+              <span className="material-symbols-outlined text-sm">add</span>
+              Thêm bài học
+            </Link>
+            <motion.span
+              animate={{ rotate: isLessonsExpanded ? 0 : 180 }}
+              className="material-symbols-outlined text-slate-400"
+            >
+              expand_less
+            </motion.span>
+          </div>
         </div>
 
-        {lessonsWithItems && lessonsWithItems.length > 0 ? (
-          <div className="space-y-4">
-            {lessonsWithItems.map((lesson, index) => (
-              <div
-                key={lesson.id}
-                className="border border-slate-200 rounded-lg overflow-hidden"
-              >
-                {/* Lesson Header */}
-                <div className="bg-slate-50 px-4 py-3 flex items-center gap-3">
-                  <div className="size-8 rounded-lg bg-blue-600 text-white flex items-center justify-center text-sm font-bold">
-                    {index + 1}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-slate-900">
-                      {lesson.title}
-                    </h3>
-                    <p className="text-xs text-slate-500">
-                      {lesson.lessonItems?.length || 0} nội dung
-                    </p>
-                  </div>
-                </div>
-
-                {/* Lesson Items */}
-                {lesson.lessonItems && lesson.lessonItems.length > 0 && (
-                  <div className="divide-y divide-slate-100">
-                    {lesson.lessonItems.map(
-                      (item: LessonItem, itemIndex: number) => (
-                        <div
-                          key={item.id}
-                          onClick={() => handleViewItem(lesson.id, item)}
-                          className="px-4 py-3 flex items-center gap-3 hover:bg-slate-50 cursor-pointer transition-colors"
-                        >
-                          <div
-                            className={`size-8 rounded-lg flex items-center justify-center ${getItemTypeColor(item.type)}`}
-                          >
-                            <span className="material-symbols-outlined text-sm">
-                              {getItemTypeIcon(item.type)}
-                            </span>
+        <AnimatePresence>
+          {isLessonsExpanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
+              <div className="px-6 pb-6 pt-0">
+                {lessonsWithItems && lessonsWithItems.length > 0 ? (
+                  <div className="space-y-4">
+                    {lessonsWithItems.map((lesson, index) => (
+                      <div
+                        key={lesson.id}
+                        className="border border-slate-200 rounded-lg overflow-hidden"
+                      >
+                        {/* Lesson Header */}
+                        <div className="bg-slate-50 px-4 py-3 flex items-center gap-3">
+                          <div className="size-8 rounded-lg bg-blue-600 text-white flex items-center justify-center text-sm font-bold">
+                            {index + 1}
                           </div>
                           <div className="flex-1">
-                            <p className="text-sm font-medium text-slate-900">
-                              {item.title}
-                            </p>
+                            <h3 className="font-semibold text-slate-900">
+                              {lesson.title}
+                            </h3>
                             <p className="text-xs text-slate-500">
-                              {item.type}
+                              {lesson.lessonItems?.length || 0} nội dung
                             </p>
                           </div>
-                          <span className="text-xs text-slate-400">
-                            {itemIndex + 1}
-                          </span>
                         </div>
-                      ),
-                    )}
+
+                        {/* Lesson Items */}
+                        {lesson.lessonItems &&
+                          lesson.lessonItems.length > 0 && (
+                            <div className="divide-y divide-slate-100">
+                              {lesson.lessonItems.map(
+                                (item: LessonItem, itemIndex: number) => (
+                                  <div
+                                    key={item.id}
+                                    onClick={() =>
+                                      handleViewItem(lesson.id, item)
+                                    }
+                                    className="px-4 py-3 flex items-center gap-3 hover:bg-slate-50 cursor-pointer transition-colors"
+                                  >
+                                    <div
+                                      className={`size-8 rounded-lg flex items-center justify-center ${getItemTypeColor(item.type)}`}
+                                    >
+                                      <span className="material-symbols-outlined text-sm">
+                                        {getItemTypeIcon(item.type)}
+                                      </span>
+                                    </div>
+                                    <div className="flex-1">
+                                      <p className="text-sm font-medium text-slate-900">
+                                        {item.title}
+                                      </p>
+                                      <p className="text-xs text-slate-500">
+                                        {item.type}
+                                      </p>
+                                    </div>
+                                    <span className="text-xs text-slate-400">
+                                      {itemIndex + 1}
+                                    </span>
+                                  </div>
+                                ),
+                              )}
+                            </div>
+                          )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <span className="material-symbols-outlined text-5xl text-slate-300 mb-4">
+                      menu_book
+                    </span>
+                    <h3 className="text-lg font-semibold text-slate-600 mb-2">
+                      Chưa có bài học nào
+                    </h3>
+                    <p className="text-sm text-slate-500 mb-4">
+                      Bắt đầu thêm bài học cho khóa học này
+                    </p>
+                    <Link
+                      to={`/teacher/courses/${id}/edit`}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold"
+                    >
+                      <span className="material-symbols-outlined text-lg">
+                        add
+                      </span>
+                      Thêm bài học
+                    </Link>
                   </div>
                 )}
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <span className="material-symbols-outlined text-5xl text-slate-300 mb-4">
-              menu_book
-            </span>
-            <h3 className="text-lg font-semibold text-slate-600 mb-2">
-              Chưa có bài học nào
-            </h3>
-            <p className="text-sm text-slate-500 mb-4">
-              Bắt đầu thêm bài học cho khóa học này
-            </p>
-            <Link
-              to={`/teacher/courses/${id}/edit`}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold"
-            >
-              <span className="material-symbols-outlined text-lg">add</span>
-              Thêm bài học
-            </Link>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Referral Requests Section */}
