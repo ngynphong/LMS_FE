@@ -166,7 +166,7 @@ const LiveQuizHostLobbyPage = () => {
       </div>
 
       <div className="text-slate-400 text-sm font-medium pb-6 pt-4">
-        Powered by LMS System
+        Powered by IES Focus
       </div>
     </div>
   );
