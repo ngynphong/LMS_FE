@@ -45,20 +45,38 @@ class WebSocketService {
         };
     }
 
-    // Hàm kết nối (Gọi khi User Login thành công)
-    connect(token: string, onConnectCallback?: () => void) {
-        if (!token) return;
-        
-        // Gửi Token vào Header để UserHeaderInterceptor ở Backend bắt được
-        this.client.connectHeaders = {
+    // Hàm kết nối (Gọi khi User Login thành công hoặc vào quiz với tư cách khách)
+    connect(token?: string, onConnectCallback?: () => void) {
+        // Gửi Token vào Header để UserHeaderInterceptor ở Backend bắt được (nếu có)
+        this.client.connectHeaders = token ? {
             Authorization: `Bearer ${token}` 
-        };
+        } : {};
 
-        this.client.onConnect = () => {
-            if (onConnectCallback) onConnectCallback();
-        };
+        if (onConnectCallback) {
+            this.client.onConnect = () => {
+                onConnectCallback();
+            };
+        }
 
         this.client.activate();
+    }
+
+    // Getter để check status trực tiếp từ client
+    get isConnected(): boolean {
+        return this.client.connected;
+    }
+
+    // Setter để hook vào các event từ bên ngoài (ví dụ Provider)
+    set onConnect(callback: () => void) {
+        this.client.onConnect = callback;
+    }
+
+    set onDisconnect(callback: () => void) {
+        this.client.onDisconnect = callback;
+    }
+
+    set onStompError(callback: (frame: any) => void) {
+        this.client.onStompError = callback;
     }
 
     // Hàm ngắt kết nối (Gọi khi Logout)

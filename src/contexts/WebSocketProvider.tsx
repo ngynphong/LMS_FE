@@ -23,45 +23,58 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   });
 
   useEffect(() => {
-    // Chỉ connect khi đã authenticated và có token
-    if (isAuthenticated && token) {
+    // Thiết lập các listener để update state chính xác
+    socketService.onConnect = () => {
+      // console.log("[WS] Connected");
+      setIsConnected(true);
+    };
 
-      socketService.connect(token, () => {
-        setIsConnected(true);
-        const connectTimestamp = Date.now(); // Lưu thời điểm kết nối thành công
+    socketService.onDisconnect = () => {
+      // console.log("[WS] Disconnected");
+      setIsConnected(false);
+    };
 
-        // Subscribe to force-logout topic immediately after connection
-        socketService.subscribe("/user/queue/force-logout", (data) => {
-          if (data.type === "FORCE_LOGOUT") {
-            const timeSinceConnect = Date.now() - connectTimestamp;
-            if (timeSinceConnect < 2000) {
-              // console.warn(
-              //   "[WS] Đã bỏ qua message FORCE_LOGOUT do nhận được quá sớm sau khi kết nối (có thể do Refresh trang/Reconnect):",
-              //   timeSinceConnect,
-              //   "ms",
-              // );
-              return;
-            }
+    // Luôn cố gắng connect để hỗ trợ cả người dùng Guest vào Live Quiz
+    socketService.connect(token || undefined);
 
-            // Hiển thị modal thay vì alert
-            setLogoutModal({
-              isOpen: true,
-              message: data.message || "Tài khoản đã đăng nhập ở thiết bị khác",
-            });
-          }
+    // Dự phòng: Sync trạng thái định kỳ hoặc khi component mount
+    const syncStatus = () => {
+      if (socketService.isConnected !== isConnected) {
+        setIsConnected(socketService.isConnected);
+      }
+    };
+
+    const interval = setInterval(syncStatus, 2000);
+    syncStatus();
+
+    // Subscribe to force-logout separately (chỉ khi có token/authenticated)
+    let logoutSub: any;
+    const checkLogout = (data: any) => {
+      if (data.type === "FORCE_LOGOUT") {
+        setLogoutModal({
+          isOpen: true,
+          message: data.message || "Tài khoản đã đăng nhập ở thiết bị khác",
         });
-      });
+      }
+    };
 
-      return () => {
-        // console.log("Cleaning up WebSocket connection...");
-        socketService.disconnect();
-        setIsConnected(false);
-      };
-    } else {
-      // logout -> disconnect
+    // Đợi một chút rồi mới subscribe topic chung (nếu là user đã đăng nhập)
+    const timeout = setTimeout(() => {
+      if (socketService.isConnected && isAuthenticated) {
+        logoutSub = socketService.subscribe(
+          "/user/queue/force-logout",
+          checkLogout,
+        );
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+      if (logoutSub) logoutSub.unsubscribe();
       socketService.disconnect();
       setIsConnected(false);
-    }
+    };
   }, [isAuthenticated, token]);
 
   const subscribe = useCallback(

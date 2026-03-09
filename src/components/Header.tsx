@@ -202,6 +202,13 @@ const Header = () => {
               >
                 Về chúng tôi
               </Link>
+              <Link
+                className="font-medium hover:color-primary transition-colors"
+                to="/join"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              >
+                Quiz
+              </Link>
             </nav>
           </div>
           <Link
@@ -308,6 +315,13 @@ const Header = () => {
                 onClick={toggleMobileMenu}
               >
                 Về chúng tôi
+              </Link>
+              <Link
+                className="flex items-center gap-3 px-3 py-3 hover:bg-gray-100 rounded-lg transition-colors font-medium"
+                to="/join"
+                onClick={toggleMobileMenu}
+              >
+                Quiz
               </Link>
             </nav>
           </div>
