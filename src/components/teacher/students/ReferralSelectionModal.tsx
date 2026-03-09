@@ -144,7 +144,7 @@ const ReferralSelectionModal = ({
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-hidden flex flex-col p-6 gap-6">
+        <div className="flex-1 overflow-hidden flex flex-col p-6 gap-4">
           <div className="flex flex-col sm:flex-row gap-4 items-center">
             <div className="flex-1 relative w-full">
               <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -153,7 +153,7 @@ const ReferralSelectionModal = ({
                 placeholder="Tìm kiếm khóa học..."
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-[#0074bd]/20 focus:border-[#0074bd] transition-all"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF] transition-all"
               />
             </div>
           </div>
@@ -175,7 +175,7 @@ const ReferralSelectionModal = ({
                     setTeacherName(e.target.value);
                     setPage(1);
                   }}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-[#0074bd]/20 outline-none"
+                  className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF] transition-all"
                 >
                   <option value="">Tất cả giáo viên</option>
                   {teachers.map((t: any) => (
@@ -194,7 +194,7 @@ const ReferralSelectionModal = ({
                   setVisibility(e.target.value);
                   setPage(1);
                 }}
-                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-[#0074bd]/20 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF] transition-all"
               >
                 <option value="">Tất cả hiển thị</option>
                 <option value="PUBLIC">Công khai</option>
@@ -210,7 +210,7 @@ const ReferralSelectionModal = ({
                   setVisibility("");
                   setPage(1);
                 }}
-                className="text-xs font-bold text-[#0074bd] hover:underline"
+                className="text-xs font-bold text-[#1E90FF] hover:underline"
               >
                 Xóa bộ lọc
               </button>
@@ -226,7 +226,7 @@ const ReferralSelectionModal = ({
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Nhập nội dung yêu cầu gửi đến giáo viên khóa học..."
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm h-20 focus:ring-2 focus:ring-[#0074bd]/20 focus:border-[#0074bd] transition-all resize-none"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm h-14 focus:ring-2 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF] transition-all resize-none"
               />
             </div>
           )}
@@ -236,7 +236,7 @@ const ReferralSelectionModal = ({
             <div className="flex-1 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-1">
               {isLoading ? (
                 <div className="col-span-full py-12 flex flex-col items-center justify-center gap-3 text-slate-500">
-                  <FaCircleNotch className="animate-spin text-2xl text-[#0074bd]" />
+                  <FaCircleNotch className="animate-spin text-2xl text-[#1E90FF]" />
                   <span className="text-sm font-medium">
                     Đang tìm kiếm khóa học...
                   </span>
@@ -248,7 +248,7 @@ const ReferralSelectionModal = ({
                     onClick={() => setSelectedCourseId(course.id)}
                     className={`group relative rounded-xl border-2 transition-all cursor-pointer overflow-hidden flex flex-col h-[250px] ${
                       selectedCourseId === course.id
-                        ? "border-[#0074bd] bg-blue-50/30 ring-4 ring-blue-50"
+                        ? "border-[#1E90FF] bg-blue-50/30 ring-4 ring-blue-50"
                         : "border-slate-100 hover:border-slate-200 hover:shadow-md"
                     }`}
                   >
@@ -275,7 +275,7 @@ const ReferralSelectionModal = ({
                             {course.teacherName || "Giáo viên"}
                           </span>
                         </div>
-                        <div className="flex items-center gap-1 text-[11px] text-[#0074bd] font-bold">
+                        <div className="flex items-center gap-1 text-[11px] text-[#1E90FF] font-bold">
                           <span className="material-symbols-outlined text-[14px]">
                             menu_book
                           </span>
@@ -284,7 +284,7 @@ const ReferralSelectionModal = ({
                       </div>
                     </div>
                     {selectedCourseId === course.id && (
-                      <div className="absolute top-2 right-2 size-6 bg-[#0074bd] text-white rounded-full flex items-center justify-center shadow-lg animate-in zoom-in">
+                      <div className="absolute top-2 right-2 size-6 bg-[#1E90FF] text-white rounded-full flex items-center justify-center shadow-lg animate-in zoom-in">
                         <span className="material-symbols-outlined text-sm">
                           check
                         </span>
@@ -326,7 +326,7 @@ const ReferralSelectionModal = ({
           <button
             onClick={handleAction}
             disabled={!selectedCourseId || isPending}
-            className="px-8 py-2.5 rounded-xl bg-[#0074bd] text-white font-bold hover:bg-[#0074bd]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md shadow-blue-200 flex items-center gap-2"
+            className="px-8 py-2.5 rounded-xl color-primary-bg text-white font-bold hover:bg-[#1E90FF]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md shadow-blue-200 flex items-center gap-2"
           >
             {isPending && <FaCircleNotch className="animate-spin" />}
             {mode === "REFERRAL"

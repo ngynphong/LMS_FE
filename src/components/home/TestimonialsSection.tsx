@@ -18,7 +18,7 @@ interface Testimonial {
 const testimonials: Testimonial[] = [
   {
     id: 1,
-    name: "Nguyễn Thị C",
+    name: "Nguyễn Thị Châu Anh",
     role: "Học sinh tiểu học",
     content:
       "Con rất thích học ở IES EDU. Thầy cô giảng bài dễ hiểu và luôn giúp con khi con chưa hiểu bài.",
@@ -28,7 +28,7 @@ const testimonials: Testimonial[] = [
   },
   {
     id: 2,
-    name: "Trần Minh K",
+    name: "Trần Minh Khoa",
     role: "Học sinh tiểu học",
     content:
       "Học ở đây rất vui. Con được làm nhiều bài tập hay và hiểu bài nhanh hơn ở lớp.",
@@ -38,7 +38,7 @@ const testimonials: Testimonial[] = [
   },
   {
     id: 3,
-    name: "Phạm Hoàng L",
+    name: "Phạm Hoàng Long",
     role: "Học sinh tiểu học",
     content:
       "Con thấy học rất dễ hiểu và không bị áp lực. Con thích nhất là thầy cô luôn động viên con cố gắng.",

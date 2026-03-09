@@ -184,7 +184,7 @@ const TeacherCourseDetailPage = () => {
         <div className="flex items-center gap-2">
           <Link
             to={`/teacher/courses/${id}/edit`}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 transition-colors"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg color-primary-bg text-white text-sm font-bold hover:opacity-90 transition-colors"
           >
             <span className="material-symbols-outlined text-lg">edit</span>
             Chỉnh sửa
@@ -194,7 +194,7 @@ const TeacherCourseDetailPage = () => {
               setIsReferralMode(false);
               setIsAddStudentModalOpen(true);
             }}
-            className="flex items-center gap-2 px-3 py-2 bg-[#0074bd] text-white rounded-lg font-bold text-sm hover:bg-[#0074bd]/90 transition-all shadow-md shadow-blue-100"
+            className="flex items-center gap-2 px-3 py-2 color-primary-bg text-white rounded-lg font-bold text-sm hover:opacity-90 transition-all shadow-md shadow-blue-100"
           >
             <span className="material-symbols-outlined text-[20px]">
               person_add
@@ -286,7 +286,7 @@ const TeacherCourseDetailPage = () => {
           </h2>
           <Link
             to={`/teacher/courses/${id}/edit`}
-            className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 font-medium"
+            className="flex items-center gap-1 text-sm color-primary hover:opacity-90 font-medium"
           >
             <span className="material-symbols-outlined text-sm">add</span>
             Thêm bài học
@@ -408,7 +408,7 @@ const TeacherCourseDetailPage = () => {
 
         {studentsLoading ? (
           <div className="flex items-center justify-center py-8">
-            <span className="animate-spin text-2xl text-blue-600">
+            <span className="animate-spin text-2xl color-primary">
               <FaCircleNotch />
             </span>
           </div>
@@ -426,7 +426,7 @@ const TeacherCourseDetailPage = () => {
                   currentStudents.every((s) => selectedEmails.includes(s.email))
                 }
                 onChange={handleSelectAll}
-                className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600 cursor-pointer"
+                className="w-4 h-4 rounded border-slate-300 color-primary focus:ring-[#1E90FF] cursor-pointer"
               />
               <span className="text-sm font-medium text-slate-700">
                 Chọn tất cả trên trang này
@@ -442,7 +442,7 @@ const TeacherCourseDetailPage = () => {
                     type="checkbox"
                     checked={selectedEmails.includes(student.email)}
                     onChange={() => handleSelectStudent(student.email)}
-                    className="w-4 h-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-blue-600 cursor-pointer"
+                    className="w-4 h-4 shrink-0 rounded border-slate-300 color-primary focus:ring-[#1E90FF] cursor-pointer"
                   />
                   {student.imgUrl ? (
                     <img
