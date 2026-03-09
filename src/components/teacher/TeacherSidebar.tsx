@@ -7,8 +7,8 @@ import {
   MdReport,
   MdSettings,
 } from "react-icons/md";
-import { FaDatabase, FaBell } from "react-icons/fa";
 import { IoPeople } from "react-icons/io5";
+import { FaDatabase, FaBell, FaShareAlt } from "react-icons/fa";
 import { useAuth } from "@/hooks/useAuth";
 import { useNotifications } from "@/hooks/useNotifications";
 import { ConfirmationModal } from "@/components/common/ConfirmationModal";
@@ -58,6 +58,11 @@ const navItems: NavItem[] = [
     path: "/teacher/notifications",
     icon: <FaBell className="text-xl" />,
     label: "Thông báo",
+  },
+  {
+    path: "/teacher/referrals",
+    icon: <FaShareAlt className="text-xl" />,
+    label: "Giới thiệu học sinh",
   },
   {
     path: "/teacher/settings",

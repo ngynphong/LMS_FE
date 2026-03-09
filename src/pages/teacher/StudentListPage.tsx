@@ -10,6 +10,9 @@ import PaginationControl from "@/components/common/PaginationControl";
 import { FaCircleNotch } from "react-icons/fa";
 import { getInitials } from "@/utils/initialsName";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
+import { useMyCreatedStudents } from "@/hooks/useStudentReferral";
+import { useMemo } from "react";
+import ReferralSelectionModal from "@/components/teacher/students/ReferralSelectionModal";
 
 const StudentListPage = () => {
   // Local state for UI
@@ -20,8 +23,18 @@ const StudentListPage = () => {
   const [sortBy, setSortBy] = useState<string>("name");
   const [order, setOrder] = useState<string>("asc");
 
+  // Referral & Tabs State
+  const [activeTab, setActiveTab] = useState<"all" | "mine">("all");
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [fromDate, setFromDate] = useState<string>("");
+  const [toDate, setToDate] = useState<string>("");
+  const [sorts, setSorts] = useState<string>("createdAt:desc");
   // Import state
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [isReferralModalOpen, setIsReferralModalOpen] = useState(false);
+  const [referralMode, setReferralMode] = useState<"REFERRAL" | "DIRECT_ADD">(
+    "REFERRAL",
+  );
   const [importFile, setImportFile] = useState<File | null>(null);
   const [lastImportJobId, setLastImportJobId] = useState<string | null>(null);
 
@@ -39,9 +52,48 @@ const StudentListPage = () => {
   const { mutateAsync: cancelImport, isPending: cancelling } =
     useCancelImportJob();
 
-  const students = studentsData?.students || [];
-  const totalPages = studentsData?.totalPages || 1;
-  const totalElements = studentsData?.totalElements || 0;
+  const {
+    data: myStudentsData,
+    isLoading: myLoading,
+    isFetching: myFetching,
+  } = useMyCreatedStudents({
+    pageNo: page - 1,
+    pageSize,
+    keyword: debouncedKeyword,
+    fromDate,
+    toDate,
+    sorts: [sorts],
+  });
+
+  const students = useMemo(() => {
+    if (activeTab === "all") return studentsData?.students || [];
+    return (
+      myStudentsData?.data?.items?.map((item) => ({
+        id: item.id,
+        email: item.email,
+        firstName: item.firstName,
+        lastName: item.lastName,
+        fullName: `${item.lastName} ${item.firstName}`,
+        urlImg: item.imgUrl,
+        dob: item.dob,
+        totalCourses: (item as any).totalCourses || 0,
+        goal: item.studentProfile?.goal,
+      })) || []
+    );
+  }, [activeTab, studentsData, myStudentsData]);
+
+  const totalPages =
+    activeTab === "all"
+      ? studentsData?.totalPages || 1
+      : myStudentsData?.data?.totalPage || 1;
+
+  const totalElements =
+    activeTab === "all"
+      ? studentsData?.totalElements || 0
+      : myStudentsData?.data?.totalElement || 0;
+
+  const isLoading = activeTab === "all" ? loading : myLoading;
+  const isFetching = activeTab === "all" ? fetching : myFetching;
 
   // Debounce keyword
   useEffect(() => {
@@ -140,6 +192,44 @@ const StudentListPage = () => {
         </button>
       </div>
 
+      {/* Referral Tabs */}
+      <div className="flex border-b border-slate-200">
+        <button
+          onClick={() => {
+            setActiveTab("all");
+            setPage(1);
+            setSelectedIds([]);
+          }}
+          className={`px-6 py-3 text-sm font-bold transition-colors relative ${
+            activeTab === "all"
+              ? "color-primary"
+              : "text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          Tất cả học sinh
+          {activeTab === "all" && (
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 color-primary-bg" />
+          )}
+        </button>
+        <button
+          onClick={() => {
+            setActiveTab("mine");
+            setPage(1);
+            setSelectedIds([]);
+          }}
+          className={`px-6 py-3 text-sm font-bold transition-colors relative ${
+            activeTab === "mine"
+              ? "color-primary"
+              : "text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          Học sinh tôi tạo
+          {activeTab === "mine" && (
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 color-primary-bg" />
+          )}
+        </button>
+      </div>
+
       {/* Filters */}
       <div className="flex items-center gap-4">
         <div className="flex-1 min-w-[200px] relative">
@@ -154,31 +244,64 @@ const StudentListPage = () => {
             className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
           />
         </div>
-        <div className="flex items-center gap-2">
-          <select
-            value={sortBy}
-            onChange={(e) => {
-              setSortBy(e.target.value);
-              setPage(1);
-            }}
-            className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
-          >
-            <option value="name">Tên</option>
-            <option value="email">Email</option>
-            <option value="totalCourses">Tổng khóa học</option>
-          </select>
-          <select
-            value={order}
-            onChange={(e) => {
-              setOrder(e.target.value);
-              setPage(1);
-            }}
-            className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
-          >
-            <option value="asc">Tăng dần</option>
-            <option value="desc">Giảm dần</option>
-          </select>
-        </div>
+
+        {activeTab === "mine" && (
+          <>
+            <div className="flex items-center gap-2">
+              <input
+                type="date"
+                value={fromDate}
+                onChange={(e) => setFromDate(e.target.value)}
+                className="px-3 py-2 rounded-lg border border-slate-200 text-sm"
+              />
+              <span className="text-slate-400">-</span>
+              <input
+                type="date"
+                value={toDate}
+                onChange={(e) => setToDate(e.target.value)}
+                className="px-3 py-2 rounded-lg border border-slate-200 text-sm"
+              />
+            </div>
+            <select
+              value={sorts}
+              onChange={(e) => {
+                setSorts(e.target.value);
+                setPage(1);
+              }}
+              className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
+            >
+              <option value="createdAt:asc">Tăng dần</option>
+              <option value="createdAt:desc">Giảm dần</option>
+            </select>
+          </>
+        )}
+        {activeTab === "all" && (
+          <div className="flex items-center gap-2">
+            <select
+              value={sortBy}
+              onChange={(e) => {
+                setSortBy(e.target.value);
+                setPage(1);
+              }}
+              className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
+            >
+              <option value="name">Tên</option>
+              <option value="email">Email</option>
+              <option value="totalCourses">Tổng khóa học</option>
+            </select>
+            <select
+              value={order}
+              onChange={(e) => {
+                setOrder(e.target.value);
+                setPage(1);
+              }}
+              className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
+            >
+              <option value="asc">Tăng dần</option>
+              <option value="desc">Giảm dần</option>
+            </select>
+          </div>
+        )}
       </div>
 
       {/* Stats Summary */}
@@ -205,6 +328,25 @@ const StudentListPage = () => {
             {/* Added min-w-[800px] to ensure table doesn't squash on mobile */}
             <thead className="bg-slate-50">
               <tr>
+                {activeTab === "mine" && (
+                  <th className="px-6 py-4 w-10">
+                    <input
+                      type="checkbox"
+                      checked={
+                        students.length > 0 &&
+                        selectedIds.length === students.length
+                      }
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedIds(students.map((s: any) => s.id));
+                        } else {
+                          setSelectedIds([]);
+                        }
+                      }}
+                      className="w-4 h-4 rounded border-slate-300 text-[#0b8eda] focus:ring-[#0b8eda]"
+                    />
+                  </th>
+                )}
                 <th className="px-6 py-4 text-slate-500 text-xs font-bold uppercase tracking-wider">
                   Học sinh
                 </th>
@@ -229,9 +371,9 @@ const StudentListPage = () => {
               </tr>
             </thead>
             <tbody
-              className={`divide-y divide-slate-100 transition-opacity duration-200 ${fetching && !loading ? "opacity-50 pointer-events-none" : ""}`}
+              className={`divide-y divide-slate-100 transition-opacity duration-200 ${isFetching && !isLoading ? "opacity-50 pointer-events-none" : ""}`}
             >
-              {loading ? (
+              {isLoading ? (
                 <tr>
                   <td
                     colSpan={7}
@@ -244,8 +386,24 @@ const StudentListPage = () => {
                 students.map((student) => (
                   <tr
                     key={student.id}
-                    className="hover:bg-slate-50 transition-colors"
+                    className={`hover:bg-slate-50 transition-colors ${selectedIds.includes(student.id) ? "bg-blue-50" : ""}`}
                   >
+                    {activeTab === "mine" && (
+                      <td className="px-6 py-4">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(student.id)}
+                          onChange={() => {
+                            setSelectedIds((prev) =>
+                              prev.includes(student.id)
+                                ? prev.filter((id) => id !== student.id)
+                                : [...prev, student.id],
+                            );
+                          }}
+                          className="w-4 h-4 rounded border-slate-300 text-[#0b8eda] focus:ring-[#0b8eda]"
+                        />
+                      </td>
+                    )}
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         {student.urlImg ? (
@@ -394,6 +552,70 @@ const StudentListPage = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Referral Selection Modal */}
+      <ReferralSelectionModal
+        isOpen={isReferralModalOpen}
+        onClose={() => {
+          setIsReferralModalOpen(false);
+          setSelectedIds([]);
+        }}
+        selectedStudentIds={selectedIds}
+        mode={referralMode}
+      />
+
+      {/* Floating Action Toolbar */}
+      {activeTab === "mine" && selectedIds.length > 0 && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 animate-in fade-in slide-in-from-bottom-4 duration-300">
+          <div className="bg-[#101518] text-white px-6 py-4 rounded-2xl shadow-2xl border border-slate-700/50 flex items-center gap-6 backdrop-blur-md bg-opacity-95">
+            <div className="flex items-center gap-3 pr-6 border-r border-slate-700">
+              <div className="size-8 bg-[#0074bd] rounded-full flex items-center justify-center font-bold text-sm">
+                {selectedIds.length}
+              </div>
+              <span className="text-sm font-medium text-slate-300 whitespace-nowrap">
+                Học sinh đang chọn
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setSelectedIds([])}
+                className="px-4 py-2 text-sm font-bold text-slate-400 hover:text-white transition-colors"
+              >
+                Hủy chọn
+              </button>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    setReferralMode("DIRECT_ADD");
+                    setIsReferralModalOpen(true);
+                  }}
+                  className="flex items-center gap-2 px-6 py-2.5 bg-white/10 hover:bg-white/20 text-white text-sm font-bold rounded-xl transition-all active:scale-95"
+                >
+                  <span className="material-symbols-outlined text-[20px] text-[#0074bd]">
+                    person_add
+                  </span>
+                  Thêm vào khóa học
+                </button>
+
+                <button
+                  onClick={() => {
+                    setReferralMode("REFERRAL");
+                    setIsReferralModalOpen(true);
+                  }}
+                  className="flex items-center gap-2 px-6 py-2.5 color-primary-bg hover:opacity-90 text-white text-sm font-bold rounded-xl transition-all shadow-lg active:scale-95"
+                >
+                  <span className="material-symbols-outlined text-[20px]">
+                    share_reviews
+                  </span>
+                  Gửi yêu cầu giới thiệu
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

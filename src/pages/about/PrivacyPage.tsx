@@ -7,7 +7,7 @@ const PrivacyPage = () => {
       <section className="bg-white border-b border-slate-200 py-16 lg:py-24">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
           <ScrollReveal variant={fadeInUp}>
-            <div className="inline-flex items-center gap-2 bg-purple-50 text-purple-600 px-4 py-2 rounded-full font-bold text-xs uppercase tracking-widest border border-purple-100 mb-6">
+            <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-full font-bold text-xs uppercase tracking-widest border border-blue-100 mb-6">
               Quyền riêng tư & Bảo mật
             </div>
             <h1 className="text-3xl lg:text-5xl font-black text-slate-900 leading-tight mb-4">
@@ -15,7 +15,7 @@ const PrivacyPage = () => {
             </h1>
             <p className="text-slate-500 font-medium leading-relaxed">
               Cập nhật lần cuối: Tháng 3/2026 | IES EDU - iesfocus.edu.vn <br />
-              <span className="text-xs text-purple-500 font-bold uppercase tracking-wider">
+              <span className="text-xs text-blue-500 font-bold uppercase tracking-wider">
                 Tuân thủ Luật BVDLCN số 91/2025/QH15
               </span>
             </p>
@@ -33,7 +33,7 @@ const PrivacyPage = () => {
             {/* 1. Cam kết bảo mật */}
             <div>
               <h2 className="text-2xl font-black text-slate-900 mb-4 flex items-center gap-3">
-                <span className="size-8 rounded-lg bg-purple-600 text-white flex items-center justify-center text-sm">
+                <span className="size-8 rounded-lg bg-blue-600 text-white flex items-center justify-center text-sm">
                   1
                 </span>
                 Cam kết bảo mật
@@ -51,7 +51,7 @@ const PrivacyPage = () => {
             {/* 2. Thông tin chúng tôi thu thập */}
             <div>
               <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
-                <span className="size-8 rounded-lg bg-purple-600 text-white flex items-center justify-center text-sm">
+                <span className="size-8 rounded-lg bg-blue-600 text-white flex items-center justify-center text-sm">
                   2
                 </span>
                 Thông tin chúng tôi thu thập
@@ -71,7 +71,7 @@ const PrivacyPage = () => {
                         key={i}
                         className="flex items-start gap-2 text-slate-600 text-sm"
                       >
-                        <span className="text-purple-500 mt-1">●</span> {item}
+                        <span className="text-blue-500 mt-1">●</span> {item}
                       </li>
                     ))}
                   </ul>
@@ -90,7 +90,7 @@ const PrivacyPage = () => {
                         key={i}
                         className="flex items-start gap-2 text-slate-600 text-sm"
                       >
-                        <span className="text-purple-500 mt-1">●</span> {item}
+                        <span className="text-blue-500 mt-1">●</span> {item}
                       </li>
                     ))}
                   </ul>
@@ -117,7 +117,7 @@ const PrivacyPage = () => {
             {/* 3. Mục đích sử dụng thông tin */}
             <div>
               <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
-                <span className="size-8 rounded-lg bg-purple-600 text-white flex items-center justify-center text-sm">
+                <span className="size-8 rounded-lg bg-blue-600 text-white flex items-center justify-center text-sm">
                   3
                 </span>
                 Mục đích sử dụng thông tin
@@ -153,7 +153,7 @@ const PrivacyPage = () => {
                     key={i}
                     className="flex items-start gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100"
                   >
-                    <span className="material-symbols-outlined text-purple-600 text-xl">
+                    <span className="material-symbols-outlined text-blue-600 text-xl">
                       {item.icon}
                     </span>
                     <span className="text-slate-600 text-sm leading-snug">
@@ -167,7 +167,7 @@ const PrivacyPage = () => {
             {/* 4. Chia sẻ thông tin & trách nhiệm bên thứ ba */}
             <div>
               <h2 className="text-2xl font-black text-slate-900 mb-4 flex items-center gap-3">
-                <span className="size-8 rounded-lg bg-purple-600 text-white flex items-center justify-center text-sm">
+                <span className="size-8 rounded-lg bg-blue-600 text-white flex items-center justify-center text-sm">
                   4
                 </span>
                 Chia sẻ thông tin & trách nhiệm bên thứ ba
@@ -199,7 +199,7 @@ const PrivacyPage = () => {
             {/* 5. Bảo vệ thông tin & xử lý sự cố */}
             <div>
               <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
-                <span className="size-8 rounded-lg bg-purple-600 text-white flex items-center justify-center text-sm">
+                <span className="size-8 rounded-lg bg-blue-600 text-white flex items-center justify-center text-sm">
                   5
                 </span>
                 Bảo vệ thông tin & xử lý sự cố
@@ -221,12 +221,12 @@ const PrivacyPage = () => {
                 ].map((item, i) => (
                   <div
                     key={i}
-                    className="p-5 bg-purple-50 rounded-2xl border border-purple-100 text-center"
+                    className="p-5 bg-blue-50 rounded-2xl border border-blue-100 text-center"
                   >
-                    <div className="font-bold text-purple-900 text-sm mb-1">
+                    <div className="font-bold text-blue-900 text-sm mb-1">
                       {item.title}
                     </div>
-                    <div className="text-purple-700 text-xs">{item.desc}</div>
+                    <div className="text-blue-700 text-xs">{item.desc}</div>
                   </div>
                 ))}
               </div>
@@ -267,7 +267,7 @@ const PrivacyPage = () => {
             {/* 7. Quyền của người dùng */}
             <div>
               <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
-                <span className="size-8 rounded-lg bg-purple-600 text-white flex items-center justify-center text-sm">
+                <span className="size-8 rounded-lg bg-blue-600 text-white flex items-center justify-center text-sm">
                   6
                 </span>
                 Quyền của người dùng
@@ -307,9 +307,9 @@ const PrivacyPage = () => {
                 ].map((item, i) => (
                   <div
                     key={i}
-                    className="flex flex-col p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:border-purple-200 transition-colors"
+                    className="flex flex-col p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:border-blue-200 transition-colors"
                   >
-                    <span className="material-symbols-outlined text-purple-600 mb-2">
+                    <span className="material-symbols-outlined text-blue-600 mb-2">
                       {item.icon}
                     </span>
                     <span className="font-bold text-slate-800 text-sm mb-1">
@@ -347,7 +347,7 @@ const PrivacyPage = () => {
                 </span>
                 <a
                   href="mailto:infovienies@gmail.com"
-                  className="text-purple-600 font-bold hover:underline mb-1"
+                  className="text-blue-600 font-bold hover:underline mb-1"
                 >
                   infovienies@gmail.com
                 </a>

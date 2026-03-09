@@ -9,6 +9,7 @@ import {
     banCourse, 
     getMyCourses, 
     getCourseById, 
+    getOtherTeachersCourses,
     enrollCourse, 
     createInviteCode, 
     getStudentCourses,
@@ -25,6 +26,15 @@ export const useCourses = (params: GetCoursesParams = {}, options: { enabled?: b
     return useQuery({
         queryKey: ['courses', params],
         queryFn: () => getCourses(params),
+        enabled: options.enabled,
+        placeholderData: keepPreviousData,
+    });
+};
+
+export const useOtherTeachersCourses = (params: GetCoursesParams = {}, options: { enabled?: boolean } = {}) => {
+    return useQuery({
+        queryKey: ['courses-others', params],
+        queryFn: () => getOtherTeachersCourses(params),
         enabled: options.enabled,
         placeholderData: keepPreviousData,
     });

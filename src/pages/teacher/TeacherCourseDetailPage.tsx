@@ -10,6 +10,8 @@ import { toast } from "@/components/common/Toast";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { FaCircleNotch } from "react-icons/fa";
 import { getInitials } from "@/utils/initialsName";
+import AddCreatedStudentsModal from "@/components/teacher/students/AddCreatedStudentsModal";
+import CourseReferralRequestsSection from "@/components/teacher/courses/CourseReferralRequestsSection";
 
 const TeacherCourseDetailPage = () => {
   const { id } = useParams();
@@ -34,6 +36,8 @@ const TeacherCourseDetailPage = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const requestResetMutation = useRequestBatchResetPassword();
+  const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
+  const [isReferralMode, setIsReferralMode] = useState(false);
 
   useEffect(() => {
     if (course?.lessons) {
@@ -56,7 +60,10 @@ const TeacherCourseDetailPage = () => {
 
   if (loading) {
     return (
-      <LoadingOverlay isLoading={true} message="Đang tải thông tin khóa học..." />
+      <LoadingOverlay
+        isLoading={true}
+        message="Đang tải thông tin khóa học..."
+      />
     );
   }
 
@@ -174,13 +181,27 @@ const TeacherCourseDetailPage = () => {
             <p className="text-sm text-slate-500 mt-1">Chi tiết khóa học</p>
           </div>
         </div>
-        <Link
-          to={`/teacher/courses/${id}/edit`}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 transition-colors"
-        >
-          <span className="material-symbols-outlined text-lg">edit</span>
-          Chỉnh sửa
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            to={`/teacher/courses/${id}/edit`}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 transition-colors"
+          >
+            <span className="material-symbols-outlined text-lg">edit</span>
+            Chỉnh sửa
+          </Link>
+          <button
+            onClick={() => {
+              setIsReferralMode(false);
+              setIsAddStudentModalOpen(true);
+            }}
+            className="flex items-center gap-2 px-3 py-2 bg-[#0074bd] text-white rounded-lg font-bold text-sm hover:bg-[#0074bd]/90 transition-all shadow-md shadow-blue-100"
+          >
+            <span className="material-symbols-outlined text-[20px]">
+              person_add
+            </span>
+            Thêm học sinh
+          </button>
+        </div>
       </div>
 
       {/* Course Info Card */}
@@ -352,6 +373,11 @@ const TeacherCourseDetailPage = () => {
         )}
       </div>
 
+      {/* Referral Requests Section */}
+      <div className="bg-white rounded-xl border border-slate-200 p-6">
+        <CourseReferralRequestsSection courseId={id || ""} />
+      </div>
+
       {/* Students Section */}
       <div className="bg-white rounded-xl border border-slate-200 p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
@@ -427,7 +453,9 @@ const TeacherCourseDetailPage = () => {
                   ) : (
                     <div className="w-12 h-12 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center">
                       <span className="text-xs font-medium text-slate-600">
-                        {getInitials(student.firstName + " " + student.lastName)}
+                        {getInitials(
+                          student.firstName + " " + student.lastName,
+                        )}
                       </span>
                     </div>
                   )}
@@ -494,6 +522,13 @@ const TeacherCourseDetailPage = () => {
         cancelLabel="Hủy"
         isLoading={requestResetMutation.isPending}
         variant="warning"
+      />
+      <AddCreatedStudentsModal
+        isOpen={isAddStudentModalOpen}
+        onClose={() => setIsAddStudentModalOpen(false)}
+        courseId={id || ""}
+        courseName={course.name}
+        isReferral={isReferralMode}
       />
     </div>
   );
