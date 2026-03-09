@@ -19,19 +19,22 @@ export const NotificationDropdown = () => {
   const { user } = useAuth();
 
   const { data: notificationData, isLoading } = useNotifications(
-    1,
-    50,
+    0,
+    20,
     "createdAt:desc",
   );
   const markAllRead = useMarkAllNotificationsRead();
   const markRead = useMarkNotificationRead();
 
-  const notifications = Array.isArray(notificationData)
-    ? notificationData
-    : notificationData?.content ||
-      notificationData?.data ||
-      notificationData?.items ||
-      [];
+  const notifications =
+    notificationData?.pages.flatMap((page: any) => {
+      return (
+        page.content ||
+        page.data ||
+        page.items ||
+        (Array.isArray(page) ? page : [])
+      );
+    }) || [];
   const unreadCount = notifications.filter((n: any) => !n.read).length;
 
   useEffect(() => {

@@ -19,16 +19,19 @@ const StudentDashboardPage = () => {
     sorts: "createdAt:desc",
   });
 
-  const { data: notificationData } = useNotifications(0, 50, "createdAt,desc");
+  const { data: notificationData } = useNotifications(0, 20, "createdAt:desc");
   const markRead = useMarkNotificationRead();
 
   const recentCourses = coursesData?.items || [];
-  const notifications = Array.isArray(notificationData)
-    ? notificationData
-    : notificationData?.content ||
-      notificationData?.data ||
-      notificationData?.items ||
-      [];
+  const notifications =
+    notificationData?.pages.flatMap((page: any) => {
+      return (
+        page.content ||
+        page.data ||
+        page.items ||
+        (Array.isArray(page) ? page : [])
+      );
+    }) || [];
 
   // Real stats data from user profile
   const statsData = [

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaBell, FaCircleNotch } from "react-icons/fa";
 import {
@@ -7,23 +8,34 @@ import {
 } from "@/hooks/useNotifications";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
+import { useInView } from "motion/react";
 
 const StudentNotificationPage = () => {
   const navigate = useNavigate();
-  const { data: notificationData, isLoading } = useNotifications(
-    1,
-    50,
-    "createdAt:desc",
-  );
+  const scrollRef = useRef(null);
+  const isInView = useInView(scrollRef);
+
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useNotifications(0, 20, "createdAt:desc");
+
   const markRead = useMarkNotificationRead();
   const markAllRead = useMarkAllNotificationsRead();
 
-  const notifications = Array.isArray(notificationData)
-    ? notificationData
-    : notificationData?.content ||
-      notificationData?.data ||
-      notificationData?.items ||
-      [];
+  useEffect(() => {
+    if (isInView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [isInView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const notifications =
+    data?.pages.flatMap((page: any) => {
+      return (
+        page.content ||
+        page.data ||
+        page.items ||
+        (Array.isArray(page) ? page : [])
+      );
+    }) || [];
 
   const getNotificationColor = (type: string) => {
     switch (type) {
@@ -102,7 +114,7 @@ const StudentNotificationPage = () => {
           </div>
         ) : (
           <div className="divide-y divide-slate-100">
-            {notifications.map((notif) => (
+            {notifications.map((notif: any) => (
               <div
                 key={notif.id}
                 className={`p-5 flex gap-4 transition-colors cursor-pointer hover:bg-slate-50 ${!notif.read ? "bg-blue-50/20" : ""}`}
@@ -151,6 +163,21 @@ const StudentNotificationPage = () => {
                 )}
               </div>
             ))}
+
+            {/* Load more trigger */}
+            <div ref={scrollRef} className="p-4 flex justify-center">
+              {isFetchingNextPage ? (
+                <span className="animate-spin text-2xl color-primary">
+                  <FaCircleNotch />
+                </span>
+              ) : hasNextPage ? (
+                <p className="text-sm text-slate-400 italic">
+                  Đang tải thêm...
+                </p>
+              ) : notifications.length > 0 ? (
+                <p className="text-sm text-slate-400 italic">Hết thông báo</p>
+              ) : null}
+            </div>
           </div>
         )}
       </div>
