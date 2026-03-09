@@ -101,6 +101,7 @@ const LiveQuizHostLobbyPage = () => {
             <p className="text-slate-500 font-bold text-xl mb-2">
               Truy cập trình duyệt để thi:
             </p>
+            <img src="/img/qr-page.png" alt="QR Code" className="w-1/2" />
             <p className="text-2xl md:text-3xl font-black text-slate-800 mb-8 pb-8 tracking-tight">
               iesfocus.edu.vn/join
             </p>

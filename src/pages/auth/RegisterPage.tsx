@@ -353,13 +353,13 @@ const RegisterPage = () => {
                   htmlFor="terms"
                 >
                   Tôi đồng ý với{" "}
-                  <span className="color-primary font-bold hover:underline">
+                  <a href="/terms" className="color-primary font-bold hover:underline">
                     Điều khoản
-                  </span>{" "}
+                  </a>{" "}
                   và{" "}
-                  <span className="color-primary font-bold hover:underline">
+                  <a href="/privacy" className="color-primary font-bold hover:underline">
                     Chính sách bảo mật
-                  </span>
+                  </a>
                 </label>
               </div>
               {errors.terms && (

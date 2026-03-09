@@ -36,6 +36,7 @@ export interface GetCoursesParams {
     pageSize?: number;
     sorts?: string[];
     keyword?: string;
+    teacherKeyword?: string;
     status?: string;
     visibility?: string;
     teacherName?: string;
@@ -131,4 +132,57 @@ export interface CourseTeacherResponse {
     code: number;
     message: string;
     data: CourseTeacher[];
+}
+
+export interface ReferralRequestResponse {
+    id: string;
+    senderTeacherId: string;
+    senderTeacherName: string;
+    senderTeacherEmail: string;
+    targetTeacherName: string;
+    message: string;
+    status: string; // "PENDING", "ACCEPTED", "REJECTED", "CANCELLED"
+    createdAt: string;
+    courseId: string;
+    courseName?: string;
+    studentCount: number;
+    students: CourseStudent[];
+}
+
+export interface ReferralRequestListResponse {
+    code: number;
+    message: string;
+    data: ReferralRequestResponse[];
+}
+
+export interface PaginatedReferralRequestResponse {
+    code: number;
+    message: string;
+    data: {
+        pageNo: number;
+        pageSize: number;
+        totalPage: number;
+        totalElement: number;
+        sortBy: string[];
+        items: ReferralRequestResponse[];
+    };
+}
+
+export interface GetCourseReferralRequestsParams {
+    courseId: string;
+    status?: string;
+    fromDate?: string;
+    toDate?: string;
+    pageNo?: number;
+    pageSize?: number;
+    sorts?: string[];
+}
+
+export interface CourseReferralRequest {
+    studentIds: string[];
+    message: string;
+}
+
+export interface AddBatchStudentsRequest {
+    studentIds: string[];
 }
