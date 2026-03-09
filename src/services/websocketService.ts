@@ -68,8 +68,8 @@ class WebSocketService {
 
     // Hàm Subscribe (Nhận dữ liệu)
     subscribe(destination: string, callback: (payload: any) => void) {
-        if (!this.client.connected) {
-            // console.warn('⚠️ Client chưa kết nối, không thể subscribe:', destination);
+        if (!this.client.active) {
+            // console.warn('⚠️ Client chưa active, không thể subscribe:', destination);
             return;
         }
 

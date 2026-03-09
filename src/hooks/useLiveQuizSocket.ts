@@ -1,21 +1,17 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
-import SockJS from 'sockjs-client';
-import { Client } from '@stomp/stompjs';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { type StompSubscription } from '@stomp/stompjs';
 import type {
     WsPlayerEvent,
     WsPlayerJoinedData,
     WsPlayerJoinedEvent,
     LiveQuizLeaderboardItem
 } from '@/types/live-quiz';
-import { useAuth } from './useAuth';
-
-const WS_URL = import.meta.env.VITE_WS_URL;
+import { socketService } from '@/services/websocketService';
+import { useWebSocket } from './useWebSocket'; // Assuming this provides isConnected status from context
 
 export const useLiveQuizSocket = (pin: string | null, role: 'HOST' | 'PLAYER') => {
-    const { token } = useAuth();
-    const [isConnected, setIsConnected] = useState(false);
-    const clientRef = useRef<Client | null>(null);
-
+    const { isConnected } = useWebSocket();
+    
     // Host States
     const [playersList, setPlayersList] = useState<WsPlayerJoinedData[]>([]);
 
@@ -25,90 +21,70 @@ export const useLiveQuizSocket = (pin: string | null, role: 'HOST' | 'PLAYER') =
     // Shared States
     const [leaderboard, setLeaderboard] = useState<LiveQuizLeaderboardItem[]>([]);
 
-    // Disconnect method to clean up
-    const disconnect = useCallback(() => {
-        if (clientRef.current) {
-            clientRef.current.deactivate();
-            clientRef.current = null;
-            setIsConnected(false);
-        }
-    }, []);
+    const subscriptionsRef = useRef<StompSubscription[]>([]);
+
+    const unsubscribeAll = useCallback(() => {
+        // console.log(`[LiveQuiz] Unsubscribing from all topics for pin: ${pin}`);
+        subscriptionsRef.current.forEach(sub => sub.unsubscribe());
+        subscriptionsRef.current = [];
+    }, [pin]);
 
     useEffect(() => {
-        if (!pin) return;
+        if (!pin || !isConnected) return;
 
-        const client = new Client({
-            webSocketFactory: () => new SockJS(WS_URL),
-            connectHeaders: token ? {
-                Authorization: `Bearer ${token}`
-            } : {},
-            // debug: (str) => {
-            //     // console.log('[STOMP]', str);
-            // },
-            reconnectDelay: 5000,
-            heartbeatIncoming: 4000,
-            heartbeatOutgoing: 4000,
-            onConnect: () => {
-                setIsConnected(true);
-
-                // Subscribe depending on role
-                if (role === 'HOST') {
-                    client.subscribe(`/topic/quiz.${pin}.host`, (message) => {
-                        try {
-                            const event: WsPlayerJoinedEvent = JSON.parse(message.body);
-                            if (event.type === 'PLAYER_JOINED') {
-                                setPlayersList(prev => {
-                                    if (prev.find(p => p.studentId === event.data.studentId)) return prev;
-                                    return [...prev, event.data];
-                                });
-                            }
-                        } catch (e) {
-                            console.error('Failed to parse host message', e);
-                        }
-                    });
-                } else if (role === 'PLAYER') {
-                    client.subscribe(`/topic/quiz.${pin}.players`, (message) => {
-                        try {
-                            const rawData = JSON.parse(message.body);
-                            // If backend wraps in { code, message, data } format:
-                            const event: WsPlayerEvent = rawData.code !== undefined && rawData.data ? rawData.data : rawData;
-                            
-                            // Prevent setting null/undefined event
-                            if (event && event.type) {
-                                setLastPlayerEvent(event);
-                            }
-                        } catch (e) {
-                            console.error('Failed to parse player message', e);
-                        }
-                    });
-                }
-
-                // Both subscribe to leaderboard
-                client.subscribe(`/topic/quiz.${pin}.leaderboard`, (message) => {
-                    try {
-                        const data: LiveQuizLeaderboardItem[] = JSON.parse(message.body);
-                        setLeaderboard(data);
-                    } catch (e) {
-                        console.error('Failed to parse leaderboard message', e);
+        // console.log(`[LiveQuiz] Initializing subscriptions for pin: ${pin}, role: ${role}`);
+        
+        // Host Subscriptions
+        if (role === 'HOST') {
+            const hostSub = socketService.subscribe(`/topic/quiz.${pin}.host`, (data) => {
+                // console.log('[LiveQuiz] Received Host Event:', data);
+                try {
+                    const event = data as WsPlayerJoinedEvent;
+                    if (event.type === 'PLAYER_JOINED') {
+                        setPlayersList(prev => {
+                            if (prev.find(p => p.studentId === event.data.studentId)) return prev;
+                            return [...prev, event.data];
+                        });
                     }
-                });
-            },
-            onStompError: (frame) => {
-                console.error('Broker reported error: ' + frame.headers['message']);
-                console.error('Additional details: ' + frame.body);
-            },
-            onWebSocketClose: () => {
-                setIsConnected(false);
+                } catch (e) {
+                    console.error('[LiveQuiz] Failed to parse host message', e);
+                }
+            });
+            if (hostSub) subscriptionsRef.current.push(hostSub);
+        } 
+        
+        // Player Subscriptions
+        if (role === 'PLAYER') {
+            const playerSub = socketService.subscribe(`/topic/quiz.${pin}.players`, (data) => {
+                // console.log('[LiveQuiz] Received Player Event:', data);
+                try {
+                    // Handle wrapped data if necessary (consistent with old logic)
+                    const event: WsPlayerEvent = data.code !== undefined && data.data ? data.data : data;
+                    if (event && event.type) {
+                        setLastPlayerEvent(event);
+                    }
+                } catch (e) {
+                    console.error('[LiveQuiz] Failed to parse player message', e);
+                }
+            });
+            if (playerSub) subscriptionsRef.current.push(playerSub);
+        }
+
+        // Shared Leaderboard Subscription
+        const lbSub = socketService.subscribe(`/topic/quiz.${pin}.leaderboard`, (data) => {
+            // console.log('[LiveQuiz] Received Leaderboard Update');
+            try {
+                setLeaderboard(data as LiveQuizLeaderboardItem[]);
+            } catch (e) {
+                console.error('[LiveQuiz] Failed to parse leaderboard message', e);
             }
         });
-
-        client.activate();
-        clientRef.current = client;
+        if (lbSub) subscriptionsRef.current.push(lbSub);
 
         return () => {
-            disconnect();
+            unsubscribeAll();
         };
-    }, [pin, role, token, disconnect]);
+    }, [pin, role, isConnected, unsubscribeAll]);
 
 
     return {
@@ -116,6 +92,6 @@ export const useLiveQuizSocket = (pin: string | null, role: 'HOST' | 'PLAYER') =
         playersList,
         lastPlayerEvent,
         leaderboard,
-        disconnect
+        disconnect: unsubscribeAll // Use unsubscribeAll as the disconnect method for this hook
     };
 };
