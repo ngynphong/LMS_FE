@@ -7,7 +7,8 @@ import type {
     LiveQuizLeaderboardItem
 } from '@/types/live-quiz';
 import { socketService } from '@/services/websocketService';
-import { useWebSocket } from './useWebSocket'; // Assuming this provides isConnected status from context
+import { useWebSocket } from './useWebSocket';
+import { getLiveQuizPlayers } from '@/services/liveQuizApi';
 
 export const useLiveQuizSocket = (pin: string | null, role: 'HOST' | 'PLAYER') => {
     const { isConnected } = useWebSocket();
@@ -29,15 +30,35 @@ export const useLiveQuizSocket = (pin: string | null, role: 'HOST' | 'PLAYER') =
         subscriptionsRef.current = [];
     }, [pin]);
 
+    // Fetch initial players when HOST enters lobby
     useEffect(() => {
-        if (!pin || !isConnected) return;
+        const fetchInitialPlayers = async () => {
+            if (role === 'HOST' && pin) {
+                try {
+                    const players = await getLiveQuizPlayers(pin);
+                    const formattedPlayers: WsPlayerJoinedData[] = players.map(p => ({
+                        studentId: p.playerId,
+                        studentName: p.playerName,
+                        totalPlayers: players.length
+                    }));
+                    setPlayersList(formattedPlayers);
+                } catch (error) {
+                    console.error('[LiveQuiz] Failed to fetch initial players:', error);
+                }
+            }
+        };
 
-        // console.log(`[LiveQuiz] Initializing subscriptions for pin: ${pin}, role: ${role}`);
-        
+        fetchInitialPlayers();
+    }, [pin, role]);
+
+    useEffect(() => {
+        if (!pin || !isConnected) {
+            return;
+        }
+
         // Host Subscriptions
         if (role === 'HOST') {
             const hostSub = socketService.subscribe(`/topic/quiz.${pin}.host`, (data) => {
-                // console.log('[LiveQuiz] Received Host Event:', data);
                 try {
                     const event = data as WsPlayerJoinedEvent;
                     if (event.type === 'PLAYER_JOINED') {
