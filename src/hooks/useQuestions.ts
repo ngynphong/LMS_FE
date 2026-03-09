@@ -4,6 +4,7 @@ import {
     createQuestion, 
     updateQuestion, 
     deleteQuestion, 
+    deleteQuestionsBatch,
     importQuestions, 
     getQuestionTemplate,
     getMyQuestions,
@@ -50,6 +51,16 @@ export const useDeleteQuestion = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (id: string) => deleteQuestion(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['questions'] });
+        },
+    });
+};
+
+export const useDeleteQuestionsBatch = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (questionIds: string[]) => deleteQuestionsBatch(questionIds),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['questions'] });
         },

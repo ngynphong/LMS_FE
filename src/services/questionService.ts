@@ -69,6 +69,17 @@ export const deleteQuestion = async (id: string): Promise<void> => {
     }
 };
 
+export const deleteQuestionsBatch = async (questionIds: string[]): Promise<void> => {
+    try {
+        await axiosInstance.delete('/questions/questions-batch', {
+            data: { questionIds }
+        });
+    } catch (error) {
+        console.error('Failed to delete questions batch:', error);
+        throw error;
+    }
+};
+
 export const importQuestions = async (lessonId: string | undefined, file: File): Promise<ImportQuestionResult> => {
     try {
         const formData = new FormData();

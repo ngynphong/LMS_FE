@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import type { QuestionDifficulty } from "@/types/question";
-import { useQuestions, useDeleteQuestion } from "@/hooks/useQuestions";
+import {
+  useQuestions,
+  useDeleteQuestion,
+  useDeleteQuestionsBatch,
+} from "@/hooks/useQuestions";
 import { useMyCourses, useCourseDetail } from "@/hooks/useCourses";
 import ImportQuestionsModal from "@/components/question/ImportQuestionsModal";
 import { ConfirmationModal } from "@/components/common/ConfirmationModal";
@@ -18,6 +22,7 @@ const QuestionBankPage = () => {
   // const [difficultyFilter, setDifficultyFilter] = useState("all");
   const [selectedCourseId, setSelectedCourseId] = useState("");
   const [selectedLessonId, setSelectedLessonId] = useState("");
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   // Fetch Courses for filter
   const { data: coursesData } = useMyCourses({ pageSize: 100 });
@@ -45,12 +50,14 @@ const QuestionBankPage = () => {
   const totalElements = questionsResponse?.totalElement || 0;
 
   const { mutateAsync: deleteQuestion } = useDeleteQuestion();
+  const { mutateAsync: deleteQuestionsBatch } = useDeleteQuestionsBatch();
 
   const [showImportModal, setShowImportModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
     questionId: string | null;
-  }>({ isOpen: false, questionId: null });
+    isBatch: boolean;
+  }>({ isOpen: false, questionId: null, isBatch: false });
 
   // Helper stats (approximate based on current page or we'd need separate API for global stats)
   // For now, we can just show total questions from metadata
@@ -70,19 +77,48 @@ const QuestionBankPage = () => {
   };
 
   const handleDeleteClick = (id: string) => {
-    setDeleteModal({ isOpen: true, questionId: id });
+    setDeleteModal({ isOpen: true, questionId: id, isBatch: false });
+  };
+
+  const handleBatchDeleteClick = () => {
+    if (selectedIds.length > 0) {
+      setDeleteModal({ isOpen: true, questionId: null, isBatch: true });
+    }
+  };
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedIds(questions.map((q) => q.id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectRow = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
+    );
   };
 
   const handleConfirmDelete = async () => {
-    if (deleteModal.questionId) {
-      try {
+    try {
+      if (deleteModal.isBatch) {
+        await deleteQuestionsBatch(selectedIds);
+        setSelectedIds([]);
+        toast.success(`Đã xóa ${selectedIds.length} câu hỏi`);
+      } else if (deleteModal.questionId) {
         await deleteQuestion(deleteModal.questionId);
-        // refetch is handled by invalidation
-        setDeleteModal({ isOpen: false, questionId: null });
-      } catch (error) {
-        console.error("Failed to delete question:", error);
-        toast.error("Xóa câu hỏi thất bại");
+        setSelectedIds((prev) =>
+          prev.filter((id) => id !== deleteModal.questionId),
+        );
+        toast.success("Đã xóa câu hỏi");
       }
+      setDeleteModal({ isOpen: false, questionId: null, isBatch: false });
+    } catch (error) {
+      console.error("Failed to delete:", error);
+      toast.error(
+        deleteModal.isBatch ? "Xóa hàng loạt thất bại" : "Xóa câu hỏi thất bại",
+      );
     }
   };
 
@@ -141,6 +177,7 @@ const QuestionBankPage = () => {
                 setSelectedCourseId(e.target.value);
                 setSelectedLessonId(""); // Reset lesson when course changes
                 setPagination((prev) => ({ ...prev, pageNo: 1 }));
+                setSelectedIds([]);
               }}
               className="w-full appearance-none px-4 py-2.5 bg-slate-50 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm pr-10"
             >
@@ -163,6 +200,7 @@ const QuestionBankPage = () => {
               onChange={(e) => {
                 setSelectedLessonId(e.target.value);
                 setPagination((prev) => ({ ...prev, pageNo: 1 }));
+                setSelectedIds([]);
               }}
               className="w-full appearance-none px-4 py-2.5 bg-slate-50 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm pr-10"
               disabled={!selectedCourseId}
@@ -178,30 +216,10 @@ const QuestionBankPage = () => {
               expand_more
             </span>
           </div>
-
-          {/* Difficulty Filter */}
-          {/* <div className="relative min-w-[150px]">
-            <select
-              value={difficultyFilter}
-              onChange={(e) => {
-                setDifficultyFilter(e.target.value);
-                setPagination((prev) => ({ ...prev, pageNo: 1 }));
-              }}
-              className="w-full appearance-none px-4 py-2.5 bg-slate-50 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm pr-10"
-            >
-              <option value="all">Mức độ: Tất cả</option>
-              <option value="EASY">Dễ</option>
-              <option value="MEDIUM">Vừa</option>
-              <option value="HARD">Khó</option>
-            </select>
-            <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-lg">
-              expand_more
-            </span>
-          </div> */}
         </div>
       </div>
 
-      {/* Statistics - Simplified for now as we don't have aggregated stats from API */}
+      {/* Statistics & Bulk Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
           <div className="bg-[#0074bd]/10 p-3 rounded-lg">
@@ -218,6 +236,33 @@ const QuestionBankPage = () => {
             </p>
           </div>
         </div>
+
+        {selectedIds.length > 0 && (
+          <div className="md:col-span-2 bg-red-50 p-5 rounded-xl border border-red-100 shadow-sm flex items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="bg-red-100 p-3 rounded-lg">
+                <span className="material-symbols-outlined text-red-600 text-2xl">
+                  delete_sweep
+                </span>
+              </div>
+              <div>
+                <p className="text-red-700 text-sm font-medium">
+                  Đã chọn {selectedIds.length} câu hỏi
+                </p>
+                <p className="text-xs text-red-500">
+                  Bạn có thể xóa tất cả các mục đã chọn
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={handleBatchDeleteClick}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-bold transition-all shadow-sm cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-lg">delete</span>
+              Xóa các mục đã chọn
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Table */}
@@ -225,6 +270,17 @@ const QuestionBankPage = () => {
         <table className="w-full text-left border-collapse">
           <thead className="bg-slate-50">
             <tr>
+              <th className="px-6 py-4 w-10">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 rounded border-gray-300 text-[#0074bd] focus:ring-[#0074bd] cursor-pointer"
+                  checked={
+                    questions.length > 0 &&
+                    selectedIds.length === questions.length
+                  }
+                  onChange={handleSelectAll}
+                />
+              </th>
               <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Nội dung câu hỏi
               </th>
@@ -248,13 +304,31 @@ const QuestionBankPage = () => {
           <tbody
             className={`divide-y divide-slate-100 transition-opacity duration-200 ${fetching && !loading ? "opacity-50 pointer-events-none" : ""}`}
           >
+            {questions.length === 0 && !loading && (
+              <tr>
+                <td
+                  colSpan={7}
+                  className="px-6 py-12 text-center text-slate-500"
+                >
+                  Không có câu hỏi nào
+                </td>
+              </tr>
+            )}
             {questions.map((question) => {
               const badge = getDifficultyBadge(question.difficulty);
               return (
                 <tr
                   key={question.id}
-                  className="hover:bg-slate-50 transition-colors"
+                  className={`hover:bg-slate-50 transition-colors ${selectedIds.includes(question.id) ? "bg-blue-50/50" : ""}`}
                 >
+                  <td className="px-6 py-4">
+                    <input
+                      type="checkbox"
+                      className="w-4 h-4 rounded border-gray-300 text-[#0074bd] focus:ring-[#0074bd] cursor-pointer"
+                      checked={selectedIds.includes(question.id)}
+                      onChange={() => handleSelectRow(question.id)}
+                    />
+                  </td>
                   <td className="px-6 py-4">
                     <div
                       className="text-sm text-[#111518] font-medium line-clamp-2"
@@ -322,17 +396,19 @@ const QuestionBankPage = () => {
           <PaginationControl
             currentPage={pagination.pageNo}
             totalPages={totalPages}
-            onPageChange={(page) =>
-              setPagination((prev) => ({ ...prev, pageNo: page }))
-            }
+            onPageChange={(page) => {
+              setPagination((prev) => ({ ...prev, pageNo: page }));
+              setSelectedIds([]);
+            }}
             pageSize={pagination.pageSize}
-            onPageSizeChange={(size) =>
+            onPageSizeChange={(size) => {
               setPagination((prev) => ({
                 ...prev,
                 pageSize: size,
                 pageNo: 1,
-              }))
-            }
+              }));
+              setSelectedIds([]);
+            }}
             pageSizeOptions={[10, 20, 50, 100, 1000]}
           />
         </div>
@@ -350,10 +426,16 @@ const QuestionBankPage = () => {
 
       <ConfirmationModal
         isOpen={deleteModal.isOpen}
-        onClose={() => setDeleteModal({ isOpen: false, questionId: null })}
+        onClose={() =>
+          setDeleteModal({ isOpen: false, questionId: null, isBatch: false })
+        }
         onConfirm={handleConfirmDelete}
-        title="Xóa câu hỏi"
-        message="Bạn có chắc chắn muốn xóa câu hỏi này? Hành động này không thể hoàn tác."
+        title={deleteModal.isBatch ? "Xóa hàng loạt câu hỏi" : "Xóa câu hỏi"}
+        message={
+          deleteModal.isBatch
+            ? `Bạn có chắc chắn muốn xóa ${selectedIds.length} câu hỏi đã chọn? Hành động này không thể hoàn tác.`
+            : "Bạn có chắc chắn muốn xóa câu hỏi này? Hành động này không thể hoàn tác."
+        }
         variant="danger"
         confirmLabel="Xóa"
         cancelLabel="Hủy"
