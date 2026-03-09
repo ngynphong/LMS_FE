@@ -89,13 +89,16 @@ const TeacherSidebar = ({
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const { data: notificationData } = useNotifications(0, 50, "createdAt,desc");
-  const notifications = Array.isArray(notificationData)
-    ? notificationData
-    : notificationData?.content ||
-      notificationData?.data ||
-      notificationData?.items ||
-      [];
+  const { data: notificationData } = useNotifications(0, 20, "createdAt:desc");
+  const notifications =
+    notificationData?.pages.flatMap((page: any) => {
+      return (
+        page.content ||
+        page.data ||
+        page.items ||
+        (Array.isArray(page) ? page : [])
+      );
+    }) || [];
   const unreadCount = notifications.filter((n: any) => !n.read).length || 0;
 
   const isActive = (path: string) => {
