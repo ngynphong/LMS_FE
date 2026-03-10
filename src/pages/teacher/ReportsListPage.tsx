@@ -1,35 +1,24 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useTeacherQuizzes } from "@/hooks/useQuizzes";
+import { useTeacherStudentQuizzesAPI } from "@/hooks/useQuizzes";
 import { FaCircleNotch } from "react-icons/fa";
 import type { QuizSummary } from "@/types/quiz";
-import PaginationControl from "@/components/common/PaginationControl";
 
 const ReportsListPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [page, setPage] = useState(1);
-  const [pageSize] = useState(9);
   const [selectedType, setSelectedType] = useState<"QUIZ" | "PRACTICE" | "">(
     "",
   );
-  const [selectedStatus, setSelectedStatus] = useState<boolean | null>(null);
-  const {
-    data: quizzes,
-    isLoading,
-    error,
-  } = useTeacherQuizzes({
-    pageNo: page,
-    pageSize,
-    sorts: "createdAt:desc",
-    type: selectedType || undefined,
-    isPublished: selectedStatus,
+
+  const { data: reportsList, isLoading, error } = useTeacherStudentQuizzesAPI();
+
+  const filteredReports = (reportsList || []).filter((quiz: QuizSummary) => {
+    const matchesSearch = quiz.title
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const matchesType = selectedType ? quiz.type === selectedType : true;
+    return matchesSearch && matchesType;
   });
-
-  const reportsList = quizzes?.items || [];
-
-  const filteredReports = reportsList.filter((quiz: QuizSummary) =>
-    quiz.title.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
 
   return (
     <div className="space-y-6">
@@ -57,7 +46,6 @@ const ReportsListPage = () => {
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
-                setPage(1);
               }}
               className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm transition-all"
               placeholder="Tìm theo tiêu đề bài tập..."
@@ -70,35 +58,12 @@ const ReportsListPage = () => {
             value={selectedType}
             onChange={(e) => {
               setSelectedType(e.target.value as any);
-              setPage(1);
             }}
             className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1E90FF] font-medium text-slate-600 cursor-pointer"
           >
             <option value="">Tất cả loại</option>
             <option value="QUIZ">Bài kiểm tra</option>
             <option value="PRACTICE">Luyện tập</option>
-          </select>
-
-          <select
-            value={
-              selectedStatus === null
-                ? "all"
-                : selectedStatus
-                  ? "published"
-                  : "draft"
-            }
-            onChange={(e) => {
-              const val = e.target.value;
-              setSelectedStatus(
-                val === "all" ? null : val === "published" ? true : false,
-              );
-              setPage(1);
-            }}
-            className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1E90FF] font-medium text-slate-600 cursor-pointer"
-          >
-            <option value="all">Tất cả trạng thái</option>
-            <option value="published">Đã công khai</option>
-            <option value="draft">Bản nháp</option>
           </select>
         </div>
       </div>
@@ -117,7 +82,7 @@ const ReportsListPage = () => {
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredReports.map((quiz) => (
+            {filteredReports.map((quiz: QuizSummary) => (
               <div
                 key={quiz.id}
                 className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow"
@@ -154,19 +119,6 @@ const ReportsListPage = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between text-xs text-slate-500 mb-4 px-1">
-                    <span>
-                      <span className="font-semibold">Trạng thái: </span>
-                      {quiz.isPublished ? (
-                        <span className="text-green-600 font-medium">
-                          Đã xuất bản
-                        </span>
-                      ) : (
-                        <span className="text-slate-400 font-medium">Nháp</span>
-                      )}
-                    </span>
-                  </div>
-
                   <Link
                     to={`/teacher/reports/${quiz.id}`}
                     className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-[#0074bd]/10 text-[#0074bd] text-sm font-bold hover:bg-[#0074bd]/20 transition-colors"
@@ -180,17 +132,6 @@ const ReportsListPage = () => {
               </div>
             ))}
           </div>
-
-          {/* Pagination */}
-          {(quizzes?.totalPage || 0) > 1 && (
-            <div className="mt-8 flex justify-center">
-              <PaginationControl
-                currentPage={page}
-                totalPages={quizzes?.totalPage || 1}
-                onPageChange={setPage}
-              />
-            </div>
-          )}
         </>
       )}
 

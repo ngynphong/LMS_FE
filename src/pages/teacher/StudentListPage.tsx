@@ -231,7 +231,7 @@ const StudentListPage = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex items-center gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="flex-1 min-w-[200px] relative">
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
             search
@@ -241,7 +241,7 @@ const StudentListPage = () => {
             placeholder="Tìm kiếm học sinh..."
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
+            className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
           />
         </div>
 
@@ -268,7 +268,7 @@ const StudentListPage = () => {
                 setSorts(e.target.value);
                 setPage(1);
               }}
-              className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
+              className="w-1/2 px-2 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
             >
               <option value="createdAt:asc">Tăng dần</option>
               <option value="createdAt:desc">Giảm dần</option>
@@ -283,7 +283,7 @@ const StudentListPage = () => {
                 setSortBy(e.target.value);
                 setPage(1);
               }}
-              className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
+              className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
             >
               <option value="name">Tên</option>
               <option value="email">Email</option>
@@ -295,7 +295,7 @@ const StudentListPage = () => {
                 setOrder(e.target.value);
                 setPage(1);
               }}
-              className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#0074bd] focus:border-[#0074bd]"
+              className="px-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF]"
             >
               <option value="asc">Tăng dần</option>
               <option value="desc">Giảm dần</option>
@@ -308,7 +308,7 @@ const StudentListPage = () => {
       <div className="grid grid-cols-1 gap-4">
         <div className="bg-white p-4 rounded-xl border border-slate-200">
           <div className="flex items-center gap-2 text-slate-500">
-            <span className="material-symbols-outlined text-[#0074bd]">
+            <span className="material-symbols-outlined text-[#1E90FF]">
               group
             </span>
             <span className="text-xs font-medium">

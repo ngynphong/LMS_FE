@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import {
   useQuizStatistics,
-  useQuizStudentStatistics,
+  useTeacherStudentAttempts,
 } from "@/hooks/useQuizzes";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { format } from "date-fns";
@@ -10,17 +10,14 @@ import { useState } from "react";
 import PaginationControl from "@/components/common/PaginationControl";
 import { useDebounce } from "@/hooks/useDebounce";
 import { QuizReviewModal } from "@/components/student/QuizReviewModal";
-import {
-  MdOutlineRemoveRedEye,
-} from "react-icons/md";
+import { MdOutlineRemoveRedEye } from "react-icons/md";
+import type { TeacherStudentAttempt } from "@/types/quiz";
 
 const ExamReportDetailPage = () => {
   const { id } = useParams();
   const [studentPage, setStudentPage] = useState(1);
   const [studentPageSize, setStudentPageSize] = useState(20);
   const [studentKeyword, setStudentKeyword] = useState("");
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
   const [selectedAttemptId, setSelectedAttemptId] = useState<string | null>(
     null,
   );
@@ -35,13 +32,12 @@ const ExamReportDetailPage = () => {
   } = useQuizStatistics(id);
 
   const { data: studentStats, isLoading: isStudentsLoading } =
-    useQuizStudentStatistics(id, {
+    useTeacherStudentAttempts({
+      quizId: id,
       pageNo: studentPage,
       pageSize: studentPageSize,
-      keyword: debouncedKeyword,
-      fromDate: fromDate ? `${fromDate}T00:00:00` : undefined,
-      toDate: toDate ? `${toDate}T23:59:59` : undefined,
-      sorts: "completedAt:desc",
+      keyword: debouncedKeyword || undefined,
+      sorts: "startedAt:desc",
     });
 
   const handleViewReview = (attemptId: string) => {
@@ -197,9 +193,8 @@ const ExamReportDetailPage = () => {
             </span>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-            {/* Search Input */}
-            <div className="lg:col-span-5">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex-1 min-w-[300px]">
               <span className="text-slate-400 text-sm">Tìm kiếm học viên</span>
               <div className="flex items-center gap-2 relative">
                 <span className="material-symbols-outlined text-xl text-slate-400 absolute left-3 top-1/2 -translate-y-1/2">
@@ -207,7 +202,7 @@ const ExamReportDetailPage = () => {
                 </span>
                 <input
                   type="text"
-                  placeholder="Tìm kiếm học viên..."
+                  placeholder="Tìm kiếm theo tên hoặc email học viên..."
                   value={studentKeyword}
                   onChange={(e) => {
                     setStudentKeyword(e.target.value);
@@ -218,41 +213,11 @@ const ExamReportDetailPage = () => {
               </div>
             </div>
 
-            {/* From Date */}
-            <div className="lg:col-span-3">
-              <span className="text-slate-400 text-sm">Từ ngày</span>
-              <input
-                type="date"
-                value={fromDate}
-                onChange={(e) => {
-                  setFromDate(e.target.value);
-                  setStudentPage(1);
-                }}
-                className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF] transition-all text-slate-600 appearance-none"
-              />
-            </div>
-
-            {/* To Date */}
-            <div className="lg:col-span-3">
-              <span className="text-slate-400 text-sm">Đến ngày</span>
-              <input
-                type="date"
-                value={toDate}
-                onChange={(e) => {
-                  setToDate(e.target.value);
-                  setStudentPage(1);
-                }}
-                className="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF] transition-all text-slate-600 appearance-none"
-              />
-            </div>
-
             {/* Reset Filters */}
-            {(studentKeyword || fromDate || toDate) && (
+            {studentKeyword && (
               <button
                 onClick={() => {
                   setStudentKeyword("");
-                  setFromDate("");
-                  setToDate("");
                   setStudentPage(1);
                 }}
                 className="flex items-center justify-center p-2.5 text-slate-400 hover:text-red-500 transition-colors bg-slate-50 border border-slate-200 rounded-xl group"
@@ -299,7 +264,7 @@ const ExamReportDetailPage = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {studentStats?.items?.map((attempt) => (
+              {studentStats?.items?.map((attempt: TeacherStudentAttempt) => (
                 <tr
                   key={attempt.attemptId}
                   className="hover:bg-slate-50/80 transition-all duration-200 group cursor-pointer"
@@ -401,20 +366,18 @@ const ExamReportDetailPage = () => {
                         </div>
                         <div className="space-y-1">
                           <p className="text-sm font-bold text-slate-600">
-                            {studentKeyword || fromDate || toDate
+                            {studentKeyword
                               ? "Không tìm thấy kết quả phù hợp"
                               : "Chưa có lượt làm bài nào"}
                           </p>
                           <p className="text-xs font-medium">
-                            Hãy thử thay đổi bộ lọc hoặc từ khóa tìm kiếm
+                            Hãy thử thay đổi từ khóa tìm kiếm
                           </p>
                         </div>
-                        {(studentKeyword || fromDate || toDate) && (
+                        {studentKeyword && (
                           <button
                             onClick={() => {
                               setStudentKeyword("");
-                              setFromDate("");
-                              setToDate("");
                             }}
                             className="mt-2 text-[#0074bd] text-sm font-bold hover:underline"
                           >

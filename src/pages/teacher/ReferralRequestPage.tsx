@@ -27,7 +27,7 @@ import type { ReferralRequestResponse } from "@/types/courseApi";
 
 const ReferralRequestPage = () => {
   const [activeTab, setActiveTab] = useState<"outgoing" | "incoming">(
-    "outgoing",
+    "incoming",
   );
 
   // ====== OUTGOING FILTERS ======

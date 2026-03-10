@@ -19,7 +19,10 @@ import {
     updateQuiz,
     getQuizByLessonItem,
     getMyAllQuizHistory,
-    getQuizStudentStatistics
+    getQuizStudentStatistics,
+    getQuizTitlesForTeacher,
+    getTeacherStudentQuizzesAPI,
+    getTeacherStudentAttempts
 } from '@/services/quizService';
 import type { 
     CreateQuizRequest, 
@@ -219,5 +222,32 @@ export const useStudentTeacherQuizzes = (params?: { pageNo?: number; pageSize?: 
     return useQuery({
         queryKey: ['student-teacher-quizzes', params],
         queryFn: () => getStudentTeacherQuizzes(params),
+    });
+};
+
+export const useQuizTitlesForTeacher = () => {
+    return useQuery({
+        queryKey: ['teacher-quiz-titles'],
+        queryFn: getQuizTitlesForTeacher,
+    });
+};
+
+export const useTeacherStudentQuizzesAPI = () => {
+    return useQuery({
+        queryKey: ['teacher-student-quizzes-api'],
+        queryFn: getTeacherStudentQuizzesAPI,
+    });
+};
+
+export const useTeacherStudentAttempts = (params?: {
+    pageNo?: number;
+    pageSize?: number;
+    keyword?: string;
+    quizId?: string;
+    sorts?: string | string[];
+}) => {
+    return useQuery({
+        queryKey: ['teacher-student-attempts', params],
+        queryFn: () => getTeacherStudentAttempts(params),
     });
 };
