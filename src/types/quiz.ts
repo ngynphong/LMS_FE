@@ -144,8 +144,9 @@ export interface ApiOngoingQuiz {
     quizTitle: string;
     durationInMinutes: number;
     startedAt: string;
-    status: "IN_PROGRESS" | "COMPLETED" | "PASSED" | "FAILED";
+    status: "IN_PROGRESS" | "COMPLETED" | "PASSED" | "FAILED" | "SUBMITTED";
     questions: QuizQuestionAttempt[];
+    type?: "PRACTICE" | "QUIZ" | null;
 }
 
 export interface PaginatedHistoryQuizResponse {
@@ -153,6 +154,7 @@ export interface PaginatedHistoryQuizResponse {
     pageSize: number;
     totalPage: number;
     totalElement: number;
+    sortBy?: string[];
     items: ApiOngoingQuiz[];
 }
 

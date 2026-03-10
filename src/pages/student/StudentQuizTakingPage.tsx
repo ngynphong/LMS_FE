@@ -7,13 +7,13 @@ import {
   useSubmitQuiz,
   useSaveQuizProgress,
   useCheckPracticeAnswer,
-} from "../../hooks/useQuizzes";
-import { toast } from "../../components/common/Toast";
+} from "@/hooks/useQuizzes";
+import { toast } from "@/components/common/Toast";
 import type {
   QuizStartResponse,
   QuizQuestionAttempt,
   CheckPracticeAnswerResponse,
-} from "../../types/quiz";
+} from "@/types/quiz";
 
 const StudentQuizTakingPage = () => {
   const { quizId } = useParams<{ quizId: string }>();

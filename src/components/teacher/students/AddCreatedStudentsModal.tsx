@@ -1,10 +1,17 @@
 import { useState, useEffect } from "react";
 import {
-  useMyCreatedStudents,
   useAddBatchStudents,
   useReferStudents,
+  useMyStudentsNonEnrolled,
 } from "@/hooks/useStudentReferral";
-import { FaCircleNotch, FaSearch, FaTimes } from "react-icons/fa";
+import {
+  FaCircleNotch,
+  FaSearch,
+  FaTimes,
+  FaFilter,
+  FaCalendarAlt,
+  FaSync,
+} from "react-icons/fa";
 import { getInitials } from "@/utils/initialsName";
 import PaginationControl from "@/components/common/PaginationControl";
 import { toast } from "@/components/common/Toast";
@@ -30,24 +37,45 @@ const AddCreatedStudentsModal = ({
   const [debouncedKeyword, setDebouncedKeyword] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [message, setMessage] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [sorts, setSorts] = useState("createdAt:desc");
+
+  // Format dates to YYYY-MM-DDTHH:mm:ss as required by the backend
+  const formattedFromDate = fromDate ? `${fromDate}T00:00:00` : "";
+  const formattedToDate = toDate ? `${toDate}T23:59:59` : "";
 
   const {
     data: studentsData,
     isLoading,
     isFetching,
-  } = useMyCreatedStudents({
+  } = useMyStudentsNonEnrolled(courseId, {
     pageNo: page - 1,
     pageSize,
     keyword: debouncedKeyword,
+    fromDate: formattedFromDate,
+    toDate: formattedToDate,
+    sorts: [sorts],
   });
 
   const addMutation = useAddBatchStudents();
   const referMutation = useReferStudents();
 
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedKeyword(keyword), 500);
+    const timer = setTimeout(() => {
+      setDebouncedKeyword(keyword);
+      setPage(1);
+    }, 500);
     return () => clearTimeout(timer);
   }, [keyword]);
+
+  const handleResetFilters = () => {
+    setKeyword("");
+    setFromDate("");
+    setToDate("");
+    setSorts("createdAt:desc");
+    setPage(1);
+  };
 
   if (!isOpen) return null;
 
@@ -105,24 +133,96 @@ const AddCreatedStudentsModal = ({
 
         {/* Content */}
         <div className="flex-1 overflow-hidden flex flex-col p-6 gap-6">
-          {/* Search & Actions */}
-          <div className="flex flex-col sm:flex-row gap-4 items-center">
-            <div className="flex-1 relative w-full">
-              <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Tìm kiếm học sinh..."
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-[#0074bd]/20 focus:border-[#0074bd] transition-all"
-              />
+          {/* Filters Section */}
+          <div className="bg-slate-50/50 p-4 rounded-2xl border border-slate-100 flex flex-col gap-4">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 relative">
+                <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm theo tên hoặc email..."
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] transition-all bg-white"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <FaCalendarAlt className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs" />
+                  <input
+                    type="date"
+                    value={fromDate}
+                    max={new Date().toISOString().split("T")[0]}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (toDate && value > toDate) {
+                        toast.error("toDate không được lớn hơn fromDate");
+                        return;
+                      }
+                      setFromDate(value);
+                      setPage(1);
+                    }}
+                    className="pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] transition-all bg-white"
+                  />
+                </div>
+                <span className="text-slate-400">—</span>
+                <div className="relative">
+                  <FaCalendarAlt className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs" />
+                  <input
+                    type="date"
+                    value={toDate}
+                    max={new Date().toISOString().split("T")[0]}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (fromDate && value < fromDate) {
+                        toast.error("toDate không được nhỏ hơn fromDate");
+                        return;
+                      }
+                      setToDate(value);
+                      setPage(1);
+                    }}
+                    className="pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] transition-all bg-white"
+                  />
+                </div>
+              </div>
             </div>
-            <div className="text-sm font-medium text-slate-600 bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200">
-              Đã chọn{" "}
-              <span className="text-[#0074bd] font-bold">
-                {selectedIds.length}
-              </span>{" "}
-              học sinh
+
+            <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-slate-100">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg border border-slate-200 shadow-sm">
+                  <FaFilter className="text-[#0074bd] text-xs" />
+                  <select
+                    value={sorts}
+                    onChange={(e) => {
+                      setSorts(e.target.value);
+                      setPage(1);
+                    }}
+                    className="text-sm font-bold text-slate-700 bg-transparent border-none focus:ring-0 cursor-pointer"
+                  >
+                    <option value="createdAt:desc">Mới nhất</option>
+                    <option value="createdAt:asc">Cũ nhất</option>
+                    <option value="firstName:asc">Tên (A-Z)</option>
+                    <option value="firstName:desc">Tên (Z-A)</option>
+                  </select>
+                </div>
+                <button
+                  onClick={handleResetFilters}
+                  className="flex items-center gap-2 px-3 py-1.5 text-slate-500 hover:text-[#1E90FF] hover:bg-[#1E90FF]/5 rounded-lg transition-all text-xs font-bold border border-transparent hover:border-[#1E90FF]/20"
+                >
+                  <FaSync
+                    className={`text-[10px] ${isFetching ? "animate-spin" : ""}`}
+                  />
+                  Làm mới
+                </button>
+              </div>
+
+              <div className="text-sm font-medium text-slate-600 px-4 py-1.5 bg-[#1E90FF]/5 rounded-lg border border-[#1E90FF]/10">
+                Đã chọn{" "}
+                <span className="text-[#1E90FF] font-bold">
+                  {selectedIds.length}
+                </span>{" "}
+                học sinh
+              </div>
             </div>
           </div>
 
@@ -135,7 +235,7 @@ const AddCreatedStudentsModal = ({
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Nhập lời nhắn cho giáo viên của khóa học này..."
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm h-20 focus:ring-2 focus:ring-[#0074bd]/20 focus:border-[#0074bd] transition-all resize-none"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm h-20 focus:ring-2 focus:ring-[#1E90FF]/20 focus:border-[#1E90FF] transition-all resize-none"
               />
             </div>
           )}
@@ -158,7 +258,7 @@ const AddCreatedStudentsModal = ({
                             setSelectedIds(students.map((s) => s.id));
                           else setSelectedIds([]);
                         }}
-                        className="w-4 h-4 rounded border-slate-300 text-[#0074bd] focus:ring-[#0074bd]"
+                        className="w-4 h-4 rounded border-slate-300 text-[#1E90FF] focus:ring-[#1E90FF]"
                       />
                     </th>
                     <th className="px-6 py-4 text-slate-500 text-xs font-bold uppercase tracking-wider">
@@ -208,12 +308,12 @@ const AddCreatedStudentsModal = ({
                                   : [...prev, student.id],
                               );
                             }}
-                            className="w-4 h-4 rounded border-slate-300 text-[#0074bd] focus:ring-[#0074bd]"
+                            className="w-4 h-4 rounded border-slate-300 text-[#1E90FF] focus:ring-[#1E90FF]"
                           />
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="size-9 rounded-full bg-[#0074bd]/10 flex items-center justify-center text-[#0074bd] font-bold text-xs border border-[#0074bd]/20">
+                            <div className="size-9 rounded-full bg-[#1E90FF]/10 flex items-center justify-center text-[#1E90FF] font-bold text-xs border border-[#1E90FF]/20">
                               {getInitials(
                                 `${student.lastName} ${student.firstName}`,
                               )}

@@ -47,6 +47,9 @@ const TeacherNotificationPage = React.lazy(
 const ReferralRequestPage = React.lazy(
   () => import("@/pages/teacher/ReferralRequestPage"),
 );
+const QuizAttemptResultPage = React.lazy(
+  () => import("@/pages/student/QuizAttemptResultPage"),
+);
 
 // Live Quiz Host
 const LiveQuizHostLobbyPage = React.lazy(
@@ -89,6 +92,7 @@ const finalTeacherRoutes: RouteObject[] = [
       { path: "settings", element: <TeacherSettingsPage /> },
       { path: "notifications", element: <TeacherNotificationPage /> },
       { path: "referrals", element: <ReferralRequestPage /> },
+      { path: "quiz/attempts/:id", element: <QuizAttemptResultPage /> },
     ],
   },
   {

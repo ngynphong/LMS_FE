@@ -68,7 +68,15 @@ export const useQuizByLessonItem = (lessonItemId?: string) => {
     });
 };
 
-export const useTeacherQuizzes = (params?: { pageNo?: number; pageSize?: number; sorts?: string | string[] }) => {
+export const useTeacherQuizzes = (params?: { 
+    pageNo?: number; 
+    pageSize?: number; 
+    keyword?: string;
+    type?: 'QUIZ' | 'PRACTICE';
+    isPublished?: boolean | null;
+    lessonItemId?: string;
+    sorts?: string | string[];
+}) => {
     return useQuery({
         queryKey: ['teacher-quizzes', params],
         queryFn: () => getTeacherQuizzes(params),

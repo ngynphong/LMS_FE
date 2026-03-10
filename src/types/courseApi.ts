@@ -178,6 +178,15 @@ export interface GetCourseReferralRequestsParams {
     sorts?: string[];
 }
 
+export interface ReferralRequestFilterParams {
+    status?: string;
+    fromDate?: string;
+    toDate?: string;
+    pageNo?: number;
+    pageSize?: number;
+    sorts?: string[];
+}
+
 export interface CourseReferralRequest {
     studentIds: string[];
     message: string;

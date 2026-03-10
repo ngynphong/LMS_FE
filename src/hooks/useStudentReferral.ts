@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
-import { getMyCreatedStudents } from '@/services/userService';
+import { getMyCreatedStudents, getMyStudentsNonEnrolled } from '@/services/userService';
 import { 
     addBatchStudents, 
     referStudents, 
@@ -11,12 +11,14 @@ import {
     rejectStudentsInReferral,
     getMySentReferralRequests,
     getCourseReferralRequests,
-    getReferralRequestStudents
+    getReferralRequestStudents,
+    getMyReceivedReferralRequests
 } from '@/services/courseService';
 import type { 
     AddBatchStudentsRequest, 
     CourseReferralRequest,
-    GetCourseReferralRequestsParams 
+    GetCourseReferralRequestsParams,
+    ReferralRequestFilterParams
 } from '@/types/courseApi';
 
 // ==================== Queries ====================
@@ -36,6 +38,22 @@ export const useMyCreatedStudents = (params: {
     });
 };
 
+export const useMyStudentsNonEnrolled = (courseId: string | undefined, params: { 
+    pageNo?: number; 
+    pageSize?: number; 
+    keyword?: string; 
+    fromDate?: string;
+    toDate?: string;
+    sorts?: string[] 
+}) => {
+    return useQuery({
+        queryKey: ['my-students-non-enrolled', courseId, params],
+        queryFn: () => courseId ? getMyStudentsNonEnrolled(courseId, params) : Promise.reject(new Error("No courseId provided")),
+        enabled: !!courseId,
+        placeholderData: keepPreviousData,
+    });
+};
+
 export const usePendingReferralRequests = (courseId: string | undefined) => {
     return useQuery({
         queryKey: ['referral-requests', 'pending', courseId],
@@ -44,12 +62,22 @@ export const usePendingReferralRequests = (courseId: string | undefined) => {
     });
 };
 
-export const useMySentReferralRequests = () => {
+export const useMySentReferralRequests = (params?: ReferralRequestFilterParams) => {
     return useQuery({
-        queryKey: ['referral-requests', 'sent'],
-        queryFn: getMySentReferralRequests,
+        queryKey: ['referral-requests', 'sent', params],
+        queryFn: () => getMySentReferralRequests(params),
+        placeholderData: keepPreviousData,
     });
 };
+
+export const useMyReceivedReferralRequests = (params?: ReferralRequestFilterParams) => {
+    return useQuery({
+        queryKey: ['referral-requests', 'received', params],
+        queryFn: () => getMyReceivedReferralRequests(params),
+        placeholderData: keepPreviousData,
+    });
+};
+
 
 export const useCourseReferralRequests = (params: GetCourseReferralRequestsParams, options: { enabled?: boolean } = {}) => {
     return useQuery({
@@ -148,3 +176,4 @@ export const useRejectStudentsInReferral = () => {
         },
     });
 };
+

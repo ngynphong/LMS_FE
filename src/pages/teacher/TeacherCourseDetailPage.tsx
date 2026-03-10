@@ -11,7 +11,6 @@ import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { FaCircleNotch } from "react-icons/fa";
 import { getInitials } from "@/utils/initialsName";
 import AddCreatedStudentsModal from "@/components/teacher/students/AddCreatedStudentsModal";
-import CourseReferralRequestsSection from "@/components/teacher/courses/CourseReferralRequestsSection";
 import { motion, AnimatePresence } from "motion/react";
 
 const TeacherCourseDetailPage = () => {
@@ -408,11 +407,6 @@ const TeacherCourseDetailPage = () => {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
-
-      {/* Referral Requests Section */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6">
-        <CourseReferralRequestsSection courseId={id || ""} />
       </div>
 
       {/* Students Section */}

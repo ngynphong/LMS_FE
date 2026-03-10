@@ -10,6 +10,8 @@ import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 import { useAuth } from "@/hooks/useAuth";
 import { ImportJobDetailModal } from "@/components/teacher/ImportJobDetailModal";
+import { getNotificationRoute } from "@/utils/notificationRouting";
+import type { NotificationCategory } from "@/types/notification";
 
 export const NotificationDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -58,47 +60,50 @@ export const NotificationDropdown = () => {
     if (!notif.read) {
       markRead.mutate(notif.id);
     }
-    // Import Student notification với jobId → mở modal
-    if (notif.type === "Import Student" && notif.jobId) {
-      setSelectedJobId(notif.jobId);
+
+    const result = getNotificationRoute(notif, user?.role || "STUDENT");
+
+    if (result.openImportModal && result.jobId) {
+      setSelectedJobId(result.jobId);
       setIsOpen(false);
       return;
     }
+
     setIsOpen(false);
-    if (notif.link) {
-      navigate(notif.link);
+    if (result.route) {
+      navigate(result.route);
     }
   };
 
-  const getNotificationColor = (type: string) => {
-    switch (type) {
-      case "DEADLINE":
-        return "bg-red-500 ring-red-50";
-      case "INTERACTION":
+  const getNotificationColor = (category: NotificationCategory) => {
+    switch (category) {
+      case "QUIZ":
+        return "bg-purple-500 ring-purple-50";
+      case "COURSE":
         return "color-primary-bg ring-blue-50";
+      case "IMPORT":
+        return "bg-indigo-500 ring-indigo-50";
+      case "AUTH":
+        return "bg-amber-500 ring-amber-50";
       case "SYSTEM":
         return "bg-green-500 ring-green-50";
-      case "Import Student":
-        return "bg-indigo-500 ring-indigo-50";
-      case "SCHEDULE":
-        return "bg-yellow-500 ring-yellow-50";
       default:
         return "color-primary-bg ring-blue-50";
     }
   };
 
-  const getNotificationTextColor = (type: string) => {
-    switch (type) {
-      case "DEADLINE":
-        return "text-red-500";
-      case "INTERACTION":
+  const getNotificationTextColor = (category: NotificationCategory) => {
+    switch (category) {
+      case "QUIZ":
+        return "text-purple-500";
+      case "COURSE":
         return "color-primary";
+      case "IMPORT":
+        return "text-indigo-500";
+      case "AUTH":
+        return "text-amber-500";
       case "SYSTEM":
         return "text-green-500";
-      case "Import Student":
-        return "text-indigo-500";
-      case "SCHEDULE":
-        return "text-yellow-500";
       default:
         return "color-primary";
     }
@@ -161,15 +166,15 @@ export const NotificationDropdown = () => {
                       {!notif.read && (
                         <div className="shrink-0 mt-1">
                           <div
-                            className={`w-2 h-2 rounded-full mt-1.5 ring-4 animate-ping duration-1700 ${getNotificationColor(notif.type)}`}
+                            className={`w-2 h-2 rounded-full mt-1.5 ring-4 animate-ping duration-1700 ${getNotificationColor(notif.category)}`}
                           />
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
                         <p
-                          className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${getNotificationTextColor(notif.type)}`}
+                          className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${getNotificationTextColor(notif.category)}`}
                         >
-                          {notif.type}
+                          {notif.category}
                         </p>
                         <p
                           className={`text-sm text-gray-900 line-clamp-2 ${!notif.read ? "font-semibold" : "font-normal"}`}
