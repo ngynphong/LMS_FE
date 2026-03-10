@@ -14,7 +14,7 @@ import CourseCard from "@/components/courses/CourseCard";
 
 const CourseListPage = () => {
   const [filters, setFilters] = useState({
-    pageNo: 1, // API is 1-indexed
+    pageNo: 1,
     pageSize: 10,
     sorts: "createdAt:desc",
     keyword: "",

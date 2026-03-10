@@ -15,7 +15,7 @@ import {
   useUpdateCourse,
   useCourseDetail,
   useApproveCourse,
-} from "../../hooks/useCourses";
+} from "@/hooks/useCourses";
 import {
   useCreateLesson,
   useUpdateLesson,
@@ -25,16 +25,16 @@ import {
   useDeleteLessonItem,
   useReorderLessons,
   useReorderLessonItems,
-} from "../../hooks/useLessons";
-import { getLessonById, getLessonItemById } from "../../services/lessonService";
+} from "@/hooks/useLessons";
+import { getLessonById, getLessonItemById } from "@/services/lessonService";
 import type {
   ApiCourse,
   ApiLesson,
   LessonItem,
-} from "../../types/learningTypes";
+} from "@/types/learningTypes";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { FaCircleNotch } from "react-icons/fa";
-import Breadcrumb from "../../components/common/Breadcrumb";
+import Breadcrumb from "@/components/common/Breadcrumb";
 
 const CourseBuilderPage = () => {
   const { id } = useParams();
@@ -136,13 +136,6 @@ const CourseBuilderPage = () => {
     }
   }, [courseData]);
 
-  // // Reload lessons - refetch course detail to get updated lessons
-  // const loadLessons = useCallback(async () => {
-  //   if (!courseId) return;
-  //   // Refetch course detail to get updated lessons
-  //   refetchCourse();
-  // }, [courseId, refetchCourse]);
-
   // DnD Handlers
   const handleMoveLesson = useCallback(
     (dragIndex: number, hoverIndex: number) => {
@@ -199,11 +192,6 @@ const CourseBuilderPage = () => {
 
   // Refined Drop Handlers
   const handleDropLessonReal = useCallback(() => {
-    // use a ref to get latest lessons? Or just rely on component state?
-    // Since this is called FROM the child component event,
-    // and the child component receives this function as a prop...
-    // if 'lessons' updates, 'handleDropLessonReal' updates, child gets new prop.
-    // So it should work.
     saveReorderLessons(lessons);
   }, [lessons, courseId, reorderLessons]);
 
