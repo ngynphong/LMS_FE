@@ -119,3 +119,29 @@ export const getMyCreatedStudents = async (params: {
         return handleApiError(error, 'Failed to fetch my created students');
     }
 };
+
+
+export const getMyStudentsNonEnrolled = async (courseId: string, params: { 
+    pageNo?: number; 
+    pageSize?: number; 
+    keyword?: string; 
+    fromDate?: string;
+    toDate?: string;
+    sorts?: string[] 
+}): Promise<AdminUserListResponse> => {
+    try {
+        const queryParams = new URLSearchParams();
+        if (params.pageNo !== undefined) queryParams.append('pageNo', params.pageNo.toString());
+        if (params.pageSize !== undefined) queryParams.append('pageSize', params.pageSize.toString());
+        if (params.keyword) queryParams.append('keyword', params.keyword);
+        if (params.fromDate) queryParams.append('fromDate', params.fromDate);
+        if (params.toDate) queryParams.append('toDate', params.toDate);
+        if (params.sorts && params.sorts.length > 0) {
+            params.sorts.forEach(sort => queryParams.append('sorts', sort));
+        }
+        const response = await axiosInstance.get<AdminUserListResponse>(`/courses/${courseId}/non-enrolled-students?${queryParams.toString()}`);
+        return response.data;
+    } catch (error) {
+        return handleApiError(error, 'Failed to fetch my non-enrolled students');
+    }
+};

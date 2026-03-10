@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
-import { getMyCreatedStudents } from '@/services/userService';
+import { getMyCreatedStudents, getMyStudentsNonEnrolled } from '@/services/userService';
 import { 
     addBatchStudents, 
     referStudents, 
@@ -32,6 +32,22 @@ export const useMyCreatedStudents = (params: {
     return useQuery({
         queryKey: ['my-created-students', params],
         queryFn: () => getMyCreatedStudents(params),
+        placeholderData: keepPreviousData,
+    });
+};
+
+export const useMyStudentsNonEnrolled = (courseId: string | undefined, params: { 
+    pageNo?: number; 
+    pageSize?: number; 
+    keyword?: string; 
+    fromDate?: string;
+    toDate?: string;
+    sorts?: string[] 
+}) => {
+    return useQuery({
+        queryKey: ['my-students-non-enrolled', courseId, params],
+        queryFn: () => courseId ? getMyStudentsNonEnrolled(courseId, params) : Promise.reject(new Error("No courseId provided")),
+        enabled: !!courseId,
         placeholderData: keepPreviousData,
     });
 };

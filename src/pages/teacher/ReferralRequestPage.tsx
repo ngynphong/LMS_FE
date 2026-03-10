@@ -10,12 +10,15 @@ import {
   FaTimesCircle,
   FaPaperPlane,
   FaInbox,
+  FaArrowLeft,
+  FaGraduationCap,
 } from "react-icons/fa";
 import { toast } from "@/components/common/Toast";
 import { format } from "date-fns";
 import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import ReferralStudentListModal from "@/components/teacher/students/ReferralStudentListModal";
 import type { ReferralRequestResponse } from "@/types/courseApi";
+import CourseReferralRequestsSection from "@/components/teacher/courses/CourseReferralRequestsSection";
 
 const ReferralRequestPage = () => {
   const [activeTab, setActiveTab] = useState<"outgoing" | "incoming">(
@@ -26,7 +29,14 @@ const ReferralRequestPage = () => {
     isLoading: sentLoading,
     refetch: refetchSent,
   } = useMySentReferralRequests();
-  const { data: myCoursesData } = useMyCourses({ pageSize: 100 });
+
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  const [selectedCourseName, setSelectedCourseName] = useState<string>("");
+
+  const { data: myCoursesData, isLoading: coursesLoading } = useMyCourses({
+    pageSize: 100,
+    status: "PUBLISHED",
+  });
 
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [requestIdToCancel, setRequestIdToCancel] = useState<string | null>(
@@ -72,14 +82,27 @@ const ReferralRequestPage = () => {
 
       <div className="flex bg-white p-1 rounded-xl border border-slate-200 w-fit">
         <button
-          onClick={() => setActiveTab("outgoing")}
-          className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${
+          onClick={() => {
+            setActiveTab("outgoing");
+            setSelectedCourseId(null);
+          }}
+          className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-bold transition-all cursor-pointer ${
             activeTab === "outgoing"
-              ? "color-primary-bg text-white shadow-md"
-              : "text-slate-500"
+              ? "color-primary-bg text-white shadow-md font-black"
+              : "text-slate-500 hover:bg-slate-50"
           }`}
         >
-          <FaPaperPlane className="text-xs" /> Yêu cầu đã gửi (Outgoing)
+          <FaPaperPlane className="text-xs" /> Yêu cầu đã gửi
+        </button>
+        <button
+          onClick={() => setActiveTab("incoming")}
+          className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-bold transition-all cursor-pointer ${
+            activeTab === "incoming"
+              ? "color-primary-bg text-white shadow-md font-black"
+              : "text-slate-500 hover:bg-slate-50"
+          }`}
+        >
+          <FaInbox className="text-xs" /> Yêu cầu nhận được
         </button>
       </div>
 
@@ -87,33 +110,37 @@ const ReferralRequestPage = () => {
         <div className="space-y-4">
           {sentLoading ? (
             <div className="flex justify-center py-20">
-              <FaCircleNotch className="animate-spin text-3xl" />
+              <FaCircleNotch className="animate-spin text-3xl color-primary" />
             </div>
           ) : (sentRequests as any)?.data?.items?.length ? (
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
               {(sentRequests as any).data.items.map(
                 (req: ReferralRequestResponse) => (
-                  <div key={req.id} className="bg-white rounded-2xl border p-5">
+                  <div
+                    key={req.id}
+                    className="bg-white rounded-2xl border border-slate-100 p-5 hover:shadow-md transition-shadow"
+                  >
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <h3 className="font-bold text-[#0074bd]">
+                        <h3 className="font-bold color-primary text-base">
                           {req.courseName || "Khóa học"}
                         </h3>
-                        <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
-                          <FaClock />{" "}
+                        <p className="text-[11px] text-slate-400 flex items-center gap-1 mt-1 font-medium">
+                          <FaClock className="text-[10px]" />{" "}
                           {format(new Date(req.createdAt), "dd/MM/yyyy HH:mm")}
                         </p>
                       </div>
                       <div
                         className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                           req.status === "PENDING"
-                            ? "bg-amber-100 text-amber-700"
-                            : req.status === "APPROVED"
-                              ? "bg-green-100 text-green-700"
-                              : "bg-slate-100 text-slate-700"
+                            ? "bg-amber-50 text-amber-600 border border-amber-100"
+                            : req.status === "APPROVED" ||
+                                req.status === "ACCEPTED"
+                              ? "bg-green-50 text-green-600 border border-green-100"
+                              : "bg-slate-50 text-slate-500 border border-slate-100"
                         }`}
                       >
-                        {req.status === "APPROVED"
+                        {req.status === "APPROVED" || req.status === "ACCEPTED"
                           ? "Đã duyệt"
                           : req.status === "REJECTED"
                             ? "Từ chối"
@@ -122,13 +149,16 @@ const ReferralRequestPage = () => {
                     </div>
 
                     <div className="space-y-3">
-                      <div className="flex items-center gap-2 text-sm text-slate-600">
-                        <span className="font-semibold">Người nhận:</span>
-                        <span>{req.targetTeacherName}</span>
+                      <div className="flex items-center gap-2 text-sm text-slate-600 font-medium">
+                        <span className="text-slate-400">Người nhận:</span>
+                        <span className="text-slate-900">
+                          {req.targetTeacherName}
+                        </span>
                       </div>
-                      <div className="flex items-center justify-between bg-slate-50 p-3 rounded-xl">
-                        <div className="text-sm font-medium">
-                          {req.studentCount} học sinh được giới thiệu
+                      <div className="flex items-center justify-between bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        <div className="text-sm font-bold text-slate-700 flex items-center gap-2">
+                          <FaGraduationCap className="color-primary" />
+                          {req.studentCount} học sinh
                         </div>
                         <button
                           onClick={() => {
@@ -138,13 +168,13 @@ const ReferralRequestPage = () => {
                             });
                             setShowStudentListModal(true);
                           }}
-                          className="text-xs font-bold text-[#0074bd] hover:underline"
+                          className="text-xs font-bold color-primary hover:underline cursor-pointer"
                         >
                           Xem danh sách
                         </button>
                       </div>
                       {req.message && (
-                        <div className="text-xs text-slate-500 italic bg-blue-50/50 p-2 rounded-lg border border-blue-100">
+                        <div className="text-xs text-slate-500 italic bg-blue-50/30 p-3 rounded-xl border border-blue-50 leading-relaxed">
                           "{req.message}"
                         </div>
                       )}
@@ -155,7 +185,7 @@ const ReferralRequestPage = () => {
                         <button
                           onClick={() => handleCancelClick(req.id)}
                           disabled={cancelMutation.isPending}
-                          className="px-4 py-2 text-rose-600 text-xs font-bold hover:bg-rose-50 rounded-lg flex items-center gap-2 transition-colors"
+                          className="px-4 py-2 text-rose-500 text-xs font-bold hover:bg-rose-50 rounded-lg flex items-center gap-2 transition-colors cursor-pointer"
                         >
                           <FaTimesCircle /> Hủy yêu cầu
                         </button>
@@ -166,31 +196,83 @@ const ReferralRequestPage = () => {
               )}
             </div>
           ) : (
-            <div className="text-center py-20 text-slate-400 bg-white rounded-2xl border border-dashed">
-              Bạn chưa gửi yêu cầu nào.
+            <div className="text-center py-20 text-slate-400 bg-white rounded-2xl border border-dashed border-slate-200">
+              <FaPaperPlane className="text-4xl mx-auto mb-4 opacity-10" />
+              <p className="font-medium">Bạn chưa gửi yêu cầu nào.</p>
             </div>
           )}
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border p-8 text-center min-h-[300px] flex flex-col justify-center">
-          <FaInbox className="text-4xl text-slate-200 mx-auto mb-4" />
-          <h3 className="font-bold text-slate-800">
-            Tính năng đang phát triển
-          </h3>
-          <p className="text-sm text-slate-500 mb-6">
-            Bạn có thể chọn khóa học của mình để xem danh sách yêu cầu chuyển
-            đến.
-          </p>
-          <div className="pt-4 max-w-sm mx-auto w-full">
-            <select className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#0074bd]/20 outline-none transition-all text-sm">
-              <option value="">--- Chọn khóa học ---</option>
-              {(myCoursesData as any)?.items?.map((c: any) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="space-y-6">
+          {!selectedCourseId ? (
+            <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center min-h-[400px] flex flex-col justify-center animate-in fade-in duration-500">
+              <div className="size-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-200">
+                <FaInbox className="text-4xl" />
+              </div>
+              <h3 className="font-black text-xl text-slate-800 mb-2">
+                Yêu cầu giới thiệu đến (Incoming)
+              </h3>
+              <p className="text-sm text-slate-500 mb-8 max-w-sm mx-auto leading-relaxed font-medium">
+                Vui lòng chọn một khóa học của bạn để quản lý các yêu cầu giới
+                thiệu học sinh từ giáo viên khác.
+              </p>
+
+              <div className="max-w-md mx-auto w-full relative">
+                {coursesLoading ? (
+                  <div className="py-2.5 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-center gap-2 text-slate-400 text-sm font-medium">
+                    <FaCircleNotch className="animate-spin" /> Đang tải danh
+                    sách khóa học...
+                  </div>
+                ) : (
+                  <select
+                    onChange={(e) => {
+                      const courseId = e.target.value;
+                      if (!courseId) return;
+                      setSelectedCourseId(courseId);
+                      const course = (myCoursesData as any)?.items?.find(
+                        (c: any) => c.id === courseId,
+                      );
+                      setSelectedCourseName(course?.name || "");
+                    }}
+                    className="w-full px-5 py-3.5 rounded-xl border border-slate-200 focus:ring-2 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF] transition-all text-sm font-bold bg-[#fcfdfe] cursor-pointer appearance-none shadow-sm"
+                  >
+                    <option value="">--- Chọn khóa học để quản lý ---</option>
+                    {(myCoursesData as any)?.items?.map((c: any) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                  <span className="material-symbols-outlined">expand_more</span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="animate-in slide-in-from-right-4 duration-300">
+              <div className="flex items-center gap-4 mb-6">
+                <button
+                  onClick={() => setSelectedCourseId(null)}
+                  className="size-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors shadow-sm cursor-pointer"
+                >
+                  <FaArrowLeft className="text-sm" />
+                </button>
+                <div className="min-w-0">
+                  <h3 className="text-lg font-black text-slate-900 truncate">
+                    {selectedCourseName}
+                  </h3>
+                  <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-0.5">
+                    Quản lý yêu cầu đến
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                <CourseReferralRequestsSection courseId={selectedCourseId} />
+              </div>
+            </div>
+          )}
         </div>
       )}
 

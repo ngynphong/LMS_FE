@@ -451,12 +451,9 @@ const StudentListPage = () => {
                     <td className="px-6 py-4 text-right">
                       <Link
                         to={`/teacher/students/${student.id}`}
-                        className="inline-flex items-center gap-1 text-[#0074bd] text-sm font-semibold cursor-pointer"
+                        className="inline-flex items-center hover:underline gap-1 text-[#0074bd] text-sm font-semibold cursor-pointer"
                       >
                         Chi tiết
-                        <span className="material-symbols-outlined text-sm">
-                          arrow_forward
-                        </span>
                       </Link>
                     </td>
                   </tr>
