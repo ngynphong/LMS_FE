@@ -24,6 +24,9 @@ const StudentQuizTakingPage = React.lazy(
 const StudentNotificationPage = React.lazy(
   () => import("@/pages/student/StudentNotificationPage"),
 );
+const QuizAttemptResultPage = React.lazy(
+  () => import("@/pages/student/QuizAttemptResultPage"),
+);
 
 // Live Quiz
 const LiveQuizJoinPage = React.lazy(
@@ -95,6 +98,10 @@ const studentRoutes: RouteObject[] = [
       {
         path: "notifications",
         element: <StudentNotificationPage />,
+      },
+      {
+        path: "quiz/attempts/:id",
+        element: <QuizAttemptResultPage />,
       },
     ],
   },

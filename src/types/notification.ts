@@ -1,8 +1,12 @@
+export type NotificationCategory = "QUIZ" | "COURSE" | "IMPORT" | "AUTH" | "SYSTEM";
+
 export interface NotificationItem {
   id: string;
   title: string;
   content: string;
-  type: "SYSTEM" | "COURSE" | "ASSIGNMENT" | "INTERACTION" | "SCHEDULE" | "DEADLINE" | "Import Student" | string;
+  type: string;
+  category: NotificationCategory;
+  referenceId: string | null;
   jobId?: string | null;
   read: boolean;
   link?: string;
@@ -19,9 +23,13 @@ export type NotificationResponse = NotificationItem[] | {
   last?: boolean;
   totalElements?: number;
   totalPages?: number;
+  totalElement?: number;
+  totalPage?: number;
   size?: number;
   number?: number;
+  pageNo?: number;
   sort?: any;
+  sortBy?: string[];
   first?: boolean;
   numberOfElements?: number;
   empty?: boolean;

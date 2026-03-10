@@ -11,7 +11,8 @@ import type {
     CourseReferralRequest,
     ReferralRequestListResponse,
     PaginatedReferralRequestResponse,
-    GetCourseReferralRequestsParams
+    GetCourseReferralRequestsParams,
+    ReferralRequestFilterParams
 } from "@/types/courseApi";
 import type { 
   ApiCourse, 
@@ -287,7 +288,7 @@ export const acceptReferralRequest = async (requestId: string): Promise<void> =>
 
 export const rejectReferralRequest = async (requestId: string): Promise<void> => {
     try {
-        await axiosInstance.delete(`/courses/referral-requests/${requestId}/reject`);
+        await axiosInstance.post(`/courses/referral-requests/${requestId}/reject`);
     } catch (error) {
         throw error;
     }
@@ -332,9 +333,36 @@ export const rejectStudentsInReferral = async (requestId: string, studentIds: st
     }
 };
 
-export const getMySentReferralRequests = async (): Promise<ReferralRequestListResponse> => {
+export const getMySentReferralRequests = async (params?: ReferralRequestFilterParams): Promise<PaginatedReferralRequestResponse> => {
     try {
-        const response = await axiosInstance.get<ReferralRequestListResponse>('courses/referral-requests/sent');
+        const response = await axiosInstance.get<PaginatedReferralRequestResponse>('courses/referral-requests/sent', {
+            params: {
+                status: params?.status,
+                fromDate: params?.fromDate,
+                toDate: params?.toDate,
+                pageNo: params?.pageNo ?? 0,
+                pageSize: params?.pageSize ?? 10,
+                sorts: params?.sorts,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getMyReceivedReferralRequests = async (params?: ReferralRequestFilterParams): Promise<PaginatedReferralRequestResponse> => {
+    try {
+        const response = await axiosInstance.get<PaginatedReferralRequestResponse>('courses/referral-requests/received', {
+            params: {
+                status: params?.status,
+                fromDate: params?.fromDate,
+                toDate: params?.toDate,
+                pageNo: params?.pageNo ?? 0,
+                pageSize: params?.pageSize ?? 10,
+                sorts: params?.sorts,
+            },
+        });
         return response.data;
     } catch (error) {
         throw error;

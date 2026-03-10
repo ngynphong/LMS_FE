@@ -80,11 +80,11 @@ const StudentAvailableQuizzesPage = () => {
         title: q.quizTitle,
         duration: q.durationInMinutes,
         questionCount: q.questions?.length || 0,
-        status: q.status, // PASSED, FAILED, COMPLETED, IN_PROGRESS
+        status: q.status, // PASSED, FAILED, COMPLETED, IN_PROGRESS, SUBMITTED
         isAvailable: false,
         original: q,
         viewType: "history",
-        type: "QUIZ" as const,
+        type: (q.type || "QUIZ") as "PRACTICE" | "QUIZ",
         closeTime: q.startedAt, // Map startedAt into closeTime to easily re-use UI component
         maxAttempts: undefined,
         attemptsCount: undefined,
@@ -201,16 +201,34 @@ const StudentAvailableQuizzesPage = () => {
                       className={`px-2.5 py-1 text-[10px] md:text-[11px] font-bold rounded-full border ${
                         isOngoing
                           ? "bg-yellow-50 text-yellow-700 border-yellow-100"
-                          : quiz.status === "open"
-                            ? "bg-green-50 text-green-700 border-green-100"
-                            : "bg-gray-50 text-gray-500 border-gray-100"
+                          : isHistory
+                            ? quiz.status === "PASSED"
+                              ? "bg-green-50 text-green-700 border-green-100"
+                              : quiz.status === "FAILED"
+                                ? "bg-red-50 text-red-600 border-red-100"
+                                : quiz.status === "SUBMITTED"
+                                  ? "bg-blue-50 text-blue-700 border-blue-100"
+                                  : "bg-gray-50 text-gray-500 border-gray-100"
+                            : quiz.status === "open"
+                              ? "bg-green-50 text-green-700 border-green-100"
+                              : "bg-gray-50 text-gray-500 border-gray-100"
                       }`}
                     >
                       {isOngoing
                         ? "Đang thực hiện"
-                        : quiz.status === "open"
-                          ? "Đang mở"
-                          : "Đã kết thúc"}
+                        : isHistory
+                          ? quiz.status === "PASSED"
+                            ? "Đạt"
+                            : quiz.status === "FAILED"
+                              ? "Trượt"
+                              : quiz.status === "SUBMITTED"
+                                ? "Đã nộp"
+                                : quiz.status === "IN_PROGRESS"
+                                  ? "Đang làm"
+                                  : "Hoàn thành"
+                          : quiz.status === "open"
+                            ? "Đang mở"
+                            : "Đã kết thúc"}
                     </span>
                   </div>
 
@@ -327,7 +345,9 @@ const StudentAvailableQuizzesPage = () => {
                     )}
                     {isHistory && quiz.status !== "IN_PROGRESS" && (
                       <button
-                        onClick={() => setReviewAttemptId(quiz.attemptId)}
+                        onClick={() =>
+                          navigate(`/student/quiz/attempts/${quiz.attemptId}`)
+                        }
                         className="w-full py-2.5 rounded-xl font-bold text-sm color-primary-bg text-white hover:opacity-80 transition-all cursor-pointer"
                       >
                         Xem chi tiết điểm

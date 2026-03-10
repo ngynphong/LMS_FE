@@ -360,9 +360,6 @@ const StudentListPage = () => {
                   Ngày sinh
                 </th>
                 <th className="px-6 py-4 text-slate-500 text-xs font-bold uppercase tracking-wider">
-                  Mục tiêu
-                </th>
-                <th className="px-6 py-4 text-slate-500 text-xs font-bold uppercase tracking-wider">
                   Tổng khoá học
                 </th>
                 <th className="px-6 py-4 text-slate-500 text-xs font-bold uppercase tracking-wider text-right">
@@ -437,11 +434,6 @@ const StudentListPage = () => {
                     </td>
                     <td className="px-6 py-4">
                       <p className="text-slate-600 text-sm">{student.dob}</p>
-                    </td>
-                    <td className="px-6 py-4">
-                      <p className="text-slate-600 text-sm">
-                        {student.goal || "-"}
-                      </p>
                     </td>
                     <td className="px-6 py-4">
                       <p className="text-slate-600 text-sm">
@@ -586,19 +578,6 @@ const StudentListPage = () => {
               </button>
 
               <div className="flex items-center gap-2">
-                <button
-                  onClick={() => {
-                    setReferralMode("DIRECT_ADD");
-                    setIsReferralModalOpen(true);
-                  }}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-white/10 hover:bg-white/20 text-white text-sm font-bold rounded-xl transition-all active:scale-95 cursor-pointer"
-                >
-                  <span className="material-symbols-outlined text-[20px] text-[#0074bd]">
-                    person_add
-                  </span>
-                  Thêm vào khóa học
-                </button>
-
                 <button
                   onClick={() => {
                     setReferralMode("REFERRAL");
