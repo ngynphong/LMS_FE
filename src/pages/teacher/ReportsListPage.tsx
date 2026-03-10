@@ -1,30 +1,24 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useTeacherQuizzes } from "@/hooks/useQuizzes";
+import { useTeacherStudentQuizzesAPI } from "@/hooks/useQuizzes";
 import { FaCircleNotch } from "react-icons/fa";
 import type { QuizSummary } from "@/types/quiz";
-import PaginationControl from "@/components/common/PaginationControl";
 
 const ReportsListPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [page, setPage] = useState(1);
-  const [pageSize] = useState(9);
-
-  const {
-    data: quizzes,
-    isLoading,
-    error,
-  } = useTeacherQuizzes({
-    pageNo: page,
-    pageSize,
-    sorts: "createdAt:desc",
-  });
-
-  const reportsList = quizzes?.items || [];
-
-  const filteredReports = reportsList.filter((quiz: QuizSummary) =>
-    quiz.title.toLowerCase().includes(searchQuery.toLowerCase()),
+  const [selectedType, setSelectedType] = useState<"QUIZ" | "PRACTICE" | "">(
+    "",
   );
+
+  const { data: reportsList, isLoading, error } = useTeacherStudentQuizzesAPI();
+
+  const filteredReports = (reportsList || []).filter((quiz: QuizSummary) => {
+    const matchesSearch = quiz.title
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const matchesType = selectedType ? quiz.type === selectedType : true;
+    return matchesSearch && matchesType;
+  });
 
   return (
     <div className="space-y-6">
@@ -41,18 +35,36 @@ const ReportsListPage = () => {
       </div>
 
       {/* Search */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-        <div className="relative max-w-md">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-            search
-          </span>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-[#0074bd] text-sm"
-            placeholder="Tìm kiếm bài thi..."
-          />
+      <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+        <div className="flex-1 min-w-[250px]">
+          <div className="relative">
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+              search
+            </span>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+              }}
+              className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm transition-all"
+              placeholder="Tìm theo tiêu đề bài tập..."
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <select
+            value={selectedType}
+            onChange={(e) => {
+              setSelectedType(e.target.value as any);
+            }}
+            className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1E90FF] font-medium text-slate-600 cursor-pointer"
+          >
+            <option value="">Tất cả loại</option>
+            <option value="QUIZ">Bài kiểm tra</option>
+            <option value="PRACTICE">Luyện tập</option>
+          </select>
         </div>
       </div>
 
@@ -70,7 +82,7 @@ const ReportsListPage = () => {
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredReports.map((quiz) => (
+            {filteredReports.map((quiz: QuizSummary) => (
               <div
                 key={quiz.id}
                 className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow"
@@ -107,19 +119,6 @@ const ReportsListPage = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between text-xs text-slate-500 mb-4 px-1">
-                    <span>
-                      <span className="font-semibold">Trạng thái: </span>
-                      {quiz.isPublished ? (
-                        <span className="text-green-600 font-medium">
-                          Đã xuất bản
-                        </span>
-                      ) : (
-                        <span className="text-slate-400 font-medium">Nháp</span>
-                      )}
-                    </span>
-                  </div>
-
                   <Link
                     to={`/teacher/reports/${quiz.id}`}
                     className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-[#0074bd]/10 text-[#0074bd] text-sm font-bold hover:bg-[#0074bd]/20 transition-colors"
@@ -133,17 +132,6 @@ const ReportsListPage = () => {
               </div>
             ))}
           </div>
-
-          {/* Pagination */}
-          {(quizzes?.totalPage || 0) > 1 && (
-            <div className="mt-8 flex justify-center">
-              <PaginationControl
-                currentPage={page}
-                totalPages={quizzes?.totalPage || 1}
-                onPageChange={setPage}
-              />
-            </div>
-          )}
         </>
       )}
 

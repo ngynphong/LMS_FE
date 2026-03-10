@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { blogService } from '../services/blogService';
-import type { CreateBlogPayload } from '../types/blog';
+import { blogService } from '@/services/blogService';
+import type { CreateBlogPayload } from '@/types/blog';
 
 export const usePublicBlogs = (page = 1, limit = 10, tag?: string, keyword?: string, sorts?: string[]) => {
   return useQuery({

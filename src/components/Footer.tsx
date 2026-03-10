@@ -26,7 +26,8 @@ const Footer = () => {
           <div className="flex gap-4">
             <Link
               className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:color-primary transition-colors"
-              to="#"
+              to="https://www.facebook.com/profile.php?id=61586386749786"
+              target="_blank"
             >
               <span className="text-sm">
                 <FaFacebookF />
@@ -84,7 +85,10 @@ const Footer = () => {
               </Link>
             </li>
             <li>
-              <Link className="hover:text-white transition-colors" to="/privacy">
+              <Link
+                className="hover:text-white transition-colors"
+                to="/privacy"
+              >
                 Chính sách bảo mật
               </Link>
             </li>

@@ -13,7 +13,7 @@ interface LessonFormProps {
   isEdit?: boolean;
 }
 
-import LoadingOverlay from "../../common/LoadingOverlay";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { FaCircleNotch } from "react-icons/fa";
 
 const LessonForm = ({

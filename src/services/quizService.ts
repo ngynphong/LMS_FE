@@ -14,7 +14,9 @@ import type {
     UpdateQuizRequest,
     QuizDetailResponse,
     PaginatedStudentStatisticsResponse,
-    PaginatedHistoryQuizResponse
+    PaginatedHistoryQuizResponse,
+    QuizTitleInfo,
+    PaginatedTeacherStudentAttemptsResponse
 } from "@/types/quiz";
 
 // ==================== Quiz APIs ====================
@@ -274,6 +276,51 @@ export const getQuizByLessonItem = async (lessonItemId: string): Promise<QuizDet
         return response.data.data;
     } catch (error) {
         console.error('Failed to fetch quiz by lesson item:', error);
+        throw error;
+    }
+};
+
+export const getQuizTitlesForTeacher = async (): Promise<QuizTitleInfo[]> => {
+    try {
+        const response = await axiosInstance.get<{ code: number; message: string; data: QuizTitleInfo[] }>('/quiz/teacher/me/students/quiz-titles');
+        return response.data.data;
+    } catch (error) {
+        console.error('Failed to fetch quiz titles for teacher:', error);
+        throw error;
+    }
+};
+
+export const getTeacherStudentQuizzesAPI = async (): Promise<QuizSummary[]> => {
+    try {
+        const response = await axiosInstance.get<{ code: number; message: string; data: QuizSummary[] }>('/quiz/teacher/me/students/quizzes');
+        return response.data.data;
+    } catch (error) {
+        console.error('Failed to fetch teacher student quizzes:', error);
+        throw error;
+    }
+}
+
+
+export const getTeacherStudentAttempts = async (params?: {
+    pageNo?: number;
+    pageSize?: number;
+    keyword?: string;
+    quizId?: string;
+    sorts?: string | string[];
+}): Promise<PaginatedTeacherStudentAttemptsResponse> => {
+    try {
+        const response = await axiosInstance.get<{ code: number; message: string; data: PaginatedTeacherStudentAttemptsResponse }>('/quiz/teacher/me/students/attempts', {
+            params: {
+                pageNo: params?.pageNo || 1,
+                pageSize: params?.pageSize || 10,
+                keyword: params?.keyword || undefined,
+                quizId: params?.quizId || undefined,
+                sorts: params?.sorts || 'startedAt:desc',
+            }
+        });
+        return response.data.data;
+    } catch (error) {
+        console.error('Failed to fetch teacher student attempts:', error);
         throw error;
     }
 };

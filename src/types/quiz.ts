@@ -209,6 +209,36 @@ export interface QuizStatistics {
     lowestScore: number;
 }
 
+export interface QuizTitleInfo {
+    quizId: string;
+    quizTitle: string;
+}
+
+export interface TeacherStudentAttempt {
+    attemptId: string;
+    studentId: string;
+    studentName: string;
+    studentEmail: string;
+    studentImgUrl?: string | null;
+    quizId: string;
+    quizTitle: string;
+    quizType: "PRACTICE" | "QUIZ";
+    totalScore: number;
+    isPassed: boolean;
+    startedAt: string;
+    completedAt: string;
+    status: "IN_PROGRESS" | "COMPLETED" | "PASSED" | "FAILED" | "SUBMITTED";
+}
+
+export interface PaginatedTeacherStudentAttemptsResponse {
+    pageNo: number;
+    pageSize: number;
+    totalPage: number;
+    totalElement: number;
+    sortBy: string[];
+    items: TeacherStudentAttempt[];
+}
+
 export interface AnswerDetail {
     id: string;
     content: string;

@@ -212,13 +212,12 @@ const AdminSidebar = ({
                 <img
                   alt="Admin avatar"
                   className="size-full object-cover"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgKX6_8otibc07LVbnXidaWhIYKUEyDYgkOlggPD35p401FeIiH3yGVmfqH_5RUnwTSgj-jHn3Sw_htlHd7lSVJqTNasIy4GOAg7vnbOTJlM5AGnFBKAJq8qRL5QyWInBrFw4d0Y2cdqeaeD1aPvwtjS6E_qxtOCouosG1CYfTM_EFYSgid-GauAQVjvIW5CstCpehyzqrVnS-CUo18oX-SuQuZrzDhOia6PHgrWhEiuDDoIn1JIToA_-3anoBf5nJxujzuZJ4Ttpf"
-                />
+                  src={user?.urlImg || "/img/admin.png"}/>
               </div>
               {(!isCollapsed || isMobileOpen) && (
                 <div className="whitespace-nowrap overflow-hidden lg:block hidden">
                   <p className="text-xs font-bold text-slate-900 truncate">
-                    Admin User
+                    {user?.lastName} {user?.firstName}
                   </p>
                   <p className="text-[10px] text-slate-500 truncate mt-0.5">
                     {user?.email}
@@ -227,10 +226,10 @@ const AdminSidebar = ({
               )}
               <div className="flex flex-col overflow-hidden lg:hidden">
                 <p className="text-xs font-bold text-slate-900 truncate">
-                  Admin User
+                  {user?.lastName} {user?.firstName}
                 </p>
                 <p className="text-[10px] text-slate-500 truncate mt-0.5">
-                  admin@ies.edu.vn
+                  {user?.email}
                 </p>
               </div>
             </div>
