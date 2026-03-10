@@ -9,7 +9,10 @@ const ReportsListPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize] = useState(9);
-
+  const [selectedType, setSelectedType] = useState<"QUIZ" | "PRACTICE" | "">(
+    "",
+  );
+  const [selectedStatus, setSelectedStatus] = useState<boolean | null>(null);
   const {
     data: quizzes,
     isLoading,
@@ -18,6 +21,8 @@ const ReportsListPage = () => {
     pageNo: page,
     pageSize,
     sorts: "createdAt:desc",
+    type: selectedType || undefined,
+    isPublished: selectedStatus,
   });
 
   const reportsList = quizzes?.items || [];
@@ -41,18 +46,60 @@ const ReportsListPage = () => {
       </div>
 
       {/* Search */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-        <div className="relative max-w-md">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-            search
-          </span>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-[#0074bd] text-sm"
-            placeholder="Tìm kiếm bài thi..."
-          />
+      <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+        <div className="flex-1 min-w-[250px]">
+          <div className="relative">
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+              search
+            </span>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setPage(1);
+              }}
+              className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm transition-all"
+              placeholder="Tìm theo tiêu đề bài tập..."
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <select
+            value={selectedType}
+            onChange={(e) => {
+              setSelectedType(e.target.value as any);
+              setPage(1);
+            }}
+            className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1E90FF] font-medium text-slate-600 cursor-pointer"
+          >
+            <option value="">Tất cả loại</option>
+            <option value="QUIZ">Bài kiểm tra</option>
+            <option value="PRACTICE">Luyện tập</option>
+          </select>
+
+          <select
+            value={
+              selectedStatus === null
+                ? "all"
+                : selectedStatus
+                  ? "published"
+                  : "draft"
+            }
+            onChange={(e) => {
+              const val = e.target.value;
+              setSelectedStatus(
+                val === "all" ? null : val === "published" ? true : false,
+              );
+              setPage(1);
+            }}
+            className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1E90FF] font-medium text-slate-600 cursor-pointer"
+          >
+            <option value="all">Tất cả trạng thái</option>
+            <option value="published">Đã công khai</option>
+            <option value="draft">Bản nháp</option>
+          </select>
         </div>
       </div>
 

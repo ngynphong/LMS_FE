@@ -5,7 +5,7 @@ import type {
   HeaderBlockData,
   ParagraphBlockData,
   FileBlockData,
-} from "../../types/blog";
+} from "@/types/blog";
 
 // Utility for conditional classes
 const cn = (...classes: (string | undefined | null | boolean)[]) =>

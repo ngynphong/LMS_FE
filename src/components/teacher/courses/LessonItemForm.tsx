@@ -19,7 +19,7 @@ interface LessonItemFormProps {
   isEdit?: boolean;
 }
 
-import LoadingOverlay from "../../common/LoadingOverlay";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { FaCircleNotch } from "react-icons/fa";
 
 // Max file size in bytes (1MB for now - server limit)
