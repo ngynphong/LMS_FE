@@ -85,7 +85,7 @@ const TeacherSidebar = ({
   onMobileClose,
 }: TeacherSidebarProps) => {
   const location = useLocation();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -169,13 +169,12 @@ const TeacherSidebar = ({
                 isCollapsed ? "lg:justify-center lg:px-2" : ""
               }`}
             >
-              <div
+              <img
+                src={user?.urlImg || "/img/avatar-default.png"}
+                alt="Avatar"
                 className={`bg-center bg-no-repeat bg-cover rounded-full border border-gray-100 shadow-sm shrink-0 transition-all duration-300 ${
                   isCollapsed ? "size-10" : "size-12"
                 }`}
-                style={{
-                  backgroundImage: `url("/img/avatar-default.png")`,
-                }}
               />
               {(!isCollapsed || isMobileOpen) && (
                 <div className="whitespace-nowrap overflow-hidden lg:block hidden">
