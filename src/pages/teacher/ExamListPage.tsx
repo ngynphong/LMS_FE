@@ -8,12 +8,20 @@ import {
   usePublishQuiz,
 } from "@/hooks/useQuizzes";
 import { useHostLiveQuiz } from "@/hooks/useLiveQuiz";
+import { useDebounce } from "@/hooks/useDebounce";
 import { toast } from "@/components/common/Toast";
 import PaginationControl from "@/components/common/PaginationControl";
 
 const ExamListPage = () => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(9);
+  const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+  const [selectedType, setSelectedType] = useState<"QUIZ" | "PRACTICE" | "">(
+    "",
+  );
+  const [selectedStatus, setSelectedStatus] = useState<boolean | null>(null);
+
   const {
     data: exams,
     isLoading: loading,
@@ -21,6 +29,9 @@ const ExamListPage = () => {
   } = useTeacherQuizzes({
     pageNo: page,
     pageSize,
+    keyword: debouncedSearchQuery || undefined,
+    type: selectedType || undefined,
+    isPublished: selectedStatus,
     sorts: "createdAt:desc",
   });
   const { mutateAsync: generate, isPending: isGenerating } =
@@ -28,7 +39,6 @@ const ExamListPage = () => {
   const { mutateAsync: publish, isPending: isPublishing } = usePublishQuiz();
   const hostLiveQuiz = useHostLiveQuiz();
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
 
   const handleGenerateCode = async (quizId: string) => {
     try {
@@ -63,22 +73,8 @@ const ExamListPage = () => {
     }
   };
 
-  // Filtered exams
-  // Validate exams is an array, as API might return paginated object or single object unexpectedly
-  const examsList = Array.isArray(exams)
-    ? exams
-    : (exams as any)?.items
-      ? (exams as any).items
-      : exams
-        ? [exams]
-        : [];
-
-  const filteredExams = examsList.filter((e: any) => {
-    const matchesSearch = e.title
-      ?.toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    return matchesSearch;
-  });
+  // Exams list from server response
+  const examsList = (exams as any)?.items || [];
 
   if (loading)
     return (
@@ -112,9 +108,9 @@ const ExamListPage = () => {
         </Link>
       </div>
 
-      {/* Search */}
+      {/* Filters */}
       <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-        <div className="flex-1 min-w-[300px]">
+        <div className="flex-1 min-w-[250px]">
           <div className="relative">
             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
               search
@@ -122,17 +118,56 @@ const ExamListPage = () => {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm"
-              placeholder="Tìm kiếm đề thi..."
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setPage(1);
+              }}
+              className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] text-sm transition-all"
+              placeholder="Tìm theo tiêu đề bài tập..."
             />
           </div>
         </div>
+
+        <div className="flex items-center gap-3">
+          <select
+            value={selectedType}
+            onChange={(e) => {
+              setSelectedType(e.target.value as any);
+              setPage(1);
+            }}
+            className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1E90FF] font-medium text-slate-600 cursor-pointer"
+          >
+            <option value="">Tất cả loại</option>
+            <option value="QUIZ">Bài kiểm tra</option>
+            <option value="PRACTICE">Luyện tập</option>
+          </select>
+
+          <select
+            value={
+              selectedStatus === null
+                ? "all"
+                : selectedStatus
+                  ? "published"
+                  : "draft"
+            }
+            onChange={(e) => {
+              const val = e.target.value;
+              setSelectedStatus(
+                val === "all" ? null : val === "published" ? true : false,
+              );
+              setPage(1);
+            }}
+            className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#1E90FF] font-medium text-slate-600 cursor-pointer"
+          >
+            <option value="all">Tất cả trạng thái</option>
+            <option value="published">Đã công khai</option>
+            <option value="draft">Bản nháp</option>
+          </select>
+        </div>
       </div>
 
-      {/* Exam Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredExams.map((exam: any) => (
+        {examsList.map((exam: any) => (
           <div
             key={exam.id}
             className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow"
@@ -265,9 +300,9 @@ const ExamListPage = () => {
             </div>
           </div>
         ))}
-        {filteredExams.length === 0 && (
+        {examsList.length === 0 && (
           <div className="col-span-full text-center py-10 text-slate-500">
-            Chưa có đề thi nào.
+            Không tìm thấy đề thi nào phù hợp.
           </div>
         )}
       </div>

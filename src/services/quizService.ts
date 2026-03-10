@@ -64,6 +64,10 @@ export const getQuizStudentStatistics = async (
 export const getTeacherQuizzes = async (params?: {
     pageNo?: number;
     pageSize?: number;
+    keyword?: string;
+    type?: 'QUIZ' | 'PRACTICE';
+    isPublished?: boolean | null;
+    lessonItemId?: string;
     sorts?: string | string[];
 }): Promise<{ items: QuizSummary[]; totalElement: number; totalPage: number }> => {
     try {
@@ -71,6 +75,10 @@ export const getTeacherQuizzes = async (params?: {
             params: {
                 pageNo: params?.pageNo || 1,
                 pageSize: params?.pageSize || 10,
+                keyword: params?.keyword || undefined,
+                type: params?.type || undefined,
+                isPublished: params?.isPublished === null ? undefined : params?.isPublished,
+                lessonItemId: params?.lessonItemId || undefined,
                 sorts: params?.sorts || 'createdAt:desc',
             }
         });
