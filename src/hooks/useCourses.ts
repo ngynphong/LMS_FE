@@ -177,9 +177,9 @@ export const useBanCourse = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (id: string) => banCourse(id),
+        mutationFn: ({ id, status }: { id: string; status: string }) => banCourse(id, status),
         onSuccess: (_data, variables) => {
-            queryClient.invalidateQueries({ queryKey: ['course', variables] });
+            queryClient.invalidateQueries({ queryKey: ['course', variables.id] });
             queryClient.invalidateQueries({ queryKey: ['admin-courses'] });
             queryClient.invalidateQueries({ queryKey: ['courses'] });
         },

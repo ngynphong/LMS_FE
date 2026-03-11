@@ -552,7 +552,7 @@ const CourseBuilderPage = () => {
                     <button
                       onClick={handlePublish}
                       disabled={publishLoading}
-                      className="flex items-center gap-2 px-4 h-10 bg-green-600 rounded-lg text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="flex items-center gap-2 px-4 h-10 bg-green-600 rounded-lg text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                     >
                       {publishLoading ? (
                         <span className="text-lg animate-spin">

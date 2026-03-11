@@ -91,9 +91,9 @@ export const approveCourse = async (id: string, status: string): Promise<void> =
     }
 };
 
-export const banCourse = async (id: string): Promise<void> => {
+export const banCourse = async (id: string, status: string = "BANNED"): Promise<void> => {
     try {
-    await axiosInstance.patch(`/courses/${id}/ban`, { status: "BANNED" });
+        await axiosInstance.patch(`/courses/${id}/ban`, { status });
     } catch (error) {
         throw error;
     }

@@ -50,7 +50,7 @@ const CourseBuilderSidebar = ({ lessonType }: CourseBuilderSidebarProps) => {
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-slate-700">Điểm chuẩn (%)</label>
+                <label className="text-sm font-semibold text-slate-700">Điểm chuẩn</label>
                 <input
                   type="number"
                   defaultValue={80}

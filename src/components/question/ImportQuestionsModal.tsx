@@ -128,7 +128,7 @@ const ImportQuestionsModal = ({
                     >
                       {file
                         ? file.name
-                        : "Click để chọn file hoặc kéo thả vào đây"}
+                        : "Click để chọn file"}
                     </p>
                   </div>
                   <input

@@ -28,7 +28,7 @@ const CourseProgressChart = ({ data, isLoading }: CourseProgressChartProps) => {
     return (
       <div className="bg-white p-6 rounded-xl border border-[#dbe2e6]">
         <h2 className="text-[#111518] text-lg font-bold mb-8">
-          Sức khỏe các khóa học
+          Thống kê các khóa học
         </h2>
         <div className="flex items-center justify-center h-48 text-[#607b8a]">
           Chưa có dữ liệu khóa học
@@ -41,7 +41,7 @@ const CourseProgressChart = ({ data, isLoading }: CourseProgressChartProps) => {
     <div className="bg-white p-6 rounded-xl border border-[#dbe2e6]">
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-[#111518] text-lg font-bold">
-          Sức khỏe các khóa học
+          Thống kê các khóa học
         </h2>
       </div>
 

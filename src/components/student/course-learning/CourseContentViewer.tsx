@@ -211,7 +211,7 @@ const CourseContentViewer = ({
           <button
             onClick={handleMarkComplete}
             disabled={markingComplete}
-            className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer"
           >
             {markingComplete ? (
               <>
@@ -252,7 +252,7 @@ const CourseContentViewer = ({
           <button
             onClick={handleMarkComplete}
             disabled={markingComplete}
-            className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer"
           >
             {markingComplete ? (
               <>

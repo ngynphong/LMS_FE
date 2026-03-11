@@ -70,7 +70,7 @@ const SettingsSection = ({ formData, setFormData }: SettingsSectionProps) => {
           </div>
           <div>
             <label className="block text-sm font-semibold text-[#111518] mb-2">
-              Điểm chuẩn (%)
+              Điểm chuẩn
             </label>
             <input
               type="number"

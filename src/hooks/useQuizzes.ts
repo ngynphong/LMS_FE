@@ -102,6 +102,7 @@ export const useGenerateQuizCode = () => {
     return useMutation({
         mutationFn: (quizId: string) => generateQuizCode(quizId),
         onSuccess: (_, quizId) => {
+            queryClient.invalidateQueries({ queryKey: ['teacher-quizzes'] });
             queryClient.invalidateQueries({ queryKey: ['quiz', quizId] });
         },
     });
