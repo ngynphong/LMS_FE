@@ -6,6 +6,7 @@ import {
   FaKey,
   FaBullhorn,
   FaNewspaper,
+  FaQuestionCircle,
 } from "react-icons/fa";
 import { FaCalendar, FaTimes } from "react-icons/fa";
 import { useAuth } from "@/hooks/useAuth";
@@ -49,11 +50,6 @@ const navItems: NavItem[] = [
     label: "Quản lý khóa học",
   },
   {
-    path: "/admin/settings",
-    icon: <MdSettings className="text-xl" />,
-    label: "Cài đặt hệ thống",
-  },
-  {
     path: "/admin/banners",
     icon: <FaBullhorn className="text-xl" />,
     label: "Quản lý Banner",
@@ -62,6 +58,17 @@ const navItems: NavItem[] = [
     path: "/admin/blogs",
     icon: <FaNewspaper className="text-xl" />,
     label: "Quản lý blog",
+  },
+
+  {
+    path: "/admin/user-manual",
+    icon: <FaQuestionCircle className="text-xl" />,
+    label: "Hướng dẫn sử dụng",
+  },
+  {
+    path: "/admin/settings",
+    icon: <MdSettings className="text-xl" />,
+    label: "Cài đặt hệ thống",
   },
 ];
 

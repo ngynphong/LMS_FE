@@ -5,7 +5,9 @@ import type {
     CreateTeacherResponse,
     ResetPasswordRequest,
     ResetPasswordResponse,
-    SystemLogResponse 
+    SystemLogResponse,
+    UserManualResponse,
+    UpdateUserManualRequest
 } from "@/types/admin";
 import axios from "axios";
 
@@ -55,5 +57,25 @@ export const resetUserPassword = async (userId: string, data: ResetPasswordReque
         return response.data;
     } catch (error) {
         return handleApiError(error, 'Không thể đặt lại mật khẩu người dùng');
+    }
+};
+
+export const getAdminUserManual = async (): Promise<UserManualResponse> => {
+    try {
+        const response = await axiosInstance.get<UserManualResponse>('/admin/user-manual');
+        return response.data;
+    } catch (error) {
+        return handleApiError(error, 'Failed to fetch user manual');
+    }
+};
+
+export const updateAdminUserManual = async (data: UpdateUserManualRequest): Promise<UserManualResponse> => {
+    try {
+        const response = await axiosInstance.put<UserManualResponse>('/admin/user-manual', null, {
+            params: { content: data.content }
+        });
+        return response.data;
+    } catch (error) {
+        return handleApiError(error, 'Failed to update user manual');
     }
 };

@@ -29,6 +29,9 @@ const AdminBlogPage = React.lazy(() =>
 const BlogFormPage = React.lazy(
   () => import("@/pages/admin/blog/BlogFormPage"),
 );
+const AdminUserManualPage = React.lazy(
+  () => import("@/pages/admin/AdminUserManualPage"),
+);
 
 // Banner Admin Pages
 const BannerListPage = React.lazy(() =>
@@ -121,10 +124,13 @@ const adminRoutes: RouteObject[] = [
         element: <BlogFormPage />,
       },
       {
-        path: "reports",
         element: (
           <div className="p-8 text-[#101518]">Trang Báo cáo - Coming Soon</div>
         ),
+      },
+      {
+        path: "user-manual",
+        element: <AdminUserManualPage />,
       },
     ],
   },
