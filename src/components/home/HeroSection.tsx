@@ -5,7 +5,7 @@ import { ScrollReveal, fadeInLeft, fadeInRight } from "@/components/ui/ScrollRev
 const HeroSection = () => {
   return (
     <section className="w-full bg-cyan-50/30 py-10 lg:py-16 overflow-hidden">
-      <div className="max-w-[1280px] mx-auto px-4 md:px-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-10 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-12 items-center">
         <ScrollReveal
           variant={fadeInLeft}
           className="flex flex-col gap-4 order-2 lg:order-1"
@@ -22,7 +22,7 @@ const HeroSection = () => {
             </span>
           </div>
           <h1 className="text-slate-900 text-start text-2xl sm:text-3xl lg:text-5xl font-black leading-[1.2] lg:leading-[1.1] tracking-tight">
-            Viện Khoa Học
+            Viện Khoa Học Công Nghệ
           </h1>
           <h1 className="text-slate-900 text-start text-2xl sm:text-3xl lg:text-5xl font-black leading-[1.2] lg:leading-[1.1] tracking-tight">
             Sáng Tạo Khởi Nghiệp
