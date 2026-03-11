@@ -12,6 +12,8 @@ import { LiveQuestionDisplay } from "@/components/live-quiz/LiveQuestionDisplay"
 import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import { toast } from "@/components/common/Toast";
 import type { LiveQuestion } from "@/types/live-quiz";
+import { useQuizSounds } from "@/hooks/useQuizSounds";
+import SoundToggleButton from "@/components/live-quiz/SoundToggleButton";
 
 const LiveQuizHostPlayPage = () => {
   const { pin } = useParams<{ pin: string }>();
@@ -40,16 +42,31 @@ const LiveQuizHostPlayPage = () => {
 
   // Timer State
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Modal State
   const [isEndGameModalOpen, setIsEndGameModalOpen] = useState(false);
+
+  // Sound effects
+  const {
+    isMuted,
+    toggleMute,
+    playCountdownTick,
+    playCountdownWarning,
+    playTimeUp,
+    playRevealAnswer,
+    playNextQuestion,
+  } = useQuizSounds();
+
+  // Track nốt giây trước đó để phát tick đúng mỗi giây
+  const lastTickSecond = useRef<number>(-1);
 
   // Initialization and Question Sync
   useEffect(() => {
     if (quizDetails && quizDetails.questions.length > 0) {
       setCurrentQuestion(quizDetails.questions[currentQuestionIndex]);
       setTimeRemaining(20);
+      lastTickSecond.current = -1;
       if (gameState === "QUESTION") {
         startTimer(20);
       }
@@ -78,6 +95,36 @@ const LiveQuizHostPlayPage = () => {
     };
   }, []);
 
+  // Sound: phát tick mỗi giây khi countdown
+  useEffect(() => {
+    if (gameState !== "QUESTION") return;
+
+    const currentSecond = Math.ceil(timeRemaining);
+
+    // Chỉ phát khi chuyển sang giây mới
+    if (currentSecond !== lastTickSecond.current && currentSecond > 0) {
+      lastTickSecond.current = currentSecond;
+
+      if (currentSecond <= 5) {
+        playCountdownWarning();
+      } else {
+        playCountdownTick();
+      }
+    }
+
+    // Phát buzzer khi hết giờ
+    if (timeRemaining <= 0.1 && lastTickSecond.current !== 0) {
+      lastTickSecond.current = 0;
+      playTimeUp();
+    }
+  }, [
+    timeRemaining,
+    gameState,
+    playCountdownTick,
+    playCountdownWarning,
+    playTimeUp,
+  ]);
+
   // Auto-reveal answer when time runs out
   useEffect(() => {
     if (gameState === "QUESTION" && timeRemaining <= 0.1 && currentQuestion) {
@@ -90,6 +137,7 @@ const LiveQuizHostPlayPage = () => {
   const handleShowAnswer = async () => {
     if (!pin || !currentQuestion) return;
     try {
+      playRevealAnswer();
       await showAnswerMutation.mutateAsync({
         pin,
         questionId: currentQuestion.id,
@@ -113,6 +161,7 @@ const LiveQuizHostPlayPage = () => {
     const nextQId = quizDetails.questions[nextIdx].id;
 
     try {
+      playNextQuestion();
       await nextQuestionMutation.mutateAsync({ pin, questionId: nextQId });
       setCurrentQuestionIndex(nextIdx);
       setGameState("QUESTION");
@@ -175,7 +224,12 @@ const LiveQuizHostPlayPage = () => {
           )}
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          <SoundToggleButton
+            isMuted={isMuted}
+            onToggle={toggleMute}
+            variant="dark"
+          />
           <button
             onClick={handleFinishGame}
             className="px-4 py-2 rounded-lg bg-red-500/10 text-red-500 font-bold hover:bg-red-500/20 transition-colors border border-red-500/30 cursor-pointer"

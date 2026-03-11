@@ -1,9 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useLiveQuizSocket } from "@/hooks/useLiveQuizSocket";
 import { useLiveQuizDetails, useStartLiveQuiz } from "@/hooks/useLiveQuiz";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "@/components/common/Toast";
+import { useQuizSounds } from "@/hooks/useQuizSounds";
+import SoundToggleButton from "@/components/live-quiz/SoundToggleButton";
 
 const LiveQuizHostLobbyPage = () => {
   const { pin } = useParams<{ pin: string }>();
@@ -13,6 +15,36 @@ const LiveQuizHostLobbyPage = () => {
   const startQuizMutation = useStartLiveQuiz();
 
   const { isConnected, playersList } = useLiveQuizSocket(pin || null, "HOST");
+
+  // Sound effects
+  const {
+    isMuted,
+    toggleMute,
+    playLobbyMusic,
+    stopLobbyMusic,
+    playPlayerJoin,
+    playStartGame,
+  } = useQuizSounds();
+
+  const prevPlayerCount = useRef(0);
+
+  // Bật/tắt nhạc nền lobby theo trạng thái mute
+  useEffect(() => {
+    if (isMuted) {
+      stopLobbyMusic();
+    } else {
+      playLobbyMusic();
+    }
+    return () => stopLobbyMusic();
+  }, [isMuted, playLobbyMusic, stopLobbyMusic]);
+
+  // Phát âm thanh khi có player mới join
+  useEffect(() => {
+    if (playersList.length > prevPlayerCount.current) {
+      playPlayerJoin();
+    }
+    prevPlayerCount.current = playersList.length;
+  }, [playersList.length, playPlayerJoin]);
 
   useEffect(() => {
     if (error) {
@@ -34,6 +66,8 @@ const LiveQuizHostLobbyPage = () => {
     }
 
     try {
+      playStartGame();
+      stopLobbyMusic();
       await startQuizMutation.mutateAsync(pin);
       navigate(`/teacher/live-quiz/play/${pin}`);
     } catch (error) {
@@ -74,9 +108,13 @@ const LiveQuizHostLobbyPage = () => {
           </div>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex gap-3 items-center">
+          <SoundToggleButton isMuted={isMuted} onToggle={toggleMute} />
           <button
-            onClick={() => navigate("/teacher/quizzes")}
+            onClick={() => {
+              stopLobbyMusic();
+              navigate("/teacher/quizzes");
+            }}
             className="px-6 py-2.5 rounded-xl text-slate-600 font-bold hover:bg-slate-100 transition cursor-pointer"
           >
             Hủy

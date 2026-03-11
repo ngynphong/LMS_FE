@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useLiveQuizResults } from "@/hooks/useLiveQuiz";
 import { LiveLeaderboard } from "@/components/live-quiz/LiveLeaderboard";
+import { useQuizSounds } from "@/hooks/useQuizSounds";
+import SoundToggleButton from "@/components/live-quiz/SoundToggleButton";
 
 const LiveQuizHostResultPage = () => {
   const { pin } = useParams<{ pin: string }>();
@@ -10,6 +12,19 @@ const LiveQuizHostResultPage = () => {
   // Fetch final results from API
   // This assumes backend handles saving results when /finish is called
   const { data: results, isLoading, error } = useLiveQuizResults(pin);
+
+  // Sound effects
+  const { isMuted, toggleMute, playVictoryFanfare } = useQuizSounds();
+
+  // Phát fanfare khi dữ liệu đã sẵn sàng (delay cho animation podium)
+  useEffect(() => {
+    if (!isLoading && results && results.length > 0) {
+      const timer = setTimeout(() => {
+        playVictoryFanfare();
+      }, 800); // Delay cho animation podium hiển thị trước
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, results, playVictoryFanfare]);
 
   useEffect(() => {
     if (error) {
@@ -46,12 +61,19 @@ const LiveQuizHostResultPage = () => {
         <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-linear-to-r from-yellow-400 to-yellow-200 drop-shadow-md p-1">
           Tổng Kết Trận Đấu
         </h1>
-        <button
-          onClick={() => navigate("/teacher/quizzes")}
-          className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-6 py-2.5 rounded-xl font-bold transition-all cursor-pointer"
-        >
-          Đóng Phòng
-        </button>
+        <div className="flex items-center gap-3">
+          <SoundToggleButton
+            isMuted={isMuted}
+            onToggle={toggleMute}
+            variant="dark"
+          />
+          <button
+            onClick={() => navigate("/teacher/quizzes")}
+            className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-6 py-2.5 rounded-xl font-bold transition-all cursor-pointer"
+          >
+            Đóng Phòng
+          </button>
+        </div>
       </div>
 
       {/* Top 3 Podium Display */}
