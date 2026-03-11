@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { createPreloadHandler } from "@/utils/routePreloader";
 import { FaTimes } from "react-icons/fa";
 import {
   MdDashboard,
@@ -203,6 +204,7 @@ const TeacherSidebar = ({
                   <li key={item.path}>
                     <Link
                       to={item.path}
+                      onMouseEnter={createPreloadHandler(item.path)}
                       className={`flex items-center text-sm gap-3 transition-all rounded-lg ${
                         isCollapsed ? "lg:justify-center lg:p-3" : "px-4 py-3"
                       } ${

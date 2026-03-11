@@ -1,8 +1,7 @@
 import React from "react";
 import type { RouteObject } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
-
-const AdminLayout = React.lazy(() => import("@/layouts/AdminLayout"));
+import AdminLayout from "@/layouts/AdminLayout";
 const AdminDashboardPage = React.lazy(
   () => import("@/pages/admin/AdminDashboardPage"),
 );

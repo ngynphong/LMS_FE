@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
-import { useState, useCallback } from "react";
+import { Suspense, useState, useCallback } from "react";
 import { Outlet } from "react-router-dom";
+import ContentLoading from "@/components/common/ContentLoading";
 import { FaBars } from "react-icons/fa";
 import TeacherSidebar from "@/components/teacher/TeacherSidebar";
 // import AIChatbot from "@/components/common/AIChatbot";
@@ -63,7 +64,9 @@ const TeacherLayout = ({ children }: TeacherLayoutProps) => {
         }`}
       >
         <main className="flex-1 p-4 lg:p-8 max-w-6xl w-full mx-auto">
-          {children || <Outlet />}
+          <Suspense fallback={<ContentLoading />}>
+            {children || <Outlet />}
+          </Suspense>
         </main>
       </div>
 

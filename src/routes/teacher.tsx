@@ -1,8 +1,7 @@
 import React from "react";
 import type { RouteObject } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
-
-const TeacherLayout = React.lazy(() => import("@/layouts/TeacherLayout"));
+import TeacherLayout from "@/layouts/TeacherLayout";
 const TeacherDashboardPage = React.lazy(
   () => import("@/pages/teacher/TeacherDashboardPage"),
 );
