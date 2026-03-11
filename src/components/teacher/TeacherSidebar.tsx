@@ -180,7 +180,7 @@ const TeacherSidebar = ({
               {(!isCollapsed || isMobileOpen) && (
                 <div className="whitespace-nowrap overflow-hidden lg:block hidden">
                   <h1 className="text-slate-900 text-base font-bold leading-tight truncate">
-                    IES Edu
+                    IES Focus
                   </h1>
                   <p className="text-slate-500 text-xs font-medium truncate mt-0.5">
                     Giảng viên
@@ -189,7 +189,7 @@ const TeacherSidebar = ({
               )}
               <div className="flex flex-col whitespace-nowrap overflow-hidden lg:hidden">
                 <h1 className="text-slate-900 text-base font-bold leading-tight truncate">
-                  IES Edu
+                  IES Focus
                 </h1>
                 <p className="text-slate-500 text-xs font-medium truncate mt-0.5">
                   Giảng viên

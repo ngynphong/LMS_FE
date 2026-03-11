@@ -14,7 +14,7 @@ const TermsPage = () => {
               Điều Khoản Dịch Vụ
             </h1>
             <p className="text-slate-500 font-medium">
-              Cập nhật lần cuối: Tháng 3/2026 | IES EDU - iesfocus.edu.vn
+              Cập nhật lần cuối: Tháng 3/2026 | IES Focus - iesfocus.edu.vn
             </p>
           </ScrollReveal>
         </div>
@@ -37,9 +37,9 @@ const TermsPage = () => {
               </h2>
               <div className="text-slate-600 leading-relaxed space-y-4">
                 <p>
-                  Chào mừng bạn đến với IES EDU (Institute of Science Technology
-                  Education) - nền tảng học tập trực tuyến tại địa chỉ
-                  iesfocus.edu.vn.
+                  Chào mừng bạn đến với IES Focus (Institute of Science
+                  Technology Education) - nền tảng học tập trực tuyến tại địa
+                  chỉ iesfocus.edu.vn.
                 </p>
                 <p>
                   Bằng việc truy cập và sử dụng trang web, bạn xác nhận đã đọc,
@@ -83,7 +83,7 @@ const TermsPage = () => {
                     2.2. Tài khoản người dùng
                   </h3>
                   <p className="text-slate-600 mb-3">
-                    Khi đăng ký tài khoản tại IES EDU, bạn cam kết:
+                    Khi đăng ký tài khoản tại IES Focus, bạn cam kết:
                   </p>
                   <ul className="list-disc pl-5 text-slate-600 space-y-2">
                     <li>Cung cấp thông tin chính xác, đầy đủ và cập nhật.</li>
@@ -95,8 +95,8 @@ const TermsPage = () => {
                       tài khoản của bạn.
                     </li>
                     <li>
-                      Thông báo ngay cho IES EDU khi phát hiện có truy cập trái
-                      phép vào tài khoản.
+                      Thông báo ngay cho IES Focus khi phát hiện có truy cập
+                      trái phép vào tài khoản.
                     </li>
                   </ul>
                 </div>
@@ -123,7 +123,7 @@ const TermsPage = () => {
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-blue-500 mt-1">●</span> Nhận hỗ trợ
-                      kỹ thuật và tư vấn học tập từ đội ngũ IES EDU.
+                      kỹ thuật và tư vấn học tập từ đội ngũ IES Focus.
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-blue-500 mt-1">●</span> Nhận chứng
@@ -158,7 +158,7 @@ const TermsPage = () => {
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-red-500 mt-1">●</span> Tôn trọng
-                      quyền sở hữu trí tuệ của IES EDU và các giảng viên cộng
+                      quyền sở hữu trí tuệ của IES Focus và các giảng viên cộng
                       tác.
                     </li>
                   </ul>
@@ -176,11 +176,11 @@ const TermsPage = () => {
               </h2>
               <ul className="list-disc pl-5 text-slate-600 space-y-3">
                 <li>
-                  Toàn bộ nội dung khóa học trên IES EDU được cung cấp hoàn toàn
-                  miễn phí cho người dùng đã đăng ký tài khoản.
+                  Toàn bộ nội dung khóa học trên IES Focus được cung cấp hoàn
+                  toàn miễn phí cho người dùng đã đăng ký tài khoản.
                 </li>
                 <li>
-                  IES EDU có quyền bổ sung, điều chỉnh hoặc tạm ngừng một số
+                  IES Focus có quyền bổ sung, điều chỉnh hoặc tạm ngừng một số
                   khóa học mà không cần thông báo trước.
                 </li>
                 <li>
@@ -199,7 +199,7 @@ const TermsPage = () => {
                 Chấm dứt dịch vụ
               </h2>
               <p className="text-red-800 mb-4">
-                IES EDU có quyền tạm ngừng hoặc chấm dứt tài khoản người dùng
+                IES Focus có quyền tạm ngừng hoặc chấm dứt tài khoản người dùng
                 trong các trường hợp:
               </p>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -231,8 +231,8 @@ const TermsPage = () => {
               </h2>
               <div className="text-slate-600 space-y-4">
                 <p>
-                  IES EDU có quyền cập nhật, sửa đổi các điều khoản dịch vụ bất
-                  kỳ lúc nào.
+                  IES Focus có quyền cập nhật, sửa đổi các điều khoản dịch vụ
+                  bất kỳ lúc nào.
                 </p>
                 <p>
                   Người dùng sẽ được thông báo về những thay đổi quan trọng qua

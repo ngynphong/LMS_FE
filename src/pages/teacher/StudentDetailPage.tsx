@@ -83,7 +83,7 @@ const StudentDetailPage = () => {
             { label: "Quản lý học viên", url: "/teacher/students" },
             { label: "Chi tiết học viên", url: `/teacher/students/${id}` },
             {
-              label: `${student.firstName || "IES EDU"} ${student.lastName || ""}`,
+              label: `${student.firstName || "IES Focus"} ${student.lastName || ""}`,
             },
           ]}
           className="flex flex-wrap items-center gap-2"

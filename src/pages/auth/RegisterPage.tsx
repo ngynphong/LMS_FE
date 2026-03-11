@@ -164,7 +164,7 @@ const RegisterPage = () => {
                 className="w-12 h-12"
               />
             </span>
-            <span className="text-xl font-bold tracking-tight ">IES EDU</span>
+            <span className="text-xl font-bold tracking-tight ">IES Focus</span>
           </Link>
         </div>
       </div>
@@ -184,7 +184,7 @@ const RegisterPage = () => {
                 className="w-12 h-12"
               />
             </span>
-            <span className="text-lg font-bold tracking-tight">IES EDU</span>
+            <span className="text-lg font-bold tracking-tight">IES Focus</span>
           </Link>
 
           {/* Tabs */}
@@ -215,7 +215,7 @@ const RegisterPage = () => {
               Tạo tài khoản mới
             </h1>
             <p className="text-gray-600 text-sm font-normal leading-normal">
-              Tham gia cộng đồng học tập IES EDU ngay hôm nay.
+              Tham gia cộng đồng học tập IES Focus ngay hôm nay.
             </p>
           </div>
 
@@ -353,11 +353,17 @@ const RegisterPage = () => {
                   htmlFor="terms"
                 >
                   Tôi đồng ý với{" "}
-                  <a href="/terms" className="color-primary font-bold hover:underline">
+                  <a
+                    href="/terms"
+                    className="color-primary font-bold hover:underline"
+                  >
                     Điều khoản
                   </a>{" "}
                   và{" "}
-                  <a href="/privacy" className="color-primary font-bold hover:underline">
+                  <a
+                    href="/privacy"
+                    className="color-primary font-bold hover:underline"
+                  >
                     Chính sách bảo mật
                   </a>
                 </label>

@@ -17,28 +17,28 @@ const faqs = [
   // I. VỀ KHÓA HỌC
   {
     category: "courses",
-    q: "IES EDU cung cấp những loại khóa học nào?",
-    a: "IES EDU cung cấp các khóa học trong lĩnh vực khoa học công nghệ thực chiến và lộ trình nghề nghiệp chuẩn quốc tế, bao gồm: lập trình, thiết kế, khoa học dữ liệu, marketing số, kỹ năng khởi nghiệp và nhiều chủ đề công nghệ hiện đại khác.",
+    q: "IES Focus cung cấp những loại khóa học nào?",
+    a: "IES Focus cung cấp các khóa học trong lĩnh vực khoa học công nghệ thực chiến và lộ trình nghề nghiệp chuẩn quốc tế, bao gồm: lập trình, thiết kế, khoa học dữ liệu, marketing số, kỹ năng khởi nghiệp và nhiều chủ đề công nghệ hiện đại khác.",
   },
   {
     category: "courses",
-    q: "Học tại IES EDU có mất phí không?",
-    a: "HOÀN TOÀN MIỄN PHÍ! Tất cả khóa học trên IES EDU đều được cung cấp miễn phí cho học viên đã đăng ký tài khoản. Sứ mệnh của chúng tôi là nâng tầm tri thức Việt không rào cản tài chính.",
+    q: "Học tại IES Focus có mất phí không?",
+    a: "HOÀN TOÀN MIỄN PHÍ! Tất cả khóa học trên IES Focus đều được cung cấp miễn phí cho học viên đã đăng ký tài khoản. Sứ mệnh của chúng tôi là nâng tầm tri thức Việt không rào cản tài chính.",
   },
   {
     category: "courses",
-    q: "Ai có thể học tại IES EDU?",
-    a: "Tất cả mọi người từ 13 tuổi trở lên đều có thể đăng ký học tại IES EDU. Dù bạn là người mới bắt đầu, học sinh, sinh viên hay người đi làm muốn nâng cao kỹ năng, chúng tôi đều có chương trình phù hợp.",
+    q: "Ai có thể học tại IES Focus?",
+    a: "Tất cả mọi người từ 13 tuổi trở lên đều có thể đăng ký học tại IES Focus. Dù bạn là người mới bắt đầu, học sinh, sinh viên hay người đi làm muốn nâng cao kỹ năng, chúng tôi đều có chương trình phù hợp.",
   },
   {
     category: "courses",
     q: "Tôi học trực tuyến hay trực tiếp?",
-    a: "IES EDU cung cấp hình thức học trực tuyến hoàn toàn qua nền tảng iesfocus.edu.vn. Bạn có thể học mọi lúc, mọi nơi theo tiến độ cá nhân. Một số khóa học đặc biệt có thể có buổi học theo lịch cố định - thông tin sẽ được ghi rõ trong mô tả khóa học.",
+    a: "IES Focus cung cấp hình thức học trực tuyến hoàn toàn qua nền tảng iesfocus.edu.vn. Bạn có thể học mọi lúc, mọi nơi theo tiến độ cá nhân. Một số khóa học đặc biệt có thể có buổi học theo lịch cố định - thông tin sẽ được ghi rõ trong mô tả khóa học.",
   },
   {
     category: "courses",
     q: "Tôi có nhận được chứng chỉ sau khi hoàn thành không?",
-    a: "Có. Học viên hoàn thành đủ yêu cầu của khóa học sẽ được cấp chứng chỉ hoàn thành điện tử từ IES EDU. Chứng chỉ có thể tải xuống và dùng để bổ sung vào hồ sơ năng lực cá nhân hoặc LinkedIn.",
+    a: "Có. Học viên hoàn thành đủ yêu cầu của khóa học sẽ được cấp chứng chỉ hoàn thành điện tử từ IES Focus. Chứng chỉ có thể tải xuống và dùng để bổ sung vào hồ sơ năng lực cá nhân hoặc LinkedIn.",
   },
   // II. VỀ TÀI KHOẢN
   {
@@ -115,13 +115,13 @@ const faqs = [
   // IV. VỀ GIẢNG VIÊN
   {
     category: "instructor",
-    q: "Tôi có thể trở thành giảng viên tại IES EDU không?",
-    a: "Có! IES EDU luôn chào đón các chuyên gia và giảng viên có chuyên môn muốn chia sẻ kiến thức. Truy cập mục 'Trở thành giảng viên' trên website hoặc gửi email về infovienies@gmail.com.",
+    q: "Tôi có thể trở thành giảng viên tại IES Focus không?",
+    a: "Có! IES Focus luôn chào đón các chuyên gia và giảng viên có chuyên môn muốn chia sẻ kiến thức. Truy cập mục 'Trở thành giảng viên' trên website hoặc gửi email về infovienies@gmail.com.",
   },
   {
     category: "instructor",
-    q: "Giảng viên được hỗ trợ gì từ IES EDU?",
-    a: "IES EDU hỗ trợ giảng viên về kỹ thuật sản xuất nội dung, công cụ quản lý khóa học, kết nối với cộng đồng học viên và các chương trình đặc biệt để mở rộng tầm ảnh hưởng trong cộng đồng giáo dục công nghệ.",
+    q: "Giảng viên được hỗ trợ gì từ IES Focus?",
+    a: "IES Focus hỗ trợ giảng viên về kỹ thuật sản xuất nội dung, công cụ quản lý khóa học, kết nối với cộng đồng học viên và các chương trình đặc biệt để mở rộng tầm ảnh hưởng trong cộng đồng giáo dục công nghệ.",
   },
 ];
 
@@ -175,7 +175,7 @@ const FAQPage = () => {
             </h1>
             <p className="text-slate-500 font-medium max-w-2xl mx-auto">
               Tìm câu trả lời cho những thắc mắc phổ biến về khóa học, tài khoản
-              và các vấn đề kỹ thuật tại IES EDU.
+              và các vấn đề kỹ thuật tại IES Focus.
             </p>
           </ScrollReveal>
         </div>

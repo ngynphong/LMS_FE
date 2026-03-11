@@ -33,7 +33,7 @@ const StudentLayout = ({ children }: StudentLayoutProps) => {
           >
             <FaBars className="text-xl" />
           </button>
-          <span className="font-bold text-lg color-primary">IES EDU</span>
+          <span className="font-bold text-lg color-primary">IES Focus</span>
         </div>
         {user && (
           <div className="flex items-center gap-2">

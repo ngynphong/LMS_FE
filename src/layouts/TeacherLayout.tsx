@@ -37,7 +37,7 @@ const TeacherLayout = ({ children }: TeacherLayoutProps) => {
           >
             <FaBars className="text-xl" />
           </button>
-          <span className="font-bold text-lg text-[#111518]">IES EDU</span>
+          <span className="font-bold text-lg text-[#111518]">IES Focus</span>
         </div>
         <div className="flex items-center gap-2 mr-2">
           {user && <NotificationDropdown />}

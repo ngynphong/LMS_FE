@@ -159,11 +159,13 @@ const LoginPage = () => {
                   className="w-12 h-12"
                 />
               </span>
-              <span className="text-xl font-bold tracking-tight ">IES EDU</span>
+              <span className="text-xl font-bold tracking-tight ">
+                IES Focus
+              </span>
             </Link>
             {/* <div className="absolute bottom-20 max-w-md">
               <h1 className="text-gray-800 text-5xl font-bold leading-tight mb-6">
-                Học tập không giới hạn cùng IES EDU
+                Học tập không giới hạn cùng IES Focus
               </h1>
               <p className="text-gray-800/90 text-xl font-light">
                 Kiến tạo tương lai của bạn thông qua nền tảng học tập trực tuyến
@@ -188,7 +190,9 @@ const LoginPage = () => {
                   className="w-12 h-12"
                 />
               </span>
-              <span className="text-xl font-bold tracking-tight">IES EDU</span>
+              <span className="text-xl font-bold tracking-tight">
+                IES Focus
+              </span>
             </Link>
 
             {/* Tabs */}

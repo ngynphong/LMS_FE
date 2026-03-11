@@ -179,7 +179,7 @@ const ResetPasswordPage = () => {
                 />
               </span>
               <span className="text-xl color-primary font-bold tracking-tight">
-                IES EDU
+                IES Focus
               </span>
             </Link>
           </div>
@@ -200,7 +200,9 @@ const ResetPasswordPage = () => {
                   className="w-12 h-12"
                 />
               </span>
-              <span className="text-xl font-bold tracking-tight">IES EDU</span>
+              <span className="text-xl font-bold tracking-tight">
+                IES Focus
+              </span>
             </Link>
 
             {/* Back Button */}
