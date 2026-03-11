@@ -53,9 +53,9 @@ const CourseCard = (props: CourseCardProps) => {
           </div>
           <div className="absolute top-3 right-3">
             <span
-              className={`px-2 py-1 rounded text-xs font-medium ${course.status === "PUBLISHED" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"}`}
+              className={`px-2 py-1 rounded text-xs font-medium ${course.status === "PUBLISHED" ? "bg-green-100 text-green-700" : course.status === "DRAFT" ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700"}`}
             >
-              {course.status === "PUBLISHED" ? "Công khai" : "Bản nháp"}
+              {course.status === "PUBLISHED" ? "Công khai" : course.status === "DRAFT" ? "Bản nháp" : "Bị khóa" }
             </span>
           </div>
           <div className="absolute top-3 left-3">
@@ -187,7 +187,7 @@ const CourseCard = (props: CourseCardProps) => {
           )}
           {onClick ? (
             <button
-              className="color-primary text-sm font-bold hover:underline ml-auto"
+              className="color-primary cursor-pointer text-sm font-bold hover:underline ml-auto"
               onClick={(e) => {
                 e.stopPropagation();
                 onClick();

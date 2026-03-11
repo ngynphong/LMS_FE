@@ -14,7 +14,8 @@ const PrivacyPage = () => {
               Chính Sách Bảo Mật
             </h1>
             <p className="text-slate-500 font-medium leading-relaxed">
-              Cập nhật lần cuối: Tháng 3/2026 | IES EDU - iesfocus.edu.vn <br />
+              Cập nhật lần cuối: Tháng 3/2026 | IES Focus - iesfocus.edu.vn{" "}
+              <br />
               <span className="text-xs text-blue-500 font-bold uppercase tracking-wider">
                 Tuân thủ Luật BVDLCN số 91/2025/QH15
               </span>
@@ -39,12 +40,12 @@ const PrivacyPage = () => {
                 Cam kết bảo mật
               </h2>
               <p className="text-slate-600 leading-relaxed">
-                IES EDU cam kết bảo vệ quyền riêng tư của người dùng. Chính sách
-                này mô tả cách chúng tôi thu thập, sử dụng, lưu trữ và bảo vệ
-                thông tin cá nhân của bạn khi sử dụng nền tảng iesfocus.edu.vn,
-                tuân thủ Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15, Luật Dữ
-                liệu số 60/2024/QH15 và Luật An toàn thông tin mạng số
-                86/2015/QH13.
+                IES Focus cam kết bảo vệ quyền riêng tư của người dùng. Chính
+                sách này mô tả cách chúng tôi thu thập, sử dụng, lưu trữ và bảo
+                vệ thông tin cá nhân của bạn khi sử dụng nền tảng
+                iesfocus.edu.vn, tuân thủ Luật Bảo vệ dữ liệu cá nhân số
+                91/2025/QH15, Luật Dữ liệu số 60/2024/QH15 và Luật An toàn thông
+                tin mạng số 86/2015/QH13.
               </p>
             </div>
 
@@ -106,10 +107,10 @@ const PrivacyPage = () => {
                 <p className="text-amber-700 text-sm leading-relaxed">
                   Theo Luật BVDLCN số 91/2025/QH15, dữ liệu hành vi sử dụng và
                   địa chỉ IP được phân loại là{" "}
-                  <strong>DỮ LIỆU CÁ NHÂN NHẠY CẢM</strong>. IES EDU áp dụng các
-                  biện pháp bảo vệ đặc biệt cho nhóm dữ liệu này: mã hóa riêng
-                  biệt, hạn chế truy cập nghiêm ngặt và đánh giá tác động trước
-                  khi xử lý.
+                  <strong>DỮ LIỆU CÁ NHÂN NHẠY CẢM</strong>. IES Focus áp dụng
+                  các biện pháp bảo vệ đặc biệt cho nhóm dữ liệu này: mã hóa
+                  riêng biệt, hạn chế truy cập nghiêm ngặt và đánh giá tác động
+                  trước khi xử lý.
                 </p>
               </div>
             </div>
@@ -174,8 +175,8 @@ const PrivacyPage = () => {
               </h2>
               <div className="text-slate-600 leading-relaxed space-y-4">
                 <p className="font-bold text-slate-800">
-                  IES EDU KHÔNG bán, cho thuê hoặc tiết lộ thông tin cá nhân của
-                  bạn cho bên thứ ba, ngoại trừ:
+                  IES Focus KHÔNG bán, cho thuê hoặc tiết lộ thông tin cá nhân
+                  của bạn cho bên thứ ba, ngoại trừ:
                 </p>
                 <ul className="list-disc pl-5 space-y-2">
                   <li>
@@ -240,9 +241,9 @@ const PrivacyPage = () => {
                       Cam kết thông báo sự cố trong 72 giờ
                     </div>
                     <p className="text-red-700 text-sm">
-                      Trường hợp xảy ra lộ lọt hoặc mất dữ liệu, IES EDU cam kết
-                      thông báo đến người dùng bị ảnh hưởng và cơ quan có thẩm
-                      quyền TRONG VÒNG 72 GIỜ.
+                      Trường hợp xảy ra lộ lọt hoặc mất dữ liệu, IES Focus cam
+                      kết thông báo đến người dùng bị ảnh hưởng và cơ quan có
+                      thẩm quyền TRONG VÒNG 72 GIỜ.
                     </p>
                   </div>
                 </div>
@@ -255,7 +256,7 @@ const PrivacyPage = () => {
                       Đánh giá tuân thủ định kỳ
                     </div>
                     <p className="text-blue-700 text-sm">
-                      IES EDU thực hiện kiểm tra, đánh giá hệ thống bảo mật IT
+                      IES Focus thực hiện kiểm tra, đánh giá hệ thống bảo mật IT
                       NHẤT 01 LẦN/NĂM để đảm bảo liên tục tuân thủ các quy định
                       pháp luật.
                     </p>

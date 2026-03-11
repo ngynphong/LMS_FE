@@ -68,6 +68,7 @@ export const useQuizByLessonItem = (lessonItemId?: string) => {
         queryFn: () => getQuizByLessonItem(lessonItemId!),
         enabled: !!lessonItemId,
         retry: false, // Don't retry if not found, it's expected for some items
+        staleTime: 5 * 60 * 1000, 
     });
 };
 
@@ -102,6 +103,7 @@ export const useGenerateQuizCode = () => {
     return useMutation({
         mutationFn: (quizId: string) => generateQuizCode(quizId),
         onSuccess: (_, quizId) => {
+            queryClient.invalidateQueries({ queryKey: ['teacher-quizzes'] });
             queryClient.invalidateQueries({ queryKey: ['quiz', quizId] });
         },
     });

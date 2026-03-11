@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import * as adminService from "@/services/adminService";
-import type { CreateTeacherRequest, ResetPasswordRequest } from "@/types/admin";
+import type { CreateTeacherRequest, ResetPasswordRequest, UpdateUserManualRequest } from "@/types/admin";
 import { toast } from "@/components/common/Toast"; // Hook to fetch dashboard stats
 export const useAdminDashboard = () => {
   return useQuery({
@@ -43,4 +43,26 @@ export const useResetUserPassword = () => {
       toast.error(error.message || "Có lỗi xảy ra khi đặt lại mật khẩu");
     },
   });
+};
+
+export const useAdminUserManual = () => {
+  const queryClient = useQueryClient();
+
+  const query = useQuery({
+    queryKey: ["admin", "user-manual"],
+    queryFn: adminService.getAdminUserManual,
+  });
+
+  const mutation = useMutation({
+    mutationFn: (data: UpdateUserManualRequest) => adminService.updateAdminUserManual(data),
+    onSuccess: () => {
+      toast.success("Cập nhật hướng dẫn sử dụng thành công!");
+      queryClient.invalidateQueries({ queryKey: ["admin", "user-manual"] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Có lỗi xảy ra khi cập nhật hướng dẫn sử dụng");
+    },
+  });
+
+  return { ...query, updateManual: mutation.mutate, isUpdating: mutation.isPending };
 };

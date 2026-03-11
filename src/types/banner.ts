@@ -76,7 +76,7 @@ export interface BannerCreationRequest {
   animationType: string;
   startTime?: string;
   endTime?: string;
-  active: boolean;
+  isActive: boolean;
   priority: number;
   altText?: string;
   ariaLabel?: string;

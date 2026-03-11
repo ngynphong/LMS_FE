@@ -158,11 +158,11 @@ const StudentSidebar = ({
               </div>
               {(!isCollapsed || isMobileOpen) && (
                 <span className="text-xl font-bold tracking-tight color-primary whitespace-nowrap overflow-hidden lg:block hidden">
-                  IES EDU
+                  IES Focus
                 </span>
               )}
               <span className="text-xl font-bold tracking-tight color-primary whitespace-nowrap overflow-hidden lg:hidden">
-                IES EDU
+                IES Focus
               </span>
             </Link>
           </div>

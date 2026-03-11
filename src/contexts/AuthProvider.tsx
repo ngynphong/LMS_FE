@@ -239,8 +239,31 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setIsAuthenticated(false);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("activeRole");
     window.location.href = "/login";
   }, []);
+
+  const switchRole = useCallback(
+    (newRole: "STUDENT" | "TEACHER" | "ADMIN") => {
+      if (!user) return;
+      if (!user.roles.includes(newRole)) return;
+      if (user.role === newRole) return;
+
+      const updatedUser = { ...user, role: newRole };
+      setUser(updatedUser);
+      safelyStoreUser(updatedUser);
+      localStorage.setItem("activeRole", newRole);
+
+      // Navigate tới dashboard tương ứng
+      const dashboardMap: Record<string, string> = {
+        ADMIN: "/admin/dashboard",
+        TEACHER: "/teacher/dashboard",
+        STUDENT: "/student/dashboard",
+      };
+      window.location.href = dashboardMap[newRole] || "/";
+    },
+    [user],
+  );
 
   const forceLogout = useCallback(() => {
     // Clear local state
@@ -521,6 +544,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         loginWithGoogle,
         register,
         logout,
+        switchRole,
         forceLogout,
         forgotPassword,
         changePassword,

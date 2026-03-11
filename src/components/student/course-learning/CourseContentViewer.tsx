@@ -147,8 +147,9 @@ const CourseContentViewer = ({
   }
 
   if (loadingItem) {
+    const isVideo = currentItem?.type === "VIDEO";
     return (
-      <div className="flex items-center justify-center h-64 bg-slate-100 rounded-xl">
+      <div className={`flex items-center justify-center bg-slate-100 rounded-xl border border-slate-200 animate-pulse ${isVideo ? 'aspect-video w-full' : 'min-h-[500px] w-full'}`}>
         <span className="animate-spin text-3xl text-blue-600">
           <FaCircleNotch />
         </span>
@@ -211,7 +212,7 @@ const CourseContentViewer = ({
           <button
             onClick={handleMarkComplete}
             disabled={markingComplete}
-            className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer"
           >
             {markingComplete ? (
               <>
@@ -252,7 +253,7 @@ const CourseContentViewer = ({
           <button
             onClick={handleMarkComplete}
             disabled={markingComplete}
-            className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer"
           >
             {markingComplete ? (
               <>

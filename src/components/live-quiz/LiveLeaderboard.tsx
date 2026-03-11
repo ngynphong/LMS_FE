@@ -81,7 +81,7 @@ export const LiveLeaderboard = ({
 
             {/* Score */}
             <div className="ml-4 text-right">
-              <p className="font-mono text-2xl font-black text-white tracking-tighter">
+              <p className="font-mono text-2xl font-black text-blue-500 tracking-tighter">
                 {Math.round(player.score).toLocaleString()}
               </p>
               <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">

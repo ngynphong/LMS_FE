@@ -27,7 +27,7 @@ const AdminCourseDetailPage = () => {
   // Modal State
   const [modalConfig, setModalConfig] = useState<{
     isOpen: boolean;
-    type: "APPROVE" | "BAN" | null;
+    type: "APPROVE" | "BAN" | "UNBAN" | null;
     title: string;
     message: string;
     variant: "info" | "danger";
@@ -138,9 +138,19 @@ const AdminCourseDetailPage = () => {
     setModalConfig({
       isOpen: true,
       type: "BAN",
-      title: "Khóa/Từ chối khóa học",
-      message: `Bạn có chắc chắn muốn khóa/từ chối khóa học "${course.name}"? Hành động này sẽ ẩn khóa học khỏi hệ thống.`,
+      title: "Khóa khóa học",
+      message: `Bạn có chắc chắn muốn khóa khóa học "${course?.name}"? Hành động này sẽ ẩn khóa học khỏi hệ thống.`,
       variant: "danger",
+    });
+  };
+
+  const openUnbanModal = () => {
+    setModalConfig({
+      isOpen: true,
+      type: "UNBAN",
+      title: "Mở khóa khóa học",
+      message: `Bạn có chắc chắn muốn mở khóa cho khóa học "${course?.name}"?`,
+      variant: "info",
     });
   };
 
@@ -152,8 +162,11 @@ const AdminCourseDetailPage = () => {
         await approve({ id, status: "PUBLISHED" });
         toast.success("Đã phê duyệt khóa học thành công");
       } else if (modalConfig.type === "BAN") {
-        await ban(id);
+        await ban({ id, status: "BANNED" });
         toast.success("Đã khóa khóa học thành công");
+      } else if (modalConfig.type === "UNBAN") {
+        await ban({ id, status: "PUBLISHED" });
+        toast.success("Đã mở khóa khóa học thành công");
       }
       refetch();
       setModalConfig((prev) => ({ ...prev, isOpen: false }));
@@ -161,7 +174,9 @@ const AdminCourseDetailPage = () => {
       toast.error(
         modalConfig.type === "APPROVE"
           ? "Phê duyệt thất bại"
-          : "Khóa khóa học thất bại",
+          : modalConfig.type === "BAN"
+            ? "Khóa khóa học thất bại"
+            : "Mở khóa thất bại",
       );
     }
   };
@@ -190,13 +205,21 @@ const AdminCourseDetailPage = () => {
           </div>
         </div>
         <div className="flex gap-2">
-          {course.status !== "BANNED" && (
+          {course.status !== "BANNED" ? (
             <button
               onClick={openBanModal}
               className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-red-600 text-white text-sm font-bold hover:translate-y-[-2px] transition-all duration-300 cursor-pointer"
             >
               <span className="material-symbols-outlined text-lg">block</span>
               Khóa / Từ chối
+            </button>
+          ) : (
+            <button
+              onClick={openUnbanModal}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-green-600 text-white text-sm font-bold hover:translate-y-[-2px] transition-all duration-300 cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-lg">settings_backup_restore</span>
+              Mở khóa
             </button>
           )}
         </div>
@@ -209,7 +232,7 @@ const AdminCourseDetailPage = () => {
           <div className="w-full md:w-80 aspect-video bg-slate-100 shrink-0">
             {course.thumbnailUrl ? (
               <img
-                src={course.thumbnailUrl}
+                src={course.thumbnailUrl || "/img/default-course.jpg"}
                 alt={course.name}
                 className="w-full h-full object-cover"
               />
@@ -507,7 +530,7 @@ const AdminCourseDetailPage = () => {
         message={modalConfig.message}
         variant={modalConfig.variant}
         isLoading={banLoading || approveLoading}
-        confirmLabel={modalConfig.type === "APPROVE" ? "Phê duyệt" : "Khóa"}
+        confirmLabel={modalConfig.type === "APPROVE" ? "Phê duyệt" : modalConfig.type === "BAN" ? "Khóa" : "Mở khóa"}
       />
     </div>
   );

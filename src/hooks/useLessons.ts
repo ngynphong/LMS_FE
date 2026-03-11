@@ -121,6 +121,7 @@ export const useLessonItemDetail = (id: string | undefined) => {
     queryKey: ['lesson-item', id],
     queryFn: () => getLessonItemById(id!),
     enabled: !!id,
+    staleTime: 5 * 60 * 1000,
   });
 };
 

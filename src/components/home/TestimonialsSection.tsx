@@ -21,7 +21,7 @@ const testimonials: Testimonial[] = [
     name: "Nguyễn Thị Châu Anh",
     role: "Học sinh tiểu học",
     content:
-      "Con rất thích học ở IES EDU. Thầy cô giảng bài dễ hiểu và luôn giúp con khi con chưa hiểu bài.",
+      "Con rất thích học ở IES Focus. Thầy cô giảng bài dễ hiểu và luôn giúp con khi con chưa hiểu bài.",
     rating: 5,
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuALNti7aymXiKX0TlrB2nTKflobYTAgvBV7vLhafEAPDTv7Ghvt4T_w0tWXHuJ9FoPGA8lgU7kwYuaUr6_5nBN0T2ldahG7ffkTrI6zs85o0qFQo9OPIfiKg7iftx6SCO3H8joiSg66_aWAwbtxNFvRPJyxHxaYzp6D9qaDETaSZsM7OmsNGlUy6xvpLOIJfFfeTNDpxTMbNvgHNWF2fYsmCN8lhH8I2-rgI0pS0Y3Yk0HuoCodTTa19jG4Q0eHdiu5cChXCd8ZflRU",
@@ -57,7 +57,7 @@ const TestimonialsSection = () => {
             Cảm nhận từ học sinh
           </span>
           <h2 className="sm:text-4xl text-2xl font-extrabold text-gray-900 mt-2 max-w-3xl mx-auto">
-            Hơn 1,000 học sinh đã thay đổi tương lai cùng IES EDU
+            Hơn 1,000 học sinh đã thay đổi tương lai cùng IES Focus
           </h2>
         </ScrollReveal>
 

@@ -26,7 +26,7 @@ const AdminCourseListPage = () => {
   // Modal State
   const [modalConfig, setModalConfig] = useState<{
     isOpen: boolean;
-    type: "APPROVE" | "BAN" | null;
+    type: "APPROVE" | "BAN" | "UNBAN" | null;
     courseId: string | null;
     title: string;
     message: string;
@@ -83,9 +83,20 @@ const AdminCourseListPage = () => {
       isOpen: true,
       type: "BAN",
       courseId: id,
-      title: "Khóa/Từ chối khóa học",
-      message: `Bạn có chắc chắn muốn khóa/từ chối khóa học "${courseName}"? Hành động này sẽ ẩn khóa học khỏi hệ thống.`,
+      title: "Khóa khóa học",
+      message: `Bạn có chắc chắn muốn khóa khóa học "${courseName}"? Hành động này sẽ ẩn khóa học khỏi hệ thống.`,
       variant: "danger",
+    });
+  };
+
+  const openUnbanModal = (id: string, courseName: string) => {
+    setModalConfig({
+      isOpen: true,
+      type: "UNBAN",
+      courseId: id,
+      title: "Mở khóa khóa học",
+      message: `Bạn có chắc chắn muốn mở khóa cho khóa học "${courseName}"?`,
+      variant: "info",
     });
   };
 
@@ -97,8 +108,11 @@ const AdminCourseListPage = () => {
         await approve({ id: modalConfig.courseId, status: "PUBLISHED" });
         toast.success("Đã phê duyệt khóa học thành công");
       } else if (modalConfig.type === "BAN") {
-        await ban(modalConfig.courseId);
+        await ban({ id: modalConfig.courseId, status: "BANNED" });
         toast.success("Đã khóa khóa học thành công");
+      } else if (modalConfig.type === "UNBAN") {
+        await ban({ id: modalConfig.courseId, status: "PUBLISHED" });
+        toast.success("Đã mở khóa khóa học thành công");
       }
       refetch();
       setModalConfig((prev) => ({ ...prev, isOpen: false }));
@@ -106,7 +120,9 @@ const AdminCourseListPage = () => {
       toast.error(
         modalConfig.type === "APPROVE"
           ? "Phê duyệt thất bại"
-          : "Khóa khóa học thất bại",
+          : modalConfig.type === "BAN"
+            ? "Khóa khóa học thất bại"
+            : "Mở khóa thất bại",
       );
     }
   };
@@ -347,7 +363,7 @@ const AdminCourseListPage = () => {
                             visibility
                           </span>
                         </Link>
-                        {course.status !== "BANNED" && (
+                        {course.status !== "BANNED" ? (
                           <button
                             onClick={() => openBanModal(course.id, course.name)}
                             className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 hover:-translate-y-1 transition-all size-8 flex items-center justify-center cursor-pointer duration-300"
@@ -355,6 +371,16 @@ const AdminCourseListPage = () => {
                           >
                             <span className="material-symbols-outlined">
                               block
+                            </span>
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => openUnbanModal(course.id, course.name)}
+                            className="p-2 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 hover:-translate-y-1 transition-all size-8 flex items-center justify-center cursor-pointer duration-300"
+                            title="Mở khóa"
+                          >
+                            <span className="material-symbols-outlined">
+                              settings_backup_restore
                             </span>
                           </button>
                         )}
@@ -398,7 +424,7 @@ const AdminCourseListPage = () => {
         message={modalConfig.message}
         variant={modalConfig.variant}
         isLoading={banLoading || approveLoading}
-        confirmLabel={modalConfig.type === "APPROVE" ? "Phê duyệt" : "Khóa"}
+        confirmLabel={modalConfig.type === "APPROVE" ? "Phê duyệt" : modalConfig.type === "BAN" ? "Khóa" : "Mở khóa"}
       />
     </div>
   );

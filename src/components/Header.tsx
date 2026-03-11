@@ -244,7 +244,7 @@ const Header = () => {
                 className="w-8 h-8"
               />
               <h2 className="text-lg color-primary font-bold tracking-tight">
-                IES EDU
+                IES Focus
               </h2>
             </div>
             <button

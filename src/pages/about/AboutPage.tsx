@@ -20,21 +20,18 @@ const AboutPage = () => {
         />
 
         {/* Container: px-4 cho mobile, px-6 cho tablet/desktop */}
-        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10 py-12 lg:py-20">
-          <ScrollReveal
-            variant={fadeInLeft}
-            className="space-y-2 lg:space-y-4"
-          >
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 w-full grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-12 lg:gap-16 items-center relative z-10 py-12 lg:py-20">
+          <ScrollReveal variant={fadeInLeft} className="space-y-2 lg:space-y-4">
             <div className="inline-flex items-center gap-3 bg-blue-50 color-primary px-3 py-1.5 lg:px-4 lg:py-2 rounded-full font-bold text-[10px] lg:text-xs uppercase tracking-widest border border-blue-100 w-fit">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full color-primary opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 color-primary"></span>
               </span>
-              Chào mừng đến với IES EDU
+              Chào mừng đến với IES Focus
             </div>
 
             <h1 className="text-slate-900 text-start text-2xl sm:text-3xl lg:text-5xl font-black leading-[1.2] lg:leading-[1.1] tracking-tight">
-              Viện Khoa Học
+              Viện Khoa Học Công Nghệ
             </h1>
             <h1 className="text-slate-900 text-start text-2xl sm:text-3xl lg:text-5xl font-black leading-[1.2] lg:leading-[1.1] tracking-tight">
               Sáng Tạo Khởi Nghiệp
@@ -52,12 +49,10 @@ const AboutPage = () => {
             className="relative hidden lg:block -mt-10"
           >
             <div className="relative rounded-[3rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] border-12 border-white/10">
-              <div
-                className="w-full aspect-4/5 bg-cover bg-center transition-transform duration-700 hover:scale-105"
-                style={{
-                  backgroundImage:
-                    "url('https://plus.unsplash.com/premium_photo-1664299825291-909568eb8db7?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
-                }}
+              <img
+                alt=""
+                className="w-full aspect-4/5 object-cover bg-center transition-transform duration-700 hover:scale-105"
+                src="/img/bg-about-hero.png"
               />
               <div className="absolute top-10 right-10 size-32 bg-white/95 backdrop-blur-md rounded-full border-4 border-[#0077BE] flex flex-col items-center justify-center text-center shadow-2xl rotate-12">
                 <span className="color-primary text-3xl font-black leading-none">
@@ -205,12 +200,6 @@ const AboutPage = () => {
                   Trở thành viện nghiên cứu và đào tạo hàng đầu, tiên phong
                   trong việc ứng dụng các thành tựu khoa học công nghệ mới nhất.
                 </p>
-                <div className="mt-6 lg:mt-8 flex items-center gap-2 color-primary font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                  Tìm hiểu thêm{" "}
-                  <span className="material-symbols-outlined text-sm">
-                    arrow_right_alt
-                  </span>
-                </div>
               </div>
             </StaggerItem>
 
@@ -230,12 +219,6 @@ const AboutPage = () => {
                   nguồn nhân lực chất lượng cao và giải pháp khởi nghiệp sáng
                   tạo.
                 </p>
-                <div className="mt-6 lg:mt-8 flex items-center gap-2 color-primary font-bold text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                  Tìm hiểu thêm{" "}
-                  <span className="material-symbols-outlined text-sm">
-                    arrow_right_alt
-                  </span>
-                </div>
               </div>
             </StaggerItem>
 
@@ -250,11 +233,10 @@ const AboutPage = () => {
                 <h3 className="text-xl lg:text-2xl font-extrabold mb-3 lg:mb-5 text-white">
                   Giá trị cốt lõi
                 </h3>
-                <ul className="space-y-3 lg:space-y-4">
+                <ul className="space-y-2 lg:space-y-3">
                   {[
                     "Năng động - Sáng tạo",
                     "Bền vững & Trách nhiệm",
-                    "Chất lượng vượt trội",
                     "Làm chủ tương lai",
                   ].map((item, idx) => (
                     <li
@@ -302,7 +284,7 @@ const AboutPage = () => {
             {/* Nếu số 4 ở code cũ là trang trí thì để, không thì xoá. Tôi tạm ẩn đi */}
           </ScrollReveal>
 
-          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-8">
+          <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             {/* Mapping data để code gọn hơn */}
             {[
               {
@@ -318,17 +300,17 @@ const AboutPage = () => {
                 color: "red",
               },
               {
-                title: "Phát triển kỹ năng trẻ em",
+                title: "Phát triển kỹ năng trẻ",
                 desc: "Ươm mầm tài năng nhí với tư duy sáng tạo.",
                 icon: "child_care",
                 color: "green",
               },
-              {
-                title: "Chứng chỉ nghiệp vụ ngắn hạn",
-                desc: "Cập nhật kiến thức thực tế nhanh chóng.",
-                icon: "verified",
-                color: "purple",
-              },
+              // {
+              //   title: "Chứng chỉ nghiệp vụ ngắn hạn",
+              //   desc: "Cập nhật kiến thức thực tế nhanh chóng.",
+              //   icon: "verified",
+              //   color: "purple",
+              // },
               {
                 title: "Tư vấn Du học",
                 desc: "Kết nối học thuật toàn cầu, hỗ trợ lộ trình.",
@@ -342,7 +324,7 @@ const AboutPage = () => {
               >
                 {/* Dynamic color classes handling */}
                 <div
-                  className={`size-16 lg:size-20 rounded-3xl bg-${item.color}-50 flex items-center justify-center mb-6 lg:mb-8 group-hover:bg-${item.color}-600 transition-colors duration-500`}
+                  className={`size-16 lg:size-20 rounded-3xl bg-${item.color}-50 flex items-center justify-center mb-6 lg:mb-8 transition-colors duration-500`}
                 >
                   <span
                     className={`material-symbols-outlined text-3xl lg:text-4xl text-${item.color}-600`}
@@ -550,7 +532,7 @@ const AboutPage = () => {
       </section>
 
       {/* --- CONCLUSION SECTION --- */}
-      <section className="py-16 lg:py-24 bg-slate-900 text-white relative overflow-hidden">
+      <section className="py-16 lg:py-24 bg-slate-800 text-white relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/2 h-full bg-[#0077BE]/10 blur-3xl rounded-full translate-x-1/2"></div>
         <div className="absolute bottom-0 left-0 w-1/2 h-full bg-purple-500/10 blur-3xl rounded-full -translate-x-1/2"></div>
 

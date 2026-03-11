@@ -122,3 +122,19 @@ export interface ResetPasswordResponse {
   message: string;
   data: string;
 }
+
+export interface UserManual {
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UpdateUserManualRequest {
+  content: string;
+}
+
+export interface UserManualResponse {
+  code: number;
+  message: string;
+  data: UserManual;
+}

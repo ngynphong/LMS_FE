@@ -15,8 +15,20 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 
 // Helper function to map API roles to User role type
+// Ưu tiên activeRole đã lưu trong localStorage (từ switchRole)
 const mapRolesToUserRole = (roles: string[]): 'STUDENT' | 'TEACHER' | 'ADMIN' => {
     if (!roles || roles.length === 0) return 'STUDENT';
+
+    // Check nếu user đã chọn role trước đó
+    try {
+        const savedRole = localStorage.getItem('activeRole');
+        if (savedRole && roles.includes(savedRole)) {
+            return savedRole as 'STUDENT' | 'TEACHER' | 'ADMIN';
+        }
+    } catch {
+        // Ignore localStorage errors
+    }
+
     if (roles.includes('ADMIN')) return 'ADMIN';
     if (roles.includes('TEACHER')) return 'TEACHER';
     return 'STUDENT';
@@ -62,6 +74,7 @@ export const loginApi = async (email: string, password: string): Promise<AuthRes
                     urlImg: profileData.imgUrl || '',
                     dob: profileData.dob || '',
                     role: mapRolesToUserRole(profileData.roles || roles),
+                    roles: profileData.roles || roles || [],
                     teacherProfile: profileData.teacherProfile || undefined,
                     studentProfile: profileData.studentProfile || undefined,
                     requiresTeacherAssignment,
@@ -82,6 +95,7 @@ export const loginApi = async (email: string, password: string): Promise<AuthRes
             urlImg: '',
             dob: '',
             role: mapRolesToUserRole(roles),
+            roles: roles || [],
             requiresTeacherAssignment,
         };
 
@@ -139,6 +153,7 @@ export const googleLoginApi = async (code: string): Promise<AuthResponse> => {
                     urlImg: profileData.imgUrl || '',
                     dob: profileData.dob || '',
                     role: mapRolesToUserRole(profileData.roles || roles),
+                    roles: profileData.roles || roles || [],
                     teacherProfile: profileData.teacherProfile || undefined,
                     studentProfile: profileData.studentProfile || undefined,
                 };
@@ -157,6 +172,7 @@ export const googleLoginApi = async (code: string): Promise<AuthResponse> => {
             urlImg: '',
             dob: '',
             role: mapRolesToUserRole(roles),
+            roles: roles || [],
         };
 
         return { user, token };
@@ -184,6 +200,7 @@ export const updateProfileApi = async (profileData: EditProfileRequest): Promise
             urlImg: userData.urlImg || '',
             dob: userData.dob || '',
             role: mapRolesToUserRole(roles),
+            roles: roles,
         };
     } catch (error) {
         return handleApiError(error, 'Failed to update profile');
@@ -315,6 +332,7 @@ export const getCurrentUserApi = async (): Promise<AuthResponse> => {
             urlImg: profileData.imgUrl || '',
             dob: profileData.dob || '',
             role: mapRolesToUserRole(roles),
+            roles: roles,
             teacherProfile: profileData.teacherProfile || undefined,
             studentProfile: profileData.studentProfile || undefined,
         };
@@ -346,6 +364,7 @@ export const loginWithCustomToken = async (token: string): Promise<AuthResponse>
              urlImg: profileData.imgUrl || '',
              dob: profileData.dob || '',
              role: mapRolesToUserRole(profileData.roles || []),
+             roles: profileData.roles || [],
              teacherProfile: profileData.teacherProfile || undefined,
              studentProfile: profileData.studentProfile || undefined,
          };

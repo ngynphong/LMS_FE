@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { createPreloadHandler } from "@/utils/routePreloader";
 import { FaTimes } from "react-icons/fa";
 import {
   MdDashboard,
@@ -16,6 +17,7 @@ import { useState, useEffect } from "react";
 import { ChevronLeft } from "@/components/animate-ui/icons/chevron-left";
 import { ChevronRight } from "@/components/animate-ui/icons/chevron-right";
 import { LogOut } from "@/components/animate-ui/icons/log-out";
+import RoleSwitcher from "@/components/common/RoleSwitcher";
 
 interface NavItem {
   path: string;
@@ -179,7 +181,7 @@ const TeacherSidebar = ({
               {(!isCollapsed || isMobileOpen) && (
                 <div className="whitespace-nowrap overflow-hidden lg:block hidden">
                   <h1 className="text-slate-900 text-base font-bold leading-tight truncate">
-                    IES Edu
+                    IES Focus
                   </h1>
                   <p className="text-slate-500 text-xs font-medium truncate mt-0.5">
                     Giảng viên
@@ -188,7 +190,7 @@ const TeacherSidebar = ({
               )}
               <div className="flex flex-col whitespace-nowrap overflow-hidden lg:hidden">
                 <h1 className="text-slate-900 text-base font-bold leading-tight truncate">
-                  IES Edu
+                  IES Focus
                 </h1>
                 <p className="text-slate-500 text-xs font-medium truncate mt-0.5">
                   Giảng viên
@@ -203,6 +205,7 @@ const TeacherSidebar = ({
                   <li key={item.path}>
                     <Link
                       to={item.path}
+                      onMouseEnter={createPreloadHandler(item.path)}
                       className={`flex items-center text-sm gap-3 transition-all rounded-lg ${
                         isCollapsed ? "lg:justify-center lg:p-3" : "px-4 py-3"
                       } ${
@@ -273,6 +276,9 @@ const TeacherSidebar = ({
               )}
               <span className="lg:hidden">Tạo khóa học mới</span>
             </button>
+
+            {/* Role Switcher */}
+            <RoleSwitcher isCollapsed={isCollapsed} isMobileOpen={isMobileOpen} />
 
             {/* Logout Button */}
             <button

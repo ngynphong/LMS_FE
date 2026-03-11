@@ -17,7 +17,7 @@ const Footer = () => {
                 className="w-12 h-12"
               />
             </span>
-            <h2 className="text-white text-2xl font-bold">IES EDU</h2>
+            <h2 className="text-white text-2xl font-bold">IES Focus</h2>
           </div>
           <p className="text-gray-400 text-sm leading-relaxed">
             Nâng tầm tri thức Việt qua các khóa học công nghệ thực chiến và lộ

@@ -140,7 +140,8 @@ const DesktopPdfViewer = ({
   isFullscreen: boolean;
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [containerWidth, setContainerWidth] = useState<number>(MAX_PDF_WIDTH);
+  const [pageWidth, setPageWidth] = useState<number | undefined>(MAX_PDF_WIDTH);
+  const [pageHeight, setPageHeight] = useState<number | undefined>(undefined);
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -150,21 +151,19 @@ const DesktopPdfViewer = ({
     const container = containerRef.current;
     if (!container) return;
 
-    const updateWidth = () => {
+    const updateDimensions = () => {
       const width = container.clientWidth;
       if (isFullscreen) {
-        // Trừ đi khoảng trống 120px của Header và Navigation Controls để vừa khít màn hình
-        const availableHeight = window.innerHeight - 120;
-        const estimatedRatio = 16 / 9; // Tỉ lệ phổ biến PPT/Slide PDF
-        const calculatedWidth = availableHeight * estimatedRatio;
-        setContainerWidth(Math.min(calculatedWidth, width - 32));
+        setPageWidth(undefined);
+        setPageHeight(window.innerHeight - 140);
       } else {
-        setContainerWidth(Math.min(width - 16, MAX_PDF_WIDTH));
+        setPageWidth(Math.min(width - 16, MAX_PDF_WIDTH));
+        setPageHeight(undefined);
       }
     };
 
-    updateWidth();
-    const resizeObserver = new ResizeObserver(updateWidth);
+    updateDimensions();
+    const resizeObserver = new ResizeObserver(updateDimensions);
     resizeObserver.observe(container);
     return () => resizeObserver.disconnect();
   }, [isFullscreen]);
@@ -227,8 +226,9 @@ const DesktopPdfViewer = ({
               pageNumber={pageNumber}
               renderTextLayer={true}
               renderAnnotationLayer={true}
-              className={`shadow-lg transition-all duration-300 ${isFullscreen ? "[&>canvas]:h-[calc(100vh-140px)]! [&>canvas]:w-auto! [&>canvas]:object-contain flex justify-center" : ""}`}
-              width={isFullscreen ? undefined : containerWidth}
+              className="shadow-lg transition-all duration-300 flex justify-center"
+              width={pageWidth}
+              height={pageHeight}
             />
           </Document>
         )}

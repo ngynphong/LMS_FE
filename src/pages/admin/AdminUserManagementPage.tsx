@@ -377,7 +377,7 @@ const AdminUserManagementPage = () => {
                   : "border-transparent text-[#607b8a] hover:text-[#111518]"
               }`}
             >
-              Tất cả ({totalElements})
+              Tất cả{activeTab === "All" ? ` (${totalElements})` : ""}
             </button>
             <button
               onClick={() => handleTabChange("STUDENT")}
@@ -410,12 +410,6 @@ const AdminUserManagementPage = () => {
               Admin ({data?.totalAdmins || 0})
             </button>
           </div>
-          {/* <div className="pb-3">
-            <button className="px-4 py-2 bg-red-50 text-red-600 font-semibold text-xs rounded-lg flex items-center gap-2 hover:bg-red-100 transition-all border border-red-100">
-              <MdLock className="text-lg" />
-              Khóa tài khoản hàng loạt
-            </button>
-          </div> */}
         </div>
 
         {/* Table Container */}
@@ -423,12 +417,6 @@ const AdminUserManagementPage = () => {
           <table className="w-full text-left border-collapse">
             <thead className="bg-[#f9fafb]">
               <tr>
-                <th className="p-4 w-12 text-center">
-                  <input
-                    type="checkbox"
-                    className="rounded border-slate-300 text-[#1E90FF] focus:ring-[#1E90FF]"
-                  />
-                </th>
                 <th className="p-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
                   Người dùng
                 </th>
@@ -467,12 +455,6 @@ const AdminUserManagementPage = () => {
                       key={user.id}
                       className="hover:bg-slate-50 transition-colors"
                     >
-                      <td className="p-4 w-12 text-center">
-                        <input
-                          type="checkbox"
-                          className="rounded border-slate-300 text-[#0078bd] focus:ring-[#0078bd]"
-                        />
-                      </td>
                       <td className="p-4">
                         <div className="flex items-center gap-3">
                           {user.imgUrl ? (

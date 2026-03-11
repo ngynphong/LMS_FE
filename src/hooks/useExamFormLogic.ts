@@ -34,7 +34,7 @@ export const useExamFormLogic = (id: string | undefined) => {
     description: "",
     duration: 60,
     maxAttempts: 1,
-    passingScore: 50,
+    passingScore: 5,
     shuffleQuestions: true,
     isDynamic: true,
     type: "PRACTICE" as "PRACTICE" | "QUIZ",

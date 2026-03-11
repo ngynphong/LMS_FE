@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
+import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
+import ContentLoading from "@/components/common/ContentLoading";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AIChatbot from "@/components/common/AIChatbot";
@@ -12,7 +14,11 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   return (
     <div className="relative flex min-h-screen flex-col w-full">
       <Header />
-      <main className="flex-1 w-full">{children || <Outlet />}</main>
+      <main className="flex-1 w-full">
+        <Suspense fallback={<ContentLoading />}>
+          {children || <Outlet />}
+        </Suspense>
+      </main>
       <Footer />
 
       {/* AI Chatbot */}

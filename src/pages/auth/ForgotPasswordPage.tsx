@@ -70,7 +70,9 @@ const ForgotPasswordPage = () => {
                 alt="ies-edu-logo"
                 className="w-12 h-12"
               />
-              <span className="text-xl font-bold tracking-tight">IES EDU</span>
+              <span className="text-xl font-bold tracking-tight">
+                IES Focus
+              </span>
             </Link>
           </div>
         </div>
@@ -90,7 +92,9 @@ const ForgotPasswordPage = () => {
                   className="w-12 h-12"
                 />
               </span>
-              <span className="text-xl font-bold tracking-tight">IES EDU</span>
+              <span className="text-xl font-bold tracking-tight">
+                IES Focus
+              </span>
             </Link>
 
             {/* Back to Login */}

@@ -1,8 +1,7 @@
 import React from "react";
 import type { RouteObject } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
-
-const AdminLayout = React.lazy(() => import("@/layouts/AdminLayout"));
+import AdminLayout from "@/layouts/AdminLayout";
 const AdminDashboardPage = React.lazy(
   () => import("@/pages/admin/AdminDashboardPage"),
 );
@@ -29,6 +28,9 @@ const AdminBlogPage = React.lazy(() =>
 );
 const BlogFormPage = React.lazy(
   () => import("@/pages/admin/blog/BlogFormPage"),
+);
+const AdminUserManualPage = React.lazy(
+  () => import("@/pages/admin/AdminUserManualPage"),
 );
 
 // Banner Admin Pages
@@ -122,10 +124,13 @@ const adminRoutes: RouteObject[] = [
         element: <BlogFormPage />,
       },
       {
-        path: "reports",
         element: (
           <div className="p-8 text-[#101518]">Trang Báo cáo - Coming Soon</div>
         ),
+      },
+      {
+        path: "user-manual",
+        element: <AdminUserManualPage />,
       },
     ],
   },

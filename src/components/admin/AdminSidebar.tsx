@@ -6,6 +6,7 @@ import {
   FaKey,
   FaBullhorn,
   FaNewspaper,
+  FaQuestionCircle,
 } from "react-icons/fa";
 import { FaCalendar, FaTimes } from "react-icons/fa";
 import { useAuth } from "@/hooks/useAuth";
@@ -14,6 +15,7 @@ import { useState, useEffect } from "react";
 import { ChevronRight } from "@/components/animate-ui/icons/chevron-right";
 import { ChevronLeft } from "@/components/animate-ui/icons/chevron-left";
 import { LogOut } from "@/components/animate-ui/icons/log-out";
+import RoleSwitcher from "@/components/common/RoleSwitcher";
 
 interface NavItem {
   path: string;
@@ -48,11 +50,6 @@ const navItems: NavItem[] = [
     label: "Quản lý khóa học",
   },
   {
-    path: "/admin/settings",
-    icon: <MdSettings className="text-xl" />,
-    label: "Cài đặt hệ thống",
-  },
-  {
     path: "/admin/banners",
     icon: <FaBullhorn className="text-xl" />,
     label: "Quản lý Banner",
@@ -61,6 +58,17 @@ const navItems: NavItem[] = [
     path: "/admin/blogs",
     icon: <FaNewspaper className="text-xl" />,
     label: "Quản lý blog",
+  },
+
+  {
+    path: "/admin/user-manual",
+    icon: <FaQuestionCircle className="text-xl" />,
+    label: "Hướng dẫn sử dụng",
+  },
+  {
+    path: "/admin/settings",
+    icon: <MdSettings className="text-xl" />,
+    label: "Cài đặt hệ thống",
   },
 ];
 
@@ -236,6 +244,9 @@ const AdminSidebar = ({
           </div>
           {/* Bottom Section */}
           <div className={`p-4 pt-0 space-y-2 ${isCollapsed ? "lg:px-2" : ""}`}>
+            {/* Role Switcher */}
+            <RoleSwitcher isCollapsed={isCollapsed} isMobileOpen={isMobileOpen} />
+
             {/* Logout Button */}
             <button
               onClick={handleLogoutClick}

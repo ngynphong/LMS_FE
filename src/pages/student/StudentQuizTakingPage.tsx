@@ -383,7 +383,7 @@ const StudentQuizTakingPage = () => {
             <img src="/img/logo-edu.png" alt="Logo" className="w-8 h-8" />
           </Link>
           <h2 className="color-primary text-lg font-bold leading-tight hidden sm:block">
-            IES EDU
+            IES Focus
           </h2>
         </div>
         <div className="flex flex-1 justify-end gap-4 lg:gap-8 items-center">
