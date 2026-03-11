@@ -20,7 +20,6 @@ export const BannerEditPage: React.FC = () => {
   });
 
   const banner = bannerResponse?.data;
-  console.log(banner);
 
   const handleSubmit = async (
     data: BannerCreationRequest,

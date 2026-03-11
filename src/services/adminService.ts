@@ -71,8 +71,13 @@ export const getAdminUserManual = async (): Promise<UserManualResponse> => {
 
 export const updateAdminUserManual = async (data: UpdateUserManualRequest): Promise<UserManualResponse> => {
     try {
-        const response = await axiosInstance.put<UserManualResponse>('/admin/user-manual', null, {
-            params: { content: data.content }
+        const params = new URLSearchParams();
+        params.append('content', data.content);
+
+        const response = await axiosInstance.put<UserManualResponse>('/admin/user-manual', params, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
         });
         return response.data;
     } catch (error) {
