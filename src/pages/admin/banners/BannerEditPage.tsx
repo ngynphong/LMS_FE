@@ -20,6 +20,7 @@ export const BannerEditPage: React.FC = () => {
   });
 
   const banner = bannerResponse?.data;
+  console.log(banner);
 
   const handleSubmit = async (
     data: BannerCreationRequest,
@@ -88,7 +89,7 @@ export const BannerEditPage: React.FC = () => {
     animationType: banner.animationType,
     startTime: banner.startTime,
     endTime: banner.endTime,
-    active: banner.active,
+    isActive: banner.active,
     priority: banner.priority,
     altText: banner.altText,
     ariaLabel: banner.ariaLabel,

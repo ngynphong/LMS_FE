@@ -147,8 +147,9 @@ const CourseContentViewer = ({
   }
 
   if (loadingItem) {
+    const isVideo = currentItem?.type === "VIDEO";
     return (
-      <div className="flex items-center justify-center h-64 bg-slate-100 rounded-xl">
+      <div className={`flex items-center justify-center bg-slate-100 rounded-xl border border-slate-200 animate-pulse ${isVideo ? 'aspect-video w-full' : 'min-h-[500px] w-full'}`}>
         <span className="animate-spin text-3xl text-blue-600">
           <FaCircleNotch />
         </span>

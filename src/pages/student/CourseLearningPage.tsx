@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import LessonSidebar, {
   getItemTypeIcon,
@@ -52,16 +52,43 @@ const CourseLearningPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLessonSidebarOpen, setIsLessonSidebarOpen] = useState(false);
   const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
+  const fetchedItemIds = useRef<Set<string>>(new Set());
 
   // Handle lesson item selection
   const handleItemSelect = useCallback(async (item: LessonItem) => {
+    if (fetchedItemIds.current.has(item.id)) {
+      setCurrentItem(item);
+      setIsLessonSidebarOpen(false);
+      return;
+    }
+
     setLoadingItem(true);
     setCurrentItem(item);
     setIsLessonSidebarOpen(false);
     try {
       const detail = await getLessonItemById(item.id);
       if (detail) {
+        fetchedItemIds.current.add(item.id);
         setCurrentItem(detail);
+        setLessonsWithItems((prevLessons) =>
+          prevLessons.map((lesson) => {
+            if (
+              lesson.lessonItems &&
+              lesson.lessonItems.some((i) => i.id === detail.id)
+            ) {
+              return {
+                ...lesson,
+                lessonItems: lesson.lessonItems.map((i) =>
+                  i.id === detail.id ? detail : i,
+                ),
+              };
+            }
+            return lesson;
+          }),
+        );
+      } else {
+        // Mark as fetched even if detail is null to prevent infinite retries
+        fetchedItemIds.current.add(item.id);
       }
     } catch (error) {
       console.error("Failed to fetch item detail", error);
@@ -70,11 +97,29 @@ const CourseLearningPage = () => {
     }
   }, []);
 
+  const lastLoadedCourseId = useRef<string | null>(null);
+
   // Fetch lesson details with lessonItems once course is loaded
   useEffect(() => {
-    const loadLessonDetails = async () => {
+    const initCourse = async () => {
       if (!course?.lessons || course.lessons.length === 0) {
         setIsLoading(false);
+        return;
+      }
+
+      if (lastLoadedCourseId.current === course.id) {
+        let targetLesson = lessonsWithItems.find((l) => l.id === lessonId);
+        if (!targetLesson) {
+          targetLesson = lessonsWithItems[0];
+        }
+        if (targetLesson && targetLesson.id !== currentLesson?.id) {
+          setCurrentLesson(targetLesson);
+          if (targetLesson.lessonItems && targetLesson.lessonItems.length > 0) {
+            handleItemSelect(targetLesson.lessonItems[0]);
+          } else {
+            setCurrentItem(null);
+          }
+        }
         return;
       }
 
@@ -103,6 +148,8 @@ const CourseLearningPage = () => {
         });
         setCompletedItemIds(initialCompletedIds);
 
+        lastLoadedCourseId.current = course.id;
+
         // Set current lesson
         let targetLesson: ApiLesson | undefined;
         if (lessonId) {
@@ -126,9 +173,16 @@ const CourseLearningPage = () => {
     };
 
     if (course) {
-      loadLessonDetails();
+      initCourse();
     }
-  }, [course, lessonId, courseId, handleItemSelect]);
+  }, [
+    course,
+    lessonId,
+    courseId,
+    currentLesson?.id,
+    lessonsWithItems,
+    handleItemSelect,
+  ]);
 
   // Handle lesson selection
   const handleLessonSelect = useCallback(
