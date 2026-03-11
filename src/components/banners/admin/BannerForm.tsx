@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Save, Eye } from "lucide-react";
+import { Save } from "lucide-react";
 
 import { BannerImageUpload } from "./BannerImageUpload";
 import {
@@ -33,7 +33,7 @@ const bannerSchema = z
     animationType: z.string().min(1, "Chọn kiểu hiệu ứng"),
     startTime: z.string().optional(),
     endTime: z.string().optional(),
-    active: z.boolean(),
+    isActive: z.boolean(),
     priority: z.number().min(0, "Độ ưu tiên phải lớn hơn hoặc bằng 0"),
     altText: z.string().optional(),
     ariaLabel: z.string().optional(),
@@ -107,7 +107,7 @@ export const BannerForm: React.FC<BannerFormProps> = ({
       animationType: initialData?.animationType || AnimationType.FADE,
       startTime: initialData?.startTime || "",
       endTime: initialData?.endTime || "",
-      active: initialData?.active ?? true,
+      isActive: initialData?.isActive ?? true,
       priority: initialData?.priority || 0,
       altText: initialData?.altText || "",
       ariaLabel: initialData?.ariaLabel || "",
@@ -528,7 +528,7 @@ export const BannerForm: React.FC<BannerFormProps> = ({
               <div className="pt-4 border-t border-gray-100">
                 <label className="flex items-center gap-3 cursor-pointer">
                   <Controller
-                    name="active"
+                    name="isActive"
                     control={control}
                     render={({ field }) => (
                       <div
@@ -558,12 +558,6 @@ export const BannerForm: React.FC<BannerFormProps> = ({
 
       {/* Action Buttons */}
       <div className="flex items-center justify-end gap-4 shrink-0 pb-10">
-        <button
-          type="button"
-          className="px-6 py-2.5 rounded-xl font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors hidden md:flex items-center gap-2"
-        >
-          <Eye size={18} /> Xem trước
-        </button>
         <button
           type="submit"
           disabled={isSubmitting}
