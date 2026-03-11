@@ -9,6 +9,7 @@ export interface User {
     urlImg: string;
     dob: string;
     role: 'STUDENT' | 'TEACHER' | 'ADMIN';
+    roles: string[];
     teacherProfile?: TeacherProfileData;
     studentProfile?: StudentProfile;
     requiresTeacherAssignment?: boolean;
@@ -60,6 +61,7 @@ export interface AuthContextType {
     verifyEmail: (email: string, token: string) => Promise<void>;
     verifyOtp: (email: string, otp: string, newPassword: string) => Promise<void>;
     logout: () => void;
+    switchRole: (newRole: 'STUDENT' | 'TEACHER' | 'ADMIN') => void;
     forceLogout: () => void;
     forgotPassword: (email: string) => Promise<void>;
     changePassword: (changePassword: ChangePasswordRequest) => Promise<void>;

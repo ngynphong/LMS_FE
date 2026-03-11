@@ -14,6 +14,7 @@ import { useState, useEffect } from "react";
 import { ChevronRight } from "@/components/animate-ui/icons/chevron-right";
 import { ChevronLeft } from "@/components/animate-ui/icons/chevron-left";
 import { LogOut } from "@/components/animate-ui/icons/log-out";
+import RoleSwitcher from "@/components/common/RoleSwitcher";
 
 interface NavItem {
   path: string;
@@ -236,6 +237,9 @@ const AdminSidebar = ({
           </div>
           {/* Bottom Section */}
           <div className={`p-4 pt-0 space-y-2 ${isCollapsed ? "lg:px-2" : ""}`}>
+            {/* Role Switcher */}
+            <RoleSwitcher isCollapsed={isCollapsed} isMobileOpen={isMobileOpen} />
+
             {/* Logout Button */}
             <button
               onClick={handleLogoutClick}

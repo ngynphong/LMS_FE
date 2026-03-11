@@ -17,6 +17,7 @@ import { useState, useEffect } from "react";
 import { ChevronLeft } from "@/components/animate-ui/icons/chevron-left";
 import { ChevronRight } from "@/components/animate-ui/icons/chevron-right";
 import { LogOut } from "@/components/animate-ui/icons/log-out";
+import RoleSwitcher from "@/components/common/RoleSwitcher";
 
 interface NavItem {
   path: string;
@@ -275,6 +276,9 @@ const TeacherSidebar = ({
               )}
               <span className="lg:hidden">Tạo khóa học mới</span>
             </button>
+
+            {/* Role Switcher */}
+            <RoleSwitcher isCollapsed={isCollapsed} isMobileOpen={isMobileOpen} />
 
             {/* Logout Button */}
             <button

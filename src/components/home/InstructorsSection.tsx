@@ -14,12 +14,14 @@ interface Instructor {
   image: string;
   exp: string;
   goal: string;
+  role: string;
 }
 
 const instructors: Instructor[] = [
   {
     id: 1,
-    name: "TS. Tô Hoài Thắng - Viện trưởng",
+    name: "TS. Tô Hoài Thắng",
+    role: "Viện trưởng",
     title: "Tiến sĩ chuyên ngành Quản trị Kinh doanh",
     rating: 4.9,
     reviews: 128,
@@ -30,6 +32,7 @@ const instructors: Instructor[] = [
   {
     id: 2,
     name: "ThS. Vũ Huy Hoàng",
+    role: "Phó Viện trưởng",
     title: "Thạc sĩ chuyên ngành Quản trị Kinh doanh",
     rating: 4.9,
     reviews: 85,
@@ -40,6 +43,7 @@ const instructors: Instructor[] = [
   {
     id: 3,
     name: "ThS. Nguyễn Thanh Điềm",
+    role: "Giảng viên",
     title: "Thạc sĩ chuyên ngành Công nghệ Sinh học",
     rating: 4.8,
     reviews: 210,
@@ -82,6 +86,9 @@ const InstructorsSection = () => {
                 <h3 className="text-xl font-bold text-gray-900 mb-1">
                   {instructor.name}
                 </h3>
+                <p className="text-gray-900 font-semibold text-sm mb-3">
+                  {instructor.role}
+                </p>
                 <p className="color-primary font-semibold text-sm mb-3">
                   {instructor.title}
                 </p>
