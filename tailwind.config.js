@@ -10,6 +10,19 @@ export default {
       colors: {
         primary: "#1E90FF",
       },
+      fontFamily: {
+        sans: [
+          '"Lexend"', 
+          'system-ui', 
+          '-apple-system', 
+          'BlinkMacSystemFont', 
+          '"Segoe UI"', 
+          'Roboto', 
+          '"Helvetica Neue"', 
+          'Arial', 
+          'sans-serif'
+        ],
+      },
     },
   },
   plugins: [],
