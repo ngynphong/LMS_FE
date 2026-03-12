@@ -15,7 +15,10 @@ interface CourseFormProps {
 }
 
 import LoadingOverlay from "../../common/LoadingOverlay";
-import { FaCircleNotch } from "react-icons/fa";
+import { FaCircleNotch, FaSave, FaUpload, FaTimes } from "react-icons/fa";
+import { MdBook } from "react-icons/md";
+import { useUploadCourseThumbnail } from "@/hooks/useCourses";
+import { toast } from "react-toastify";
 
 const CourseForm = ({
   initialData,
@@ -23,6 +26,7 @@ const CourseForm = ({
   loading = false,
   isEdit = false,
 }: CourseFormProps) => {
+  const { mutateAsync: uploadThumbnail, isPending: uploadingThumbnail } = useUploadCourseThumbnail();
   const [formData, setFormData] = useState<CourseFormData>({
     name: "",
     description: "",
@@ -54,8 +58,8 @@ const CourseForm = ({
 
       <div className="flex items-center gap-3 mb-6">
         <div className="size-10 rounded-lg bg-blue-100 flex items-center justify-center">
-          <span className="material-symbols-outlined text-blue-600">
-            menu_book
+          <span className="text-2xl text-blue-600">
+            <MdBook />
           </span>
         </div>
         <div>
@@ -124,20 +128,71 @@ const CourseForm = ({
 
         <div>
           <label className="block text-sm font-semibold text-slate-700 mb-2">
-            URL ảnh thumbnail
+            Ảnh thumbnail khóa học
           </label>
-          <input
-            type="text"
-            value={formData.thumbnailUrl}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, thumbnailUrl: e.target.value }))
-            }
-            placeholder="https://example.com/image.jpg"
-            className="w-full rounded-sm p-1 border border-gray-200 focus:ring-1 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF]"
-          />
-          <p className="text-xs text-slate-400 mt-1">
-            Để trống nếu chưa có ảnh thumbnail
-          </p>
+          
+          {formData.thumbnailUrl ? (
+            <div className="relative group rounded-xl overflow-hidden aspect-video border border-slate-200 mb-2">
+              <img 
+                src={formData.thumbnailUrl} 
+                alt="Course Thumbnail" 
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setFormData(prev => ({ ...prev, thumbnailUrl: "" }))}
+                  className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors shadow-lg cursor-pointer"
+                  title="Xóa ảnh"
+                >
+                  <FaTimes />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="relative">
+              <input
+                type="file"
+                id="thumbnail-upload"
+                className="hidden"
+                accept="image/*"
+                disabled={uploadingThumbnail}
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    try {
+                      const url = await uploadThumbnail(file);
+                      setFormData(prev => ({ ...prev, thumbnailUrl: url }));
+                      toast.success("Tải ảnh lên thành công!");
+                    } catch (err) {
+                      toast.error("Tải ảnh lên thất bại. Vui lòng thử lại.");
+                    }
+                  }
+                }}
+              />
+              <label
+                htmlFor="thumbnail-upload"
+                className={`flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50/50 hover:bg-blue-50/50 hover:border-blue-300 transition-all cursor-pointer group px-4 text-center ${uploadingThumbnail ? 'opacity-50 cursor-not-allowed' : ''}`}
+              >
+                {uploadingThumbnail ? (
+                  <>
+                    <FaCircleNotch className="w-8 h-8 text-blue-500 animate-spin mb-3" />
+                    <p className="text-sm font-medium text-slate-600">Đang tải ảnh lên...</p>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm mb-3 group-hover:scale-110 transition-transform">
+                      <FaUpload className="text-slate-400 group-hover:text-blue-500 transition-colors" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-slate-700">Nhấn để tải ảnh</p>
+                      <p className="text-xs text-slate-400 mt-1">Hỗ trợ JPG, PNG, WEBP (Tối đa 5MB)</p>
+                    </div>
+                  </>
+                )}
+              </label>
+            </div>
+          )}
         </div>
 
         <div>
@@ -182,7 +237,7 @@ const CourseForm = ({
               (formData.name?.trim().length || 0) < 5 ||
               (formData.name?.length || 0) > 255
             }
-            className="w-full flex items-center justify-center gap-2 rounded-lg h-11 px-6 bg-blue-600 text-white text-sm font-bold shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="w-full flex items-center justify-center gap-2 rounded-lg h-11 px-6 bg-blue-600 text-white text-sm font-bold shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
           >
             {loading ? (
               <>
@@ -193,7 +248,9 @@ const CourseForm = ({
               </>
             ) : (
               <>
-                <span className="material-symbols-outlined text-lg">save</span>
+                <span className="text-lg">
+                  <FaSave />
+                </span>
                 <span>{isEdit ? "Cập nhật khóa học" : "Tạo khóa học"}</span>
               </>
             )}

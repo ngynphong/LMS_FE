@@ -1,4 +1,10 @@
 import { ScrollReveal, fadeInUp } from "@/components/ui/ScrollReveal";
+import { FaRocket, FaUndo, FaUserShield } from "react-icons/fa";
+import { FaPersonRays } from "react-icons/fa6";
+import { IoIosWarning, IoMdCreate } from "react-icons/io";
+import { IoEye, IoMail, IoNotifications } from "react-icons/io5";
+import { MdAnalytics, MdBlock, MdDelete, MdFactCheck } from "react-icons/md";
+import { LuMoveUp } from "react-icons/lu";
 
 const PrivacyPage = () => {
   return (
@@ -99,8 +105,8 @@ const PrivacyPage = () => {
               </div>
               <div className="mt-8 bg-amber-50 border border-amber-100 p-6 rounded-2xl">
                 <div className="flex items-center gap-2 text-amber-800 font-bold mb-2">
-                  <span className="material-symbols-outlined text-amber-600">
-                    warning
+                  <span className="text-amber-600">
+                    <IoIosWarning />
                   </span>
                   Dữ liệu cá nhân nhạy cảm
                 </div>
@@ -126,27 +132,27 @@ const PrivacyPage = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
                   {
-                    icon: "rocket_launch",
+                    icon: <FaRocket />,
                     text: "Cung cấp, vận hành và cải thiện dịch vụ học trực tuyến.",
                   },
                   {
-                    icon: "person_celebrate",
+                    icon: <FaPersonRays />,
                     text: "Quản lý tài khoản và tiến độ học tập của học viên.",
                   },
                   {
-                    icon: "notifications_active",
+                    icon: <IoNotifications />,
                     text: "Gửi thông báo học tập, cập nhật khóa học quan trọng.",
                   },
                   {
-                    icon: "mail",
+                    icon: <IoMail />,
                     text: "Gửi email về khóa học mới (có thể hủy đăng ký bất cứ lúc nào).",
                   },
                   {
-                    icon: "analytics",
+                    icon: <MdAnalytics />,
                     text: "Phân tích dữ liệu để cải thiện nội dung và trải nghiệm.",
                   },
                   {
-                    icon: "shield_person",
+                    icon: <FaUserShield />,
                     text: "Ngăn chặn gian lận, bảo vệ an ninh hệ thống.",
                   },
                 ].map((item, i) => (
@@ -154,9 +160,7 @@ const PrivacyPage = () => {
                     key={i}
                     className="flex items-start gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100"
                   >
-                    <span className="material-symbols-outlined text-blue-600 text-xl">
-                      {item.icon}
-                    </span>
+                    <span className="text-blue-600 text-xl">{item.icon}</span>
                     <span className="text-slate-600 text-sm leading-snug">
                       {item.text}
                     </span>
@@ -233,8 +237,8 @@ const PrivacyPage = () => {
               </div>
               <div className="space-y-4">
                 <div className="flex gap-4 p-6 bg-red-50 rounded-2xl border border-red-100">
-                  <span className="material-symbols-outlined text-red-600 text-3xl">
-                    notifications_active
+                  <span className="text-red-600 text-3xl">
+                    <IoIosWarning />
                   </span>
                   <div>
                     <div className="font-bold text-red-900 mb-1">
@@ -248,8 +252,8 @@ const PrivacyPage = () => {
                   </div>
                 </div>
                 <div className="flex gap-4 p-6 bg-blue-50 rounded-2xl border border-blue-100">
-                  <span className="material-symbols-outlined text-blue-600 text-3xl">
-                    fact_check
+                  <span className="text-blue-600 text-3xl">
+                    <MdFactCheck />
                   </span>
                   <div>
                     <div className="font-bold text-blue-900 mb-1">
@@ -276,32 +280,32 @@ const PrivacyPage = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
                   {
-                    icon: "visibility",
+                    icon: <IoEye />,
                     title: "Quyền truy cập",
                     desc: "Xem thông tin cá nhân đang được lưu trữ.",
                   },
                   {
-                    icon: "edit",
+                    icon: <IoMdCreate />,
                     title: "Quyền chỉnh sửa",
                     desc: "Cập nhật hoặc sửa thông tin không chính xác.",
                   },
                   {
-                    icon: "delete",
+                    icon: <MdDelete />,
                     title: "Quyền xóa",
                     desc: "Yêu cầu xóa tài khoản và dữ liệu cá nhân.",
                   },
                   {
-                    icon: "undo",
+                    icon: <FaUndo />,
                     title: "Rút lại sự đồng ý",
                     desc: "Có thể rút lại sự đồng ý xử lý dữ liệu bất cứ lúc nào.",
                   },
                   {
-                    icon: "move_up",
+                    icon: <LuMoveUp />,
                     title: "Di chuyển dữ liệu",
                     desc: "Yêu cầu cung cấp dữ liệu dưới định dạng CSV/JSON.",
                   },
                   {
-                    icon: "block",
+                    icon: <MdBlock />,
                     title: "Quyền phản đối",
                     desc: "Từ chối nhận email marketing.",
                   },
@@ -310,7 +314,7 @@ const PrivacyPage = () => {
                     key={i}
                     className="flex flex-col p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:border-blue-200 transition-colors"
                   >
-                    <span className="material-symbols-outlined text-blue-600 mb-2">
+                    <span className="text-blue-600 mb-2">
                       {item.icon}
                     </span>
                     <span className="font-bold text-slate-800 text-sm mb-1">

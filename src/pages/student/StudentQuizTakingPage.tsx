@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { MdTimer, MdFlag, MdArrowBack, MdArrowForward } from "react-icons/md";
+import { MdTimer, MdFlag, MdArrowBack, MdArrowForward, MdCancel } from "react-icons/md";
 import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import {
   useStartQuiz,
@@ -14,6 +14,7 @@ import type {
   QuizQuestionAttempt,
   CheckPracticeAnswerResponse,
 } from "@/types/quiz";
+import { CiCircleCheck } from "react-icons/ci";
 
 const StudentQuizTakingPage = () => {
   const { quizId } = useParams<{ quizId: string }>();
@@ -558,8 +559,8 @@ const StudentQuizTakingPage = () => {
                   >
                     {checkLoading ? "Đang kiểm tra..." : "Kiểm tra đáp án"}
                     {!checkLoading && (
-                      <span className="material-symbols-outlined text-sm">
-                        check_circle
+                      <span className="text-xl">
+                        <CiCircleCheck />
                       </span>
                     )}
                   </button>
@@ -571,11 +572,13 @@ const StudentQuizTakingPage = () => {
                   >
                     <div className="flex items-start gap-3">
                       <span
-                        className={`material-symbols-outlined text-2xl ${practiceFeedback[currentQuestion.id].correct ? "text-green-600" : "text-red-600"}`}
+                        className={`text-2xl ${practiceFeedback[currentQuestion.id].correct ? "text-green-600" : "text-red-600"}`}
                       >
-                        {practiceFeedback[currentQuestion.id].correct
-                          ? "check_circle"
-                          : "cancel"}
+                        {practiceFeedback[currentQuestion.id].correct ? (
+                          <CiCircleCheck />
+                        ) : (
+                          <MdCancel />
+                        )}
                       </span>
                       <div>
                         <h4

@@ -1,3 +1,4 @@
+import { IoCalendar, IoPerson, IoPlayCircle, IoSchool } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
 export interface StudentEnrolledCourse {
@@ -75,16 +76,16 @@ const StudentCourseCard = ({ course }: StudentCourseCardProps) => {
         <div className="flex flex-col gap-1 mb-3 text-sm text-slate-500">
           {course.teacherName && (
             <div className="flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[16px]">
-                person
+              <span className="text-[16px]">
+                <IoPerson />
               </span>
               <span>{course.teacherName}</span>
             </div>
           )}
           {course.schoolName && (
             <div className="flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[16px]">
-                school
+              <span className="text-[16px]">
+                <IoSchool />
               </span>
               <span>{course.schoolName}</span>
             </div>
@@ -121,8 +122,8 @@ const StudentCourseCard = ({ course }: StudentCourseCardProps) => {
 
             return dateLabel ? (
               <div className="text-xs text-slate-400 flex items-center gap-1">
-                <span className="material-symbols-outlined text-[14px]">
-                  calendar_month
+                <span className="text-[14px]">
+                  <IoCalendar />
                 </span>
                 <span>{dateLabel}</span>
               </div>
@@ -136,7 +137,9 @@ const StudentCourseCard = ({ course }: StudentCourseCardProps) => {
           className="w-full py-2.5 md:py-3 color-primary-bg text-white text-sm font-bold rounded-lg transition-colors flex items-center justify-center gap-2 hover:opacity-90"
         >
           Vào học
-          <span className="material-symbols-outlined text-sm">play_circle</span>
+          <span className="text-sm">
+            <IoPlayCircle />
+          </span>
         </Link>
       </div>
     </div>

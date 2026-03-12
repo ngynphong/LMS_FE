@@ -1,5 +1,6 @@
 import { format, isValid } from "date-fns";
 import { vi } from "date-fns/locale";
+import { MdEvent } from "react-icons/md";
 
 interface SettingsSectionProps {
   formData: {
@@ -141,7 +142,9 @@ const SettingsSection = ({ formData, setFormData }: SettingsSectionProps) => {
 
             {formData.closeTime && isValid(new Date(formData.closeTime)) && (
               <p className="text-sm text-[#1E90FF] font-medium flex items-center gap-1 bg-blue-50 w-fit px-2 py-1 rounded">
-                <span className="material-symbols-outlined text-lg">event</span>
+                <span className="text-lg">
+                  <MdEvent />
+                </span>
                 {format(
                   new Date(formData.closeTime),
                   "HH:mm 'ngày' dd/MM/yyyy (EEEE)",

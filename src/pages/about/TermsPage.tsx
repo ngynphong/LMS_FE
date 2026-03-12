@@ -1,4 +1,5 @@
 import { ScrollReveal, fadeInUp } from "@/components/ui/ScrollReveal";
+import { MdError } from "react-icons/md";
 
 const TermsPage = () => {
   return (
@@ -212,8 +213,8 @@ const TermsPage = () => {
                     key={idx}
                     className="flex items-center gap-2 text-red-700 text-sm font-medium"
                   >
-                    <span className="material-symbols-outlined text-red-500 text-lg">
-                      error_outline
+                    <span className="text-red-500 text-lg">
+                      <MdError />
                     </span>
                     {item}
                   </li>

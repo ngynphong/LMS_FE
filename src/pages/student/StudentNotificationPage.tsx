@@ -12,6 +12,8 @@ import { useInView } from "motion/react";
 import { useAuth } from "@/hooks/useAuth";
 import { getNotificationRoute } from "@/utils/notificationRouting";
 import type { NotificationCategory } from "@/types/notification";
+import { IoIosDoneAll } from "react-icons/io";
+import { AiFillSchedule } from "react-icons/ai";
 
 const StudentNotificationPage = () => {
   const navigate = useNavigate();
@@ -95,8 +97,8 @@ const StudentNotificationPage = () => {
             disabled={markAllRead.isPending}
             className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 font-medium transition-colors text-sm shadow-sm disabled:opacity-50"
           >
-            <span className="material-symbols-outlined text-[18px]">
-              done_all
+            <span className="text-[18px]">
+              <IoIosDoneAll />
             </span>
             Đánh dấu đã đọc tất cả
           </button>
@@ -148,8 +150,8 @@ const StudentNotificationPage = () => {
                       {notif.category}
                     </span>
                     <span className="text-xs text-slate-400 flex items-center gap-1.5 whitespace-nowrap">
-                      <span className="material-symbols-outlined text-[14px]">
-                        schedule
+                      <span className="text-[14px]">
+                        <AiFillSchedule />
                       </span>
                       {formatDistanceToNow(new Date(notif.createdAt), {
                         addSuffix: true,

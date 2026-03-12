@@ -352,19 +352,34 @@ export const getMySentReferralRequests = async (params?: ReferralRequestFilterPa
 };
 
 export const getMyReceivedReferralRequests = async (params?: ReferralRequestFilterParams): Promise<PaginatedReferralRequestResponse> => {
-    try {
-        const response = await axiosInstance.get<PaginatedReferralRequestResponse>('courses/referral-requests/received', {
-            params: {
-                status: params?.status,
-                fromDate: params?.fromDate,
-                toDate: params?.toDate,
-                pageNo: params?.pageNo ?? 0,
-                pageSize: params?.pageSize ?? 10,
-                sorts: params?.sorts,
+  try {
+    const response = await axiosInstance.get<PaginatedReferralRequestResponse>('courses/referral-requests/received', {
+      params: {
+        status: params?.status,
+        fromDate: params?.fromDate,
+        toDate: params?.toDate,
+        pageNo: params?.pageNo ?? 0,
+        pageSize: params?.pageSize ?? 10,
+        sorts: params?.sorts,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const uploadCourseThumbnail = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await axiosInstance.post<{ code: number; message: string; data: string }>(
+        '/courses/upload/course-thumbnail',
+        formData,
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data',
             },
-        });
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+        }
+    );
+    return response.data.data;
 };

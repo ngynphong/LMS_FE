@@ -1,5 +1,5 @@
 // import React from "react";\n
-
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 interface PaginationControlProps {
   currentPage: number;
   totalPages: number;
@@ -127,8 +127,8 @@ const PaginationControl = ({
           disabled={currentPage <= 1}
           className="flex size-8 items-center justify-center rounded-lg border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-slate-600 transition-colors"
         >
-          <span className="material-symbols-outlined text-sm">
-            chevron_left
+          <span className="text-sm">
+            <IoIosArrowBack />
           </span>
         </button>
 
@@ -139,8 +139,8 @@ const PaginationControl = ({
           disabled={currentPage >= totalPages}
           className="flex size-8 items-center justify-center rounded-lg border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-slate-600 transition-colors"
         >
-          <span className="material-symbols-outlined text-sm">
-            chevron_right
+          <span className="text-sm">
+            <IoIosArrowForward />
           </span>
         </button>
       </div>

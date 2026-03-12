@@ -20,7 +20,11 @@ interface LessonItemFormProps {
 }
 
 import LoadingOverlay from "@/components/common/LoadingOverlay";
-import { FaCircleNotch } from "react-icons/fa";
+import { FaCircleNotch, FaFileUpload, FaPlayCircle, FaSave } from "react-icons/fa";
+import { MdArticle, MdDelete, MdDescription, MdError } from "react-icons/md";
+import { FaFilePdf, FaFilePowerpoint } from "react-icons/fa6";
+import { CiCircleCheck } from "react-icons/ci";
+import { IoClose } from "react-icons/io5";
 
 // Max file size in bytes (1MB for now - server limit)
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
@@ -157,15 +161,15 @@ const LessonItemForm = ({
   const getTypeIcon = (type: string) => {
     switch (type) {
       case "VIDEO":
-        return "play_circle";
+        return <FaPlayCircle />;
       case "TEXT":
-        return "article";
+        return <MdArticle />;
       case "PDF":
-        return "picture_as_pdf";
+        return <FaFilePdf />;
       case "PPT":
-        return "description";
+        return <FaFilePowerpoint />;
       default:
-        return "description";
+        return <MdDescription />;
     }
   };
 
@@ -194,7 +198,7 @@ const LessonItemForm = ({
           }}
         >
           <span
-            className="material-symbols-outlined"
+            className="text-2xl"
             style={{
               color:
                 formData.type === "VIDEO"
@@ -242,7 +246,7 @@ const LessonItemForm = ({
                 }`}
               >
                 <span
-                  className="material-symbols-outlined text-2xl"
+                  className="text-2xl"
                   style={{
                     color: formData.type === type ? "#2563eb" : "#64748b",
                   }}
@@ -344,8 +348,8 @@ const LessonItemForm = ({
             >
               {formData.file || formData.currentFileUrl ? (
                 <div className="flex items-center justify-center gap-3">
-                  <span className="material-symbols-outlined text-2xl text-green-600">
-                    check_circle
+                  <span className="text-2xl text-green-600">
+                    <CiCircleCheck />
                   </span>
                   <div className="text-left">
                     <p className="text-sm font-medium text-slate-900">
@@ -371,15 +375,15 @@ const LessonItemForm = ({
                     }}
                     className="ml-auto p-1 hover:bg-slate-200 rounded"
                   >
-                    <span className="material-symbols-outlined text-slate-500">
-                      close
+                    <span className="text-slate-500">
+                      <IoClose />
                     </span>
                   </button>
                 </div>
               ) : (
                 <>
-                  <span className="material-symbols-outlined text-3xl text-slate-400 mb-2">
-                    cloud_upload
+                  <span className="text-3xl text-slate-400 mb-2">
+                    <FaFileUpload />
                   </span>
                   <p className="text-sm text-slate-600">
                     Kéo thả hoặc{" "}
@@ -410,7 +414,9 @@ const LessonItemForm = ({
             />
             {fileError && (
               <p className="text-sm text-red-500 mt-2 flex items-center gap-1">
-                <span className="material-symbols-outlined text-sm">error</span>
+                <span className="text-sm">
+                  <MdError />
+                </span>
                 {fileError}
               </p>
             )}
@@ -433,7 +439,9 @@ const LessonItemForm = ({
               </>
             ) : (
               <>
-                <span className="material-symbols-outlined text-lg">save</span>
+                <span className="text-lg">
+                  <FaSave />
+                </span>
                 <span>{isEdit ? "Cập nhật" : "Thêm nội dung"}</span>
               </>
             )}
@@ -445,7 +453,9 @@ const LessonItemForm = ({
               onClick={onDelete}
               className="flex items-center justify-center gap-2 rounded-lg h-11 px-4 bg-red-50 text-red-600 text-sm font-bold hover:bg-red-100 transition-all"
             >
-              <span className="material-symbols-outlined text-lg">delete</span>
+              <span className="text-lg">
+                <MdDelete />
+              </span>
             </button>
           )}
         </div>

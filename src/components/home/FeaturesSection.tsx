@@ -50,7 +50,7 @@ const FeaturesSection = () => {
             <StaggerItem key={feature.id}>
               <div className="flex flex-col items-center text-center p-8 bg-white rounded-3xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full">
                 <div className="w-16 h-16 color-primary/10 rounded-2xl flex items-center justify-center mb-6">
-                  <span className="material-symbols-outlined color-primary text-4xl">
+                  <span className="color-primary text-4xl">
                     {feature.icon}
                   </span>
                 </div>

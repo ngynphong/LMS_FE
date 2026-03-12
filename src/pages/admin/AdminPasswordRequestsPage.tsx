@@ -8,6 +8,9 @@ import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import { toast } from "@/components/common/Toast";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { getInitials } from "@/utils/initialsName";
+import { MdCancel, MdError } from "react-icons/md";
+import { CiCircleCheck } from "react-icons/ci";
+import { FaTasks } from "react-icons/fa";
 
 const AdminPasswordRequestsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -98,8 +101,8 @@ const AdminPasswordRequestsPage = () => {
   if (isError) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <span className="material-symbols-outlined text-4xl text-red-500">
-          error
+        <span className="text-4xl text-red-500">
+          <MdError />
         </span>
         <p className="text-slate-600">
           Không tìm thấy danh sách yêu cầu. {error?.message}
@@ -132,8 +135,8 @@ const AdminPasswordRequestsPage = () => {
               disabled={approveMutation.isPending}
               className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg font-medium text-sm hover:bg-red-100 transition-colors shadow-sm disabled:opacity-50"
             >
-              <span className="material-symbols-outlined text-[18px]">
-                cancel
+              <span className="text-[18px]">
+                <MdCancel />
               </span>
               Từ chối ({selectedEmails.length})
             </button>
@@ -142,8 +145,8 @@ const AdminPasswordRequestsPage = () => {
               disabled={approveMutation.isPending}
               className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-medium text-sm hover:bg-green-700 transition-colors shadow-sm disabled:opacity-50"
             >
-              <span className="material-symbols-outlined text-[18px]">
-                check_circle
+              <span className="text-[18px]">
+                <CiCircleCheck />
               </span>
               {approveMutation.isPending && action === "APPROVE"
                 ? "Đang xử lý..."
@@ -227,8 +230,8 @@ const AdminPasswordRequestsPage = () => {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-20 bg-slate-50">
-            <span className="material-symbols-outlined text-6xl text-slate-300 mb-4">
-              task_alt
+            <span className="text-6xl text-slate-300 mb-4">
+              <FaTasks />
             </span>
             <p className="text-lg font-medium text-slate-600">
               Không có yêu cầu nào

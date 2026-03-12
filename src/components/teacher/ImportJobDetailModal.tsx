@@ -3,6 +3,7 @@ import { FaCircleNotch, FaTimes } from "react-icons/fa";
 import { useImportJob, useImportJobErrors } from "@/hooks/useTeacher";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
+import { MdExpandLess, MdExpandMore } from "react-icons/md";
 
 interface ImportJobDetailModalProps {
   jobId: string;
@@ -129,8 +130,8 @@ export const ImportJobDetailModal = ({
                     onClick={() => setShowErrors(!showErrors)}
                     className="w-full text-sm font-semibold color-primary cursor-pointer flex items-center justify-center gap-1 py-2"
                   >
-                    <span className="material-symbols-outlined text-base">
-                      {showErrors ? "expand_less" : "expand_more"}
+                    <span className="text-base">
+                      {showErrors ? <MdExpandLess /> : <MdExpandMore />}
                     </span>
                     {showErrors
                       ? "Ẩn chi tiết lỗi"

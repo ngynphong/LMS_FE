@@ -4,6 +4,7 @@ import { FaCircleNotch } from "react-icons/fa";
 import { useEnrollCourse } from "@/hooks/useCourses";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/components/common/Toast";
+import { IoClose } from "react-icons/io5";
 
 interface EnrollmentModalProps {
   courseId: string;
@@ -57,13 +58,13 @@ const EnrollmentModal = ({
           <div className="flex justify-end gap-3">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:translate-y-[-2px] transition-all duration-300 rounded-lg"
+              className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:translate-y-[-2px] transition-all duration-300 rounded-lg cursor-pointer"
             >
               Hủy
             </button>
             <button
               onClick={() => navigate("/login")}
-              className="px-4 py-2 text-sm font-bold text-white color-primary-bg hover:translate-y-[-2px] transition-all duration-300 rounded-lg"
+              className="px-4 py-2 text-sm font-bold text-white color-primary-bg hover:translate-y-[-2px] transition-all duration-300 rounded-lg cursor-pointer"
             >
               Đăng nhập
             </button>
@@ -80,9 +81,11 @@ const EnrollmentModal = ({
           <h3 className="text-lg font-bold text-gray-900">Tham gia khóa học</h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-gray-400 hover:text-gray-600 hover:translate-y-[-2px] transition-all duration-300 rounded-lg cursor-pointer "
           >
-            <span className="material-symbols-outlined">close</span>
+            <span className="text-2xl">
+              <IoClose />
+            </span>
           </button>
         </div>
 

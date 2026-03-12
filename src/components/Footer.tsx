@@ -104,19 +104,19 @@ const Footer = () => {
           <h3 className="font-bold text-lg mb-6">Liên hệ</h3>
           <ul className="flex flex-col gap-4 text-gray-400 text-sm">
             <li className="flex items-center gap-3">
-              <span className="material-symbols-outlined color-primary">
+              <span className="color-primary">
                 <Mail animateOnHover animation="shake" size={18} />
               </span>
               infovienies@gmail.com
             </li>
             <li className="flex items-center gap-3">
-              <span className="material-symbols-outlined color-primary">
+              <span className="color-primary">
                 <PhoneCall animateOnHover size={18} />
               </span>
               0965248115
             </li>
             <li className="flex items-start gap-3">
-              <span className="material-symbols-outlined color-primary">
+              <span className="color-primary">
                 <FaLocationDot className="hover:animate-bounce" />
               </span>
               <span>

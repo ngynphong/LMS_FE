@@ -6,6 +6,10 @@ import {
   fadeInLeft,
   fadeInRight,
 } from "@/components/ui/ScrollReveal";
+import { CiCircleCheck } from "react-icons/ci";
+import { FaEye, FaGlobe, FaHistory, FaUserCheck } from "react-icons/fa";
+import { FaChildren } from "react-icons/fa6";
+import { MdAccountTree, MdCorporateFare, MdDiamond, MdDomain, MdExpandMore, MdFlightTakeoff, MdGroups } from "react-icons/md";
 
 const AboutPage = () => {
   return (
@@ -96,8 +100,8 @@ const AboutPage = () => {
                 className="space-y-6 lg:pt-12"
               >
                 <div className="bg-white p-6 lg:p-8 rounded-3xl shadow-xl border border-slate-100">
-                  <span className="material-symbols-outlined color-primary text-4xl mb-4">
-                    history_edu
+                  <span className="color-primary text-4xl mb-4">
+                    <FaHistory />
                   </span>
                   <p className="text-slate-600 text-sm leading-relaxed">
                     Hành trình 13 năm không ngừng đổi mới và phát triển bền
@@ -145,8 +149,8 @@ const AboutPage = () => {
 
               <div className="flex items-center gap-4 lg:gap-6 p-4 lg:p-6 bg-white rounded-2xl border-l-4 border-[#0077BE] shadow-sm">
                 <div className="size-10 lg:size-14 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined color-primary text-xl lg:text-2xl">
-                    verified_user
+                  <span className="color-primary text-xl lg:text-2xl">
+                    <FaUserCheck />
                   </span>
                 </div>
                 <p className="text-sm font-semibold text-slate-700 italic">
@@ -189,8 +193,8 @@ const AboutPage = () => {
             <StaggerItem>
               <div className="group relative bg-white border border-slate-100 p-6 lg:p-10 rounded-4xl lg:rounded-[2.5rem] shadow-[0_20px_50px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(0,119,190,0.15)] transition-all duration-500 hover:-translate-y-3">
                 <div className="size-16 lg:size-20 bg-blue-50 rounded-3xl flex items-center justify-center mb-6 lg:mb-8 group-hover:color-primary group-hover:rotate-12 transition-all duration-500 shadow-lg shadow-blue-100/50">
-                  <span className="material-symbols-outlined color-primary group-hover:text-white text-3xl lg:text-4xl">
-                    visibility
+                  <span className="color-primary group-hover:text-white text-3xl lg:text-4xl">
+                    <FaEye />
                   </span>
                 </div>
                 <h3 className="text-xl lg:text-2xl font-extrabold mb-3 lg:mb-5 text-slate-900">
@@ -207,8 +211,8 @@ const AboutPage = () => {
             <StaggerItem>
               <div className="group relative bg-white border border-slate-100 p-6 lg:p-10 rounded-4xl lg:rounded-[2.5rem] shadow-[0_20px_50px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(0,119,190,0.15)] transition-all duration-500 hover:-translate-y-3">
                 <div className="size-16 lg:size-20 bg-blue-50 rounded-3xl flex items-center justify-center mb-6 lg:mb-8 group-hover:color-primary group-hover:rotate-12 transition-all duration-500 shadow-lg shadow-blue-100/50">
-                  <span className="material-symbols-outlined color-primary group-hover:text-white text-3xl lg:text-4xl">
-                    public
+                  <span className="color-primary group-hover:text-white text-3xl lg:text-4xl">
+                    <FaGlobe />
                   </span>
                 </div>
                 <h3 className="text-xl lg:text-2xl font-extrabold mb-3 lg:mb-5 text-slate-900">
@@ -226,8 +230,8 @@ const AboutPage = () => {
             <StaggerItem>
               <div className="group relative bg-slate-600 p-6 lg:p-10 rounded-4xl lg:rounded-[2.5rem] shadow-2xl transition-all duration-500 hover:-translate-y-3 border-4 border-[#0077BE]/20">
                 <div className="size-16 lg:size-20 color-primary border border-white rounded-3xl flex items-center justify-center mb-6 lg:mb-8 rotate-12 group-hover:rotate-0 transition-all duration-500">
-                  <span className="material-symbols-outlined text-white text-3xl lg:text-4xl">
-                    diamond
+                  <span className="text-white text-3xl lg:text-4xl">
+                    <MdDiamond />
                   </span>
                 </div>
                 <h3 className="text-xl lg:text-2xl font-extrabold mb-3 lg:mb-5 text-white">
@@ -290,31 +294,25 @@ const AboutPage = () => {
               {
                 title: "Đào tạo Doanh nghiệp",
                 desc: "Nâng tầm năng lực quản trị và chuyển đổi số.",
-                icon: "corporate_fare",
+                icon: <MdCorporateFare />,
                 color: "blue",
               },
               {
                 title: "Đào tạo Sau Đại học",
                 desc: "Thạc sĩ & Tiến sĩ chuyên sâu định hướng ứng dụng.",
-                icon: "history_edu",
+                icon: <FaHistory />,
                 color: "red",
               },
               {
                 title: "Phát triển kỹ năng trẻ",
                 desc: "Ươm mầm tài năng nhí với tư duy sáng tạo.",
-                icon: "child_care",
+                icon: <FaChildren />,
                 color: "green",
               },
-              // {
-              //   title: "Chứng chỉ nghiệp vụ ngắn hạn",
-              //   desc: "Cập nhật kiến thức thực tế nhanh chóng.",
-              //   icon: "verified",
-              //   color: "purple",
-              // },
               {
                 title: "Tư vấn Du học",
                 desc: "Kết nối học thuật toàn cầu, hỗ trợ lộ trình.",
-                icon: "flight_takeoff",
+                icon: <MdFlightTakeoff />,
                 color: "cyan",
               },
             ].map((item, idx) => (
@@ -327,7 +325,7 @@ const AboutPage = () => {
                   className={`size-16 lg:size-20 rounded-3xl bg-${item.color}-50 flex items-center justify-center mb-6 lg:mb-8 transition-colors duration-500`}
                 >
                   <span
-                    className={`material-symbols-outlined text-3xl lg:text-4xl text-${item.color}-600`}
+                    className={`text-3xl lg:text-4xl text-${item.color}-600`}
                   >
                     {item.icon}
                   </span>
@@ -365,16 +363,16 @@ const AboutPage = () => {
               <div className="w-full bg-white px-5 py-6 lg:px-10 lg:py-8 flex items-center justify-between group-hover:bg-blue-50/50 transition-colors cursor-pointer">
                 <div className="flex items-center gap-4 lg:gap-6">
                   <div className="size-12 lg:size-14 rounded-2xl color-primary/10 flex items-center justify-center color-primary group-hover:color-primary group-hover:text-white transition-all shrink-0">
-                    <span className="material-symbols-outlined text-2xl lg:text-3xl">
-                      groups
+                    <span className="text-2xl lg:text-3xl">
+                      <MdGroups />
                     </span>
                   </div>
                   <h3 className="text-lg lg:text-xl font-extrabold text-slate-900">
                     Ban lãnh đạo
                   </h3>
                 </div>
-                <span className="material-symbols-outlined text-slate-400 group-hover:color-primary">
-                  expand_more
+                <span className="text-slate-400 group-hover:color-primary">
+                  <MdExpandMore />
                 </span>
               </div>
               <div className="px-5 lg:px-10 pb-8 lg:pb-10 pt-2 bg-white">
@@ -402,16 +400,16 @@ const AboutPage = () => {
               <div className="w-full bg-white px-5 py-6 lg:px-10 lg:py-8 flex items-center justify-between group-hover:bg-blue-50/50 transition-colors cursor-pointer">
                 <div className="flex items-center gap-4 lg:gap-6">
                   <div className="size-12 lg:size-14 rounded-2xl color-primary/10 flex items-center justify-center color-primary group-hover:color-primary group-hover:text-white transition-all shrink-0">
-                    <span className="material-symbols-outlined text-2xl lg:text-3xl">
-                      account_tree
+                    <span className="text-2xl lg:text-3xl">
+                      <MdAccountTree />
                     </span>
                   </div>
                   <h3 className="text-lg lg:text-xl font-extrabold text-slate-900">
                     Bộ phận chức năng
                   </h3>
                 </div>
-                <span className="material-symbols-outlined text-slate-400 group-hover:color-primary">
-                  expand_more
+                <span className="text-slate-400 group-hover:color-primary">
+                  <MdExpandMore />
                 </span>
               </div>
               <div className="px-5 lg:px-10 pb-8 lg:pb-10 pt-2 bg-white">
@@ -439,8 +437,8 @@ const AboutPage = () => {
                     },
                   ].map((dept, idx) => (
                     <li key={idx} className="flex items-start gap-3">
-                      <span className="material-symbols-outlined color-primary mt-1 text-xl shrink-0">
-                        check_circle
+                      <span className="color-primary mt-1 text-xl shrink-0">
+                        <CiCircleCheck />
                       </span>
                       <div>
                         <span className="font-bold text-slate-700 text-sm lg:text-base block">
@@ -461,16 +459,16 @@ const AboutPage = () => {
               <div className="w-full bg-white px-5 py-6 lg:px-10 lg:py-8 flex items-center justify-between group-hover:bg-blue-50/50 transition-colors cursor-pointer">
                 <div className="flex items-center gap-4 lg:gap-6">
                   <div className="size-12 lg:size-14 rounded-2xl color-primary/10 flex items-center justify-center color-primary group-hover:color-primary group-hover:text-white transition-all shrink-0">
-                    <span className="material-symbols-outlined text-2xl lg:text-3xl">
-                      domain
+                    <span className="text-2xl lg:text-3xl">
+                      <MdDomain />
                     </span>
                   </div>
                   <h3 className="text-lg lg:text-xl font-extrabold text-slate-900">
                     Đơn vị trực thuộc
                   </h3>
                 </div>
-                <span className="material-symbols-outlined text-slate-400 group-hover:color-primary">
-                  expand_more
+                <span className="text-slate-400 group-hover:color-primary">
+                  <MdExpandMore />
                 </span>
               </div>
               <div className="px-5 lg:px-10 pb-8 lg:pb-10 pt-2 bg-white">
@@ -498,8 +496,8 @@ const AboutPage = () => {
                     },
                   ].map((unit, idx) => (
                     <li key={idx} className="flex items-start gap-3">
-                      <span className="material-symbols-outlined color-primary mt-1 text-xl shrink-0">
-                        domain
+                      <span className="color-primary mt-1 text-xl shrink-0">
+                        <MdDomain />
                       </span>
                       <div>
                         <span className="font-bold text-slate-700 text-sm lg:text-base block">

@@ -1,6 +1,8 @@
-import { useState } from 'react';
-import LessonItem from '@/components/teacher/courses/LessonItem';
-import type { Lesson } from '@/components/teacher/courses/LessonItem';
+import { useState } from "react";
+import LessonItem from "@/components/teacher/courses/LessonItem";
+import type { Lesson } from "@/components/teacher/courses/LessonItem";
+import { MdDelete, MdDragIndicator, MdEdit, MdExpandMore } from "react-icons/md";
+import { IoAdd } from "react-icons/io5";
 
 interface Chapter {
   id: string;
@@ -15,37 +17,52 @@ interface ChapterItemProps {
   onLessonClick?: (lessonId: string) => void;
 }
 
-const ChapterItem = ({ chapter, isActive, activeLessonId, onLessonClick }: ChapterItemProps) => {
+const ChapterItem = ({
+  chapter,
+  isActive,
+  activeLessonId,
+  onLessonClick,
+}: ChapterItemProps) => {
   const [isExpanded, setIsExpanded] = useState(true);
 
   return (
-    <div className={`bg-white rounded-xl border shadow-sm overflow-hidden ${
-      isActive
-        ? 'border-2 border-[#0074bd] ring-4 ring-[#0074bd]/5'
-        : 'border-slate-200'
-    }`}>
-      {/* Chapter Header */}
-      <div className={`flex items-center justify-between px-6 py-5 border-b ${
+    <div
+      className={`bg-white rounded-xl border shadow-sm overflow-hidden ${
         isActive
-          ? 'bg-[#0074bd]/5 border-[#0074bd]/10'
-          : 'bg-slate-50/50 border-slate-100'
-      }`}>
+          ? "border-2 border-[#0074bd] ring-4 ring-[#0074bd]/5"
+          : "border-slate-200"
+      }`}
+    >
+      {/* Chapter Header */}
+      <div
+        className={`flex items-center justify-between px-6 py-5 border-b ${
+          isActive
+            ? "bg-[#0074bd]/5 border-[#0074bd]/10"
+            : "bg-slate-50/50 border-slate-100"
+        }`}
+      >
         <div className="flex items-center gap-3">
-          <span className={`material-symbols-outlined cursor-grab ${
-            isActive ? 'text-[#0074bd]' : 'text-slate-400'
-          }`}>
-            drag_indicator
+          <span
+            className={`cursor-grab ${
+              isActive ? "text-[#0074bd]" : "text-slate-400"
+            }`}
+          >
+            <MdDragIndicator />
           </span>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="flex items-center gap-2"
           >
-            <span className={`material-symbols-outlined text-slate-400 transition-transform ${
-              isExpanded ? 'rotate-90' : ''
-            }`}>
-              chevron_right
+            <span
+              className={`text-slate-400 transition-transform ${
+                isExpanded ? "rotate-90" : ""
+              }`}
+            >
+              <MdExpandMore />
             </span>
-            <h3 className="text-[#101518] text-lg font-bold">{chapter.title}</h3>
+            <h3 className="text-[#101518] text-lg font-bold">
+              {chapter.title}
+            </h3>
           </button>
           <span className="text-xs text-[#5e7b8d] ml-2">
             {chapter.lessons.length} bài học
@@ -53,10 +70,14 @@ const ChapterItem = ({ chapter, isActive, activeLessonId, onLessonClick }: Chapt
         </div>
         <div className="flex gap-2">
           <button className="p-2 text-slate-400 hover:text-[#0074bd] transition-colors">
-            <span className="material-symbols-outlined">edit</span>
+            <span className="">
+              <MdEdit />
+            </span>
           </button>
           <button className="p-2 text-slate-400 hover:text-red-500 transition-colors">
-            <span className="material-symbols-outlined">delete</span>
+            <span className="">
+              <MdDelete />
+            </span>
           </button>
         </div>
       </div>
@@ -77,8 +98,10 @@ const ChapterItem = ({ chapter, isActive, activeLessonId, onLessonClick }: Chapt
 
           {/* Add Lesson Button */}
           <div className="p-4 border-t border-slate-100">
-            <button className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg border-2 border-dashed border-slate-200 text-slate-500 hover:border-[#0074bd] hover:text-[#0074bd] transition-all font-medium text-sm">
-              <span className="material-symbols-outlined text-sm">add</span>
+            <button className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg border-2 border-dashed border-slate-200 text-slate-500 hover:border-[#0074bd] hover:text-[#0074bd] transition-all font-medium text-sm cursor-pointer">
+              <span className="text-sm">
+                <IoAdd />
+              </span>
               Thêm bài học mới
             </button>
           </div>

@@ -6,6 +6,8 @@ import {
 import { useMyCourses, useCourseDetail } from "@/hooks/useCourses";
 import { toast } from "@/components/common/Toast";
 import { FaCircleNotch } from "react-icons/fa";
+import { IoClose } from "react-icons/io5";
+import { MdDescription, MdDownload, MdExpandMore, MdSchool, MdUploadFile } from "react-icons/md";
 
 interface ImportQuestionsModalProps {
   onClose: () => void;
@@ -94,7 +96,9 @@ const ImportQuestionsModal = ({
             onClick={onClose}
             className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
           >
-            <span className="material-symbols-outlined">close</span>
+            <span className="text-2xl">
+              <IoClose />
+            </span>
           </button>
         </div>
 
@@ -115,11 +119,11 @@ const ImportQuestionsModal = ({
                 >
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
                     <span
-                      className={`material-symbols-outlined text-3xl mb-2 ${
+                      className={`text-3xl mb-2 ${
                         file ? "text-green-600" : "text-slate-400"
                       }`}
                     >
-                      {file ? "description" : "upload_file"}
+                      {file ? <MdDescription /> : <MdUploadFile />}
                     </span>
                     <p
                       className={`text-xs text-center px-4 ${
@@ -147,8 +151,8 @@ const ImportQuestionsModal = ({
                 disabled={templateLoading}
                 className="text-xs color-primary flex items-center gap-1 font-medium cursor-pointer"
               >
-                <span className="material-symbols-outlined text-sm">
-                  download
+                <span className="text-sm">
+                  <MdDownload />
                 </span>
                 Tải file mẫu
               </button>
@@ -158,8 +162,8 @@ const ImportQuestionsModal = ({
           {/* Lesson Selection (Optional) */}
           <div className="space-y-3 bg-slate-50 p-4 rounded-lg border border-slate-200">
             <h4 className="text-sm font-bold text-[#111518] flex items-center gap-2">
-              <span className="material-symbols-outlined text-slate-500 text-lg">
-                school
+              <span className="text-slate-500 text-lg">
+                <MdSchool />
               </span>
               Gán vào bài học (Tùy chọn)
             </h4>
@@ -184,8 +188,8 @@ const ImportQuestionsModal = ({
                     </option>
                   ))}
                 </select>
-                <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-base">
-                  expand_more
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-base">
+                  <MdExpandMore />
                 </span>
               </div>
             </div>
@@ -208,8 +212,8 @@ const ImportQuestionsModal = ({
                     </option>
                   ))}
                 </select>
-                <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-base">
-                  expand_more
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-base">
+                  <MdExpandMore />
                 </span>
               </div>
               <p className="text-[10px] text-slate-400 italic">

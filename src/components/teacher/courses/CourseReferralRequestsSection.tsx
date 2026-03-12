@@ -18,6 +18,8 @@ import { format } from "date-fns";
 import PaginationControl from "@/components/common/PaginationControl";
 import ReferralStudentListModal from "@/components/teacher/students/ReferralStudentListModal";
 import type { ReferralRequestResponse } from "@/types/courseApi";
+import { TbTransfer } from "react-icons/tb";
+import { MdCancel, MdOutlineVerified, MdPersonPin } from "react-icons/md";
 
 interface CourseReferralRequestsSectionProps {
   courseId: string;
@@ -82,8 +84,8 @@ const CourseReferralRequestsSection = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-            <span className="material-symbols-outlined text-[#0074bd]">
-              transfer_within_a_station
+            <span className="text-2xl text-[#0074bd]">
+              <TbTransfer />
             </span>
             Yêu cầu giới thiệu học sinh
           </h2>
@@ -140,8 +142,8 @@ const CourseReferralRequestsSection = ({
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <div className="size-10 rounded-full bg-blue-50 flex items-center justify-center text-[#0074bd]">
-                          <span className="material-symbols-outlined">
-                            person_pin
+                          <span className="text-2xl">
+                            <MdPersonPin />
                           </span>
                         </div>
                         <div>
@@ -239,8 +241,12 @@ const CourseReferralRequestsSection = ({
 
                   {req.status !== "PENDING" && (
                     <div className="shrink-0 flex items-center justify-center size-10 rounded-full bg-slate-100 text-slate-400">
-                      <span className="material-symbols-outlined text-xl">
-                        {req.status === "ACCEPTED" ? "verified" : "cancel"}
+                      <span className="text-xl">
+                        {req.status === "ACCEPTED" ? (
+                          <MdOutlineVerified />
+                        ) : (
+                          <MdCancel />
+                        )}
                       </span>
                     </div>
                   )}

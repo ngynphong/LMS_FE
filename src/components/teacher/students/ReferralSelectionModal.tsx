@@ -14,9 +14,12 @@ import {
   FaTimes,
   FaInbox,
   FaFilter,
+  FaBook,
+  FaCheck,
 } from "react-icons/fa";
 import { toast } from "@/components/common/Toast";
 import PaginationControl from "@/components/common/PaginationControl";
+import { IoPerson } from "react-icons/io5";
 
 interface ReferralSelectionModalProps {
   isOpen: boolean;
@@ -268,16 +271,16 @@ const ReferralSelectionModal = ({
                       </h4>
                       <div className="flex items-center justify-between mt-auto">
                         <div className="flex items-center gap-1 text-[11px] text-slate-500">
-                          <span className="material-symbols-outlined text-[14px]">
-                            person
+                          <span className="text-[14px]">
+                            <IoPerson />
                           </span>
                           <span className="truncate max-w-[80px]">
                             {course.teacherName || "Giáo viên"}
                           </span>
                         </div>
                         <div className="flex items-center gap-1 text-[11px] text-[#1E90FF] font-bold">
-                          <span className="material-symbols-outlined text-[14px]">
-                            menu_book
+                          <span className="text-[14px]">
+                            <FaBook />
                           </span>
                           <span>{course.lessonCount || 0} bài học</span>
                         </div>
@@ -285,8 +288,8 @@ const ReferralSelectionModal = ({
                     </div>
                     {selectedCourseId === course.id && (
                       <div className="absolute top-2 right-2 size-6 bg-[#1E90FF] text-white rounded-full flex items-center justify-center shadow-lg animate-in zoom-in">
-                        <span className="material-symbols-outlined text-sm">
-                          check
+                        <span className="text-xl">
+                          <FaCheck />
                         </span>
                       </div>
                     )}

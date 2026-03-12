@@ -6,6 +6,7 @@ import {
   FaPlayCircle,
   FaChevronDown,
   FaCircleNotch,
+  FaLock,
 } from "react-icons/fa";
 import {
   MdDescription,
@@ -13,6 +14,7 @@ import {
   MdWorkspacePremium,
   MdAllInclusive,
   MdDevices,
+  MdError,
 } from "react-icons/md";
 import {
   useCourseDetail,
@@ -116,8 +118,8 @@ const CourseDetailPage = () => {
   if (error || !course) {
     return (
       <div className="min-h-screen flex items-center justify-center flex-col gap-4">
-        <span className="material-symbols-outlined text-4xl text-red-500">
-          error
+        <span className="text-4xl text-red-500">
+          <MdError />
         </span>
         <p className="text-gray-600">
           {error?.message || "Không tìm thấy khóa học"}
@@ -255,8 +257,8 @@ const CourseDetailPage = () => {
                     <h3 className="text-xl font-bold">Nội dung khóa học</h3>
                     {!isEnrolled ? (
                       <div className="flex flex-col items-center justify-center py-12 bg-gray-50 rounded-xl border border-gray-200 border-dashed">
-                        <span className="material-symbols-outlined text-4xl text-gray-400 mb-2">
-                          lock
+                        <span className="text-4xl text-gray-400 mb-2">
+                          <FaLock />
                         </span>
                         <p className="text-gray-500 mb-4">
                           Bạn cần tham gia khóa học để xem nội dung chi tiết
@@ -449,6 +451,7 @@ const CourseDetailPage = () => {
                   key={relatedCourse.id}
                   id={relatedCourse.id}
                   title={relatedCourse.name}
+                  visibility={relatedCourse.visibility}
                   category={relatedCourse.schoolName || "Khóa học"}
                   thumbnailUrl={relatedCourse.thumbnailUrl || ""}
                   instructor={relatedCourse.teacherName || "Giảng viên"}

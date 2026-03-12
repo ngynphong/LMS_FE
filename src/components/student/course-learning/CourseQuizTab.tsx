@@ -1,7 +1,9 @@
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { FaCircleNotch } from "react-icons/fa";
+import { FaCircleNotch, FaLock, FaPlay } from "react-icons/fa";
 import type { QuizSummary } from "@/types/quiz";
+import { MdQuiz } from "react-icons/md";
+import { IoIosHelpCircleOutline, IoIosRepeat, IoIosTimer } from "react-icons/io";
 
 interface ExtendedQuizSummary extends QuizSummary {
   description?: string;
@@ -32,8 +34,8 @@ const CourseQuizTab = ({
     return (
       <div className="flex items-center justify-center h-48 bg-slate-50 rounded-xl border border-dashed border-slate-300">
         <div className="text-center text-gray-500">
-          <span className="material-symbols-outlined text-4xl mb-2 opacity-50">
-            quiz
+          <span className="text-4xl mb-2 opacity-50">
+            <MdQuiz />
           </span>
           <p>Không có bài kiểm tra nào cho nội dung này.</p>
         </div>
@@ -69,21 +71,21 @@ const CourseQuizTab = ({
               </span>
               <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-500">
                 <span className="flex items-center gap-1">
-                  <span className="material-symbols-outlined text-base">
-                    timer
+                  <span className="text-base">
+                    <IoIosTimer />
                   </span>
                   {quiz.durationInMinutes} phút
                 </span>
                 <span className="flex items-center gap-1">
-                  <span className="material-symbols-outlined text-base">
-                    help
+                  <span className="text-base">
+                    <IoIosHelpCircleOutline />
                   </span>
                   {quiz.totalQuestions} câu hỏi
                 </span>
                 {(quiz.maxAttempts || 0) > 0 && (
                   <span className="flex items-center gap-1">
-                    <span className="material-symbols-outlined text-base">
-                      repeat
+                    <span className="text-base">
+                      <IoIosRepeat />
                     </span>
                     {quiz.maxAttempts} lần
                   </span>
@@ -126,8 +128,8 @@ const CourseQuizTab = ({
                         : "color-primary-bg hover:bg-[#006da8] hover:shadow-md"
                     }`}
                   >
-                    <span className="material-symbols-outlined text-[20px]">
-                      {isClosed ? "lock" : "play_arrow"}
+                    <span className="text-[20px]">
+                      {isClosed ? <FaLock /> : <FaPlay />}
                     </span>
                     {isClosed ? "Đã đóng" : "Bắt đầu làm bài"}
                   </button>

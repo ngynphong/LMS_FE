@@ -3,6 +3,9 @@ import { useDrag, useDrop } from "react-dnd";
 import { ItemTypes } from "@/types/dndTypes";
 import type { OutlineItem } from "@/components/teacher/courses/CourseOutline";
 import type { LessonItem } from "@/types/learningTypes";
+import { MdArticle, MdDescription, MdDragIndicator, MdQuiz } from "react-icons/md";
+import { FaPlayCircle } from "react-icons/fa";
+import { FaFilePdf } from "react-icons/fa6";
 
 interface DraggableItemProps {
   item: LessonItem;
@@ -17,15 +20,15 @@ interface DraggableItemProps {
 const getItemIcon = (type: string) => {
   switch (type) {
     case "VIDEO":
-      return "play_circle";
+      return <FaPlayCircle />;
     case "TEXT":
-      return "article";
+      return <MdArticle />;
     case "QUIZ":
-      return "quiz";
+      return <MdQuiz />;
     case "PDF":
-      return "picture_as_pdf";
+      return <FaFilePdf />;
     default:
-      return "description";
+      return <MdDescription />;
   }
 };
 
@@ -140,16 +143,16 @@ const DraggableItem = ({
         });
       }}
     >
-      <span className="material-symbols-outlined text-sm text-slate-300 cursor-move">
-        drag_indicator
+      <span className="text-2xl text-slate-300 cursor-move">
+        <MdDragIndicator />
       </span>
-      <span className="material-symbols-outlined text-sm text-slate-400">
+      <span className="text-xl text-slate-400">
         {getItemIcon(item.type)}
       </span>
       <span className="text-sm text-slate-600 truncate flex-1">
         {item.title}
       </span>
-      <span className="text-xs text-slate-400 uppercase">{item.type}</span>
+      <span className="text-sm text-slate-400 uppercase">{item.type}</span>
     </div>
   );
 };

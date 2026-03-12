@@ -12,6 +12,9 @@ import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import PaginationControl from "@/components/common/PaginationControl";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { toast } from "@/components/common/Toast";
+import { FaFileUpload } from "react-icons/fa";
+import { IoIosAddCircle } from "react-icons/io";
+import { MdDelete, MdDeleteSweep, MdEdit, MdExpandMore, MdQuiz } from "react-icons/md";
 
 const QuestionBankPage = () => {
   const [pagination, setPagination] = useState({
@@ -149,8 +152,8 @@ const QuestionBankPage = () => {
             onClick={() => setShowImportModal(true)}
             className="bg-white hover:bg-slate-50 color-primary border hover:translate-y-[-2px] px-5 py-2.5 rounded-lg flex items-center gap-2 font-bold transition-all duration-300 shadow-sm cursor-pointer"
           >
-            <span className="material-symbols-outlined text-lg">
-              upload_file
+            <span className="text-lg">
+              <FaFileUpload />
             </span>
             Import
           </button>
@@ -158,8 +161,8 @@ const QuestionBankPage = () => {
             to="/teacher/questions/new"
             className="color-primary-bg hover:translate-y-[-2px] text-white px-5 py-2.5 rounded-lg flex items-center gap-2 font-bold transition-all duration-300 shadow-md"
           >
-            <span className="material-symbols-outlined text-lg">
-              add_circle
+            <span className="text-lg">
+              <IoIosAddCircle />
             </span>
             Thêm câu hỏi mới
           </Link>
@@ -188,8 +191,8 @@ const QuestionBankPage = () => {
                 </option>
               ))}
             </select>
-            <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-lg">
-              expand_more
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-lg">
+              <MdExpandMore />
             </span>
           </div>
 
@@ -212,8 +215,8 @@ const QuestionBankPage = () => {
                 </option>
               ))}
             </select>
-            <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-lg">
-              expand_more
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-lg">
+              <MdExpandMore />
             </span>
           </div>
         </div>
@@ -223,8 +226,8 @@ const QuestionBankPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
           <div className="bg-[#0074bd]/10 p-3 rounded-lg">
-            <span className="material-symbols-outlined text-[#0074bd] text-2xl">
-              quiz
+            <span className="text-[#0074bd] text-2xl">
+              <MdQuiz />
             </span>
           </div>
           <div>
@@ -241,8 +244,8 @@ const QuestionBankPage = () => {
           <div className="md:col-span-2 bg-red-50 p-5 rounded-xl border border-red-100 shadow-sm flex items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="bg-red-100 p-3 rounded-lg">
-                <span className="material-symbols-outlined text-red-600 text-2xl">
-                  delete_sweep
+                <span className="text-red-600 text-2xl">
+                  <MdDeleteSweep />
                 </span>
               </div>
               <div>
@@ -258,7 +261,7 @@ const QuestionBankPage = () => {
               onClick={handleBatchDeleteClick}
               className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-bold transition-all shadow-sm cursor-pointer"
             >
-              <span className="material-symbols-outlined text-lg">delete</span>
+              <span className="text-lg"><MdDelete/></span>
               Xóa các mục đã chọn
             </button>
           </div>
@@ -371,16 +374,16 @@ const QuestionBankPage = () => {
                         state={{ question }} // Pass question data to edit page to avoid refetch
                         className="p-1.5 text-[#0074bd] hover:bg-[#0074bd]/10 rounded-lg transition-colors"
                       >
-                        <span className="material-symbols-outlined text-lg">
-                          edit
+                        <span className="text-lg">
+                          <MdEdit/> 
                         </span>
                       </Link>
                       <button
                         onClick={() => handleDeleteClick(question.id)}
                         className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                       >
-                        <span className="material-symbols-outlined text-lg">
-                          delete
+                        <span className="text-lg">
+                          <MdDelete/>
                         </span>
                       </button>
                     </div>

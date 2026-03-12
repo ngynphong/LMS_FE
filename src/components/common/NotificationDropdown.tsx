@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { ImportJobDetailModal } from "@/components/teacher/ImportJobDetailModal";
 import { getNotificationRoute } from "@/utils/notificationRouting";
 import type { NotificationCategory } from "@/types/notification";
+import { MdOutlineSchedule } from "react-icons/md";
 
 export const NotificationDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -182,8 +183,8 @@ export const NotificationDropdown = () => {
                           {notif.content || notif.title}
                         </p>
                         <p className="text-[11px] text-gray-500 mt-1.5 flex items-center gap-1">
-                          <span className="material-symbols-outlined text-[12px] opacity-70">
-                            schedule
+                          <span className="text-[12px] opacity-70">
+                            <MdOutlineSchedule />
                           </span>
                           {formatDistanceToNow(new Date(notif.createdAt), {
                             addSuffix: true,

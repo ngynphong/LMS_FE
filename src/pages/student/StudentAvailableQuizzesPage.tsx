@@ -19,6 +19,7 @@ import { QuizReviewModal } from "@/components/student/QuizReviewModal";
 import type { StudentTeacherQuiz } from "@/types/quiz";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
+import { FiRepeat } from "react-icons/fi";
 
 const StudentAvailableQuizzesPage = () => {
   const navigate = useNavigate();
@@ -295,8 +296,8 @@ const StudentAvailableQuizzesPage = () => {
                     {quiz.viewType === "available" &&
                       (quiz.maxAttempts || 0) > 0 && (
                         <div className="flex items-center gap-3 text-gray-600 text-sm">
-                          <span className="material-symbols-outlined text-lg text-gray-400 shrink-0">
-                            repeat
+                          <span className="text-lg text-gray-400 shrink-0">
+                            <FiRepeat />
                           </span>
                           <span className="truncate">
                             Số lần thi:{" "}

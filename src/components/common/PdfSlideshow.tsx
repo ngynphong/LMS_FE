@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { FaCircleNotch } from "react-icons/fa";
+import { IoIosArrowBack, IoIosArrowForward, IoMdOpen } from "react-icons/io";
+import { MdFullscreen, MdFullscreenExit, MdOutlineErrorOutline } from "react-icons/md";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
@@ -67,8 +69,8 @@ const PdfSlideshow = ({ fileUrl }: PdfSlideshowProps) => {
         }`}
         title={isFullscreen ? "Thu nhỏ" : "Toàn màn hình"}
       >
-        <span className="material-symbols-outlined">
-          {isFullscreen ? "fullscreen_exit" : "fullscreen"}
+        <span className="">
+          {isFullscreen ? <MdFullscreenExit /> : <MdFullscreen />}
         </span>
       </button>
 
@@ -124,7 +126,9 @@ const MobilePdfViewer = ({
         rel="noopener noreferrer"
         className="mt-2 flex items-center gap-1.5 text-xs text-blue-600 font-medium hover:underline pb-2"
       >
-        <span className="material-symbols-outlined text-sm">open_in_new</span>
+        <span className="text-sm">
+          <IoMdOpen />
+        </span>
         Tải xuống PDF
       </a>
     </div>
@@ -202,8 +206,8 @@ const DesktopPdfViewer = ({
           <div
             className={`flex flex-col items-center justify-center w-full text-slate-500 gap-3 ${isFullscreen ? "flex-1" : "h-[500px]"}`}
           >
-            <span className="material-symbols-outlined text-4xl text-red-400">
-              error
+            <span className="text-4xl text-red-400">
+              <MdOutlineErrorOutline />
             </span>
             <p className="text-sm text-center">{error}</p>
           </div>
@@ -241,8 +245,8 @@ const DesktopPdfViewer = ({
           onClick={() => setPageNumber((p) => p - 1)}
           className="p-1.5 rounded-full hover:bg-gray-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors text-slate-700"
         >
-          <span className="material-symbols-outlined text-xl">
-            chevron_left
+          <span className="text-xl">
+            <IoIosArrowBack />
           </span>
         </button>
 
@@ -256,8 +260,8 @@ const DesktopPdfViewer = ({
           onClick={() => setPageNumber((p) => p + 1)}
           className="p-1.5 rounded-full hover:bg-gray-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors text-slate-700"
         >
-          <span className="material-symbols-outlined text-xl">
-            chevron_right
+          <span className="text-xl">
+            <IoIosArrowForward />
           </span>
         </button>
       </div>

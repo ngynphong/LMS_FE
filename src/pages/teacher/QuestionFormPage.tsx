@@ -13,6 +13,9 @@ import {
 import { useMyCourses, useCourseDetail } from "@/hooks/useCourses";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { toast } from "@/components/common/Toast";
+import { IoIosArrowBack } from "react-icons/io";
+import { MdDelete, MdExpandMore } from "react-icons/md";
+import { IoAdd, IoSchool } from "react-icons/io5";
 
 const QuestionFormPage = () => {
   const { id } = useParams();
@@ -191,7 +194,9 @@ const QuestionFormPage = () => {
             to="/teacher/questions"
             className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500"
           >
-            <span className="material-symbols-outlined">arrow_back</span>
+            <span className="text-xl">
+              <IoIosArrowBack />
+            </span>
           </Link>
           <h2 className="text-xl font-bold text-[#111518]">
             {isEditMode ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi mới"}
@@ -240,8 +245,8 @@ const QuestionFormPage = () => {
                     <option value="MEDIUM">Vừa</option>
                     <option value="HARD">Khó</option>
                   </select>
-                  <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xl">
-                    expand_more
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xl">
+                    <MdExpandMore />
                   </span>
                 </div>
               </div>
@@ -271,8 +276,8 @@ const QuestionFormPage = () => {
                     <option value="SINGLE_CHOICE">Một đáp án đúng</option>
                     <option value="MULTIPLE_CHOICE">Nhiều đáp án đúng</option>
                   </select>
-                  <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xl">
-                    expand_more
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xl">
+                    <MdExpandMore />
                   </span>
                 </div>
               </div>
@@ -299,8 +304,8 @@ const QuestionFormPage = () => {
             {/* Lesson Assign (New Section) */}
             <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
               <h3 className="text-sm font-bold text-[#111518] mb-4 flex items-center gap-2">
-                <span className="material-symbols-outlined text-slate-500">
-                  school
+                <span className="text-slate-500 text-xl">
+                  <IoSchool />
                 </span>
                 Gán câu hỏi vào bài học (Tùy chọn)
               </h3>
@@ -327,8 +332,8 @@ const QuestionFormPage = () => {
                           </option>
                         ))}
                     </select>
-                    <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xl">
-                      expand_more
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xl">
+                      <MdExpandMore />
                     </span>
                   </div>
                 </div>
@@ -359,8 +364,8 @@ const QuestionFormPage = () => {
                           </option>
                         ))}
                     </select>
-                    <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xl">
-                      expand_more
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xl">
+                      <MdExpandMore />
                     </span>
                   </div>
                 </div>
@@ -450,8 +455,8 @@ const QuestionFormPage = () => {
                             className="text-red-400 hover:text-red-600 p-1 bg-white rounded-md border border-slate-200 shadow-sm"
                             title="Xóa đáp án"
                           >
-                            <span className="material-symbols-outlined text-sm">
-                              delete
+                            <span className="text-xl">
+                              <MdDelete />
                             </span>
                           </button>
                         )}
@@ -466,8 +471,8 @@ const QuestionFormPage = () => {
                   onClick={handleAddOption}
                   className="flex items-center gap-2 px-4 py-2 text-sm font-semibold color-primary bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors border border-blue-100"
                 >
-                  <span className="material-symbols-outlined text-[18px]">
-                    add
+                  <span className="text-[18px]">
+                    <IoAdd />
                   </span>
                   Thêm đáp án
                 </button>

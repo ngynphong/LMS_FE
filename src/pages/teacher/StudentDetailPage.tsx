@@ -4,6 +4,8 @@ import { useStudentDetail, useUpdateStudent } from "@/hooks/useTeacher";
 import type { UpdateStudentRequest } from "@/types/student";
 import { FaCircleNotch } from "react-icons/fa";
 import Breadcrumb from "@/components/common/Breadcrumb";
+import { MdEdit, MdFlag, MdPerson } from "react-icons/md";
+import { IoClose } from "react-icons/io5";
 
 const StudentDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -131,7 +133,9 @@ const StudentDetailPage = () => {
             onClick={() => setIsEditModalOpen(true)}
             className="flex items-center justify-center gap-2 rounded-lg h-11 px-6 bg-[#0074bd] text-white text-sm font-bold hover:bg-[#0074bd]/90 transition-all shadow-lg shadow-[#0074bd]/25"
           >
-            <span className="material-symbols-outlined text-lg">edit</span>
+            <span className="text-lg">
+              <MdEdit />
+            </span>
             <span>Chỉnh sửa</span>
           </button>
         </div>
@@ -142,7 +146,9 @@ const StudentDetailPage = () => {
         <div className="flex flex-col gap-2 rounded-xl p-6 bg-white border border-slate-200 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="bg-[#0074bd]/10 p-2 rounded-lg text-[#0074bd]">
-              <span className="material-symbols-outlined">person</span>
+              <span className="text-lg">
+                <MdPerson />
+              </span>
             </div>
             <p className="text-slate-500 text-sm font-medium">
               Thông tin cá nhân
@@ -177,7 +183,9 @@ const StudentDetailPage = () => {
         <div className="flex flex-col gap-2 rounded-xl p-6 bg-white border border-slate-200 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="bg-[#0074bd]/10 p-2 rounded-lg text-[#0074bd]">
-              <span className="material-symbols-outlined">flag</span>
+              <span className="text-lg">
+                <MdFlag />
+              </span>
             </div>
             <p className="text-slate-500 text-sm font-medium">
               Mục tiêu (Goal)
@@ -201,7 +209,9 @@ const StudentDetailPage = () => {
                 onClick={() => setIsEditModalOpen(false)}
                 className="text-slate-400 hover:text-slate-600"
               >
-                <span className="material-symbols-outlined">close</span>
+                <span className="text-xl">
+                  <IoClose />
+                </span>
               </button>
             </div>
             <form onSubmit={handleEditSubmit} className="p-6 space-y-4">

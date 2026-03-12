@@ -8,6 +8,7 @@ import {
 } from "@/hooks/useNotifications";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
+import { MdOutlineSportsBaseball } from "react-icons/md";
 
 const StudentDashboardPage = () => {
   const { user } = useAuth();
@@ -212,8 +213,8 @@ const StudentDashboardPage = () => {
 
           <div className="flex items-center gap-6 mb-4 sm:mb-0 z-10 w-full sm:w-auto">
             <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shrink-0 shadow-inner backdrop-blur-sm">
-              <span className="material-symbols-outlined text-4xl animate-bounce-slow">
-                sports_esports
+              <span className="text-4xl animate-bounce-slow">
+                <MdOutlineSportsBaseball />
               </span>
             </div>
             <div>

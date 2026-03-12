@@ -61,7 +61,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
         <div className="flex flex-col gap-6">
           <div className="flex items-center justify-between">
             <h2 className="text-gray-900 text-lg font-bold">Bộ lọc</h2>
-            <span className="material-symbols-outlined text-gray-500">
+            <span className="text-gray-500">
               <IoFilter />
             </span>
           </div>
@@ -69,7 +69,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           {/* Teacher Name Filter */}
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2 color-primary">
-              <span className="material-symbols-outlined text-[20px]">
+              <span className="text-[20px]">
                 <FaUserTie />
               </span>
               <p className="text-sm font-bold">Giảng viên</p>
@@ -92,7 +92,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           {/* Date Filter */}
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2 color-primary">
-              <span className="material-symbols-outlined text-[20px]">
+              <span className="text-[20px]">
                 <FaCalendarAlt />
               </span>
               <p className="text-sm font-bold">Ngày tạo</p>

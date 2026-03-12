@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { FaCircleNotch } from "react-icons/fa";
+import { FaCheck, FaCircleNotch, FaPlay } from "react-icons/fa";
 import PdfSlideshow from "@/components/common/PdfSlideshow";
 import type { LessonItem } from "@/types/learningTypes";
 import {
   trackVideoHeartbeat,
   markLessonItemComplete,
 } from "@/services/lessonService";
+import { CiCircleCheck, CiCircleInfo } from "react-icons/ci";
+import { MdDescription } from "react-icons/md";
 
 interface CourseContentViewerProps {
   currentItem: LessonItem | null;
@@ -137,8 +139,8 @@ const CourseContentViewer = ({
     return (
       <div className="flex items-center justify-center h-64 bg-slate-100 rounded-xl">
         <div className="text-center text-gray-500">
-          <span className="material-symbols-outlined text-5xl mb-2">
-            play_lesson
+          <span className="text-5xl mb-2">
+            <FaPlay />
           </span>
           <p>Chọn một nội dung từ danh sách bên trái để bắt đầu học</p>
         </div>
@@ -181,14 +183,18 @@ const CourseContentViewer = ({
           />
           {isCompleted && (
             <div className="absolute top-3 right-3 flex items-center gap-1.5 px-3 py-1.5 bg-green-500/90 text-white rounded-full text-sm font-medium">
-              <span className="material-symbols-outlined text-sm">check</span>
+              <span className="text-sm">
+                <FaCheck />
+              </span>
               Đã xem
             </div>
           )}
         </div>
         {!isCompleted && (
           <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 text-amber-700 rounded-lg text-sm">
-            <span className="material-symbols-outlined text-lg">info</span>
+            <span className="text-lg">
+              <CiCircleInfo />
+            </span>
             <span>
               Xem video đến hết để hoàn thành bài học. Video không thể tua
               nhanh.
@@ -223,8 +229,8 @@ const CourseContentViewer = ({
               </>
             ) : (
               <>
-                <span className="material-symbols-outlined text-lg">
-                  check_circle
+                <span className="text-lg">
+                  <CiCircleCheck />
                 </span>
                 Đánh dấu đã học xong
               </>
@@ -233,7 +239,9 @@ const CourseContentViewer = ({
         )}
         {isCompleted && (
           <div className="flex items-center justify-center gap-2 py-3 bg-green-100 text-green-700 rounded-lg font-medium">
-            <span className="material-symbols-outlined text-lg">check</span>
+            <span className="text-lg">
+              <FaCheck />
+            </span>
             Đã hoàn thành
           </div>
         )}
@@ -264,8 +272,8 @@ const CourseContentViewer = ({
               </>
             ) : (
               <>
-                <span className="material-symbols-outlined text-lg">
-                  check_circle
+                <span className="text-lg">
+                  <CiCircleCheck />
                 </span>
                 Đánh dấu đã học xong
               </>
@@ -274,7 +282,9 @@ const CourseContentViewer = ({
         )}
         {isCompleted && (
           <div className="flex items-center justify-center gap-2 py-3 bg-green-100 text-green-700 rounded-lg font-medium">
-            <span className="material-symbols-outlined text-lg">check</span>
+            <span className="text-lg">
+              <FaCheck />
+            </span>
             Đã hoàn thành
           </div>
         )}
@@ -285,8 +295,8 @@ const CourseContentViewer = ({
   return (
     <div className="flex items-center justify-center h-64 bg-slate-100 rounded-xl">
       <div className="text-center text-gray-500">
-        <span className="material-symbols-outlined text-5xl mb-2">
-          description
+        <span className="text-5xl mb-2">
+          <MdDescription />
         </span>
         <p>Không thể hiển thị nội dung này</p>
       </div>

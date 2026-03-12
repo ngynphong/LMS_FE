@@ -1,4 +1,7 @@
 import type { DashboardSummaryResponse } from "@/types/teacherDashboard";
+import { IoIosWarning, IoMdTrendingUp } from "react-icons/io";
+import { IoSchool } from "react-icons/io5";
+import { MdGrade, MdGroups, MdQuiz } from "react-icons/md";
 
 interface QuickStatsProps {
   data: DashboardSummaryResponse | undefined;
@@ -6,7 +9,7 @@ interface QuickStatsProps {
 }
 
 interface StatItem {
-  icon: string;
+  icon: React.ReactNode;
   label: string;
   value: string | number;
   subtitle?: string;
@@ -17,42 +20,42 @@ const QuickStats = ({ data, isLoading }: QuickStatsProps) => {
   const statsData: StatItem[] = data
     ? [
         {
-          icon: "groups",
+          icon: <MdGroups />,
           label: "Tổng học viên",
           value: data.totalStudents,
           subtitle: `${data.totalEnrollments} lượt đăng ký`,
           color: "bg-[#0b8eda]",
         },
         {
-          icon: "warning",
+          icon: <IoIosWarning />,
           label: "Cần chú ý",
           value: data.needingAttentionCount,
           subtitle: "Tiến độ dưới 30%",
           color: "bg-orange-500",
         },
         {
-          icon: "school",
+          icon: <IoSchool />,
           label: "Khóa học",
           value: `${data.publishedCourses}/${data.totalCourses}`,
           subtitle: "Đã xuất bản / Tổng",
           color: "bg-green-500",
         },
         {
-          icon: "trending_up",
+          icon: <IoMdTrendingUp />,
           label: "Tiến độ TB",
           value: `${data.averageProgress.toFixed(1)}%`,
           subtitle: `${data.completedEnrollments} hoàn thành`,
           color: "bg-purple-500",
         },
         {
-          icon: "quiz",
+          icon: <MdQuiz />,
           label: "Quiz",
           value: `${data.publishedQuizzes}/${data.totalQuizzes}`,
           subtitle: `${data.totalQuizAttempts} lượt làm`,
           color: "bg-indigo-500",
         },
         {
-          icon: "grade",
+          icon: <MdGrade />,
           label: "Điểm Quiz TB",
           value: `${data.averageQuizScore.toFixed(1)}`,
           subtitle: `Tỷ lệ đậu: ${data.overallPassRate.toFixed(1)}%`,
@@ -87,13 +90,13 @@ const QuickStats = ({ data, isLoading }: QuickStatsProps) => {
         >
           <div className="flex justify-between items-start">
             <span
-              className={`p-2 ${stat.color}/10 rounded-lg text-${stat.color.replace("bg-", "")} material-symbols-outlined`}
+              className={`p-2 ${stat.color}/10 rounded-lg text-${stat.color.replace("bg-", "")}`}
               style={{
                 backgroundColor: `${stat.color.includes("#") ? stat.color.replace("bg-[", "").replace("]", "") : ""}1a`,
               }}
             >
               <span
-                className="material-symbols-outlined"
+                className=""
                 style={{
                   color: stat.color.includes("#")
                     ? stat.color.replace("bg-[", "").replace("]", "")

@@ -4,6 +4,10 @@ import { getLessonItemById } from "@/services/lessonService";
 import type { LessonItem } from "@/types/learningTypes";
 import PdfSlideshow from "@/components/common/PdfSlideshow";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
+import { MdArticle, MdDescription, MdError } from "react-icons/md";
+import { IoIosArrowBack } from "react-icons/io";
+import { FaFilePowerpoint, FaPlayCircle } from "react-icons/fa";
+import { FaFilePdf } from "react-icons/fa6";
 
 const TeacherLessonItemPreviewPage = () => {
   const { courseId, itemId } = useParams();
@@ -36,15 +40,15 @@ const TeacherLessonItemPreviewPage = () => {
   const getItemTypeIcon = (type: string) => {
     switch (type) {
       case "VIDEO":
-        return "play_circle";
+        return <FaPlayCircle />;
       case "TEXT":
-        return "article";
+        return <MdArticle />;
       case "PDF":
-        return "picture_as_pdf";
+        return <FaFilePdf />;
       case "PPT":
-        return "co_present";
+        return <FaFilePowerpoint />;
       default:
-        return "description";
+        return <MdDescription />;
     }
   };
 
@@ -72,8 +76,8 @@ const TeacherLessonItemPreviewPage = () => {
   if (error || !item) {
     return (
       <div className="flex h-screen flex-col items-center justify-center gap-4 bg-gray-50">
-        <span className="material-symbols-outlined text-5xl text-red-500">
-          error
+        <span className="text-5xl text-red-500">
+          <MdError />
         </span>
         <p className="text-lg text-slate-700">
           {error || "Không tìm thấy nội dung"}
@@ -98,7 +102,9 @@ const TeacherLessonItemPreviewPage = () => {
               onClick={() => navigate(`/teacher/courses/${courseId}`)}
               className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors"
             >
-              <span className="material-symbols-outlined">arrow_back</span>
+              <span className="text-xl">
+                <IoIosArrowBack />
+              </span>
               <span className="font-medium">Quay lại</span>
             </button>
             <div className="h-6 w-px bg-slate-200"></div>
@@ -108,7 +114,7 @@ const TeacherLessonItemPreviewPage = () => {
                   item.type,
                 )}`}
               >
-                <span className="material-symbols-outlined text-xl">
+                <span className="text-xl">
                   {getItemTypeIcon(item.type)}
                 </span>
               </div>
@@ -176,7 +182,7 @@ const TeacherLessonItemPreviewPage = () => {
                           <div
                             className={`size-12 rounded-lg flex items-center justify-center shrink-0 ${getItemTypeColor(item.type)}`}
                           >
-                            <span className="material-symbols-outlined text-2xl">
+                            <span className="text-2xl">
                               {getItemTypeIcon(item.type)}
                             </span>
                           </div>

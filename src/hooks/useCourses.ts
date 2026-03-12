@@ -15,7 +15,8 @@ import {
     getStudentCourses,
     getCourseStudents,
     getCourseTeachers,
-    getTopEnrolledCourses
+    getTopEnrolledCourses,
+    uploadCourseThumbnail
 } from '@/services/courseService';
 import type { GetCoursesParams, CreateCourseRequest, UpdateCourseRequest } from '@/types/courseApi';
 import type { EnrollCourseRequest, CreateInviteCodeRequest } from '@/types/learningTypes';
@@ -203,5 +204,11 @@ export const useCreateInviteCode = () => {
     // No specific invalidation needed usually, or maybe invalidate course detail if it shows the code.
     return useMutation({
         mutationFn: ({ courseId, data }: { courseId: string; data: CreateInviteCodeRequest }) => createInviteCode(courseId, data),
+    });
+};
+
+export const useUploadCourseThumbnail = () => {
+    return useMutation({
+        mutationFn: (file: File) => uploadCourseThumbnail(file),
     });
 };

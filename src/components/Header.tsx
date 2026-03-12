@@ -1,10 +1,13 @@
 import { Link } from "react-router-dom";
-import { IoAppsOutline, IoSchool, IoMenu, IoClose } from "react-icons/io5";
+import { IoAppsOutline, IoSchool, IoMenu, IoClose, IoChevronDown } from "react-icons/io5";
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import { PhoneCall } from "@/components/animate-ui/icons/phone-call";
 import { Mail } from "@/components/animate-ui/icons/mail";
 import { NotificationDropdown } from "@/components/common/NotificationDropdown";
+import { MdDescription } from "react-icons/md";
+import { FaShieldAlt } from "react-icons/fa";
+import { IoIosHelpCircleOutline } from "react-icons/io";
 
 const Header = () => {
   const { user } = useAuth();
@@ -13,9 +16,9 @@ const Header = () => {
   const [isMobileCategoryOpen, setIsMobileCategoryOpen] = useState(false);
 
   const categories = [
-    { title: "Điều khoản dịch vụ", to: "/terms", icon: "description" },
-    { title: "Chính sách bảo mật", to: "/privacy", icon: "shield" },
-    { title: "Câu hỏi thường gặp", to: "/faq", icon: "help" },
+    { title: "Điều khoản dịch vụ", to: "/terms", icon: <MdDescription /> },
+    { title: "Chính sách bảo mật", to: "/privacy", icon: <FaShieldAlt /> },
+    { title: "Câu hỏi thường gặp", to: "/faq", icon: <IoIosHelpCircleOutline /> },
   ];
 
   const getDashboardLink = () => {
@@ -41,17 +44,17 @@ const Header = () => {
       {/* Top Bar */}
       <div
         style={{ top: "var(--banner-height, 0px)" }}
-        className="w-full color-primary-bg text-white py-2 px-4 md:px-10 z-60 text-xs flex justify-end md:justify-between items-center fixed transition-all duration-300"
+        className="w-full color-primary-bg text-white py-2 px-4 md:px-10 z-50 text-xs flex justify-end md:justify-between items-center fixed transition-all duration-300"
       >
         <div className="hidden md:flex gap-6 items-center">
           <span className="flex items-center gap-1">
-            <span className="material-symbols-outlined text-[14px]">
+            <span className="text-[14px]">
               <PhoneCall animateOnHover size={18} />
             </span>{" "}
             (+84) 96 524 8115
           </span>
           <span className="flex items-center gap-1">
-            <span className="material-symbols-outlined text-[14px]">
+            <span className="text-[14px]">
               <Mail animateOnHover animation="shake" size={18} />
             </span>{" "}
             infovienies@gmail.com
@@ -136,7 +139,7 @@ const Header = () => {
                       : "hover:bg-gray-100"
                   }`}
                 >
-                  <span className="material-symbols-outlined transition-transform duration-300">
+                  <span className="transition-transform duration-300">
                     <IoAppsOutline
                       className={isCategoryOpen ? "rotate-180" : ""}
                     />
@@ -163,9 +166,7 @@ const Header = () => {
                       className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-colors group"
                     >
                       <div className="size-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-blue-600 group-hover:text-white transition-all">
-                        <span className="material-symbols-outlined text-xl">
-                          {item.icon}
-                        </span>
+                        <span className="text-xl">{item.icon}</span>
                       </div>
                       <span className="text-sm font-semibold text-gray-700 group-hover:text-blue-600">
                         {item.title}
@@ -215,7 +216,7 @@ const Header = () => {
             to="/courses"
             className="hidden lg:flex color-primary-bg text-white px-6 py-2.5 rounded-xl font-bold items-center gap-2 shadow-lg shadow-[#0077BE]/20 hover:cursor-pointer hover:translate-y-[-2px] duration-300 transition-all"
           >
-            <span className="material-symbols-outlined">
+            <span className="">
               <IoSchool />
             </span>{" "}
             Bắt đầu học
@@ -266,9 +267,9 @@ const Header = () => {
                   Danh mục
                 </div>
                 <span
-                  className={`material-symbols-outlined transition-transform duration-300 ${isMobileCategoryOpen ? "rotate-180" : ""}`}
+                  className={`transition-transform duration-300 ${isMobileCategoryOpen ? "rotate-180" : ""}`}
                 >
-                  expand_more
+                  <IoChevronDown />
                 </span>
               </button>
               {isMobileCategoryOpen && (
@@ -280,7 +281,7 @@ const Header = () => {
                       onClick={toggleMobileMenu}
                       className="flex items-center gap-3 py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors"
                     >
-                      <span className="material-symbols-outlined text-[18px]">
+                      <span className="text-[18px]">
                         {item.icon}
                       </span>
                       {item.title}
@@ -328,7 +329,7 @@ const Header = () => {
 
           <div className="p-4 border-t border-gray-300">
             <button className="w-full color-primary-bg text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-[#0077BE]/20 active:scale-95 transition-transform">
-              <span className="material-symbols-outlined">
+              <span className="">
                 <IoSchool />
               </span>{" "}
               Bắt đầu học
