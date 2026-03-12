@@ -1,3 +1,6 @@
+import { FaLock } from "react-icons/fa";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { IoMenu } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
 interface CourseLearningHeaderProps {
@@ -30,7 +33,9 @@ const CourseLearningHeader = ({
           onClick={onToggleMobileSidebar}
           className="lg:hidden text-gray-500 hover:color-primary"
         >
-          <span className="material-symbols-outlined">menu_open</span>
+          <span className="text-2xl">
+            <IoMenu />
+          </span>
         </button>
 
         {!isDesktopSidebarOpen && (
@@ -39,7 +44,9 @@ const CourseLearningHeader = ({
             className="hidden lg:block text-gray-500 hover:color-primary transition-colors mr-2"
             title="Mở rộng nội dung"
           >
-            <span className="material-symbols-outlined">menu</span>
+            <span className="text-2xl">
+              <IoMenu />
+            </span>
           </button>
         )}
 
@@ -47,8 +54,8 @@ const CourseLearningHeader = ({
           to="/student/my-courses"
           className="flex items-center gap-2 text-sm font-medium text-[#4A5568] hover:color-primary transition-colors"
         >
-          <span className="material-symbols-outlined text-[18px]">
-            chevron_left
+          <span className="text-[18px]">
+            <IoIosArrowBack />
           </span>
           <span className="hidden sm:inline">Quay lại</span>
         </Link>
@@ -77,11 +84,11 @@ const CourseLearningHeader = ({
         <button
           onClick={() => onNavigateLesson("prev")}
           disabled={currentLessonIndex === 0}
-          className="flex items-center gap-1 text-sm font-medium text-[#4A5568] hover:text-[#1A2B3C] px-2 md:px-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-1 text-sm font-medium text-[#4A5568] hover:text-[#1A2B3C] px-2 md:px-3 py-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           <span className="hidden sm:inline">Bài trước</span>
-          <span className="sm:hidden material-symbols-outlined">
-            chevron_left
+          <span className="sm:hidden">
+            <IoIosArrowBack />
           </span>
         </button>
         <button
@@ -99,8 +106,8 @@ const CourseLearningHeader = ({
           <span className="hidden sm:flex items-center gap-1">
             <span>Bài tiếp theo</span>
           </span>
-          <span className="sm:hidden material-symbols-outlined">
-            {!isCurrentLessonComplete ? "lock" : "chevron_right"}
+          <span className="sm:hidden">
+            {!isCurrentLessonComplete ? <FaLock /> : <IoIosArrowForward />}
           </span>
         </button>
       </div>

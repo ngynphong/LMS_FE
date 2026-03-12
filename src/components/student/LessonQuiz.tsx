@@ -4,6 +4,10 @@ import type {
   QuizAttempt,
   QuizResult,
 } from "@/types/learningTypes";
+import { MdEmojiEvents, MdOutlineQuiz, MdSentimentDissatisfied } from "react-icons/md";
+import { CiCircleCheck, CiCircleRemove } from "react-icons/ci";
+import { FaLightbulb } from "react-icons/fa";
+import { IoIosArrowForward } from "react-icons/io";
 
 interface LessonQuizProps {
   quiz: LessonQuizType;
@@ -113,8 +117,8 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
   if (currentStep === "intro") {
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
-        <span className="material-symbols-outlined text-[64px] color-primary mb-4">
-          quiz
+        <span className="text-[64px] color-primary mb-4">
+          <MdOutlineQuiz />
         </span>
         <h3 className="text-xl font-bold text-[#1A2B3C] mb-2">{quiz.title}</h3>
         <p className="text-[#4A5568] mb-6">
@@ -136,11 +140,11 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
         <span
-          className={`material-symbols-outlined FILL text-[80px] mb-4 ${
+          className={`text-[80px] mb-4 ${
             result.passed ? "text-emerald-500" : "text-orange-500"
           }`}
         >
-          {result.passed ? "emoji_events" : "sentiment_dissatisfied"}
+          {result.passed ? <MdEmojiEvents /> : <MdSentimentDissatisfied />}
         </span>
         <h3 className="text-2xl font-bold text-[#1A2B3C] mb-2">
           {result.passed ? "Chúc mừng! Bạn đã vượt qua!" : "Chưa đạt yêu cầu"}
@@ -233,15 +237,15 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
               <span className="text-[#1A2B3C]">{option.text}</span>
               {showExplanation &&
                 option.id === currentQuestion.correctOptionId && (
-                  <span className="material-symbols-outlined FILL text-emerald-500 ml-auto">
-                    check_circle
+                  <span className="text-emerald-500 ml-auto">
+                    <CiCircleCheck />
                   </span>
                 )}
               {showExplanation &&
                 selectedOption === option.id &&
                 option.id !== currentQuestion.correctOptionId && (
-                  <span className="material-symbols-outlined FILL text-red-500 ml-auto">
-                    cancel
+                  <span className="text-red-500 ml-auto">
+                    <CiCircleRemove />
                   </span>
                 )}
             </button>
@@ -251,8 +255,8 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
         {showExplanation && currentQuestion.explanation && (
           <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
             <div className="flex items-start gap-2">
-              <span className="material-symbols-outlined color-primary">
-                lightbulb
+              <span className="color-primary">
+                <FaLightbulb />
               </span>
               <div>
                 <p className="font-medium color-primary text-sm">Giải thích</p>
@@ -280,8 +284,8 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
             className="px-6 py-2 color-primary-bg text-white font-medium rounded-lg hover:opacity-80 transition-all flex items-center gap-2"
           >
             {isLastQuestion ? "Xem kết quả" : "Câu tiếp theo"}
-            <span className="material-symbols-outlined text-[18px]">
-              arrow_forward
+            <span className="text-[18px]">
+              <IoIosArrowForward />
             </span>
           </button>
         )}

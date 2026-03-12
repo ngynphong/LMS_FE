@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { FaExpand, FaPauseCircle, FaPlayCircle, FaVolumeMute, FaVolumeUp } from "react-icons/fa";
 
 interface VideoPlayerProps {
   videoUrl?: string;
@@ -120,8 +121,8 @@ const VideoPlayer = ({
             onClick={handlePlayClick}
             className="flex size-20 items-center justify-center rounded-full color-primary/90 text-white shadow-xl hover:scale-110 transition-transform"
           >
-            <span className="material-symbols-outlined FILL text-[48px]">
-              play_arrow
+            <span className="text-[48px]">
+              <FaPlayCircle />
             </span>
           </button>
         </div>
@@ -147,13 +148,13 @@ const VideoPlayer = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button onClick={handlePlayClick}>
-              <span className="material-symbols-outlined text-white text-[20px] cursor-pointer hover:scale-110 transition-transform">
-                {isPlaying ? "pause" : "play_arrow"}
+              <span className=" text-white text-[20px] cursor-pointer hover:scale-110 transition-transform">
+                {isPlaying ? <FaPauseCircle /> : <FaPlayCircle />}
               </span>
             </button>
             <button onClick={handleVolumeToggle}>
-              <span className="material-symbols-outlined text-white text-[20px] cursor-pointer hover:scale-110 transition-transform">
-                {isMuted ? "volume_off" : "volume_up"}
+              <span className="text-white text-[20px] cursor-pointer hover:scale-110 transition-transform">
+                {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
               </span>
             </button>
             <span className="text-xs font-medium text-white">
@@ -161,12 +162,9 @@ const VideoPlayer = ({
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="material-symbols-outlined text-white text-[20px] cursor-pointer hover:scale-110 transition-transform">
-              settings
-            </span>
             <button onClick={handleFullscreen}>
-              <span className="material-symbols-outlined text-white text-[20px] cursor-pointer hover:scale-110 transition-transform">
-                fullscreen
+              <span className="text-white text-[20px] cursor-pointer hover:scale-110 transition-transform">
+                <FaExpand />
               </span>
             </button>
           </div>

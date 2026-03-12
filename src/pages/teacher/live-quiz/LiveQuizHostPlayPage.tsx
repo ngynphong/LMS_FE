@@ -14,6 +14,9 @@ import { toast } from "@/components/common/Toast";
 import type { LiveQuestion } from "@/types/live-quiz";
 import { useQuizSounds } from "@/hooks/useQuizSounds";
 import SoundToggleButton from "@/components/live-quiz/SoundToggleButton";
+import { MdFlag, MdGroups } from "react-icons/md";
+import { CiWifiOff } from "react-icons/ci";
+import { IoIosArrowForward } from "react-icons/io";
 
 const LiveQuizHostPlayPage = () => {
   const { pin } = useParams<{ pin: string }>();
@@ -205,7 +208,9 @@ const LiveQuizHostPlayPage = () => {
             PIN: {pin}
           </div>
           <div className="flex items-center gap-2 text-slate-300 font-medium">
-            <span className="material-symbols-outlined">group</span>
+            <span className="text-xl">
+              <MdGroups />
+            </span>
             {totalPlayersCount} Học sinh
           </div>
         </div>
@@ -216,8 +221,8 @@ const LiveQuizHostPlayPage = () => {
           </span>
           {!isConnected && (
             <span className="bg-red-500 text-white font-bold px-3 py-1 rounded-md flex items-center gap-1 text-sm animate-pulse">
-              <span className="material-symbols-outlined text-sm">
-                wifi_off
+              <span className="text-xl">
+                <CiWifiOff />
               </span>
               Mất kết nối
             </span>
@@ -283,13 +288,15 @@ const LiveQuizHostPlayPage = () => {
               (quizDetails?.questions.length || 0) ? (
                 <>
                   Kết thúc{" "}
-                  <span className="material-symbols-outlined">flag</span>
+                  <span className="text-xl">
+                    <MdFlag />
+                  </span>
                 </>
               ) : (
                 <>
                   Câu Tiếp Theo{" "}
-                  <span className="material-symbols-outlined">
-                    arrow_forward
+                  <span className="text-xl">
+                    <IoIosArrowForward />
                   </span>
                 </>
               )}

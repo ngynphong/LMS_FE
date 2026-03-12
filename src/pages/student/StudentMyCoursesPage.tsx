@@ -5,6 +5,8 @@ import StudentCourseCard, {
   StudentCourseCardSkeleton,
 } from "@/components/student/StudentCourseCard";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
+import { MdError, MdExpandMore } from "react-icons/md";
+import { IoSchool, IoSearch } from "react-icons/io5";
 
 const StudentMyCoursesPage = () => {
   const [activeTab, setActiveTab] = useState<
@@ -78,8 +80,8 @@ const StudentMyCoursesPage = () => {
     return (
       <div className="max-w-6xl mx-auto px-0 md:px-8 py-4">
         <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-          <span className="material-symbols-outlined text-4xl text-red-500">
-            error
+          <span className="text-4xl text-red-500">
+            <MdError />
           </span>
           <p className="text-slate-600">Không thể tải danh sách khóa học</p>
           <button
@@ -160,8 +162,8 @@ const StudentMyCoursesPage = () => {
             </span>
           </label>
           <div className="relative">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">
-              search
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">
+              <IoSearch />
             </span>
             <input
               type="text"
@@ -189,8 +191,8 @@ const StudentMyCoursesPage = () => {
               <option value="createdAt:desc">Mới nhất</option>
               <option value="createdAt:asc">Cũ nhất</option>
             </select>
-            <span className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[20px]">
-              expand_more
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[20px]">
+              <MdExpandMore />
             </span>
           </div>
         </div>
@@ -211,8 +213,8 @@ const StudentMyCoursesPage = () => {
 
         {(!courses || courses.length === 0) && !loading && (
           <div className="col-span-full py-12 text-center text-slate-500">
-            <span className="material-symbols-outlined text-4xl mb-2">
-              school
+            <span className="text-4xl mb-2">
+              <IoSchool />
             </span>
             <p>Không tìm thấy khóa học nào</p>
             {(searchQuery || activeTab !== "all") && (

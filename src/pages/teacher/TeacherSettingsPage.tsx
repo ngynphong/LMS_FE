@@ -6,6 +6,7 @@ import { updateProfileApi } from "@/services/authService";
 import { useUpdateTeacherProfile } from "@/hooks/useProfile";
 import { toast } from "react-toastify";
 import { StudentPasswordChangeForm } from "@/pages/student/StudentPasswordChangeForm";
+import { MdOutlineVerified } from "react-icons/md";
 
 const TeacherSettingsPage = () => {
   const { user } = useAuth();
@@ -110,12 +111,12 @@ const TeacherSettingsPage = () => {
             </h1>
             <p className="text-gray-600 text-sm">Giảng viên</p>
             {user?.teacherProfile?.isVerified ? (
-              <span className="inline-flex items-center gap-1 text-xs text-green-600 font-semibold mt-1">
-                <span className="material-symbols-outlined text-sm">
-                  verified
+              <div className="inline-flex justify-center items-center gap-1 text-sm text-green-600 font-semibold mt-1">
+                <span>
+                  <MdOutlineVerified />
                 </span>
                 Đã xác minh
-              </span>
+              </div>
             ) : (
               <span className="text-xs text-amber-600 font-semibold mt-1">
                 Chưa xác minh

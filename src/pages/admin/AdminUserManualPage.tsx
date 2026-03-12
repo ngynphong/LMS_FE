@@ -3,6 +3,7 @@ import { useAdminUserManual } from "@/hooks/useAdmin";
 import { Save, FileText, Eye, Edit3 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import Breadcrumb from "@/components/common/Breadcrumb";
+import { FaCircleInfo } from "react-icons/fa6";
 
 const AdminUserManualPage: React.FC = () => {
   const { data: response, isLoading, updateManual, isUpdating } = useAdminUserManual();
@@ -117,7 +118,9 @@ const AdminUserManualPage: React.FC = () => {
       {/* Markdown Help */}
       <div className="mt-6 p-4 bg-blue-50 border border-blue-100 rounded-lg">
         <h4 className="text-sm font-bold text-blue-800 mb-2 flex items-center gap-2">
-          <span className="material-symbols-outlined text-base">info</span>
+          <span className="text-xl">
+            <FaCircleInfo />
+          </span>
           Gợi ý định dạng Markdown
         </h4>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs text-blue-700">

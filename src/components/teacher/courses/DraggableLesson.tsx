@@ -4,6 +4,8 @@ import { ItemTypes } from "@/types/dndTypes";
 import type { OutlineItem } from "@/components/teacher/courses/CourseOutline";
 import DraggableItem from "@/components/teacher/courses/DraggableItem";
 import type { ApiLesson, LessonItem } from "@/types/learningTypes";
+import { MdDescription, MdDragIndicator, MdExpandLess, MdExpandMore } from "react-icons/md";
+import { IoAdd, IoAddCircle } from "react-icons/io5";
 
 interface DraggableLessonProps {
   lesson: ApiLesson;
@@ -118,8 +120,8 @@ const DraggableLesson = ({
           })
         }
       >
-        <span className="material-symbols-outlined text-sm text-slate-300 cursor-move">
-          drag_indicator
+        <span className="text-2xl text-slate-300 cursor-move">
+          <MdDragIndicator />
         </span>
         <button
           onClick={(e) => {
@@ -128,12 +130,16 @@ const DraggableLesson = ({
           }}
           className="p-0.5 hover:bg-slate-200 rounded transition-colors"
         >
-          <span className="material-symbols-outlined text-sm text-slate-500">
-            {expandedLessons.has(lesson.id) ? "expand_more" : "chevron_right"}
+          <span className="text-2xl text-slate-500">
+            {expandedLessons.has(lesson.id) ? (
+              <MdExpandLess />
+            ) : (
+              <MdExpandMore />
+            )}
           </span>
         </button>
-        <span className="material-symbols-outlined text-slate-500">
-          description
+        <span className="text-2xl text-slate-500">
+          <MdDescription />
         </span>
         <span className="text-sm font-medium text-slate-700 truncate flex-1">
           {index + 1}. {lesson.title}
@@ -146,8 +152,8 @@ const DraggableLesson = ({
           className="p-1 hover:bg-blue-100 rounded transition-colors opacity-0 group-hover:opacity-100"
           title="Thêm nội dung"
         >
-          <span className="material-symbols-outlined text-sm text-blue-600">
-            add
+          <span className="text-2xl text-blue-600">
+            <IoAdd />
           </span>
         </button>
       </div>
@@ -181,8 +187,8 @@ const DraggableLesson = ({
             onClick={() => onAddItem(lesson.id)}
             className="flex items-center gap-2 p-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors w-full"
           >
-            <span className="material-symbols-outlined text-sm">
-              add_circle
+            <span className="text-2xl text-blue-600">
+              <IoAddCircle />
             </span>
             <span>Thêm nội dung</span>
           </button>

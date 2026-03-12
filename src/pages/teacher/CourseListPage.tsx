@@ -11,6 +11,9 @@ import PaginationControl from "@/components/common/PaginationControl";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { FaCircleNotch } from "react-icons/fa";
 import CourseCard from "@/components/courses/CourseCard";
+import { MdError, MdOutlineVpnKey } from "react-icons/md";
+import { IoAdd, IoClose, IoCopy, IoSchool, IoSearch } from "react-icons/io5";
+import { CiCircleCheck } from "react-icons/ci";
 
 const CourseListPage = () => {
   const [filters, setFilters] = useState({
@@ -113,8 +116,8 @@ const CourseListPage = () => {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <span className="material-symbols-outlined text-4xl text-red-500">
-          error
+        <span className="text-4xl text-red-500">
+          <MdError />
         </span>
         <p className="text-slate-600">Không thể tải danh sách khóa học</p>
         <button
@@ -145,7 +148,9 @@ const CourseListPage = () => {
           to="/teacher/courses/new"
           className="flex items-center gap-2 px-5 py-2.5 rounded-lg color-primary-bg text-white text-sm font-bold shadow-sm hover:translate-y-[-2px] duration-300 transition-all"
         >
-          <span className="material-symbols-outlined text-lg">add</span>
+          <span className="text-lg">
+            <IoAdd />
+          </span>
           Tạo khóa học mới
         </Link>
       </div>
@@ -153,8 +158,8 @@ const CourseListPage = () => {
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex-1 min-w-[200px] relative">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-            search
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+            <IoSearch />
           </span>
           <input
             type="text"
@@ -197,8 +202,8 @@ const CourseListPage = () => {
       {/* Course Grid */}
       {courseList.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 bg-white rounded-xl border border-slate-200">
-          <span className="material-symbols-outlined text-5xl text-slate-300 mb-4">
-            school
+          <span className="text-5xl text-slate-300 mb-4">
+            <IoSchool />
           </span>
           <h3 className="text-lg font-semibold text-slate-600 mb-2">
             Chưa có khóa học nào
@@ -210,7 +215,9 @@ const CourseListPage = () => {
             to="/teacher/courses/new"
             className="flex items-center gap-2 px-5 py-2.5 rounded-lg color-primary-bg text-white text-sm font-bold"
           >
-            <span className="material-symbols-outlined text-lg">add</span>
+            <span className="text-lg">
+              <IoAdd />
+            </span>
             Tạo khóa học mới
           </Link>
         </div>
@@ -256,7 +263,9 @@ const CourseListPage = () => {
                 onClick={() => setShowInviteModal(false)}
                 className="text-gray-400 hover:text-gray-600"
               >
-                <span className="material-symbols-outlined">close</span>
+                <span className="text-lg">
+                  <IoClose />
+                </span>
               </button>
             </div>
 
@@ -282,8 +291,8 @@ const CourseListPage = () => {
                     className="p-2 hover:bg-green-100 rounded-full text-green-700"
                     title="Sao chép"
                   >
-                    <span className="material-symbols-outlined text-sm">
-                      content_copy
+                    <span className="text-sm">
+                      <IoCopy />
                     </span>
                   </button>
                 </div>
@@ -291,8 +300,8 @@ const CourseListPage = () => {
             ) : (
               <div className="flex justify-center mb-4">
                 <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-blue-600">
-                  <span className="material-symbols-outlined text-3xl">
-                    vpn_key
+                  <span className="text-3xl">
+                    <MdOutlineVpnKey />
                   </span>
                 </div>
               </div>
@@ -316,8 +325,8 @@ const CourseListPage = () => {
                       <FaCircleNotch />
                     </span>
                   ) : (
-                    <span className="material-symbols-outlined text-sm">
-                      add_circle
+                    <span className="text-sm">
+                      <CiCircleCheck />
                     </span>
                   )}
                   Tạo mã mới

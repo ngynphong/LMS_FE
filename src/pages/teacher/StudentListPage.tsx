@@ -7,12 +7,14 @@ import {
   useCancelImportJob,
 } from "@/hooks/useTeacher";
 import PaginationControl from "@/components/common/PaginationControl";
-import { FaCircleNotch } from "react-icons/fa";
+import { FaCircleNotch, FaFileUpload } from "react-icons/fa";
 import { getInitials } from "@/utils/initialsName";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { useMyCreatedStudents } from "@/hooks/useStudentReferral";
 import { useMemo } from "react";
 import ReferralSelectionModal from "@/components/teacher/students/ReferralSelectionModal";
+import { IoClose, IoInformation, IoSearch } from "react-icons/io5";
+import { MdCancel, MdDownload, MdGroups, MdShare } from "react-icons/md";
 
 const StudentListPage = () => {
   // Local state for UI
@@ -156,7 +158,9 @@ const StudentListPage = () => {
       {lastImportJobId && (
         <div className="flex items-center justify-between gap-4 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl">
           <div className="flex items-center gap-2 text-sm text-amber-800">
-            <span className="material-symbols-outlined text-lg">info</span>
+            <span className="text-lg">
+              <IoInformation />
+            </span>
             <span>Đã gửi lệnh import. Kiểm tra thông báo để xem kết quả.</span>
           </div>
           <button
@@ -167,7 +171,9 @@ const StudentListPage = () => {
             {cancelling ? (
               <FaCircleNotch className="animate-spin text-xs" />
             ) : (
-              <span className="material-symbols-outlined text-sm">cancel</span>
+              <span className="text-sm">
+                <MdCancel />
+              </span>
             )}
             Huỷ import
           </button>
@@ -187,7 +193,9 @@ const StudentListPage = () => {
           onClick={() => setIsImportModalOpen(true)}
           className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg color-primary-bg text-white text-sm font-bold shadow-sm hover:bg-[#0074bd]/90 transition-all w-full sm:w-auto"
         >
-          <span className="material-symbols-outlined text-lg">upload_file</span>
+          <span className="text-lg">
+            <FaFileUpload />
+          </span>
           Nhập học sinh
         </button>
       </div>
@@ -233,8 +241,8 @@ const StudentListPage = () => {
       {/* Filters */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="flex-1 min-w-[200px] relative">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-            search
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+            <IoSearch />
           </span>
           <input
             type="text"
@@ -308,8 +316,8 @@ const StudentListPage = () => {
       <div className="grid grid-cols-1 gap-4">
         <div className="bg-white p-4 rounded-xl border border-slate-200">
           <div className="flex items-center gap-2 text-slate-500">
-            <span className="material-symbols-outlined text-[#1E90FF]">
-              group
+            <span className="text-[#1E90FF]">
+              <MdGroups />
             </span>
             <span className="text-xs font-medium">
               Tổng học sinh (Hiện tại)
@@ -490,7 +498,9 @@ const StudentListPage = () => {
                 onClick={() => setIsImportModalOpen(false)}
                 className="text-slate-400 hover:text-slate-600"
               >
-                <span className="material-symbols-outlined">close</span>
+                <span className="text-lg">
+                  <IoClose />
+                </span>
               </button>
             </div>
             <form onSubmit={handleImportSubmit} className="p-6 space-y-4">
@@ -513,8 +523,8 @@ const StudentListPage = () => {
                   disabled={downloadingTemplate}
                   className="inline-flex items-center gap-1.5 text-sm font-medium color-primary cursor-pointer disabled:opacity-50 mt-1"
                 >
-                  <span className="material-symbols-outlined text-base">
-                    download
+                  <span className="text-base">
+                    <MdDownload />
                   </span>
                   {downloadingTemplate ? "Đang tải..." : "Tải template mẫu"}
                 </button>
@@ -585,8 +595,8 @@ const StudentListPage = () => {
                   }}
                   className="flex items-center gap-2 px-6 py-2.5 color-primary-bg hover:opacity-90 text-white text-sm font-bold rounded-xl transition-all shadow-lg active:scale-95 cursor-pointer"
                 >
-                  <span className="material-symbols-outlined text-[20px]">
-                    share_reviews
+                  <span className="text-[20px]">
+                    <MdShare />
                   </span>
                   Gửi yêu cầu giới thiệu
                 </button>

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useTeacherStudentQuizzesAPI } from "@/hooks/useQuizzes";
 import { FaCircleNotch } from "react-icons/fa";
 import type { QuizSummary } from "@/types/quiz";
+import { IoAnalytics, IoSearch } from "react-icons/io5";
 
 const ReportsListPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -38,8 +39,8 @@ const ReportsListPage = () => {
       <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
         <div className="flex-1 min-w-[250px]">
           <div className="relative">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-              search
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+              <IoSearch />
             </span>
             <input
               type="text"
@@ -123,8 +124,8 @@ const ReportsListPage = () => {
                     to={`/teacher/reports/${quiz.id}`}
                     className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-[#0074bd]/10 text-[#0074bd] text-sm font-bold hover:bg-[#0074bd]/20 transition-colors"
                   >
-                    <span className="material-symbols-outlined text-base">
-                      analytics
+                    <span className="text-base">
+                      <IoAnalytics />
                     </span>
                     Xem chi tiết báo cáo
                   </Link>
@@ -137,8 +138,8 @@ const ReportsListPage = () => {
 
       {!isLoading && filteredReports.length === 0 && (
         <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
-          <span className="material-symbols-outlined text-slate-300 text-5xl mb-4">
-            search_off
+          <span className="text-slate-300 text-5xl mb-4">
+            <IoSearch />
           </span>
           <p className="text-slate-500">
             {searchQuery

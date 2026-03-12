@@ -4,6 +4,9 @@ import { useChat } from "@/hooks/useChat";
 import { RiRobot2Line } from "react-icons/ri";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { FaMinus } from "react-icons/fa";
+import { IoClose, IoPersonSharp, IoSend } from "react-icons/io5";
+import { MdExpandLess } from "react-icons/md";
 
 const AIChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -56,7 +59,7 @@ const AIChatbot = () => {
         className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full color-primary-bg text-white shadow-lg hover:scale-110 transition-all duration-300 group cursor-pointer"
         aria-label="Mở trợ lý AI"
       >
-        <span className="material-symbols-outlined text-[28px]">
+        <span className="text-[28px]">
           <RiRobot2Line />
         </span>
         {/* Pulse animation */}
@@ -76,7 +79,7 @@ const AIChatbot = () => {
           <div className="flex items-center gap-3">
             <div className="relative">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20">
-                <span className="material-symbols-outlined text-white text-[24px]">
+                <span className="text-white text-[24px]">
                   <RiRobot2Line />
                 </span>
               </div>
@@ -97,8 +100,8 @@ const AIChatbot = () => {
               }}
               className="text-white/80 hover:text-white transition-colors"
             >
-              <span className="material-symbols-outlined text-[20px]">
-                expand_less
+              <span className="text-[20px]">
+                <MdExpandLess />
               </span>
             </button>
             <button
@@ -108,8 +111,8 @@ const AIChatbot = () => {
               }}
               className="text-white/80 hover:text-white transition-colors"
             >
-              <span className="material-symbols-outlined text-[20px]">
-                close
+              <span className="text-[20px]">
+                <IoClose />
               </span>
             </button>
           </div>
@@ -126,7 +129,7 @@ const AIChatbot = () => {
         <div className="flex items-center gap-3">
           <div className="relative">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20">
-              <span className="material-symbols-outlined text-white text-[24px]">
+              <span className="text-white text-[24px]">
                 <RiRobot2Line />
               </span>
             </div>
@@ -147,8 +150,8 @@ const AIChatbot = () => {
             className="text-white/80 hover:text-white transition-colors"
             aria-label="Thu nhỏ"
           >
-            <span className="material-symbols-outlined text-[20px]">
-              remove
+            <span className="text-[20px]">
+              <FaMinus />
             </span>
           </button>
           <button
@@ -156,7 +159,9 @@ const AIChatbot = () => {
             className="text-white/80 hover:text-white transition-colors"
             aria-label="Đóng"
           >
-            <span className="material-symbols-outlined text-[20px]">close</span>
+            <span className="text-[20px]">
+              <IoClose />
+            </span>
           </button>
         </div>
       </div>
@@ -168,7 +173,10 @@ const AIChatbot = () => {
             <p className="text-lg font-semibold text-gray-700 mb-4">
               Đăng nhập để sử dụng trợ lý AI
             </p>
-            <button onClick={() => navigate("/login")} className="px-6 py-2.5 color-primary-bg rounded-lg text-white font-medium hover:opacity-80 transition-colors cursor-pointer">
+            <button
+              onClick={() => navigate("/login")}
+              className="px-6 py-2.5 color-primary-bg rounded-lg text-white font-medium hover:opacity-80 transition-colors cursor-pointer"
+            >
               Đăng nhập
             </button>
           </div>
@@ -178,49 +186,54 @@ const AIChatbot = () => {
               key={message.id}
               className={`flex items-start gap-2 ${message.sender === "user" ? "flex-row-reverse" : ""}`}
             >
-            {/* Avatar */}
-            <div
-              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-                message.sender === "ai" ? "color-primary-bg" : "bg-gray-500"
-              }`}
-            >
-              <span className="material-symbols-outlined text-white text-[16px]">
-                {message.sender === "ai" ? <RiRobot2Line /> : "person"}
-              </span>
-            </div>
-
-            {/* Message Bubble */}
-            <div
-              className={`max-w-[85%] flex flex-col ${message.sender === "user" ? "items-end" : ""}`}
-            >
+              {/* Avatar */}
               <div
-                className={`rounded-2xl p-3 text-sm shadow-sm ${
-                  message.sender === "user"
-                    ? "rounded-tr-none color-primary-bg text-white"
-                    : "rounded-tl-none bg-white text-gray-700 border border-gray-100"
+                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+                  message.sender === "ai" ? "color-primary-bg" : "bg-gray-500"
                 }`}
               >
-                {message.sender === "ai" ? (
-                  <div className="prose prose-sm max-w-none prose-p:m-0 prose-p:mb-2 prose-ul:m-0 prose-ul:pl-4 prose-ol:m-0 prose-ol:pl-4 prose-li:m-0 prose-headings:m-0 prose-headings:mb-2 prose-code:bg-gray-100 prose-code:px-1 prose-code:rounded prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:p-2 prose-pre:rounded-lg prose-pre:overflow-x-auto">
-                    <ReactMarkdown>{message.content}</ReactMarkdown>
-                  </div>
-                ) : (
-                  message.content
-                )}
+                <span className="text-white text-[16px]">
+                  {message.sender === "ai" ? (
+                    <RiRobot2Line />
+                  ) : (
+                    <IoPersonSharp />
+                  )}
+                </span>
               </div>
-              <span className="mt-1 block text-[10px] text-gray-400">
-                {formatTime(message.timestamp)}
-              </span>
+
+              {/* Message Bubble */}
+              <div
+                className={`max-w-[85%] flex flex-col ${message.sender === "user" ? "items-end" : ""}`}
+              >
+                <div
+                  className={`rounded-2xl p-3 text-sm shadow-sm ${
+                    message.sender === "user"
+                      ? "rounded-tr-none color-primary-bg text-white"
+                      : "rounded-tl-none bg-white text-gray-700 border border-gray-100"
+                  }`}
+                >
+                  {message.sender === "ai" ? (
+                    <div className="prose prose-sm max-w-none prose-p:m-0 prose-p:mb-2 prose-ul:m-0 prose-ul:pl-4 prose-ol:m-0 prose-ol:pl-4 prose-li:m-0 prose-headings:m-0 prose-headings:mb-2 prose-code:bg-gray-100 prose-code:px-1 prose-code:rounded prose-pre:bg-gray-800 prose-pre:text-gray-100 prose-pre:p-2 prose-pre:rounded-lg prose-pre:overflow-x-auto">
+                      <ReactMarkdown>{message.content}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    message.content
+                  )}
+                </div>
+                <span className="mt-1 block text-[10px] text-gray-400">
+                  {formatTime(message.timestamp)}
+                </span>
+              </div>
             </div>
-          </div>
-        )))}
+          ))
+        )}
 
         {/* Loading indicator */}
         {isLoading && (
           <div className="flex items-start gap-2">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full color-primary-bg">
-              <span className="material-symbols-outlined text-white text-[16px]">
-                smart_toy
+              <span className="text-white text-[16px]">
+                <RiRobot2Line />
               </span>
             </div>
             <div className="rounded-2xl rounded-tl-none bg-white p-3 shadow-sm border border-gray-100">
@@ -264,7 +277,9 @@ const AIChatbot = () => {
             className="flex items-center justify-center color-primary hover:scale-110 transition-transform disabled:opacity-50 disabled:hover:scale-100"
             aria-label="Gửi tin nhắn"
           >
-            <span className="material-symbols-outlined text-[24px]">send</span>
+            <span className="text-[24px]">
+              <IoSend />
+            </span>
           </button>
         </div>
         <p className="mt-2 text-[10px] text-gray-400 text-center">

@@ -1,6 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
 import type { ApiLesson, LessonItem } from "@/types/learningTypes";
-
+import { IoClose } from "react-icons/io5";
+import { CiCircleCheck } from "react-icons/ci";
+import { FaFilePowerpoint, FaLock, FaPlayCircle } from "react-icons/fa";
+import { MdArticle, MdDescription, MdExpandMore } from "react-icons/md";
+import { IoMdMenu } from "react-icons/io";
+import { FaFilePdf } from "react-icons/fa6";
 interface LessonSidebarProps {
   lessons: ApiLesson[];
   currentLesson: ApiLesson | null;
@@ -18,15 +23,15 @@ interface LessonSidebarProps {
 const getItemTypeIcon = (type: string) => {
   switch (type) {
     case "VIDEO":
-      return "play_circle";
+      return <FaPlayCircle />;
     case "TEXT":
-      return "article";
+      return <MdArticle />;
     case "PDF":
-      return "picture_as_pdf";
+      return <FaFilePdf />;
     case "PPT":
-      return "co_present";
+      return <FaFilePowerpoint />;
     default:
-      return "description";
+      return <MdDescription />;
   }
 };
 
@@ -170,14 +175,18 @@ const LessonSidebar = ({
             </p>
           </div>
           <button onClick={onClose} className="lg:hidden text-gray-500">
-            <span className="material-symbols-outlined">close</span>
+            <span className="text-[24px]">
+              <IoClose />
+            </span>
           </button>
           <button
             onClick={onDesktopToggle}
             className="hidden lg:block text-gray-500 hover:text-[#1E90FF]"
             title="Thu gọn"
           >
-            <span className="material-symbols-outlined">menu_open</span>
+            <span className="text-[24px]">
+              <IoMdMenu />
+            </span>
           </button>
         </div>
 
@@ -228,12 +237,12 @@ const LessonSidebar = ({
                     }`}
                   >
                     {isLessonComplete ? (
-                      <span className="material-symbols-outlined text-sm">
-                        check
+                      <span className="text-sm">
+                        <CiCircleCheck />
                       </span>
                     ) : !lessonAccessible ? (
-                      <span className="material-symbols-outlined text-sm">
-                        lock
+                      <span className="text-sm">
+                        <FaLock />
                       </span>
                     ) : (
                       lessonIndex + 1
@@ -264,11 +273,11 @@ const LessonSidebar = ({
                     className="size-6 flex items-center justify-center rounded-full hover:bg-black/5 text-slate-400"
                   >
                     <span
-                      className={`material-symbols-outlined text-xl transition-transform duration-400 ${
+                      className={`text-xl transition-transform duration-400 ${
                         isExpanded ? "rotate-180" : ""
                       }`}
                     >
-                      expand_more
+                      <MdExpandMore />
                     </span>
                   </button>
                 </div>
@@ -317,11 +326,11 @@ const LessonSidebar = ({
                                     : getItemTypeColor(item.type)
                               }`}
                             >
-                              <span className="material-symbols-outlined text-sm">
+                              <span className="text-sm">
                                 {isItemComplete
                                   ? getItemTypeIcon(item.type)
                                   : !itemAccessible
-                                    ? "lock"
+                                    ? <FaLock />
                                     : getItemTypeIcon(item.type)}
                               </span>
                             </div>
@@ -339,8 +348,8 @@ const LessonSidebar = ({
                               {item.title}
                             </span>
                             {isItemComplete && (
-                              <span className="material-symbols-outlined text-green-500 text-sm">
-                                check
+                              <span className="text-green-500 text-xl">
+                                <CiCircleCheck />
                               </span>
                             )}
                           </div>

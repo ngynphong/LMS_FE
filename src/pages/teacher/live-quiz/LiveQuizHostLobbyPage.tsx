@@ -6,6 +6,8 @@ import { QRCodeSVG } from "qrcode.react";
 import { toast } from "@/components/common/Toast";
 import { useQuizSounds } from "@/hooks/useQuizSounds";
 import SoundToggleButton from "@/components/live-quiz/SoundToggleButton";
+import { MdGroups, MdQuiz } from "react-icons/md";
+import { CiWifiOff } from "react-icons/ci";
 
 const LiveQuizHostLobbyPage = () => {
   const { pin } = useParams<{ pin: string }>();
@@ -93,15 +95,15 @@ const LiveQuizHostLobbyPage = () => {
           </h1>
           <div className="flex items-center gap-4 text-sm text-slate-500 mt-1">
             <span className="flex items-center gap-1 font-medium">
-              <span className="material-symbols-outlined text-[1rem]">
-                quiz
+              <span className="text-[1rem]">
+                <MdQuiz />
               </span>
               {quizDetails?.questions.length || 0} câu hỏi
             </span>
             <span>•</span>
             <span className="flex items-center gap-1 font-medium">
-              <span className="material-symbols-outlined text-[1rem]">
-                group
+              <span className="text-[1rem]">
+                <MdGroups />
               </span>
               {playersList.length} người chờ
             </span>
@@ -163,7 +165,9 @@ const LiveQuizHostLobbyPage = () => {
 
             {!isConnected && (
               <div className="mt-8 flex items-center justify-center gap-2 text-red-500 font-bold bg-red-50 py-2 px-4 rounded-xl border border-red-100 w-full">
-                <span className="material-symbols-outlined">wifi_off</span>
+                <span className="text-xl">
+                  <CiWifiOff />
+                </span>
                 Mất kết nối tới máy chủ Live!
               </div>
             )}
@@ -178,7 +182,9 @@ const LiveQuizHostLobbyPage = () => {
           <div className="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
             <h3 className="text-2xl font-black text-slate-800 flex items-center gap-3 tracking-tight">
               <div className="w-10 h-10 bg-[#1E90FF]/10 text-[#1E90FF] rounded-xl flex items-center justify-center">
-                <span className="material-symbols-outlined">groups</span>
+                <span className="text-xl">
+                  <MdGroups />
+                </span>
               </div>
               Người chơi
             </h3>

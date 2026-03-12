@@ -1,7 +1,9 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPreloadHandler } from "@/utils/routePreloader";
 import { FaTimes } from "react-icons/fa";
+import { GoHomeFill } from "react-icons/go";
 import {
+  MdAddCircle,
   MdDashboard,
   MdLibraryBooks,
   MdQuiz,
@@ -144,7 +146,7 @@ const TeacherSidebar = ({
           `}
       >
         <div className="flex flex-col flex-1 min-h-0">
-          <div className="flex flex-col gap-6 relative flex-1">
+          <div className="flex flex-col gap-3 relative flex-1">
             {/* Mobile Close Button */}
             <button
               onClick={onMobileClose}
@@ -166,10 +168,35 @@ const TeacherSidebar = ({
             </button>
 
             {/* Profile Section */}
+            <Link
+              to="/"
+              className={`flex items-center gap-2 mt-4 cursor-pointer transition-all duration-300 ${
+                isCollapsed ? "lg:justify-center lg:px-2 px-6" : "px-6"
+              } ${isMobileOpen ? "px-6" : ""}`}
+            >
+              <GoHomeFill className="text-2xl color-primary shrink-0" />
+              {(!isCollapsed || isMobileOpen) && (
+                <div className="lg:flex hidden items-center">
+                  <img src="/img/logo-edu.png" alt="Logo IES" className="w-10" />
+                  <p className="text-xl color-primary font-bold truncate">
+                    IES Focus
+                  </p>
+                </div>
+              )}
+              {isMobileOpen && (
+                <div className="flex items-center lg:hidden">
+                  <img src="/img/logo-edu.png" alt="Logo IES" className="w-10" />
+                  <p className="text-xl color-primary font-bold truncate">
+                    IES Focus
+                  </p>
+                </div>
+              )}
+            </Link>
+
             <div
-              className={`px-6 pt-8 flex items-center gap-3 transition-all duration-300 ${
-                isCollapsed ? "lg:justify-center lg:px-2" : ""
-              }`}
+              className={`px-4 pt-2 flex items-center gap-3 transition-all duration-300 ${
+                isCollapsed ? "lg:justify-center lg:px-0" : "px-6"
+              } ${isMobileOpen ? "px-6" : ""}`}
             >
               <img
                 src={user?.urlImg || "/img/avatar-default.png"}
@@ -181,19 +208,19 @@ const TeacherSidebar = ({
               {(!isCollapsed || isMobileOpen) && (
                 <div className="whitespace-nowrap overflow-hidden lg:block hidden">
                   <h1 className="text-slate-900 text-base font-bold leading-tight truncate">
-                    IES Focus
+                    Giảng viên
                   </h1>
                   <p className="text-slate-500 text-xs font-medium truncate mt-0.5">
-                    Giảng viên
+                    {user?.firstName} {user?.lastName}
                   </p>
                 </div>
               )}
               <div className="flex flex-col whitespace-nowrap overflow-hidden lg:hidden">
                 <h1 className="text-slate-900 text-base font-bold leading-tight truncate">
-                  IES Focus
+                  Giảng viên
                 </h1>
                 <p className="text-slate-500 text-xs font-medium truncate mt-0.5">
-                  Giảng viên
+                  {user?.firstName} {user?.lastName}
                 </p>
               </div>
             </div>
@@ -265,20 +292,25 @@ const TeacherSidebar = ({
               onClick={() => navigate("/teacher/courses/new")}
               className={`color-primary-bg hover:opacity-90 text-white text-sm font-bold rounded-lg flex items-center justify-center transition-all shadow-md shadow-blue-200 ${
                 isCollapsed ? "lg:size-10 lg:p-0" : "w-full py-3 gap-2"
-              } w-full py-3 gap-2`}
+              }`}
               title={isCollapsed ? "Tạo khóa học mới" : ""}
             >
-              <span className="material-symbols-outlined text-xl">
-                add_circle
+              <span className="text-xl">
+                <MdAddCircle />
               </span>
               {(!isCollapsed || isMobileOpen) && (
                 <span className="lg:block hidden">Tạo khóa học mới</span>
               )}
-              <span className="lg:hidden">Tạo khóa học mới</span>
+              {isMobileOpen && (
+                <span className="lg:hidden">Tạo khóa học mới</span>
+              )}
             </button>
 
             {/* Role Switcher */}
-            <RoleSwitcher isCollapsed={isCollapsed} isMobileOpen={isMobileOpen} />
+            <RoleSwitcher
+              isCollapsed={isCollapsed}
+              isMobileOpen={isMobileOpen}
+            />
 
             {/* Logout Button */}
             <button

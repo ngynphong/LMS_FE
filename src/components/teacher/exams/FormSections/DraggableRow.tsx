@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import type { StaticQuestion } from "@/types/quiz";
+import { MdDelete } from "react-icons/md";
 
 const DRAG_TYPE = "QUESTION_ROW";
 
@@ -104,7 +105,7 @@ const DraggableRow = ({
           className="text-red-400 hover:text-red-600 transition-colors cursor-pointer"
           title="Xóa câu hỏi"
         >
-          <span className="material-symbols-outlined text-lg">delete</span>
+          <MdDelete className="text-lg" />
         </button>
       </td>
     </tr>

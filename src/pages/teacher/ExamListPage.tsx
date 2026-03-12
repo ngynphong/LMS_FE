@@ -11,6 +11,10 @@ import { useHostLiveQuiz } from "@/hooks/useLiveQuiz";
 import { useDebounce } from "@/hooks/useDebounce";
 import { toast } from "@/components/common/Toast";
 import PaginationControl from "@/components/common/PaginationControl";
+import { IoIosAddCircle } from "react-icons/io";
+import { IoCalendarSharp, IoSearch } from "react-icons/io5";
+import { MdAllInclusive, MdEdit, MdOutlinePublicOff, MdPublic, MdQuiz, MdRefresh, MdTimer } from "react-icons/md";
+import { FaCopy, FaKey } from "react-icons/fa";
 
 const ExamListPage = () => {
   const [page, setPage] = useState(1);
@@ -103,7 +107,9 @@ const ExamListPage = () => {
           to="/teacher/quizzes/new"
           className="color-primary-bg hover:translate-y-[-2px] duration-300 text-white px-5 py-2.5 rounded-lg flex items-center gap-2 font-bold transition-all shadow-md"
         >
-          <span className="material-symbols-outlined text-lg">add_circle</span>
+          <span className="text-lg">
+            <IoIosAddCircle />
+          </span>
           Tạo đề thi mới
         </Link>
       </div>
@@ -112,8 +118,8 @@ const ExamListPage = () => {
       <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
         <div className="flex-1 min-w-[250px]">
           <div className="relative">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-              search
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+              <IoSearch />
             </span>
             <input
               type="text"
@@ -188,22 +194,22 @@ const ExamListPage = () => {
 
               <div className="flex items-center gap-4 text-sm text-slate-500 mb-4">
                 <div className="flex items-center gap-1">
-                  <span className="material-symbols-outlined text-base">
-                    quiz
+                  <span className="text-xl">
+                    <MdQuiz />
                   </span>
                   <span>{exam.totalQuestions} câu</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <span className="material-symbols-outlined text-base">
-                    schedule
+                  <span className="text-xl">
+                    <MdTimer />
                   </span>
                   <span>{exam.durationInMinutes} phút</span>
                 </div>
               </div>
               <div className="flex items-center gap-4 text-sm text-slate-500 mb-4">
                 <div className="flex items-center gap-1">
-                  <span className="material-symbols-outlined text-base">
-                    calendar_today
+                  <span className="text-xl">
+                    <IoCalendarSharp />
                   </span>
                   <span>
                     {exam.closeTime
@@ -236,8 +242,8 @@ const ExamListPage = () => {
                     exam.isPublished ? "Đã công khai" : "Công khai bài thi"
                   }
                 >
-                  <span className="material-symbols-outlined text-lg">
-                    {exam.isPublished ? "public" : "public_off"}
+                  <span className="text-lg">
+                    {exam.isPublished ? <MdPublic /> : <MdOutlinePublicOff />}
                   </span>
                   {exam.isPublished ? "Đã công khai" : "Công khai"}
                 </button>
@@ -248,8 +254,8 @@ const ExamListPage = () => {
                     className="flex items-center justify-center gap-1 p-2 rounded-lg bg-indigo-50 text-indigo-600 font-bold hover:bg-indigo-100 transition-colors shadow-sm ml-auto border border-indigo-200 group"
                     title="Mở phòng chơi trực tiếp"
                   >
-                    <span className="material-symbols-outlined text-lg group-hover:animate-spin-slow">
-                      all_inclusive
+                    <span className="text-lg group-hover:animate-spin-slow">
+                      <MdAllInclusive />
                     </span>
                     Live Quiz
                   </button>
@@ -261,8 +267,8 @@ const ExamListPage = () => {
                   to={`/teacher/quizzes/${exam.id}/edit`}
                   className="flex items-center justify-center gap-1 p-2 rounded-lg bg-[#0074bd]/10 text-[#0074bd] text-sm font-bold hover:bg-[#0074bd]/20 transition-colors"
                 >
-                  <span className="material-symbols-outlined text-base">
-                    edit
+                  <span className="text-base">
+                    <MdEdit />
                   </span>
                   Sửa
                 </Link>
@@ -272,8 +278,8 @@ const ExamListPage = () => {
                   className="flex items-center justify-center gap-1 p-2 rounded-lg bg-purple-50 text-purple-600 text-sm font-bold hover:bg-purple-100 transition-colors"
                   title="Tạo mã Code"
                 >
-                  <span className="material-symbols-outlined text-lg">
-                    {exam.code ? "refresh" : "vpn_key"}
+                  <span className="text-lg">
+                    {exam.code ? <MdRefresh /> : <FaKey />}
                   </span>
                   {exam.code ? "Đổi mã" : "Tạo mã"}
                 </button>
@@ -290,8 +296,8 @@ const ExamListPage = () => {
                       className="text-gray-400 hover:text-[#1E90FF]"
                       title="Sao chép"
                     >
-                      <span className="material-symbols-outlined text-sm">
-                        content_copy
+                      <span className="text-sm">
+                        <FaCopy />
                       </span>
                     </button>
                   </div>

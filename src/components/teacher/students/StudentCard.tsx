@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import type { Student } from "@/types/student";
 import { getInitials } from "@/utils/initialsName";
+import { FaBook, FaTasks } from "react-icons/fa";
+import { IoIosArrowForward } from "react-icons/io";
 
 interface StudentCardProps {
   student: Student;
@@ -54,14 +56,14 @@ const StudentCard = ({ student }: StudentCardProps) => {
           {/* Stats */}
           <div className="flex items-center gap-4 mt-3 text-sm">
             <div className="flex items-center gap-1 text-slate-500">
-              <span className="material-symbols-outlined text-base">
-                library_books
+              <span className="text-xl">
+                <FaBook />
               </span>
               <span>{student.enrolledCourses} khóa học</span>
             </div>
             <div className="flex items-center gap-1 text-slate-500">
-              <span className="material-symbols-outlined text-base">
-                task_alt
+              <span className="text-xl">
+                <FaTasks />
               </span>
               <span>{student.completionRate}% hoàn thành</span>
             </div>
@@ -87,8 +89,8 @@ const StudentCard = ({ student }: StudentCardProps) => {
               className="flex items-center gap-1 text-[#0074bd] text-sm font-semibold hover:underline"
             >
               Chi tiết
-              <span className="material-symbols-outlined text-sm">
-                arrow_forward
+              <span className="text-xl">
+                <IoIosArrowForward />
               </span>
             </Link>
           </div>

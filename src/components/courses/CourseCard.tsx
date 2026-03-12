@@ -1,3 +1,6 @@
+import { FaBook, FaKey } from "react-icons/fa";
+import { IoEyeSharp } from "react-icons/io5";
+import { MdDelete, MdEdit } from "react-icons/md";
 import { Link } from "react-router-dom";
 
 // Props for student variant (can be spread from CourseData)
@@ -55,7 +58,11 @@ const CourseCard = (props: CourseCardProps) => {
             <span
               className={`px-2 py-1 rounded text-xs font-medium ${course.status === "PUBLISHED" ? "bg-green-100 text-green-700" : course.status === "DRAFT" ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700"}`}
             >
-              {course.status === "PUBLISHED" ? "Công khai" : course.status === "DRAFT" ? "Bản nháp" : "Bị khóa" }
+              {course.status === "PUBLISHED"
+                ? "Công khai"
+                : course.status === "DRAFT"
+                  ? "Bản nháp"
+                  : "Bị khóa"}
             </span>
           </div>
           <div className="absolute top-3 left-3">
@@ -78,8 +85,8 @@ const CourseCard = (props: CourseCardProps) => {
 
           <div className="flex items-center gap-4 text-xs text-slate-500 mb-4">
             <span className="flex items-center gap-1">
-              <span className="material-symbols-outlined text-sm">
-                menu_book
+              <span className="text-sm">
+                <FaBook />
               </span>
               {course.lessonCount || 0} bài học
             </span>
@@ -90,7 +97,9 @@ const CourseCard = (props: CourseCardProps) => {
               to={`/teacher/courses/${course.id}/edit`}
               className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-100 hover:translate-y-[-2px] duration-300 transition-all"
             >
-              <span className="material-symbols-outlined text-sm">edit</span>
+              <span className="text-sm">
+                <MdEdit />
+              </span>
               Sửa
             </Link>
             <button
@@ -98,15 +107,17 @@ const CourseCard = (props: CourseCardProps) => {
               className="flex items-center justify-center px-3 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-200 hover:translate-y-[-2px] duration-300 transition-all"
               title="Tạo mã mời"
             >
-              <span className="material-symbols-outlined text-sm">key</span>
+              <span className="text-sm">
+                <FaKey />
+              </span>
             </button>
             <Link
               to={`/teacher/courses/${course.id}`}
               className="flex items-center justify-center px-3 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-200 hover:translate-y-[-2px] duration-300 transition-all"
               title="Xem khóa học"
             >
-              <span className="material-symbols-outlined text-sm">
-                visibility
+              <span className="text-sm">
+                <IoEyeSharp />
               </span>
             </Link>
             <button
@@ -114,7 +125,9 @@ const CourseCard = (props: CourseCardProps) => {
               className="flex items-center justify-center px-3 py-2 bg-red-50 text-red-600 rounded-lg text-sm font-medium hover:bg-red-100 hover:translate-y-[-2px] duration-300 transition-all"
               title="Xóa khóa học"
             >
-              <span className="material-symbols-outlined text-sm">delete</span>
+              <span className="text-sm">
+                <MdDelete />
+              </span>
             </button>
           </div>
         </div>

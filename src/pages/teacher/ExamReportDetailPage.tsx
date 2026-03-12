@@ -10,8 +10,11 @@ import { useState } from "react";
 import PaginationControl from "@/components/common/PaginationControl";
 import { useDebounce } from "@/hooks/useDebounce";
 import { QuizReviewModal } from "@/components/student/QuizReviewModal";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { MdCancel, MdError, MdGroups, MdOutlineRemoveRedEye, MdPerson } from "react-icons/md";
 import type { TeacherStudentAttempt } from "@/types/quiz";
+import { FaPlayCircle, FaStar } from "react-icons/fa";
+import { CiCircleCheck, CiStickyNote } from "react-icons/ci";
+import { IoClose, IoSearch } from "react-icons/io5";
 
 const ExamReportDetailPage = () => {
   const { id } = useParams();
@@ -52,8 +55,8 @@ const ExamReportDetailPage = () => {
   if (statsError || !stats) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <span className="material-symbols-outlined text-slate-300 text-6xl">
-          error
+        <span className="text-slate-300 text-6xl">
+          <MdError />
         </span>
         <p className="text-slate-500 font-medium">
           Không thể tải báo cáo hoặc bài thi không tồn tại.
@@ -98,7 +101,9 @@ const ExamReportDetailPage = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white flex flex-col gap-2 rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center gap-2 text-slate-500">
-            <span className="material-symbols-outlined text-xl">groups</span>
+            <span className="text-xl">
+              <MdGroups />
+            </span>
             <p className="text-xs font-bold uppercase tracking-wider">
               Lượt làm bài
             </p>
@@ -109,7 +114,9 @@ const ExamReportDetailPage = () => {
         </div>
         <div className="bg-white flex flex-col gap-2 rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center gap-2 text-slate-500">
-            <span className="material-symbols-outlined text-xl">star</span>
+            <span className="text-xl">
+              <FaStar />
+            </span>
             <p className="text-xs font-bold uppercase tracking-wider">
               Điểm trung bình
             </p>
@@ -120,8 +127,8 @@ const ExamReportDetailPage = () => {
         </div>
         <div className="bg-white flex flex-col gap-2 rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center gap-2 text-slate-500">
-            <span className="material-symbols-outlined text-xl">
-              check_circle
+            <span className="text-xl">
+              <CiCircleCheck />
             </span>
             <p className="text-xs font-bold uppercase tracking-wider">
               Tỷ lệ đạt
@@ -136,7 +143,9 @@ const ExamReportDetailPage = () => {
         </div>
         <div className="bg-white flex flex-col gap-2 rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center gap-2 text-slate-500">
-            <span className="material-symbols-outlined text-xl">cancel</span>
+            <span className="text-xl">
+              <MdCancel />
+            </span>
             <p className="text-xs font-bold uppercase tracking-wider">
               Chưa đạt
             </p>
@@ -197,8 +206,8 @@ const ExamReportDetailPage = () => {
             <div className="flex-1 min-w-[300px]">
               <span className="text-slate-400 text-sm">Tìm kiếm học viên</span>
               <div className="flex items-center gap-2 relative">
-                <span className="material-symbols-outlined text-xl text-slate-400 absolute left-3 top-1/2 -translate-y-1/2">
-                  search
+                <span className="text-xl text-slate-400 absolute left-3 top-1/2 -translate-y-1/2">
+                  <IoSearch />
                 </span>
                 <input
                   type="text"
@@ -223,8 +232,8 @@ const ExamReportDetailPage = () => {
                 className="flex items-center justify-center p-2.5 text-slate-400 hover:text-red-500 transition-colors bg-slate-50 border border-slate-200 rounded-xl group"
                 title="Xóa bộ lọc"
               >
-                <span className="material-symbols-outlined text-xl group-hover:rotate-90 transition-transform">
-                  close
+                <span className="text-xl group-hover:rotate-90 transition-transform">
+                  <IoClose />
                 </span>
               </button>
             )}
@@ -280,8 +289,8 @@ const ExamReportDetailPage = () => {
                             className="size-full object-cover"
                           />
                         ) : (
-                          <span className="material-symbols-outlined text-[#0074bd] text-2xl">
-                            person
+                          <span className="text-[#0074bd] text-2xl">
+                            <MdPerson />
                           </span>
                         )}
                       </div>
@@ -316,8 +325,8 @@ const ExamReportDetailPage = () => {
                   <td className="px-6 py-5">
                     <div className="flex flex-col gap-1.5">
                       <div className="flex items-center gap-2 text-[11px] text-slate-600 font-bold">
-                        <span className="material-symbols-outlined text-xs text-[#1E90FF]">
-                          play_circle
+                        <span className="text-xs text-[#1E90FF]">
+                          <FaPlayCircle />
                         </span>
                         {format(
                           new Date(attempt.startedAt),
@@ -326,8 +335,8 @@ const ExamReportDetailPage = () => {
                         )}
                       </div>
                       <div className="flex items-center gap-2 text-[11px] text-slate-400 font-medium">
-                        <span className="material-symbols-outlined text-xs">
-                          check_circle
+                        <span className="text-sm">
+                          <CiCircleCheck />
                         </span>
                         {format(
                           new Date(attempt.completedAt),
@@ -360,8 +369,8 @@ const ExamReportDetailPage = () => {
                     <td colSpan={5} className="px-6 py-20 text-center">
                       <div className="flex flex-col items-center gap-4 text-slate-400">
                         <div className="size-16 rounded-full bg-slate-50 flex items-center justify-center">
-                          <span className="material-symbols-outlined text-4xl">
-                            clinical_notes
+                          <span className="text-4xl">
+                            <CiStickyNote />
                           </span>
                         </div>
                         <div className="space-y-1">

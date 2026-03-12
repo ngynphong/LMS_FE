@@ -1,5 +1,7 @@
 import type { DynamicConfig } from "@/types/quiz";
 import type { ApiLesson } from "@/types/learningTypes";
+import { IoIosAddCircle } from "react-icons/io";
+import { IoClose } from "react-icons/io5";
 
 interface DynamicConfigSectionProps {
   isEditMode: boolean;
@@ -70,8 +72,8 @@ const DynamicConfigSection = ({
               }
               className="text-sm font-bold text-[#1E90FF] hover:text-[#0074bd] flex items-center gap-1 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors border border-blue-100 cursor-pointer"
             >
-              <span className="material-symbols-outlined text-base">
-                add_circle
+              <span className="text-base">
+                <IoIosAddCircle />
               </span>
               Thêm cấu hình
             </button>
@@ -94,8 +96,8 @@ const DynamicConfigSection = ({
                     className="absolute -top-3 -right-3 bg-white text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all border shadow-sm cursor-pointer"
                     title="Xóa cấu hình"
                   >
-                    <span className="material-symbols-outlined text-sm">
-                      close
+                    <span className="text-sm">
+                      <IoClose />
                     </span>
                   </button>
                 )}

@@ -24,6 +24,7 @@ import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import ReferralStudentListModal from "@/components/teacher/students/ReferralStudentListModal";
 import PaginationControl from "@/components/common/PaginationControl";
 import type { ReferralRequestResponse } from "@/types/courseApi";
+import { MdCancel, MdPersonPin } from "react-icons/md";
 
 const ReferralRequestPage = () => {
   const [activeTab, setActiveTab] = useState<"outgoing" | "incoming">(
@@ -426,8 +427,8 @@ const ReferralRequestPage = () => {
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-center gap-3">
                             <div className="size-10 rounded-full bg-blue-50 flex items-center justify-center text-[#0074bd]">
-                              <span className="material-symbols-outlined">
-                                person_pin
+                              <span className="text-xl">
+                                <MdPersonPin />
                               </span>
                             </div>
                             <div>
@@ -543,8 +544,12 @@ const ReferralRequestPage = () => {
 
                       {req.status !== "PENDING" && (
                         <div className="shrink-0 flex items-center justify-center size-10 rounded-full bg-slate-100 text-slate-400">
-                          <span className="material-symbols-outlined text-xl">
-                            {req.status === "ACCEPTED" ? "verified" : "cancel"}
+                          <span className="text-xl">
+                            {req.status === "ACCEPTED" ? (
+                              <FaCheck />
+                            ) : (
+                              <MdCancel />
+                            )}
                           </span>
                         </div>
                       )}

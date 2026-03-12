@@ -14,7 +14,8 @@ interface LessonFormProps {
 }
 
 import LoadingOverlay from "@/components/common/LoadingOverlay";
-import { FaCircleNotch } from "react-icons/fa";
+import { FaCircleNotch, FaSave } from "react-icons/fa";
+import { MdDelete, MdDescription } from "react-icons/md";
 
 const LessonForm = ({
   initialData,
@@ -49,8 +50,8 @@ const LessonForm = ({
 
       <div className="flex items-center gap-3 mb-6">
         <div className="size-10 rounded-lg bg-green-100 flex items-center justify-center">
-          <span className="material-symbols-outlined text-green-600">
-            description
+          <span className="text-green-600">
+            <MdDescription />
           </span>
         </div>
         <div>
@@ -99,7 +100,9 @@ const LessonForm = ({
               </>
             ) : (
               <>
-                <span className="material-symbols-outlined text-lg">save</span>
+                <span className="text-lg">
+                  <FaSave />
+                </span>
                 <span>{isEdit ? "Cập nhật" : "Tạo bài học"}</span>
               </>
             )}
@@ -111,7 +114,9 @@ const LessonForm = ({
               onClick={onDelete}
               className="flex items-center justify-center gap-2 rounded-lg h-11 px-4 bg-red-50 text-red-600 text-sm font-bold hover:bg-red-100 transition-all"
             >
-              <span className="material-symbols-outlined text-lg">delete</span>
+              <span className="text-lg">
+                <MdDelete />
+              </span>
             </button>
           )}
         </div>

@@ -15,7 +15,8 @@ interface CourseFormProps {
 }
 
 import LoadingOverlay from "../../common/LoadingOverlay";
-import { FaCircleNotch } from "react-icons/fa";
+import { FaCircleNotch, FaSave } from "react-icons/fa";
+import { MdBook } from "react-icons/md";
 
 const CourseForm = ({
   initialData,
@@ -54,8 +55,8 @@ const CourseForm = ({
 
       <div className="flex items-center gap-3 mb-6">
         <div className="size-10 rounded-lg bg-blue-100 flex items-center justify-center">
-          <span className="material-symbols-outlined text-blue-600">
-            menu_book
+          <span className="text-2xl text-blue-600">
+            <MdBook />
           </span>
         </div>
         <div>
@@ -193,7 +194,9 @@ const CourseForm = ({
               </>
             ) : (
               <>
-                <span className="material-symbols-outlined text-lg">save</span>
+                <span className="text-lg">
+                  <FaSave />
+                </span>
                 <span>{isEdit ? "Cập nhật khóa học" : "Tạo khóa học"}</span>
               </>
             )}

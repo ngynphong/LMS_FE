@@ -1,4 +1,5 @@
 import type { AtRiskStudentResponse } from "@/types/teacherDashboard";
+import { CiCircleCheck } from "react-icons/ci";
 
 interface AtRiskStudentsTableProps {
   data: AtRiskStudentResponse[] | undefined;
@@ -54,8 +55,8 @@ const AtRiskStudentsTable = ({ data, isLoading }: AtRiskStudentsTableProps) => {
         </h2>
         <div className="flex items-center justify-center h-32 text-[#607b8a]">
           <div className="text-center">
-            <span className="material-symbols-outlined text-4xl text-green-500 mb-2">
-              check_circle
+            <span className="text-4xl text-green-500 mb-2">
+              <CiCircleCheck />
             </span>
             <p>Tất cả học viên đang có tiến độ tốt!</p>
           </div>

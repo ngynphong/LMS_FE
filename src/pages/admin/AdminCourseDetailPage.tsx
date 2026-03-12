@@ -10,6 +10,11 @@ import { getLessonById, getLessonItemById } from "@/services/lessonService";
 import type { LessonItem, ApiLesson } from "@/types/learningTypes";
 import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
+import { MdArticle, MdBlock, MdDescription, MdError, MdOpenInNew, MdSettingsBackupRestore } from "react-icons/md";
+import { IoIosArrowBack } from "react-icons/io";
+import { FaBook, FaFilePdf, FaFilePowerpoint, FaPlayCircle } from "react-icons/fa";
+import { IoClose } from "react-icons/io5";
+import { RiProgress2Line } from "react-icons/ri";
 
 const AdminCourseDetailPage = () => {
   const { id } = useParams();
@@ -64,15 +69,18 @@ const AdminCourseDetailPage = () => {
 
   if (loading) {
     return (
-      <LoadingOverlay isLoading={true} message="Đang tải thông tin khóa học..." />
+      <LoadingOverlay
+        isLoading={true}
+        message="Đang tải thông tin khóa học..."
+      />
     );
   }
 
   if (error || !course) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <span className="material-symbols-outlined text-4xl text-red-500">
-          error
+        <span className="text-4xl text-red-500">
+          <MdError />
         </span>
         <p className="text-slate-600">Không tìm thấy khóa học</p>
         <button
@@ -88,15 +96,15 @@ const AdminCourseDetailPage = () => {
   const getItemTypeIcon = (type: string) => {
     switch (type) {
       case "VIDEO":
-        return "play_circle";
+        return <FaPlayCircle />;
       case "TEXT":
-        return "article";
+        return <MdArticle />;
       case "PDF":
-        return "picture_as_pdf";
+        return <FaFilePdf />;
       case "PPT":
-        return "co_present";
+        return <FaFilePowerpoint />;
       default:
-        return "description";
+        return <MdDescription />;
     }
   };
 
@@ -195,8 +203,8 @@ const AdminCourseDetailPage = () => {
             onClick={() => navigate("/admin/courses")}
             className="p-2 hover:bg-slate-200 rounded-lg transition-colors"
           >
-            <span className="material-symbols-outlined text-slate-600">
-              arrow_back
+            <span className="text-slate-600">
+              <IoIosArrowBack />
             </span>
           </button>
           <div>
@@ -210,7 +218,9 @@ const AdminCourseDetailPage = () => {
               onClick={openBanModal}
               className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-red-600 text-white text-sm font-bold hover:translate-y-[-2px] transition-all duration-300 cursor-pointer"
             >
-              <span className="material-symbols-outlined text-lg">block</span>
+              <span className="text-lg">
+                <MdBlock />
+              </span>
               Khóa / Từ chối
             </button>
           ) : (
@@ -218,7 +228,9 @@ const AdminCourseDetailPage = () => {
               onClick={openUnbanModal}
               className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-green-600 text-white text-sm font-bold hover:translate-y-[-2px] transition-all duration-300 cursor-pointer"
             >
-              <span className="material-symbols-outlined text-lg">settings_backup_restore</span>
+              <span className="text-lg">
+                <MdSettingsBackupRestore />
+              </span>
               Mở khóa
             </button>
           )}
@@ -230,19 +242,11 @@ const AdminCourseDetailPage = () => {
         <div className="flex flex-col md:flex-row">
           {/* Thumbnail */}
           <div className="w-full md:w-80 aspect-video bg-slate-100 shrink-0">
-            {course.thumbnailUrl ? (
-              <img
-                src={course.thumbnailUrl || "/img/default-course.jpg"}
-                alt={course.name}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <span className="material-symbols-outlined text-5xl text-slate-300">
-                  image
-                </span>
-              </div>
-            )}
+            <img
+              src={course.thumbnailUrl || "/img/default-course.jpg"}
+              alt={course.name}
+              className="w-full h-full object-cover"
+            />
           </div>
 
           {/* Info */}
@@ -349,7 +353,7 @@ const AdminCourseDetailPage = () => {
                           <div
                             className={`size-8 rounded-lg flex items-center justify-center ${getItemTypeColor(item.type)}`}
                           >
-                            <span className="material-symbols-outlined text-sm">
+                            <span className="text-sm">
                               {getItemTypeIcon(item.type)}
                             </span>
                           </div>
@@ -374,8 +378,8 @@ const AdminCourseDetailPage = () => {
           </div>
         ) : (
           <div className="text-center py-12">
-            <span className="material-symbols-outlined text-5xl text-slate-300 mb-4">
-              menu_book
+            <span className="text-5xl text-slate-300 mb-4">
+              <FaBook />
             </span>
             <h3 className="text-lg font-semibold text-slate-600 mb-2">
               Chưa có bài học nào
@@ -397,7 +401,7 @@ const AdminCourseDetailPage = () => {
           <div className="relative bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
             <div className="flex items-center justify-between p-4 border-b border-slate-100">
               <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                <span className="material-symbols-outlined text-blue-600">
+                <span className="text-blue-600">
                   {getItemTypeIcon(viewItem.type)}
                 </span>
                 {viewItem.title}
@@ -406,8 +410,8 @@ const AdminCourseDetailPage = () => {
                 onClick={closeViewModal}
                 className="p-1 hover:bg-slate-100 rounded-lg transition-colors"
               >
-                <span className="material-symbols-outlined text-slate-500">
-                  close
+                <span className="text-slate-500">
+                  <IoClose />
                 </span>
               </button>
             </div>
@@ -415,8 +419,8 @@ const AdminCourseDetailPage = () => {
             <div className="p-6 overflow-y-auto">
               {loadingView ? (
                 <div className="flex justify-center py-8">
-                  <span className="material-symbols-outlined animate-spin text-3xl text-blue-600">
-                    progress_activity
+                  <span className="animate-spin text-3xl text-blue-600">
+                    <RiProgress2Line />
                   </span>
                 </div>
               ) : (
@@ -456,7 +460,7 @@ const AdminCourseDetailPage = () => {
                                     viewItem.type,
                                   )}`}
                                 >
-                                  <span className="material-symbols-outlined text-2xl">
+                                  <span className="text-2xl">
                                     {getItemTypeIcon(viewItem.type)}
                                   </span>
                                 </div>
@@ -480,8 +484,8 @@ const AdminCourseDetailPage = () => {
                                   rel="noopener noreferrer"
                                   className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition-colors"
                                 >
-                                  <span className="material-symbols-outlined text-xl">
-                                    open_in_new
+                                  <span className="text-xl">
+                                    <MdOpenInNew />
                                   </span>
                                 </a>
                               </div>
@@ -530,7 +534,13 @@ const AdminCourseDetailPage = () => {
         message={modalConfig.message}
         variant={modalConfig.variant}
         isLoading={banLoading || approveLoading}
-        confirmLabel={modalConfig.type === "APPROVE" ? "Phê duyệt" : modalConfig.type === "BAN" ? "Khóa" : "Mở khóa"}
+        confirmLabel={
+          modalConfig.type === "APPROVE"
+            ? "Phê duyệt"
+            : modalConfig.type === "BAN"
+              ? "Khóa"
+              : "Mở khóa"
+        }
       />
     </div>
   );

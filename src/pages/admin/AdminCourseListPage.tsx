@@ -12,8 +12,11 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 
 import { ConfirmationModal } from "@/components/common/ConfirmationModal";
-import { FaCircleNotch } from "react-icons/fa";
+import { FaBook, FaCircleNotch } from "react-icons/fa";
 import PaginationControl from "@/components/common/PaginationControl";
+import { MdBlock, MdCheck, MdSettingsBackupRestore } from "react-icons/md";
+import { TbReport } from "react-icons/tb";
+import { IoEye, IoSearch } from "react-icons/io5";
 
 const AdminCourseListPage = () => {
   // State
@@ -187,8 +190,8 @@ const AdminCourseListPage = () => {
             <p className="text-gray-500 text-sm font-medium uppercase tracking-wider">
               Tổng khóa học
             </p>
-            <span className="material-symbols-outlined text-primary">
-              menu_book
+            <span className="text-primary text-xl">
+              <FaBook />
             </span>
           </div>
           <div className="flex items-baseline gap-2">
@@ -202,8 +205,8 @@ const AdminCourseListPage = () => {
             <p className="text-gray-500 text-sm font-medium uppercase tracking-wider">
               Đang Hoạt động
             </p>
-            <span className="material-symbols-outlined text-green-500">
-              check
+            <span className="text-green-500 text-xl">
+              <MdCheck />
             </span>
           </div>
           <div className="flex items-baseline gap-2">
@@ -217,8 +220,8 @@ const AdminCourseListPage = () => {
             <p className="text-gray-500 text-sm font-medium uppercase tracking-wider">
               Bị báo cáo / Khóa
             </p>
-            <span className="material-symbols-outlined text-red-500">
-              report
+            <span className="text-red-500 text-xl">
+              <TbReport />
             </span>
           </div>
           <div className="flex items-baseline gap-2">
@@ -235,8 +238,8 @@ const AdminCourseListPage = () => {
           {/* Search */}
           <div className="flex-1 min-w-[300px]">
             <div className="relative">
-              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                search
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                <IoSearch />
               </span>
               <input
                 className="w-full bg-slate-50 border border-gray-200 rounded-lg pl-12 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#1E90FF] transition-all"
@@ -359,8 +362,8 @@ const AdminCourseListPage = () => {
                           className="p-2 rounded-lg bg-gray-100 text-gray-600 hover:-translate-y-1 transition-all size-8 flex items-center justify-center cursor-pointer duration-300"
                           title="Xem chi tiết"
                         >
-                          <span className="material-symbols-outlined">
-                            visibility
+                          <span className="">
+                            <IoEye />
                           </span>
                         </Link>
                         {course.status !== "BANNED" ? (
@@ -369,18 +372,20 @@ const AdminCourseListPage = () => {
                             className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 hover:-translate-y-1 transition-all size-8 flex items-center justify-center cursor-pointer duration-300"
                             title="Khóa/Từ chối"
                           >
-                            <span className="material-symbols-outlined">
-                              block
+                            <span className="">
+                              <MdBlock />
                             </span>
                           </button>
                         ) : (
                           <button
-                            onClick={() => openUnbanModal(course.id, course.name)}
+                            onClick={() =>
+                              openUnbanModal(course.id, course.name)
+                            }
                             className="p-2 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 hover:-translate-y-1 transition-all size-8 flex items-center justify-center cursor-pointer duration-300"
                             title="Mở khóa"
                           >
-                            <span className="material-symbols-outlined">
-                              settings_backup_restore
+                            <span className="">
+                              <MdSettingsBackupRestore />
                             </span>
                           </button>
                         )}
@@ -424,7 +429,13 @@ const AdminCourseListPage = () => {
         message={modalConfig.message}
         variant={modalConfig.variant}
         isLoading={banLoading || approveLoading}
-        confirmLabel={modalConfig.type === "APPROVE" ? "Phê duyệt" : modalConfig.type === "BAN" ? "Khóa" : "Mở khóa"}
+        confirmLabel={
+          modalConfig.type === "APPROVE"
+            ? "Phê duyệt"
+            : modalConfig.type === "BAN"
+              ? "Khóa"
+              : "Mở khóa"
+        }
       />
     </div>
   );

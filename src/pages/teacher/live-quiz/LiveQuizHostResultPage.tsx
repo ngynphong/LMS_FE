@@ -4,6 +4,7 @@ import { useLiveQuizResults } from "@/hooks/useLiveQuiz";
 import { LiveLeaderboard } from "@/components/live-quiz/LiveLeaderboard";
 import { useQuizSounds } from "@/hooks/useQuizSounds";
 import SoundToggleButton from "@/components/live-quiz/SoundToggleButton";
+import { MdFormatListNumbered } from "react-icons/md";
 
 const LiveQuizHostResultPage = () => {
   const { pin } = useParams<{ pin: string }>();
@@ -160,8 +161,8 @@ const LiveQuizHostResultPage = () => {
       {/* Full Leaderboard List */}
       <div className="w-full max-w-3xl z-10 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-2xl">
         <h3 className="text-white text-xl font-bold mb-6 flex items-center gap-2">
-          <span className="material-symbols-outlined text-yellow-400">
-            format_list_numbered
+          <span className="text-yellow-400">
+            <MdFormatListNumbered />
           </span>
           Bảng Xếp Hạng Tổng
         </h3>

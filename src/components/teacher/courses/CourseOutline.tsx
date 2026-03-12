@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import type { ApiLesson } from "@/types/learningTypes";
 import type { ApiCourse } from "@/types/learningTypes";
 import DraggableLesson from "@/components/teacher/courses/DraggableLesson";
+import { MdInfo } from "react-icons/md";
+import { IoAddCircle } from "react-icons/io5";
+import { FaBookOpen } from "react-icons/fa";
 
 interface OutlineItem {
   type: "course" | "lesson" | "item";
@@ -85,8 +88,8 @@ const CourseOutline = ({
             })
           }
         >
-          <span className="material-symbols-outlined text-blue-600">
-            menu_book
+          <span className="text-2xl text-blue-600">
+            <FaBookOpen />
           </span>
           <span className="font-semibold text-slate-900 truncate flex-1">
             {course?.name || "Khóa học mới"}
@@ -127,7 +130,9 @@ const CourseOutline = ({
                 : "text-slate-400 cursor-not-allowed"
             }`}
           >
-            <span className="material-symbols-outlined">add_circle</span>
+            <span className="text-2xl text-blue-600">
+              <IoAddCircle />
+            </span>
             <span className="text-sm font-medium">Thêm bài học</span>
           </button>
         </div>
@@ -137,8 +142,8 @@ const CourseOutline = ({
       {!courseCreated && (
         <div className="p-4 border-t border-slate-200 bg-amber-50">
           <p className="text-sm text-amber-700">
-            <span className="material-symbols-outlined text-sm align-middle mr-1">
-              info
+            <span className="text-sm align-middle mr-1">
+              <MdInfo />
             </span>
             Lưu khóa học trước để thêm bài học
           </p>

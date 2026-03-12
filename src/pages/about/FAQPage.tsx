@@ -5,12 +5,14 @@ import {
   StaggerContainer,
   StaggerItem,
 } from "@/components/ui/ScrollReveal";
+import { MdCampaign, MdExpandMore, MdSupportAgent } from "react-icons/md";
+import { IoCall, IoMail, IoPerson, IoSchool } from "react-icons/io5";
 
 const categories = [
-  { id: "courses", name: "Về Khóa Học", icon: "school" },
-  { id: "account", name: "Về Tài Khoản", icon: "person" },
-  { id: "technical", name: "Kỹ Thuật & Hỗ Trợ", icon: "support_agent" },
-  { id: "instructor", name: "Về Giảng Viên", icon: "campaign" },
+  { id: "courses", name: "Về Khóa Học", icon: <IoSchool /> },
+  { id: "account", name: "Về Tài Khoản", icon: <IoPerson /> },
+  { id: "technical", name: "Kỹ Thuật & Hỗ Trợ", icon: <MdSupportAgent /> },
+  { id: "instructor", name: "Về Giảng Viên", icon: <MdCampaign /> },
 ];
 
 const faqs = [
@@ -138,9 +140,9 @@ const FAQItem = ({ faq, index }: { faq: any; index: number }) => {
           {index + 1}. {faq.q}
         </span>
         <span
-          className={`material-symbols-outlined transition-transform duration-300 ${isOpen ? "rotate-180 text-blue-600" : "text-slate-400"}`}
+          className={`text-xl transition-transform duration-300 ${isOpen ? "rotate-180 text-blue-600" : "text-slate-400"}`}
         >
-          expand_more
+          <MdExpandMore />
         </span>
       </button>
       <div
@@ -195,9 +197,7 @@ const FAQPage = () => {
                     : "bg-white text-slate-600 border-slate-200 hover:border-blue-300"
                 }`}
               >
-                <span className="material-symbols-outlined text-xl">
-                  {cat.icon}
-                </span>
+                <span className="text-xl">{cat.icon}</span>
                 {cat.name}
               </button>
             ))}
@@ -228,7 +228,9 @@ const FAQPage = () => {
                 className="group flex items-center gap-3 bg-white px-8 py-4 rounded-2xl border-2 border-slate-100 hover:border-blue-600 transition-all"
               >
                 <div className="size-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                  <span className="material-symbols-outlined">mail</span>
+                  <span className="">
+                    <IoMail />
+                  </span>
                 </div>
                 <div className="text-left">
                   <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">
@@ -241,7 +243,9 @@ const FAQPage = () => {
               </a>
               <div className="group flex items-center gap-3 bg-white px-8 py-4 rounded-2xl border-2 border-slate-100 hover:border-blue-600 transition-all">
                 <div className="size-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                  <span className="material-symbols-outlined">call</span>
+                  <span className="">
+                    <IoCall />
+                  </span>
                 </div>
                 <div className="text-left">
                   <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">

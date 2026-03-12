@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { useExamFormLogic } from "@/hooks/useExamFormLogic";
-import { FaCircleNotch } from "react-icons/fa";
+import { FaCircleNotch, FaSave } from "react-icons/fa";
 import Breadcrumb from "@/components/common/Breadcrumb";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 
@@ -161,7 +161,9 @@ const ExamFormPage = () => {
                 <FaCircleNotch />
               </span>
             ) : (
-              <span className="material-symbols-outlined text-xl">save</span>
+              <span className="text-xl">
+                <FaSave />
+              </span>
             )}
             {isEditMode ? "Lưu thay đổi" : "Tạo đề thi"}
           </button>

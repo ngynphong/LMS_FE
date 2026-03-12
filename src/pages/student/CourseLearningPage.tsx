@@ -12,6 +12,7 @@ import LoadingOverlay from "@/components/common/LoadingOverlay";
 import CourseLearningHeader from "@/components/student/course-learning/CourseLearningHeader";
 import CourseContentViewer from "@/components/student/course-learning/CourseContentViewer";
 import CourseQuizTab from "@/components/student/course-learning/CourseQuizTab";
+import { IoSchool } from "react-icons/io5";
 
 type TabType = "overview" | "quiz";
 
@@ -262,8 +263,8 @@ const CourseLearningPage = () => {
     return (
       <div className="flex h-screen items-center justify-center bg-[#f5f7fa]">
         <div className="text-center">
-          <span className="material-symbols-outlined text-[64px] text-gray-400">
-            school
+          <span className="text-[64px] text-gray-400">
+            <IoSchool />
           </span>
           <p className="mt-4 text-[#4A5568]">Không tìm thấy khóa học</p>
           <Link
@@ -327,7 +328,7 @@ const CourseLearningPage = () => {
                   <div
                     className={`size-10 rounded-lg flex items-center justify-center ${getItemTypeColor(currentItem.type)}`}
                   >
-                    <span className="material-symbols-outlined">
+                    <span className="text-xl">
                       {getItemTypeIcon(currentItem.type)}
                     </span>
                   </div>

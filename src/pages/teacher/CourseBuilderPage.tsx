@@ -27,14 +27,13 @@ import {
   useReorderLessonItems,
 } from "@/hooks/useLessons";
 import { getLessonById, getLessonItemById } from "@/services/lessonService";
-import type {
-  ApiCourse,
-  ApiLesson,
-  LessonItem,
-} from "@/types/learningTypes";
+import type { ApiCourse, ApiLesson, LessonItem } from "@/types/learningTypes";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { FaCircleNotch } from "react-icons/fa";
 import Breadcrumb from "@/components/common/Breadcrumb";
+import { IoIosArrowForward } from "react-icons/io";
+import { AiOutlineGlobal } from "react-icons/ai";
+import { MdDelete } from "react-icons/md";
 
 const CourseBuilderPage = () => {
   const { id } = useParams();
@@ -536,8 +535,8 @@ const CourseBuilderPage = () => {
                 itemClassName="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors"
                 activeItemClassName="text-sm font-medium text-slate-900"
                 separator={
-                  <span className="material-symbols-outlined text-sm text-slate-500">
-                    chevron_right
+                  <span className="text-sm text-slate-500">
+                    <IoIosArrowForward />
                   </span>
                 }
               />
@@ -559,8 +558,8 @@ const CourseBuilderPage = () => {
                           <FaCircleNotch />
                         </span>
                       ) : (
-                        <span className="material-symbols-outlined text-lg">
-                          publish
+                        <span className="text-lg">
+                          <AiOutlineGlobal />
                         </span>
                       )}
                       Xuất bản
@@ -611,8 +610,8 @@ const CourseBuilderPage = () => {
             <div className="relative bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
               <div className="flex items-center gap-4 mb-4">
                 <div className="size-12 rounded-full bg-red-100 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-red-600 text-2xl">
-                    delete
+                  <span className="text-red-600 text-2xl">
+                    <MdDelete />
                   </span>
                 </div>
                 <div>

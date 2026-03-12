@@ -8,10 +8,13 @@ import { useRequestBatchResetPassword } from "@/hooks/useBatchPasswordReset";
 import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import { toast } from "@/components/common/Toast";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
-import { FaCircleNotch } from "react-icons/fa";
+import { FaBook, FaCircleNotch, FaFilePdf, FaFilePowerpoint, FaPlayCircle } from "react-icons/fa";
 import { getInitials } from "@/utils/initialsName";
 import AddCreatedStudentsModal from "@/components/teacher/students/AddCreatedStudentsModal";
 import { motion, AnimatePresence } from "motion/react";
+import { MdArticle, MdDescription, MdEdit, MdError, MdExpandLess, MdGroups, MdLockReset } from "react-icons/md";
+import { IoIosArrowBack } from "react-icons/io";
+import { IoAdd, IoPersonAdd } from "react-icons/io5";
 
 const TeacherCourseDetailPage = () => {
   const { id } = useParams();
@@ -71,8 +74,8 @@ const TeacherCourseDetailPage = () => {
   if (error || !course) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <span className="material-symbols-outlined text-4xl text-red-500">
-          error
+        <span className="text-4xl text-red-500">
+          <MdError />
         </span>
         <p className="text-slate-600">Không tìm thấy khóa học</p>
         <button
@@ -88,15 +91,15 @@ const TeacherCourseDetailPage = () => {
   const getItemTypeIcon = (type: string) => {
     switch (type) {
       case "VIDEO":
-        return "play_circle";
+        return <FaPlayCircle />;
       case "TEXT":
-        return "article";
+        return <MdArticle />;
       case "PDF":
-        return "picture_as_pdf";
+        return <FaFilePdf />;
       case "PPT":
-        return "co_present";
+        return <FaFilePowerpoint />;
       default:
-        return "description";
+        return <MdDescription />;
     }
   };
 
@@ -173,8 +176,8 @@ const TeacherCourseDetailPage = () => {
             onClick={() => navigate("/teacher/courses")}
             className="p-2 hover:bg-slate-200 rounded-lg transition-colors"
           >
-            <span className="material-symbols-outlined text-slate-600">
-              arrow_back
+            <span className="text-slate-600">
+              <IoIosArrowBack />
             </span>
           </button>
           <div>
@@ -187,7 +190,9 @@ const TeacherCourseDetailPage = () => {
             to={`/teacher/courses/${id}/edit`}
             className="flex items-center gap-2 px-3 py-2 rounded-lg color-primary-bg text-white text-sm font-bold hover:opacity-90 transition-colors"
           >
-            <span className="material-symbols-outlined text-lg">edit</span>
+            <span className="text-lg">
+              <MdEdit />
+            </span>
             Chỉnh sửa
           </Link>
           <button
@@ -197,8 +202,8 @@ const TeacherCourseDetailPage = () => {
             }}
             className="flex items-center gap-2 px-3 py-2 color-primary-bg text-white rounded-lg font-bold text-sm hover:opacity-90 transition-all shadow-md shadow-blue-100"
           >
-            <span className="material-symbols-outlined text-[20px]">
-              person_add
+            <span className="text-[20px]">
+              <IoPersonAdd />
             </span>
             Thêm học sinh
           </button>
@@ -285,7 +290,7 @@ const TeacherCourseDetailPage = () => {
           onClick={() => setIsLessonsExpanded(!isLessonsExpanded)}
           className="p-6 flex items-center justify-between cursor-pointer hover:bg-slate-50/50 transition-colors"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center gap-3">
             <h2 className="text-lg font-bold text-slate-900">
               Nội dung khóa học
             </h2>
@@ -299,14 +304,16 @@ const TeacherCourseDetailPage = () => {
               onClick={(e) => e.stopPropagation()}
               className="flex items-center gap-1 text-sm color-primary hover:opacity-90 font-medium"
             >
-              <span className="material-symbols-outlined text-sm">add</span>
+              <span className="text-sm ">
+                <IoAdd />
+              </span>
               Thêm bài học
             </Link>
             <motion.span
               animate={{ rotate: isLessonsExpanded ? 0 : 180 }}
-              className="material-symbols-outlined text-slate-400"
+              className="text-slate-400"
             >
-              expand_less
+              <MdExpandLess />
             </motion.span>
           </div>
         </div>
@@ -358,7 +365,7 @@ const TeacherCourseDetailPage = () => {
                                     <div
                                       className={`size-8 rounded-lg flex items-center justify-center ${getItemTypeColor(item.type)}`}
                                     >
-                                      <span className="material-symbols-outlined text-sm">
+                                      <span className="text-sm">
                                         {getItemTypeIcon(item.type)}
                                       </span>
                                     </div>
@@ -383,8 +390,8 @@ const TeacherCourseDetailPage = () => {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <span className="material-symbols-outlined text-5xl text-slate-300 mb-4">
-                      menu_book
+                    <span className="text-5xl text-slate-300 mb-4 flex items-center justify-center">
+                      <FaBook />
                     </span>
                     <h3 className="text-lg font-semibold text-slate-600 mb-2">
                       Chưa có bài học nào
@@ -396,8 +403,8 @@ const TeacherCourseDetailPage = () => {
                       to={`/teacher/courses/${id}/edit`}
                       className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold"
                     >
-                      <span className="material-symbols-outlined text-lg">
-                        add
+                      <span className="text-lg">
+                        <IoAdd />
                       </span>
                       Thêm bài học
                     </Link>
@@ -426,8 +433,8 @@ const TeacherCourseDetailPage = () => {
               disabled={requestResetMutation.isPending}
               className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg font-medium text-sm hover:bg-amber-600 transition-colors shadow-sm disabled:opacity-50"
             >
-              <span className="material-symbols-outlined text-[18px]">
-                lock_reset
+              <span className="text-[18px]">
+                <MdLockReset />
               </span>
               {requestResetMutation.isPending
                 ? "Đang gửi..."
@@ -530,8 +537,8 @@ const TeacherCourseDetailPage = () => {
           </div>
         ) : (
           <div className="text-center py-12 bg-slate-50 rounded-lg border border-slate-100 border-dashed">
-            <span className="material-symbols-outlined text-5xl text-slate-300 mb-4">
-              group
+            <span className="text-5xl flex items-center justify-center text-slate-300 mb-4">
+              <MdGroups />
             </span>
             <h3 className="text-lg font-semibold text-slate-600 mb-2">
               Chưa có học viên

@@ -122,15 +122,28 @@
 
 
 
-/* Translation Fixes */
-.translated-ltr, .translated-rtl {
+/* Translation Fixes for Google Translate */
+.translated-ltr, 
+.translated-rtl,
+.translated-ltr body, 
+.translated-rtl body {
   font-family: 'Lexend', ui-sans-serif, system-ui, -apple-system, sans-serif !important;
 }
 
 font {
   font-family: inherit !important;
   vertical-align: inherit !important;
-  display: contents !important; /* Makes the font tag transparent to layout */
+  display: contents !important; 
+  letter-spacing: normal !important;
+  line-height: inherit !important;
+  font-size: inherit !important;
+}
+
+/* Fix for overlapping letters in some browsers during translation */
+* {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @import "tailwindcss";
