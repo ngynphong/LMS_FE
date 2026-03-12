@@ -281,9 +281,7 @@ const Header = () => {
                       onClick={toggleMobileMenu}
                       className="flex items-center gap-3 py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors"
                     >
-                      <span className="text-[18px]">
-                        {item.icon}
-                      </span>
+                      <span className="text-[18px]">{item.icon}</span>
                       {item.title}
                     </Link>
                   ))}
@@ -305,10 +303,10 @@ const Header = () => {
               </Link>
               <Link
                 className="flex items-center gap-3 px-3 py-3 hover:bg-gray-100 rounded-lg transition-colors font-medium"
-                to="/forum"
+                to="/blog"
                 onClick={toggleMobileMenu}
               >
-                Diễn đàn
+                Tin tức
               </Link>
               <Link
                 className="flex items-center gap-3 px-3 py-3 hover:bg-gray-100 rounded-lg transition-colors font-medium"
