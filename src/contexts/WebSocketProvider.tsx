@@ -23,32 +23,8 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   });
 
   useEffect(() => {
-    // Thiết lập các listener để update state chính xác
-    socketService.onConnect = () => {
-      // console.log("[WS] Connected");
-      setIsConnected(true);
-    };
-
-    socketService.onDisconnect = () => {
-      // console.log("[WS] Disconnected");
-      setIsConnected(false);
-    };
-
-    // Luôn cố gắng connect để hỗ trợ cả người dùng Guest vào Live Quiz
-    socketService.connect(token || undefined);
-
-    // Dự phòng: Sync trạng thái định kỳ hoặc khi component mount
-    const syncStatus = () => {
-      if (socketService.isConnected !== isConnected) {
-        setIsConnected(socketService.isConnected);
-      }
-    };
-
-    const interval = setInterval(syncStatus, 2000);
-    syncStatus();
-
-    // Subscribe to force-logout separately (chỉ khi có token/authenticated)
     let logoutSub: any;
+
     const checkLogout = (data: any) => {
       if (data.type === "FORCE_LOGOUT") {
         setLogoutModal({
@@ -58,19 +34,34 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       }
     };
 
-    // Đợi một chút rồi mới subscribe topic chung (nếu là user đã đăng nhập)
-    const timeout = setTimeout(() => {
-      if (socketService.isConnected && isAuthenticated) {
+    // Subscribe ngay khi connect thành công (kể cả khi reconnect)
+    socketService.onConnect = () => {
+      setIsConnected(true);
+      if (isAuthenticated) {
+        if (logoutSub) logoutSub.unsubscribe();
         logoutSub = socketService.subscribe(
           "/user/queue/force-logout",
           checkLogout,
         );
       }
-    }, 1000);
+    };
+
+    socketService.onDisconnect = () => {
+      setIsConnected(false);
+    };
+
+    // Luôn cố gắng connect để hỗ trợ cả người dùng Guest vào Live Quiz
+    socketService.connect(token || undefined);
+
+    // Dự phòng: Sync trạng thái định kỳ hoặc khi component mount
+    const interval = setInterval(() => {
+      if (socketService.isConnected !== isConnected) {
+        setIsConnected(socketService.isConnected);
+      }
+    }, 2000);
 
     return () => {
       clearInterval(interval);
-      clearTimeout(timeout);
       if (logoutSub) logoutSub.unsubscribe();
       socketService.disconnect();
       setIsConnected(false);
