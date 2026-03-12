@@ -170,8 +170,8 @@ const TeacherSidebar = ({
             {/* Profile Section */}
             <Link
               to="/"
-              className={`flex items-center gap-2 mt-4 cursor-pointer transition-all duration-300 ${
-                isCollapsed ? "lg:justify-center lg:px-2 px-6" : "px-6"
+              className={`flex items-center gap-4 mt-4 cursor-pointer transition-all duration-300 ${
+                isCollapsed ? "lg:justify-center lg:px-2 px-6" : "px-4"
               } ${isMobileOpen ? "px-6" : ""}`}
             >
               <GoHomeFill className="text-2xl color-primary shrink-0" />

@@ -174,7 +174,7 @@ const TeacherCourseDetailPage = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate("/teacher/courses")}
-            className="p-2 hover:bg-slate-200 rounded-lg transition-colors"
+            className="p-2 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
           >
             <span className="text-slate-600">
               <IoIosArrowBack />
@@ -200,7 +200,7 @@ const TeacherCourseDetailPage = () => {
               setIsReferralMode(false);
               setIsAddStudentModalOpen(true);
             }}
-            className="flex items-center gap-2 px-3 py-2 color-primary-bg text-white rounded-lg font-bold text-sm hover:opacity-90 transition-all shadow-md shadow-blue-100"
+            className="flex items-center gap-2 px-3 py-2 color-primary-bg text-white rounded-lg font-bold text-sm hover:opacity-90 transition-all shadow-md shadow-blue-100 cursor-pointer"
           >
             <span className="text-[20px]">
               <IoPersonAdd />
@@ -302,7 +302,7 @@ const TeacherCourseDetailPage = () => {
             <Link
               to={`/teacher/courses/${id}/edit`}
               onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-1 text-sm color-primary hover:opacity-90 font-medium"
+              className="flex items-center gap-1 text-sm color-primary hover:opacity-90 font-medium cursor-pointer"
             >
               <span className="text-sm ">
                 <IoAdd />
@@ -401,7 +401,7 @@ const TeacherCourseDetailPage = () => {
                     </p>
                     <Link
                       to={`/teacher/courses/${id}/edit`}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold cursor-pointer"
                     >
                       <span className="text-lg">
                         <IoAdd />

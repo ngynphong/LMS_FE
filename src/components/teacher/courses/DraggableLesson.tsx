@@ -185,7 +185,7 @@ const DraggableLesson = ({
         <div className="ml-8 mt-1">
           <button
             onClick={() => onAddItem(lesson.id)}
-            className="flex items-center gap-2 p-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors w-full"
+            className="flex items-center gap-2 p-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors w-full cursor-pointer"
           >
             <span className="text-2xl text-blue-600">
               <IoAddCircle />

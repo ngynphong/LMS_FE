@@ -98,7 +98,7 @@ const ChapterItem = ({
 
           {/* Add Lesson Button */}
           <div className="p-4 border-t border-slate-100">
-            <button className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg border-2 border-dashed border-slate-200 text-slate-500 hover:border-[#0074bd] hover:text-[#0074bd] transition-all font-medium text-sm">
+            <button className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg border-2 border-dashed border-slate-200 text-slate-500 hover:border-[#0074bd] hover:text-[#0074bd] transition-all font-medium text-sm cursor-pointer">
               <span className="text-sm">
                 <IoAdd />
               </span>

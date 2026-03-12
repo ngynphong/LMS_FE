@@ -124,7 +124,7 @@ const CourseOutline = ({
           <button
             onClick={onAddLesson}
             disabled={!courseCreated}
-            className={`flex items-center gap-2 p-2.5 rounded-lg transition-colors w-full mt-2 ${
+            className={`flex items-center gap-2 p-2.5 rounded-lg transition-colors w-full mt-2 cursor-pointer ${
               courseCreated
                 ? "text-blue-600 hover:bg-blue-50"
                 : "text-slate-400 cursor-not-allowed"

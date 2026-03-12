@@ -104,7 +104,7 @@ const CourseCard = (props: CourseCardProps) => {
             </Link>
             <button
               onClick={() => props.onInvite?.()}
-              className="flex items-center justify-center px-3 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-200 hover:translate-y-[-2px] duration-300 transition-all"
+              className="flex items-center justify-center px-3 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-200 hover:translate-y-[-2px] duration-300 transition-all cursor-pointer"
               title="Tạo mã mời"
             >
               <span className="text-sm">
@@ -122,7 +122,7 @@ const CourseCard = (props: CourseCardProps) => {
             </Link>
             <button
               onClick={() => props.onDelete?.()}
-              className="flex items-center justify-center px-3 py-2 bg-red-50 text-red-600 rounded-lg text-sm font-medium hover:bg-red-100 hover:translate-y-[-2px] duration-300 transition-all"
+              className="flex items-center justify-center px-3 py-2 bg-red-50 text-red-600 rounded-lg text-sm font-medium hover:bg-red-100 hover:translate-y-[-2px] duration-300 transition-all cursor-pointer"
               title="Xóa khóa học"
             >
               <span className="text-sm">
