@@ -122,7 +122,7 @@ export const BannerModal: React.FC<BannerModalProps> = ({ banner }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleClose}
-            className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
+            className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity cursor-pointer"
             aria-hidden="true"
           />
 
@@ -137,7 +137,7 @@ export const BannerModal: React.FC<BannerModalProps> = ({ banner }) => {
             {/* Close Button */}
             <button
               onClick={handleClose}
-              className="absolute top-3 right-3 z-10 p-2 rounded-full bg-black/10 hover:bg-black/20 text-white hover:text-white transition-colors backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-white"
+              className="absolute top-3 right-3 z-10 p-2 rounded-full bg-black/10 hover:bg-black/20 text-white hover:text-white transition-colors backdrop-blur-md focus:outline-none focus:ring-2 focus:ring-white cursor-pointer"
               aria-label="Close modal"
             >
               <X size={20} />
@@ -171,7 +171,7 @@ export const BannerModal: React.FC<BannerModalProps> = ({ banner }) => {
 
               <button
                 onClick={handleClick}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer"
               >
                 Khám phá ngay
                 <ArrowRight size={18} />
@@ -179,7 +179,7 @@ export const BannerModal: React.FC<BannerModalProps> = ({ banner }) => {
 
               <button
                 onClick={handleClose}
-                className="mt-4 text-sm text-gray-500 hover:text-gray-700 transition-colors bg-transparent"
+                className="mt-4 text-sm text-gray-500 hover:text-gray-700 transition-colors bg-transparent cursor-pointer"
               >
                 Bỏ qua
               </button>
