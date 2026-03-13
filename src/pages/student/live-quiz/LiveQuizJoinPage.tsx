@@ -88,9 +88,12 @@ const LiveQuizJoinPage = () => {
         {/* Header / Logo Area */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center space-x-3 mb-4">
-            <div className="w-14 h-14 bg-[#1E90FF] rounded-2xl flex items-center justify-center shadow-lg shadow-[#1E90FF]/40 rotate-12">
-              <Sparkles className="text-white w-8 h-8" />
-            </div>
+            <img
+              src="/img/logo-edu.png"
+              alt="ies-edu-logo"
+              className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-md shadow-[#1E90FF]/40 cursor-pointer"
+              onClick={() => navigate("/")}
+            />
             <h1 className="text-5xl md:text-6xl font-black text-slate-800 tracking-tight">
               Quiz<span className="text-[#1E90FF]">Live</span>
             </h1>
@@ -206,8 +209,8 @@ const LiveQuizJoinPage = () => {
 
         {/* Footer */}
         <div className="mt-12 text-slate-400 text-sm font-medium">
-          Powered by IES Viện Khoa Học Sáng Tạo Khởi Nghiệp ©{" "}
-          {new Date().getFullYear()}
+          © {new Date().getFullYear()} IES Viện Khoa Học Công Nghệ & Sáng Tạo
+          Khởi Nghiệp. All rights reserved.
         </div>
       </div>
     </div>

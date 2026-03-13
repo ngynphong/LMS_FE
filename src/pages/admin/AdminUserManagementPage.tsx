@@ -357,7 +357,7 @@ const AdminUserManagementPage = () => {
                     pageNo: 0,
                   });
                 }}
-                className="px-4 py-2.5 text-slate-500 hover:text-[#1E90FF] font-medium text-sm flex items-center gap-1 transition-colors"
+                className="px-4 py-2.5 text-slate-500 hover:text-[#1E90FF] font-medium text-sm flex items-center gap-1 transition-colors cursor-pointer"
               >
                 <MdRestartAlt className="text-xl" />
                 Đặt lại
@@ -518,11 +518,20 @@ const AdminUserManagementPage = () => {
                       </td>
                       <td className="p-4 text-right">
                         <div className="flex items-center justify-end gap-2">
+                          {user.roles.includes("STUDENT") && (
+                            <Link
+                              to={`/admin/users/student/${user.id}`}
+                              className="p-2 text-slate-400 hover:text-[#0078bd] hover:bg-[#0078bd]/10 rounded-lg transition-all"
+                              title="Xem chi tiết học viên"
+                            >
+                              <MdVisibility className="text-xl" />
+                            </Link>
+                          )}
                           <button
                             onClick={() =>
                               handleUpdateRole(user.id, user.roles)
                             }
-                            className="p-2 text-slate-400 hover:text-[#0078bd] hover:bg-[#0078bd]/10 rounded-lg transition-all"
+                            className="p-2 text-slate-400 hover:text-[#0078bd] hover:bg-[#0078bd]/10 rounded-lg transition-all cursor-pointer"
                             title="Chỉnh sửa vai trò"
                           >
                             <MdEdit className="text-xl" />
@@ -534,14 +543,14 @@ const AdminUserManagementPage = () => {
                                 `${user.firstName} ${user.lastName}`,
                               )
                             }
-                            className="p-2 text-slate-400 hover:text-orange-500 hover:bg-orange-50 rounded-lg transition-all"
+                            className="p-2 text-slate-400 hover:text-orange-500 hover:bg-orange-50 rounded-lg transition-all cursor-pointer"
                             title="Đặt lại mật khẩu"
                           >
                             <MdVpnKey className="text-xl" />
                           </button>
                           <button
                             onClick={() => handleDeleteUser(user.id)}
-                            className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                            className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all cursor-pointer"
                             title="Xóa người dùng"
                           >
                             <MdDelete className="text-xl" />

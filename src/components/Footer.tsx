@@ -130,7 +130,8 @@ const Footer = () => {
 
       <div className="max-w-[1280px] mx-auto mt-16 pt-8 border-t border-white/5 text-center text-gray-500 text-xs">
         <p>
-          © 2026 IES Viện Khoa Học Sáng Tạo Khởi Nghiệp. All rights reserved.
+          © {new Date().getFullYear()} IES Viện Khoa Học Công Nghệ & Sáng Tạo
+          Khởi Nghiệp. All rights reserved.
         </p>
       </div>
     </footer>

@@ -175,7 +175,7 @@ const StudentSidebar = ({
                   <Link
                     to={item.path}
                     className={`flex items-center text-sm gap-3 transition-all rounded-lg ${
-                      isCollapsed ? "lg:justify-center lg:p-3" : "px-4 py-3"
+                      isCollapsed ? "lg:justify-center lg:p-3 py-2 px-2" : "px-4 py-3"
                     } ${
                       isActive(item.path)
                         ? "bg-blue-50 color-primary font-semibold shadow-sm"
@@ -229,7 +229,7 @@ const StudentSidebar = ({
               <Link
                 to="/student/profile"
                 className={`block mb-2 rounded-lg hover:bg-gray-50 transition-colors ${
-                  isCollapsed ? "lg:p-1 lg:flex lg:justify-center" : "p-3"
+                  isCollapsed ? (isMobileOpen ? "p-3" : "lg:p-1 lg:flex lg:justify-center py-2 px-2") : "p-3"
                 }`}
                 title={isCollapsed ? `${user.firstName} ${user.lastName}` : ""}
               >
@@ -267,7 +267,7 @@ const StudentSidebar = ({
             <button
               onClick={handleLogoutClick}
               className={`flex items-center justify-center text-sm text-red-500 hover:bg-red-50 hover:text-red-600 hover:cursor-pointer transition-all rounded-lg ${
-                isCollapsed ? "lg:size-10 lg:p-0" : "gap-2 px-3 py-2.5 w-full"
+                isCollapsed ? (isMobileOpen ? "gap-2 px-3 py-2.5 w-full" : "lg:size-10 lg:p-0 py-2.5 w-full") : "gap-2 px-3 py-2.5 w-full"
               }`}
               title={isCollapsed ? "Đăng xuất" : ""}
             >

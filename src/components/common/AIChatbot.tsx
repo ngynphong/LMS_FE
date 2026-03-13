@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect, type KeyboardEvent } from "react";
 import ReactMarkdown from "react-markdown";
 import { useChat } from "@/hooks/useChat";
-import { RiRobot2Line } from "react-icons/ri";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { FaMinus } from "react-icons/fa";
-import { IoClose, IoPersonSharp, IoSend } from "react-icons/io5";
+import { IoClose, IoSend } from "react-icons/io5";
 import { MdExpandLess } from "react-icons/md";
 
 const AIChatbot = () => {
@@ -16,7 +15,7 @@ const AIChatbot = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { messages, isLoading, sendMessage } = useChat();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
   // Auto-scroll to bottom when new messages arrive
@@ -56,17 +55,22 @@ const AIChatbot = () => {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full color-primary-bg text-white shadow-lg hover:scale-110 transition-all duration-300 group cursor-pointer"
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full  hover:scale-110 transition-all duration-300 group cursor-pointer"
         aria-label="Mở trợ lý AI"
       >
-        <span className="text-[28px]">
+        {/* <span className="text-[28px]">
           <RiRobot2Line />
-        </span>
+        </span> */}
+        <img
+          src="/img/robot.png"
+          alt="Chat Bot"
+          className="w-full h-full object-cover"
+        />
         {/* Pulse animation */}
         <span className="absolute inline-flex h-full w-full animate-ping rounded-full color-primary-bg opacity-20"></span>
       </button>
     );
-  };
+  }
 
   // Minimized state - show only header bar
   if (isMinimized) {
@@ -79,9 +83,11 @@ const AIChatbot = () => {
           <div className="flex items-center gap-3">
             <div className="relative">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20">
-                <span className="text-white text-[24px]">
-                  <RiRobot2Line />
-                </span>
+                <img
+                  src="/img/robot.png"
+                  alt="Chat Bot"
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-400 border-2 border-white"></div>
             </div>
@@ -128,10 +134,12 @@ const AIChatbot = () => {
       <div className="flex items-center justify-between color-primary-bg px-4 py-3">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20">
-              <span className="text-white text-[24px]">
-                <RiRobot2Line />
-              </span>
+            <div className="flex h-10 w-10 items-center justify-center rounded-full">
+              <img
+                src="/img/robot.png"
+                alt="Chat Bot"
+                className="w-full h-full object-cover"
+              />
             </div>
             <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-400 border-2 border-white"></div>
           </div>
@@ -194,9 +202,17 @@ const AIChatbot = () => {
               >
                 <span className="text-white text-[16px]">
                   {message.sender === "ai" ? (
-                    <RiRobot2Line />
+                    <img
+                      src="/img/robot.png"
+                      alt="Chat Bot"
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
-                    <IoPersonSharp />
+                    <img
+                      src={user?.urlImg || "/img/student-default.jpg"}
+                      alt="Chat Bot"
+                      className="w-full h-full object-cover rounded-full"
+                    />
                   )}
                 </span>
               </div>
@@ -232,9 +248,11 @@ const AIChatbot = () => {
         {isLoading && (
           <div className="flex items-start gap-2">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full color-primary-bg">
-              <span className="text-white text-[16px]">
-                <RiRobot2Line />
-              </span>
+              <img
+                src="/img/robot.png"
+                alt="Chat Bot"
+                className="w-full h-full object-cover"
+              />
             </div>
             <div className="rounded-2xl rounded-tl-none bg-white p-3 shadow-sm border border-gray-100">
               <div className="flex gap-1">

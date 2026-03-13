@@ -201,7 +201,7 @@ const Header = () => {
                 to="/about"
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               >
-                Về chúng tôi
+                Giới thiệu
               </Link>
               <Link
                 className="font-medium hover:color-primary transition-colors"
@@ -313,7 +313,7 @@ const Header = () => {
                 to="/about"
                 onClick={toggleMobileMenu}
               >
-                Về chúng tôi
+                Giới thiệu
               </Link>
               <Link
                 className="flex items-center gap-3 px-3 py-3 hover:bg-gray-100 rounded-lg transition-colors font-medium"

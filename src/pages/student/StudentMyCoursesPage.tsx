@@ -213,7 +213,7 @@ const StudentMyCoursesPage = () => {
 
         {(!courses || courses.length === 0) && !loading && (
           <div className="col-span-full py-12 text-center text-slate-500">
-            <span className="text-4xl mb-2">
+            <span className="text-4xl mb-2 flex justify-center">
               <IoSchool />
             </span>
             <p>Không tìm thấy khóa học nào</p>
