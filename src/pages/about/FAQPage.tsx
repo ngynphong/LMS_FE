@@ -134,7 +134,7 @@ const FAQItem = ({ faq, index }: { faq: any; index: number }) => {
     <StaggerItem className="border-b border-slate-100 last:border-0">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full py-6 flex items-center justify-between text-left hover:text-blue-600 transition-colors group"
+        className="w-full py-6 flex items-center justify-between text-left hover:text-blue-600 transition-colors group cursor-pointer"
       >
         <span className="text-base lg:text-lg font-bold text-slate-800 group-hover:text-blue-600">
           {index + 1}. {faq.q}
@@ -191,9 +191,9 @@ const FAQPage = () => {
               <button
                 key={cat.id}
                 onClick={() => setActiveTab(cat.id)}
-                className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all border ${
+                className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all border cursor-pointer ${
                   activeTab === cat.id
-                    ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-200"
+                    ? "color-priamry text-white border-blue-600 shadow-lg shadow-blue-200"
                     : "bg-white text-slate-600 border-slate-200 hover:border-blue-300"
                 }`}
               >

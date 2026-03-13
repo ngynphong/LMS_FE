@@ -12,7 +12,9 @@ import type {
     ReferralRequestListResponse,
     PaginatedReferralRequestResponse,
     GetCourseReferralRequestsParams,
-    ReferralRequestFilterParams
+    ReferralRequestFilterParams,
+    CourseTag,
+    TagListResponse
 } from "@/types/courseApi";
 import type { 
   ApiCourse, 
@@ -131,6 +133,7 @@ export const getMyCourses = async (params?: {
   teacherName?: string;
   fromDate?: string;
   toDate?: string;
+  tag?: string;
 }): Promise<{ items: ApiCourse[]; totalElement: number; totalPage: number }> => {
   const response = await axiosInstance.get<{ code: number; message: string; data: { items: ApiCourse[]; totalElement: number; totalPage: number } }>('/courses/my-courses', {
     params: {
@@ -382,4 +385,51 @@ export const uploadCourseThumbnail = async (file: File): Promise<string> => {
         }
     );
     return response.data.data;
+};
+
+// ==================== Tag Management ====================
+
+export const searchTags = async (query: string): Promise<CourseTag[]> => {
+    try {
+        const response = await axiosInstance.get<{ code: number; data: CourseTag[] }>('/tags/search', {
+            params: { q: query }
+        });
+        return response.data.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getAdminTags = async (params: { pageNo?: number; pageSize?: number; search?: string; sorts?: string }): Promise<TagListResponse['data']> => {
+    try {
+        const response = await axiosInstance.get<TagListResponse>('/admin/tags', {
+            params: {
+                pageNo: params.pageNo || 1,
+                pageSize: params.pageSize || 10,
+                search: params.search || undefined,
+                sorts: params.sorts || 'name:asc'
+            }
+        });
+        return response.data.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const createTag = async (name: string): Promise<CourseTag> => {
+    const response = await axiosInstance.post<{ code: number; data: CourseTag }>('/admin/tags', { name });
+    return response.data.data;
+};
+
+export const updateTag = async (id: number, name: string): Promise<CourseTag> => {
+    const response = await axiosInstance.put<{ code: number; data: CourseTag }>(`/admin/tags/${id}`, { name });
+    return response.data.data;
+};
+
+export const deleteTag = async (id: number): Promise<void> => {
+    await axiosInstance.delete(`/admin/tags/${id}`);
+};
+
+export const mergeTags = async (targetTagId: number, sourceTagIds: number[]): Promise<void> => {
+    await axiosInstance.post('/admin/tags/merge', { targetTagId, sourceTagIds });
 };

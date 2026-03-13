@@ -134,7 +134,7 @@ export const NotificationDropdown = () => {
                 <button
                   onClick={handleMarkAllRead}
                   disabled={markAllRead.isPending}
-                  className="text-xs font-semibold color-primary hover:underline hover:text-blue-700 disabled:opacity-50"
+                  className="text-xs font-semibold color-primary hover:underline hover:text-blue-700 disabled:opacity-50 cursor-pointer"
                 >
                   Đánh dấu đã đọc tất cả
                 </button>

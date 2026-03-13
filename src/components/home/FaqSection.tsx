@@ -57,7 +57,7 @@ export default function FaqSection() {
                 >
                   <button
                     type="button"
-                    className="w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none group"
+                    className="w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none group cursor-pointer"
                     onClick={() => toggleAccordion(faq.id)}
                     aria-expanded={isActive}
                   >

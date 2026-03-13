@@ -85,7 +85,7 @@ const AdminCourseDetailPage = () => {
         <p className="text-slate-600">Không tìm thấy khóa học</p>
         <button
           onClick={() => refetch()}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 cursor-pointer"
         >
           Thử lại
         </button>
@@ -201,7 +201,7 @@ const AdminCourseDetailPage = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate("/admin/courses")}
-            className="p-2 hover:bg-slate-200 rounded-lg transition-colors"
+            className="p-2 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
           >
             <span className="text-slate-600">
               <IoIosArrowBack />
@@ -378,7 +378,7 @@ const AdminCourseDetailPage = () => {
           </div>
         ) : (
           <div className="text-center py-12">
-            <span className="text-5xl text-slate-300 mb-4">
+            <span className="text-5xl text-slate-300 mb-4 flex justify-center">
               <FaBook />
             </span>
             <h3 className="text-lg font-semibold text-slate-600 mb-2">

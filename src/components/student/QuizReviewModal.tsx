@@ -67,7 +67,7 @@ export const QuizReviewModal = ({
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-500 transition-colors p-1"
+            className="text-gray-400 hover:text-gray-500 transition-colors p-1 cursor-pointer"
           >
             <MdClose className="text-2xl" />
           </button>
@@ -196,7 +196,7 @@ export const QuizReviewModal = ({
         <div className="flex items-center justify-end gap-3 p-4 bg-gray-50 border-t border-gray-100 shrink-0">
           <button
             onClick={onClose}
-            className="px-6 py-2.5 text-sm font-bold text-white bg-[#0078bd] rounded-xl hover:bg-[#006da8] shadow-sm hover:shadow transition-all"
+            className="px-6 py-2.5 text-sm font-bold text-white bg-[#0078bd] rounded-xl hover:bg-[#006da8] shadow-sm hover:shadow transition-all cursor-pointer"
           >
             Đóng
           </button>

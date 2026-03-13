@@ -388,7 +388,7 @@ const ExamReportDetailPage = () => {
                             onClick={() => {
                               setStudentKeyword("");
                             }}
-                            className="mt-2 text-[#0074bd] text-sm font-bold hover:underline"
+                            className="mt-2 text-[#0074bd] text-sm font-bold hover:underline cursor-pointer"
                           >
                             Xóa tất cả bộ lọc
                           </button>

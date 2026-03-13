@@ -4,6 +4,8 @@
 // ==================== API Response Types ====================
 // These match the backend API structure
 
+import type { CourseTag } from './courseApi';
+
 export interface EnrollCourseRequest {
   enrollmentCode?: string; // Optional for PUBLIC courses
 }
@@ -42,6 +44,7 @@ export interface ApiCourse {
   updatedAt: string;
   progress?: number; // 0-100
   lessons?: ApiLesson[]; // Lessons included in course detail response
+  tags?: CourseTag[];
   
   // New fields for student course list
   completed?: boolean;

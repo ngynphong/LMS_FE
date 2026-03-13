@@ -170,7 +170,7 @@ const BlogFormPage: React.FC = () => {
       <div className="flex justify-between items-center mb-8">
         <button
           onClick={() => navigate("/admin/blogs")}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition"
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition cursor-pointer"
         >
           <ArrowLeft size={20} />
           <span>Quay lại</span>
@@ -179,7 +179,7 @@ const BlogFormPage: React.FC = () => {
           <button
             onClick={handleSave}
             disabled={isCreating || isUpdating}
-            className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 font-bold"
+            className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 font-bold cursor-pointer"
           >
             <Save size={18} />
             {id ? "Cập nhật" : "Lưu bài viết"}
@@ -217,7 +217,7 @@ const BlogFormPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => removeTag(tag)}
-                        className="hover:text-red-500 hover:bg-red-50 p-0.5 rounded transition-colors focus:outline-none flex items-center justify-center ml-1"
+                        className="hover:text-red-500 hover:bg-red-50 p-0.5 rounded transition-colors focus:outline-none flex items-center justify-center ml-1 cursor-pointer"
                       >
                         <X size={14} />
                       </button>
@@ -249,7 +249,7 @@ const BlogFormPage: React.FC = () => {
               >
                 <button
                   onClick={() => removeBlock(index)}
-                  className="absolute top-4 right-4 p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition opacity-0 group-hover:opacity-100"
+                  className="absolute top-4 right-4 p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition opacity-0 group-hover:opacity-100 cursor-pointer"
                 >
                   <Trash2 size={16} />
                 </button>
@@ -347,21 +347,21 @@ const BlogFormPage: React.FC = () => {
             <div className="flex justify-center gap-4 py-8">
               <button
                 onClick={() => addBlock("header")}
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-gray-600 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition shadow-sm"
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-gray-600 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition shadow-sm cursor-pointer"
               >
                 <Heading size={18} />
                 <span className="text-sm font-bold">Thêm Tiêu đề</span>
               </button>
               <button
                 onClick={() => addBlock("paragraph")}
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-gray-600 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition shadow-sm"
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-gray-600 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition shadow-sm cursor-pointer"
               >
                 <Type size={18} />
                 <span className="text-sm font-bold">Thêm Đoạn văn</span>
               </button>
               <button
                 onClick={() => addBlock("file")}
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-gray-600 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition shadow-sm"
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-gray-600 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition shadow-sm cursor-pointer"
               >
                 <ImageIcon size={18} />
                 <span className="text-sm font-bold">Thêm Ảnh & Video</span>

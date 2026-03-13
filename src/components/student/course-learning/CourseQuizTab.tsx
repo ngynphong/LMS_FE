@@ -122,7 +122,7 @@ const CourseQuizTab = ({
                   <button
                     onClick={() => onStartQuiz(quiz.id)}
                     disabled={isClosed || false}
-                    className={`px-5 py-2.5 text-white font-bold rounded-xl shadow-sm transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed ${
+                    className={`px-5 py-2.5 text-white font-bold rounded-xl shadow-sm transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer ${
                       isClosed
                         ? "bg-gray-400 hover:bg-gray-400"
                         : "color-primary-bg hover:bg-[#006da8] hover:shadow-md"

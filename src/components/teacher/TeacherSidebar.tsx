@@ -149,7 +149,7 @@ const TeacherSidebar = ({
             {/* Mobile Close Button */}
             <button
               onClick={onMobileClose}
-              className="absolute right-4 top-4 lg:hidden text-gray-500 hover:text-gray-900 z-50"
+              className="absolute right-4 top-4 lg:hidden text-gray-500 hover:text-gray-900 z-50 cursor-pointer"
             >
               <FaTimes className="text-xl" />
             </button>
@@ -157,7 +157,7 @@ const TeacherSidebar = ({
             {/* Toggle Button */}
             <button
               onClick={onToggle}
-              className="absolute -right-3 top-8 bg-white border border-gray-200 rounded-full p-1 text-gray-500 hover:color-primary shadow-sm z-50 text-xs hidden lg:flex items-center justify-center transition-colors"
+              className="absolute -right-3 top-8 bg-white border border-gray-200 rounded-full p-1 text-gray-500 hover:color-primary shadow-sm z-50 text-xs hidden lg:flex items-center justify-center transition-colors cursor-pointer"
             >
               {isCollapsed ? (
                 <ChevronRight animateOnHover animation="path-loop" size={14} />
@@ -292,7 +292,7 @@ const TeacherSidebar = ({
             {/* Create Course Button */}
             <button
               onClick={() => navigate("/teacher/courses/new")}
-              className={`color-primary-bg hover:opacity-90 text-white text-sm font-bold rounded-lg flex items-center justify-center transition-all shadow-md shadow-blue-200 ${
+              className={`color-primary-bg hover:opacity-90 text-white text-sm font-bold rounded-lg flex items-center justify-center transition-all shadow-md shadow-blue-200 cursor-pointer ${
                 isCollapsed ? "lg:size-10 lg:p-0" : "w-full py-3 gap-2"
               }`}
               title={isCollapsed ? "Tạo khóa học mới" : ""}

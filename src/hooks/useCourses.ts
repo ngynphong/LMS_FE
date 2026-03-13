@@ -16,7 +16,13 @@ import {
     getCourseStudents,
     getCourseTeachers,
     getTopEnrolledCourses,
-    uploadCourseThumbnail
+    uploadCourseThumbnail,
+    searchTags,
+    getAdminTags,
+    createTag,
+    updateTag,
+    deleteTag,
+    mergeTags
 } from '@/services/courseService';
 import type { GetCoursesParams, CreateCourseRequest, UpdateCourseRequest } from '@/types/courseApi';
 import type { EnrollCourseRequest, CreateInviteCodeRequest } from '@/types/learningTypes';
@@ -60,6 +66,7 @@ export const useMyCourses = (params: {
     teacherName?: string;
     fromDate?: string;
     toDate?: string;
+    tag?: string;
 } = {}) => {
     return useQuery({
         queryKey: ['my-courses', params],
@@ -79,6 +86,7 @@ export const useStudentCourses = (params: {
     teacherName?: string;
     fromDate?: string;
     toDate?: string;
+    tag?: string;
 } = {}, options: { enabled?: boolean } = {}) => {
     return useQuery({
         queryKey: ['student-courses', params],
@@ -210,5 +218,64 @@ export const useCreateInviteCode = () => {
 export const useUploadCourseThumbnail = () => {
     return useMutation({
         mutationFn: (file: File) => uploadCourseThumbnail(file),
+    });
+};
+
+// ==================== Tags Hooks ====================
+
+export const useSearchTags = (query: string, options: { enabled?: boolean } = {}) => {
+    return useQuery({
+        queryKey: ['tags-search', query],
+        queryFn: () => searchTags(query),
+        enabled: options.enabled && query.length >= 2,
+        staleTime: 5 * 60 * 1000,
+    });
+};
+
+export const useAdminTags = (params: { pageNo?: number; pageSize?: number; search?: string; sorts?: string }) => {
+    return useQuery({
+        queryKey: ['admin-tags', params],
+        queryFn: () => getAdminTags(params),
+        placeholderData: keepPreviousData,
+    });
+};
+
+export const useCreateTag = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (name: string) => createTag(name),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin-tags'] });
+        },
+    });
+};
+
+export const useUpdateTag = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ id, name }: { id: number; name: string }) => updateTag(id, name),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin-tags'] });
+        },
+    });
+};
+
+export const useDeleteTag = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (id: number) => deleteTag(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin-tags'] });
+        },
+    });
+};
+
+export const useMergeTags = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (data: { targetTagId: number; sourceTagIds: number[] }) => mergeTags(data.targetTagId, data.sourceTagIds),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin-tags'] });
+        },
     });
 };

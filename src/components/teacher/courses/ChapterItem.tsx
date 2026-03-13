@@ -51,7 +51,7 @@ const ChapterItem = ({
           </span>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 cursor-pointer"
           >
             <span
               className={`text-slate-400 transition-transform ${
@@ -69,12 +69,12 @@ const ChapterItem = ({
           </span>
         </div>
         <div className="flex gap-2">
-          <button className="p-2 text-slate-400 hover:text-[#0074bd] transition-colors">
+          <button className="p-2 text-slate-400 hover:text-[#0074bd] transition-colors cursor-pointer">
             <span className="">
               <MdEdit />
             </span>
           </button>
-          <button className="p-2 text-slate-400 hover:text-red-500 transition-colors">
+          <button className="p-2 text-slate-400 hover:text-red-500 transition-colors cursor-pointer">
             <span className="">
               <MdDelete />
             </span>

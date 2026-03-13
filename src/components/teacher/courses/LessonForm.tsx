@@ -89,7 +89,7 @@ const LessonForm = ({
           <button
             type="submit"
             disabled={loading || !formData.title.trim()}
-            className="flex-1 flex items-center justify-center gap-2 rounded-lg h-11 px-6 bg-green-600 text-white text-sm font-bold shadow-sm hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="flex-1 flex items-center justify-center gap-2 rounded-lg h-11 px-6 bg-green-600 text-white text-sm font-bold shadow-sm hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
           >
             {loading ? (
               <>
@@ -112,7 +112,7 @@ const LessonForm = ({
             <button
               type="button"
               onClick={onDelete}
-              className="flex items-center justify-center gap-2 rounded-lg h-11 px-4 bg-red-50 text-red-600 text-sm font-bold hover:bg-red-100 transition-all"
+              className="flex items-center justify-center gap-2 rounded-lg h-11 px-4 bg-red-50 text-red-600 text-sm font-bold hover:bg-red-100 transition-all cursor-pointer"
             >
               <span className="text-lg">
                 <MdDelete />

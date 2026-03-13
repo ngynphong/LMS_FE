@@ -105,7 +105,7 @@ const LessonItem = ({ lesson, isActive, onClick }: LessonItemProps) => {
             <IoIosArrowForward />
           </span>
         ) : (
-          <button className="text-slate-400 hover:text-slate-600 transition-colors">
+          <button className="text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
             <span className="text-xl">
               <IoIosMore />
             </span>

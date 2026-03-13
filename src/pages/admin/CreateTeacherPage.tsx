@@ -95,7 +95,7 @@ const CreateTeacherPage = () => {
       <div className="flex items-center gap-4 mb-2">
         <button
           onClick={() => navigate(-1)}
-          className="p-2 rounded-full hover:bg-slate-100 transition-colors"
+          className="p-2 rounded-full hover:bg-slate-100 transition-colors cursor-pointer"
         >
           <MdArrowBack className="text-xl text-[#5e7c8d]" />
         </button>
@@ -199,7 +199,7 @@ const CreateTeacherPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#0078bd]"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#0078bd] cursor-pointer"
                 >
                   {showPassword ? <MdVisibilityOff /> : <MdVisibility />}
                 </button>
@@ -248,14 +248,14 @@ const CreateTeacherPage = () => {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="px-6 py-2 bg-white border border-slate-200 text-[#5e7c8d] font-bold rounded-lg hover:bg-slate-50 transition-colors"
+              className="px-6 py-2 bg-white border border-slate-200 text-[#5e7c8d] font-bold rounded-lg hover:bg-slate-50 transition-colors cursor-pointer"
             >
               Hủy bỏ
             </button>
             <button
               type="submit"
               disabled={isPending}
-              className="flex items-center gap-2 px-6 py-2 bg-[#0078bd] text-white font-bold rounded-lg hover:bg-[#0078bd]/90 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-6 py-2 bg-[#0078bd] text-white font-bold rounded-lg hover:bg-[#0078bd]/90 transition-colors disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
             >
               {isPending ? (
                 <>

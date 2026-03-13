@@ -12,6 +12,7 @@ interface DraggableRowProps {
   onMove: (from: number, to: number) => void;
   onScoreChange: (questionId: string, score: number) => void;
   onDelete: (questionId: string) => void;
+  hasAttempts?: boolean;
 }
 
 const DraggableRow = ({
@@ -21,6 +22,7 @@ const DraggableRow = ({
   onMove,
   onScoreChange,
   onDelete,
+  hasAttempts = false,
 }: DraggableRowProps) => {
   const ref = useRef<HTMLTableRowElement>(null);
 
@@ -39,7 +41,7 @@ const DraggableRow = ({
   >({
     accept: DRAG_TYPE,
     hover(item) {
-      if (item.index === index) return;
+      if (item.index === index || hasAttempts) return;
       onMove(item.index, index);
       item.index = index;
     },
@@ -61,8 +63,8 @@ const DraggableRow = ({
       <td className="px-3 py-3 w-8">
         <div
           ref={drag as unknown as React.Ref<HTMLDivElement>}
-          className="cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-600 flex items-center justify-center font-black"
-          title="Kéo để sắp xếp"
+          className={`${hasAttempts ? "cursor-not-allowed opacity-30" : "cursor-grab active:cursor-grabbing hover:text-slate-600"} text-slate-400 flex items-center justify-center font-black`}
+          title={hasAttempts ? "Không thể sắp xếp khi đã có bài làm" : "Kéo để sắp xếp"}
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
             <circle cx="5" cy="4" r="1.5" />
@@ -94,6 +96,7 @@ const DraggableRow = ({
           onChange={(e) =>
             onScoreChange(sq.questionId, parseFloat(e.target.value))
           }
+          disabled={hasAttempts}
           min={0.5}
           step={0.5}
         />
@@ -102,8 +105,9 @@ const DraggableRow = ({
         <button
           type="button"
           onClick={() => onDelete(sq.questionId)}
-          className="text-red-400 hover:text-red-600 transition-colors cursor-pointer"
-          title="Xóa câu hỏi"
+          disabled={hasAttempts}
+          className="text-red-400 hover:text-red-600 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+          title={hasAttempts ? "Không thể xóa khi đã có bài làm" : "Xóa câu hỏi"}
         >
           <MdDelete className="text-lg" />
         </button>

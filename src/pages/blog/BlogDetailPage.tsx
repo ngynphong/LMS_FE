@@ -44,7 +44,7 @@ const BlogDetailPage: React.FC = () => {
         </p>
         <button
           onClick={() => navigate("/blog")}
-          className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200"
+          className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200 cursor-pointer"
         >
           Quay lại danh sách blog
         </button>

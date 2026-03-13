@@ -41,7 +41,7 @@ export const ImportJobDetailModal = ({
           <h3 className="font-bold text-lg text-gray-900">Chi tiết Import</h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
           >
             <FaTimes className="text-lg" />
           </button>
@@ -190,7 +190,7 @@ export const ImportJobDetailModal = ({
                                     setErrorPage((p) => Math.max(0, p - 1))
                                   }
                                   disabled={errorPage === 0}
-                                  className="px-2 py-1 text-xs rounded border disabled:opacity-50 hover:bg-gray-100"
+                                  className="px-2 py-1 text-xs rounded border disabled:opacity-50 hover:bg-gray-100 cursor-pointer"
                                 >
                                   Trước
                                 </button>
@@ -206,7 +206,7 @@ export const ImportJobDetailModal = ({
                                   disabled={
                                     errorPage >= errorsData.totalPages - 1
                                   }
-                                  className="px-2 py-1 text-xs rounded border disabled:opacity-50 hover:bg-gray-100"
+                                  className="px-2 py-1 text-xs rounded border disabled:opacity-50 hover:bg-gray-100 cursor-pointer"
                                 >
                                   Sau
                                 </button>
@@ -235,7 +235,7 @@ export const ImportJobDetailModal = ({
         <div className="px-6 py-3 border-t border-gray-100 bg-gray-50">
           <button
             onClick={onClose}
-            className="w-full py-2.5 rounded-lg bg-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-300 transition-colors"
+            className="w-full py-2.5 rounded-lg bg-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-300 transition-colors cursor-pointer"
           >
             Đóng
           </button>

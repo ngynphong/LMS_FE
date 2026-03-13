@@ -14,6 +14,9 @@ const AdminCourseListPage = React.lazy(
 const AdminCourseDetailPage = React.lazy(
   () => import("@/pages/admin/AdminCourseDetailPage"),
 );
+const AdminTagManagementPage = React.lazy(
+  () => import("@/pages/admin/AdminTagManagementPage"),
+);
 const CreateTeacherPage = React.lazy(
   () => import("@/pages/admin/CreateTeacherPage"),
 );
@@ -82,6 +85,10 @@ const adminRoutes: RouteObject[] = [
       {
         path: "courses",
         element: <AdminCourseListPage />,
+      },
+      {
+        path: "tags",
+        element: <AdminTagManagementPage />,
       },
       {
         path: "teachers/new",

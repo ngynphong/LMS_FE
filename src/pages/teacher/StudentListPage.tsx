@@ -191,7 +191,7 @@ const StudentListPage = () => {
         </div>
         <button
           onClick={() => setIsImportModalOpen(true)}
-          className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg color-primary-bg text-white text-sm font-bold shadow-sm hover:bg-[#0074bd]/90 transition-all w-full sm:w-auto"
+          className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg color-primary-bg text-white text-sm font-bold shadow-sm hover:bg-[#0074bd]/90 transition-all w-full sm:w-auto cursor-pointer"
         >
           <span className="text-lg">
             <FaFileUpload />
@@ -231,7 +231,7 @@ const StudentListPage = () => {
               : "text-slate-500 hover:text-slate-700"
           }`}
         >
-          Học sinh tôi tạo
+          Học sinh của tôi
           {activeTab === "mine" && (
             <div className="absolute bottom-0 left-0 right-0 h-0.5 color-primary-bg" />
           )}
@@ -496,7 +496,7 @@ const StudentListPage = () => {
               <h3 className="font-bold text-lg">Import Student</h3>
               <button
                 onClick={() => setIsImportModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600"
+                className="text-slate-400 hover:text-slate-600 cursor-pointer"
               >
                 <span className="text-lg">
                   <IoClose />
@@ -533,14 +533,14 @@ const StudentListPage = () => {
                 <button
                   type="button"
                   onClick={() => setIsImportModalOpen(false)}
-                  className="px-4 py-2 rounded-lg text-slate-600 font-medium hover:bg-slate-50"
+                  className="px-4 py-2 rounded-lg text-slate-600 font-medium hover:bg-slate-50 cursor-pointer"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={!importFile || importing}
-                  className="px-4 py-2 rounded-lg bg-[#1E90FF] text-white font-bold hover:bg-[#1E90FF]/90 disabled:opacity-50 flex items-center gap-2"
+                  className="px-4 py-2 rounded-lg bg-[#1E90FF] text-white font-bold hover:bg-[#1E90FF]/90 disabled:opacity-50 flex items-center gap-2 cursor-pointer"
                 >
                   {importing && (
                     <span className="animate-spin text-sm">

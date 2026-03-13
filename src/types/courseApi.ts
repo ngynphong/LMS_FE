@@ -10,6 +10,26 @@ export interface CourseItem {
     lessonCount: number;
     updatedAt: string;
     createdAt: string;
+    tags?: CourseTag[];
+}
+
+export interface CourseTag {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+export interface TagListResponse {
+    code: number;
+    message: string;
+    data: {
+        pageNo: number;
+        pageSize: number;
+        totalPage: number;
+        totalElement: number;
+        sortBy: string[];
+        items: CourseTag[];
+    };
 }
 
 export interface TopEnrolledCoursesResponse {
@@ -42,6 +62,7 @@ export interface GetCoursesParams {
     teacherName?: string;
     fromDate?: string;
     toDate?: string;
+    tag?: string; // slug
 }
 
 export interface UpdateCourseStatusRequest {
@@ -57,6 +78,7 @@ export interface CreateCourseRequest {
     description: string;
     thumbnailUrl: string;
     visibility: string; // "PUBLIC" | "PRIVATE"
+    tagNames?: string[];
 }
 
 export interface CreateLessonRequest {
@@ -68,6 +90,7 @@ export interface UpdateCourseRequest {
     description?: string;
     thumbnailUrl?: string;
     visibility?: string; // "PUBLIC" | "PRIVATE"
+    tagNames?: string[];
 }
 
 export interface UpdateLessonRequest {

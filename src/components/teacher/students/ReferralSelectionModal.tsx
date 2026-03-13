@@ -140,7 +140,7 @@ const ReferralSelectionModal = ({
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-colors"
+            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
           >
             <FaTimes />
           </button>
@@ -213,7 +213,7 @@ const ReferralSelectionModal = ({
                   setVisibility("");
                   setPage(1);
                 }}
-                className="text-xs font-bold text-[#1E90FF] hover:underline"
+                className="text-xs font-bold text-[#1E90FF] hover:underline cursor-pointer"
               >
                 Xóa bộ lọc
               </button>
@@ -322,14 +322,14 @@ const ReferralSelectionModal = ({
         <div className="px-6 py-4 border-t border-slate-100 flex justify-end gap-3 bg-slate-100/30">
           <button
             onClick={onClose}
-            className="px-6 py-2.5 rounded-xl text-slate-600 font-bold hover:bg-slate-200 transition-all"
+            className="px-6 py-2.5 rounded-xl text-slate-600 font-bold hover:bg-slate-200 transition-all cursor-pointer"
           >
             Hủy
           </button>
           <button
             onClick={handleAction}
             disabled={!selectedCourseId || isPending}
-            className="px-8 py-2.5 rounded-xl color-primary-bg text-white font-bold hover:bg-[#1E90FF]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md shadow-blue-200 flex items-center gap-2"
+            className="px-8 py-2.5 rounded-xl color-primary-bg text-white font-bold hover:bg-[#1E90FF]/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md shadow-blue-200 flex items-center gap-2 cursor-pointer"
           >
             {isPending && <FaCircleNotch className="animate-spin" />}
             {mode === "REFERRAL"

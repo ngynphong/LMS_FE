@@ -400,14 +400,14 @@ const StudentQuizTakingPage = () => {
             </div>
             <button
               onClick={handleSaveProgress}
-              className="px-6 py-2 bg-indigo-50 text-indigo-700 font-bold rounded-lg hover:bg-indigo-100 transition-colors border border-indigo-200 disabled:opacity-50 text-sm"
+              className="px-6 py-2 bg-indigo-50 text-indigo-700 font-bold rounded-lg hover:bg-indigo-100 transition-colors border border-indigo-200 disabled:opacity-50 text-sm cursor-pointer"
               disabled={isSaving || isOffline}
             >
               {isSaving ? "Đang lưu..." : "Lưu bài"}
             </button>
             <button
               onClick={() => setIsSubmitModalOpen(true)}
-              className="color-primary-bg hover:bg-primary/90 text-white px-6 py-2 rounded-lg text-sm font-bold transition-all disabled:opacity-50"
+              className="color-primary-bg hover:bg-primary/90 text-white px-6 py-2 rounded-lg text-sm font-bold transition-all disabled:opacity-50 cursor-pointer"
               disabled={submitLoading}
             >
               {submitLoading ? "Đang nộp..." : "Nộp bài"}
@@ -480,7 +480,7 @@ const StudentQuizTakingPage = () => {
               </h1>
               <button
                 onClick={() => toggleFlag(currentQuestion.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer${
                   flaggedQuestions.has(currentQuestion.id)
                     ? "bg-amber-100 text-amber-700 hover:bg-amber-200"
                     : "bg-[#f0f2f4] hover:bg-[#e2e4e7] text-[#111418]"
@@ -555,7 +555,7 @@ const StudentQuizTakingPage = () => {
                   <button
                     onClick={() => handleCheckAnswer(currentQuestion.id)}
                     disabled={checkLoading}
-                    className="px-6 py-2.5 bg-indigo-50 text-indigo-700 font-bold rounded-lg hover:bg-indigo-100 transition-colors flex items-center gap-2 border border-indigo-200"
+                    className="px-6 py-2.5 bg-indigo-50 text-indigo-700 font-bold rounded-lg hover:bg-indigo-100 transition-colors flex items-center gap-2 border border-indigo-200 cursor-pointer"
                   >
                     {checkLoading ? "Đang kiểm tra..." : "Kiểm tra đáp án"}
                     {!checkLoading && (
@@ -624,7 +624,7 @@ const StudentQuizTakingPage = () => {
                   setCurrentQuestionIndex((prev) => Math.max(0, prev - 1))
                 }
                 disabled={currentQuestionIndex === 0}
-                className="flex items-center gap-2 px-6 py-3 bg-[#f0f2f4] hover:bg-[#e2e4e7] text-[#111418] rounded-lg font-bold transition-all disabled:opacity-50"
+                className="flex items-center gap-2 px-6 py-3 bg-[#f0f2f4] hover:bg-[#e2e4e7] text-[#111418] rounded-lg font-bold transition-all disabled:opacity-50 cursor-pointer"
               >
                 <MdArrowBack />
                 <span>Câu trước</span>
@@ -636,7 +636,7 @@ const StudentQuizTakingPage = () => {
                   )
                 }
                 disabled={isLastQuestion}
-                className="flex items-center gap-2 px-6 py-3 color-primary-bg hover:bg-primary/90 text-white rounded-lg font-bold transition-all shadow-md shadow-primary/20 disabled:opacity-50 disabled:shadow-none"
+                className="flex items-center gap-2 px-6 py-3 color-primary-bg hover:bg-primary/90 text-white rounded-lg font-bold transition-all shadow-md shadow-primary/20 disabled:opacity-50 disabled:shadow-none cursor-pointer"
               >
                 <span>Câu tiếp theo</span>
                 <MdArrowForward />

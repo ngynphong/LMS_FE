@@ -7,6 +7,7 @@ import {
   FaBullhorn,
   FaNewspaper,
   FaQuestionCircle,
+  FaTag,
 } from "react-icons/fa";
 import { FaCalendar, FaTimes } from "react-icons/fa";
 import { useAuth } from "@/hooks/useAuth";
@@ -64,6 +65,11 @@ const navItems: NavItem[] = [
     path: "/admin/user-manual",
     icon: <FaQuestionCircle className="text-xl" />,
     label: "Hướng dẫn sử dụng",
+  },
+  {
+    path: "/admin/tags",
+    icon: <FaTag className="text-xl" />,
+    label: "Quản lý Tag",
   },
   {
     path: "/admin/settings",
@@ -245,8 +251,10 @@ const AdminSidebar = ({
           </div>
           {/* Bottom Section */}
           <div
-            className={`flex flex-col justify-center items-center p-4 pt-0 space-y-2 ${
-              isCollapsed ? "lg:px-2" : ""
+            className={`p-4 pt-0 space-y-2 ${
+              isCollapsed
+                ? "lg:px-2 flex flex-col justify-center items-center"
+                : ""
             }`}
           >
             {/* Role Switcher */}
@@ -259,9 +267,7 @@ const AdminSidebar = ({
             <button
               onClick={handleLogoutClick}
               className={`flex items-center justify-center text-sm text-red-500 hover:bg-red-50 hover:text-red-600 hover:cursor-pointer transition-all rounded-lg ${
-                isCollapsed
-                  ? "lg:size-10 lg:p-0"
-                  : "gap-2 px-3 py-2.5 w-full"
+                isCollapsed ? "lg:size-10 lg:p-0" : "gap-2 px-3 py-2.5 w-full"
               }`}
               title={isCollapsed ? "Đăng xuất" : ""}
             >

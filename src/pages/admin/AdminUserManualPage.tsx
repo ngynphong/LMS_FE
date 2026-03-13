@@ -55,7 +55,7 @@ const AdminUserManualPage: React.FC = () => {
             <button
               onClick={handleSave}
               disabled={isUpdating}
-              className="px-5 py-2.5 color-primary-bg text-white font-semibold text-sm rounded-lg flex items-center gap-2 hover:bg-[#0078bd]/90 shadow-lg shadow-[#0078bd]/20 transition-all disabled:opacity-50"
+              className="px-5 py-2.5 color-primary-bg text-white font-semibold text-sm rounded-lg flex items-center gap-2 hover:bg-[#0078bd]/90 shadow-lg shadow-[#0078bd]/20 transition-all disabled:opacity-50 cursor-pointer"
             >
               <Save size={18} />
               {isUpdating ? "Đang lưu..." : "Lưu thay đổi"}
@@ -69,7 +69,7 @@ const AdminUserManualPage: React.FC = () => {
         <div className="flex items-center border-b border-slate-100 bg-slate-50/50 px-4">
           <button
             onClick={() => setActiveTab("edit")}
-            className={`flex items-center gap-2 px-6 py-4 text-sm font-bold transition-all border-b-2 ${
+            className={`flex items-center gap-2 px-6 py-4 text-sm font-bold transition-all border-b-2 cursor-pointer ${
               activeTab === "edit"
                 ? "border-[#1E90FF] color-primary"
                 : "border-transparent text-slate-500 hover:text-slate-700"
@@ -80,7 +80,7 @@ const AdminUserManualPage: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab("preview")}
-            className={`flex items-center gap-2 px-6 py-4 text-sm font-bold transition-all border-b-2 ${
+            className={`flex items-center gap-2 px-6 py-4 text-sm font-bold transition-all border-b-2 cursor-pointer ${
               activeTab === "preview"
                 ? "border-[#1E90FF] color-primary"
                 : "border-transparent text-slate-500 hover:text-slate-700"

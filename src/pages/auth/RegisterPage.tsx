@@ -321,7 +321,7 @@ const RegisterPage = () => {
                   required
                 />
                 <button
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                 >
@@ -375,7 +375,7 @@ const RegisterPage = () => {
 
             {/* Submit Button */}
             <button
-              className="w-full flex items-center justify-center rounded-lg h-10 px-5 color-primary-bg text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-colors shadow-lg shadow-[#0077BE]/20 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center rounded-lg h-10 px-5 color-primary-bg text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-colors shadow-lg shadow-[#0077BE]/20 mt-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               type="submit"
               disabled={loading}
             >

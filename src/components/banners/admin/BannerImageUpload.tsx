@@ -137,7 +137,7 @@ export const BannerImageUpload: React.FC<BannerImageUploadProps> = ({
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
               <button
                 type="button"
-                className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors shadow-lg"
+                className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors shadow-lg cursor-pointer"
                 onClick={clearImage}
                 title="Xóa ảnh"
               >

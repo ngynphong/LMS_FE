@@ -119,7 +119,7 @@ const StudentProfilePage = () => {
           <nav className="flex flex-col gap-1">
             <button
               onClick={() => setActiveTab("info")}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors cursor-pointer ${
                 activeTab === "info"
                   ? "color-primary/10 color-primary font-semibold"
                   : "text-gray-700 hover:bg-gray-50"
@@ -130,7 +130,7 @@ const StudentProfilePage = () => {
             </button>
             <button
               onClick={() => setActiveTab("password")}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors cursor-pointer${
                 activeTab === "password"
                   ? "color-primary/10 color-primary font-semibold"
                   : "text-gray-700 hover:bg-gray-50"
@@ -305,7 +305,7 @@ const StudentProfilePage = () => {
               </div>
               <div className="flex justify-end pt-4">
                 <button
-                  className="flex items-center justify-center min-w-[140px] px-6 py-3 rounded-lg color-primary-bg text-white font-semibold hover:bg-[#0066a3] transition-all shadow-md shadow-[#0077BE]/20 disabled:opacity-50"
+                  className="flex items-center justify-center min-w-[140px] px-6 py-3 rounded-lg color-primary-bg text-white font-semibold hover:bg-[#0066a3] transition-all shadow-md shadow-[#0077BE]/20 disabled:opacity-50 cursor-pointer"
                   type="submit"
                   disabled={updatingProfile}
                 >

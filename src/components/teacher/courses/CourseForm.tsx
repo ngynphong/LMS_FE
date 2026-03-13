@@ -5,6 +5,7 @@ interface CourseFormData {
   description: string;
   thumbnailUrl: string;
   visibility: "PUBLIC" | "PRIVATE";
+  tagNames: string[];
 }
 
 interface CourseFormProps {
@@ -15,10 +16,11 @@ interface CourseFormProps {
 }
 
 import LoadingOverlay from "../../common/LoadingOverlay";
-import { FaCircleNotch, FaSave, FaUpload, FaTimes } from "react-icons/fa";
+import { FaCircleNotch, FaSave, FaUpload, FaTimes, FaPlus, FaTag } from "react-icons/fa";
 import { MdBook } from "react-icons/md";
-import { useUploadCourseThumbnail } from "@/hooks/useCourses";
+import { useUploadCourseThumbnail, useSearchTags } from "@/hooks/useCourses";
 import { toast } from "react-toastify";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const CourseForm = ({
   initialData,
@@ -32,13 +34,45 @@ const CourseForm = ({
     description: "",
     thumbnailUrl: "",
     visibility: "PUBLIC",
+    tagNames: [],
   });
+
+  const [tagInput, setTagInput] = useState("");
+  const debouncedTagQuery = useDebounce(tagInput, 500);
+  const { data: tagSuggestions, isLoading: loadingTags } = useSearchTags(debouncedTagQuery, {
+    enabled: debouncedTagQuery.length >= 2
+  });
+
+  const handleAddTag = (tagName: string) => {
+    const trimmedTag = tagName.trim();
+    if (!trimmedTag) return;
+    
+    // Check for duplicates (case insensitive)
+    if (formData.tagNames.some(t => t.toLowerCase() === trimmedTag.toLowerCase())) {
+        setTagInput("");
+        return;
+    }
+
+    setFormData(prev => ({
+        ...prev,
+        tagNames: [...prev.tagNames, trimmedTag]
+    }));
+    setTagInput("");
+  };
+
+  const handleRemoveTag = (index: number) => {
+    setFormData(prev => ({
+        ...prev,
+        tagNames: prev.tagNames.filter((_, i) => i !== index)
+    }));
+  };
 
   useEffect(() => {
     if (initialData) {
       setFormData((prev) => ({
         ...prev,
         ...initialData,
+        tagNames: initialData.tagNames || prev.tagNames
       }));
     }
   }, [initialData]);
@@ -193,6 +227,93 @@ const CourseForm = ({
               </label>
             </div>
           )}
+        </div>
+
+        {/* Course Tags */}
+        <div>
+          <label className="block text-sm font-semibold text-slate-700 mb-2">
+            Thẻ (Tags)
+          </label>
+          <div className="space-y-3">
+            {/* Selected Tags */}
+            {formData.tagNames.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-2">
+                {formData.tagNames.map((tag, index) => (
+                  <span 
+                    key={index}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full border border-blue-100 animate-in fade-in zoom-in duration-200"
+                  >
+                    <FaTag className="text-[10px]" />
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTag(index)}
+                      className="hover:text-red-500 transition-colors cursor-pointer"
+                    >
+                      <FaTimes />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Tag Input & Suggestions */}
+            <div className="relative">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleAddTag(tagInput);
+                    }
+                  }}
+                  placeholder="Nhập tag và nhấn Enter..."
+                  className="flex-1 rounded-sm p-1.5 text-sm border border-gray-200 focus:ring-1 focus:outline-none focus:ring-[#1E90FF] focus:border-[#1E90FF]"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleAddTag(tagInput)}
+                  className="px-3 bg-blue-50 text-blue-600 rounded-sm hover:bg-blue-100 transition-colors border border-blue-100 cursor-pointer"
+                >
+                  <FaPlus className="text-sm" />
+                </button>
+              </div>
+
+              {/* Suggestions Dropdown */}
+              {tagInput.length >= 2 && (tagSuggestions || loadingTags) && (
+                <div className="absolute z-20 w-full mt-1 bg-white rounded-lg shadow-xl border border-slate-200 py-1 max-h-48 overflow-y-auto animate-in slide-in-from-top-2 duration-200">
+                  {loadingTags ? (
+                    <div className="px-4 py-2 text-xs text-slate-400 flex items-center gap-2">
+                      <FaCircleNotch className="animate-spin" />
+                      Đang tìm kiếm...
+                    </div>
+                  ) : tagSuggestions && tagSuggestions.length > 0 ? (
+                    tagSuggestions.map((tag) => (
+                      <button
+                        key={tag.id}
+                        type="button"
+                        onClick={() => handleAddTag(tag.name)}
+                        className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors flex items-center gap-2"
+                      >
+                        <FaTag className="text-[10px] text-slate-300" />
+                        {tag.name}
+                      </button>
+                    ))
+                  ) : (
+                    <div className="px-4 py-2 text-xs text-slate-400">
+                      Không tìm thấy tag phù hợp. Nhấn Enter để thêm mới.
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            <p className="text-[10px] text-slate-400">
+              Ví dụ: Spring Boot, React, DevOps... Nhập ít nhất 2 ký tự để nhận gợi ý.
+            </p>
+          </div>
         </div>
 
         <div>

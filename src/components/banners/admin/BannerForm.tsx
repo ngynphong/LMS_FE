@@ -561,7 +561,7 @@ export const BannerForm: React.FC<BannerFormProps> = ({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full md:w-auto px-8 py-2.5 rounded-xl font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+          className="w-full md:w-auto px-8 py-2.5 rounded-xl font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-70 cursor-pointer"
         >
           {isSubmitting ? (
             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

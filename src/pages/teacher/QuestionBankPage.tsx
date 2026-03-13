@@ -11,16 +11,20 @@ import ImportQuestionsModal from "@/components/question/ImportQuestionsModal";
 import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import PaginationControl from "@/components/common/PaginationControl";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
+import { useDebounce } from "@/hooks/useDebounce";
 import { toast } from "@/components/common/Toast";
 import { FaFileUpload } from "react-icons/fa";
 import { IoIosAddCircle } from "react-icons/io";
 import { MdDelete, MdDeleteSweep, MdEdit, MdExpandMore, MdQuiz } from "react-icons/md";
+import { IoSearch } from "react-icons/io5";
 
 const QuestionBankPage = () => {
   const [pagination, setPagination] = useState({
     pageNo: 1,
     pageSize: 10,
   });
+  const [keyword, setKeyword] = useState("");
+  const debouncedKeyword = useDebounce(keyword, 1000);
 
   // const [difficultyFilter, setDifficultyFilter] = useState("all");
   const [selectedCourseId, setSelectedCourseId] = useState("");
@@ -43,8 +47,7 @@ const QuestionBankPage = () => {
   } = useQuestions({
     page: pagination.pageNo,
     size: pagination.pageSize,
-    // content: searchQuery,
-    // difficulty: difficultyFilter === "all" ? undefined : difficultyFilter,
+    keyword: debouncedKeyword || undefined,
     lessonId: selectedLessonId || undefined,
   });
 
@@ -171,6 +174,21 @@ const QuestionBankPage = () => {
 
       {/* Search and Filters */}
       <div className="flex flex-wrap items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+        <div className="flex flex-1 min-w-[300px] relative group">
+          <input
+            type="text"
+            placeholder="Tìm kiếm câu hỏi..."
+            value={keyword}
+            onChange={(e) => {
+              setKeyword(e.target.value);
+              setPagination((prev) => ({ ...prev, pageNo: 1 }));
+            }}
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E90FF] transition-all text-sm"
+          />
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-[#1E90FF] transition-colors">
+            <IoSearch />
+          </span>
+        </div>
         <div className="flex flex-wrap gap-3">
           {/* Course Filter */}
           <div className="relative min-w-[200px]">

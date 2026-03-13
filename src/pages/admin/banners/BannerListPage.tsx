@@ -7,7 +7,6 @@ import {
   Edit3,
   Trash2,
   Filter,
-  MoreVertical,
   ShieldAlert,
 } from "lucide-react";
 import { bannerService } from "../../../services/bannerService";
@@ -233,21 +232,21 @@ export const BannerListPage: React.FC = () => {
                           onClick={() =>
                             navigate(`/admin/banners/edit/${banner.id}`)
                           }
-                          className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
                           title="Sửa"
                         >
                           <Edit3 size={18} />
                         </button>
                         <button
                           onClick={() => handleDeleteClick(banner.id)}
-                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
                           title="Xóa"
                         >
                           <Trash2 size={18} />
                         </button>
-                        <button className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors hidden sm:block">
+                        {/* <button className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors hidden sm:block cursor-pointer">
                           <MoreVertical size={18} />
-                        </button>
+                        </button> */}
                       </div>
                     </td>
                   </tr>
@@ -263,10 +262,10 @@ export const BannerListPage: React.FC = () => {
             Hiển thị 1-10 trong số {data?.data?.totalElement || 0} kết quả
           </span>
           <div className="flex items-center gap-1">
-            <button className="px-3 py-1 border border-gray-200 rounded bg-white hover:bg-gray-50 disabled:opacity-50">
+            <button className="px-3 py-1 border border-gray-200 rounded bg-white hover:bg-gray-50 disabled:opacity-50 cursor-pointer">
               Trước
             </button>
-            <button className="px-3 py-1 border border-gray-200 rounded bg-white hover:bg-gray-50 disabled:opacity-50">
+            <button className="px-3 py-1 border border-gray-200 rounded bg-white hover:bg-gray-50 disabled:opacity-50 cursor-pointer">
               Sau
             </button>
           </div>

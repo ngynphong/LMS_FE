@@ -48,7 +48,7 @@ const TaskList = () => {
               <p className="text-xs text-[#607b8a]">{task.subtitle}</p>
             </div>
             <button
-              className={`text-xs font-bold px-3 py-1.5 rounded-full transition-colors ${
+              className={`text-xs font-bold px-3 py-1.5 rounded-full transition-colors cursor-pointer ${
                 task.status === 'pending'
                   ? 'text-[#0b8eda] bg-[#0b8eda]/10 hover:bg-[#0b8eda]/20'
                   : 'text-[#607b8a] bg-gray-200'
@@ -60,7 +60,7 @@ const TaskList = () => {
         ))}
       </div>
 
-      <button className="w-full mt-4 py-2 border border-dashed border-[#dbe2e6] dark:border-gray-700 rounded-lg text-xs font-medium text-[#607b8a] hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">
+      <button className="w-full mt-4 py-2 border border-dashed border-[#dbe2e6] dark:border-gray-700 rounded-lg text-xs font-medium text-[#607b8a] hover:bg-gray-50 dark:hover:bg-gray-800 transition-all cursor-pointer">
         Xem tất cả nhiệm vụ
       </button>
     </div>

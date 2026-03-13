@@ -127,7 +127,7 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
         </p>
         <button
           onClick={handleStartQuiz}
-          className="px-8 py-3 color-primary-bg text-white font-bold rounded-lg hover:opacity-80 transition-all"
+          className="px-8 py-3 color-primary-bg text-white font-bold rounded-lg hover:opacity-80 transition-all cursor-pointer"
         >
           Bắt đầu làm Quiz
         </button>
@@ -175,12 +175,12 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
         <div className="flex gap-4 justify-center">
           <button
             onClick={handleStartQuiz}
-            className="px-6 py-2 border-2 border-[#0077BE] color-primary font-medium rounded-lg hover:opacity-80 transition-all"
+            className="px-6 py-2 border-2 border-[#0077BE] color-primary font-medium rounded-lg hover:opacity-80 transition-all cursor-pointer"
           >
             Làm lại
           </button>
           {result.passed && (
-            <button className="px-6 py-2 color-primary text-white font-medium rounded-lg hover:brightness-110 transition-all">
+            <button className="px-6 py-2 color-primary text-white font-medium rounded-lg hover:brightness-110 transition-all cursor-pointer">
               Tiếp tục học
             </button>
           )}
@@ -274,14 +274,14 @@ const LessonQuiz = ({ quiz, onComplete }: LessonQuizProps) => {
           <button
             onClick={handleSubmitAnswer}
             disabled={!selectedOption}
-            className="px-6 py-2 color-primary-bg text-white font-medium rounded-lg hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2 color-primary-bg text-white font-medium rounded-lg hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             Xác nhận
           </button>
         ) : (
           <button
             onClick={handleNextQuestion}
-            className="px-6 py-2 color-primary-bg text-white font-medium rounded-lg hover:opacity-80 transition-all flex items-center gap-2"
+            className="px-6 py-2 color-primary-bg text-white font-medium rounded-lg hover:opacity-80 transition-all flex items-center gap-2 cursor-pointer"
           >
             {isLastQuestion ? "Xem kết quả" : "Câu tiếp theo"}
             <span className="text-[18px]">

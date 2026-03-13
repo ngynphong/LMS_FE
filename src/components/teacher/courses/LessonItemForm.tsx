@@ -239,7 +239,7 @@ const LessonItemForm = ({
                 onClick={() =>
                   setFormData((prev) => ({ ...prev, type, file: null }))
                 }
-                className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all ${
+                className={`flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all cursor-pointer ${
                   formData.type === type
                     ? "border-blue-500 bg-blue-50"
                     : "border-slate-200 hover:border-slate-300"
@@ -373,7 +373,7 @@ const LessonItemForm = ({
                         currentFileUrl: "",
                       }));
                     }}
-                    className="ml-auto p-1 hover:bg-slate-200 rounded"
+                    className="ml-auto p-1 hover:bg-slate-200 rounded cursor-pointer"
                   >
                     <span className="text-slate-500">
                       <IoClose />
@@ -428,7 +428,7 @@ const LessonItemForm = ({
           <button
             type="submit"
             disabled={loading || !formData.title.trim() || !!fileError}
-            className="flex-1 flex items-center justify-center gap-2 rounded-lg h-11 px-6 bg-blue-600 text-white text-sm font-bold shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="flex-1 flex items-center justify-center gap-2 rounded-lg h-11 px-6 bg-blue-600 text-white text-sm font-bold shadow-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
           >
             {loading ? (
               <>
@@ -451,7 +451,7 @@ const LessonItemForm = ({
             <button
               type="button"
               onClick={onDelete}
-              className="flex items-center justify-center gap-2 rounded-lg h-11 px-4 bg-red-50 text-red-600 text-sm font-bold hover:bg-red-100 transition-all"
+              className="flex items-center justify-center gap-2 rounded-lg h-11 px-4 bg-red-50 text-red-600 text-sm font-bold hover:bg-red-100 transition-all cursor-pointer"
             >
               <span className="text-lg">
                 <MdDelete />

@@ -208,7 +208,7 @@ const ResetPasswordPage = () => {
             {/* Back Button */}
             <Link
               to="/forgot-password"
-              className="flex items-center gap-2 text-gray-600 hover:color-primary transition-colors mb-8"
+              className="flex items-center gap-2 text-gray-600 hover:color-primary transition-colors mb-8 cursor-pointer"
             >
               <FaArrowLeft className="text-sm" />
               <span className="text-sm font-medium">Quay lại</span>
@@ -270,7 +270,7 @@ const ResetPasswordPage = () => {
                     required
                   />
                   <button
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
                     type="button"
                     onClick={() => setShowNewPassword(!showNewPassword)}
                   >
@@ -306,7 +306,7 @@ const ResetPasswordPage = () => {
                     required
                   />
                   <button
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
@@ -326,7 +326,7 @@ const ResetPasswordPage = () => {
 
               {/* Submit Button */}
               <button
-                className="w-full h-9 color-primary-bg hover:opacity-90 text-white font-bold rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+                className="w-full h-9 color-primary-bg hover:opacity-90 text-white font-bold rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed mt-4 cursor-pointer"
                 type="submit"
                 disabled={isLoading || timeLeft <= 0}
               >

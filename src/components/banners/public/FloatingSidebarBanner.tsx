@@ -154,7 +154,7 @@ export const FloatingSidebarBanner: React.FC<FloatingSidebarBannerProps> = ({
                     e.stopPropagation();
                     setIsExpanded(false);
                   }}
-                  className="absolute top-2 right-2 z-10 p-1.5 rounded-full bg-black/20 text-white hover:bg-black/40 transition-colors backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white"
+                  className="absolute top-2 right-2 z-10 p-1.5 rounded-full bg-black/20 text-white hover:bg-black/40 transition-colors backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white cursor-pointer"
                   aria-label="Collapse banner"
                 >
                   <X size={16} />
@@ -181,14 +181,14 @@ export const FloatingSidebarBanner: React.FC<FloatingSidebarBannerProps> = ({
                   <div className="mt-auto space-y-2">
                     <button
                       onClick={handleClick}
-                      className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+                      className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 cursor-pointer"
                     >
                       Xem chi tiết
                     </button>
 
                     <button
                       onClick={handleClose}
-                      className="w-full py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors bg-transparent border-none"
+                      className="w-full py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors bg-transparent border-none cursor-pointer"
                     >
                       Không hiển thị lại
                     </button>

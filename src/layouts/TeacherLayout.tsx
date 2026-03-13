@@ -33,7 +33,7 @@ const TeacherLayout = ({ children }: TeacherLayoutProps) => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setIsMobileSidebarOpen(true)}
-            className="text-gray-600"
+            className="text-gray-600 cursor-pointer"
           >
             <FaBars className="text-xl" />
           </button>

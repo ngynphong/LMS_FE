@@ -6,15 +6,18 @@ import {
   useTeacherQuizzes,
   useGenerateQuizCode,
   usePublishQuiz,
+  useDeleteQuiz,
 } from "@/hooks/useQuizzes";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import { useHostLiveQuiz } from "@/hooks/useLiveQuiz";
 import { useDebounce } from "@/hooks/useDebounce";
 import { toast } from "@/components/common/Toast";
 import PaginationControl from "@/components/common/PaginationControl";
 import { IoIosAddCircle } from "react-icons/io";
 import { IoCalendarSharp, IoSearch } from "react-icons/io5";
-import { MdAllInclusive, MdEdit, MdOutlinePublicOff, MdPublic, MdQuiz, MdRefresh, MdTimer } from "react-icons/md";
+import { MdAllInclusive, MdDelete, MdEdit, MdOutlinePublicOff, MdPublic, MdQuiz, MdRefresh, MdTimer } from "react-icons/md";
 import { FaCopy, FaKey } from "react-icons/fa";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 const ExamListPage = () => {
   const [page, setPage] = useState(1);
@@ -41,8 +44,13 @@ const ExamListPage = () => {
   const { mutateAsync: generate, isPending: isGenerating } =
     useGenerateQuizCode();
   const { mutateAsync: publish, isPending: isPublishing } = usePublishQuiz();
+  const { mutateAsync: deleteQuiz, isPending: isDeleting } = useDeleteQuiz();
   const hostLiveQuiz = useHostLiveQuiz();
   const navigate = useNavigate();
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    quizId: string | null;
+  }>({ isOpen: false, quizId: null });
 
   const handleGenerateCode = async (quizId: string) => {
     try {
@@ -64,6 +72,18 @@ const ExamListPage = () => {
     }
   };
 
+  const handleDeleteQuiz = async () => {
+    if (!deleteModal.quizId) return;
+    try {
+      await deleteQuiz(deleteModal.quizId);
+      toast.success("Đã xóa bài kiểm tra");
+    } catch (error) {
+      toast.error("Xóa bài kiểm tra thất bại");
+    } finally {
+      setDeleteModal({ isOpen: false, quizId: null });
+    }
+  };
+
   const handleHostLiveQuiz = async (quizId: string) => {
     try {
       const res = await hostLiveQuiz.mutateAsync(quizId);
@@ -82,7 +102,7 @@ const ExamListPage = () => {
 
   if (loading)
     return (
-      <div className="p-8 text-center text-slate-500">Đang tải dữ liệu...</div>
+      <LoadingOverlay isLoading={loading} message="Đang tải"/>
     );
   if (error)
     return (
@@ -233,7 +253,7 @@ const ExamListPage = () => {
                     )
                   }
                   disabled={isPublishing}
-                  className={`flex items-center justify-center gap-1 p-2 rounded-lg text-sm font-bold transition-colors ${
+                  className={`flex items-center justify-center gap-1 p-2 rounded-lg text-sm font-bold transition-colors cursor-pointer ${
                     exam.isPublished
                       ? "bg-green-50 text-green-600 hover:bg-green-100"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -251,7 +271,7 @@ const ExamListPage = () => {
                   <button
                     onClick={() => handleHostLiveQuiz(exam.id)}
                     disabled={hostLiveQuiz.isPending}
-                    className="flex items-center justify-center gap-1 p-2 rounded-lg bg-indigo-50 text-indigo-600 font-bold hover:bg-indigo-100 transition-colors shadow-sm ml-auto border border-indigo-200 group"
+                    className="flex items-center justify-center gap-1 p-2 rounded-lg bg-indigo-50 text-indigo-600 font-bold hover:bg-indigo-100 transition-colors shadow-sm ml-auto border border-indigo-200 group cursor-pointer"
                     title="Mở phòng chơi trực tiếp"
                   >
                     <span className="text-lg group-hover:animate-spin-slow">
@@ -265,7 +285,7 @@ const ExamListPage = () => {
               <div className="flex gap-2 pt-3 border-t border-slate-100 mt-3">
                 <Link
                   to={`/teacher/quizzes/${exam.id}/edit`}
-                  className="flex items-center justify-center gap-1 p-2 rounded-lg bg-[#0074bd]/10 text-[#0074bd] text-sm font-bold hover:bg-[#0074bd]/20 transition-colors"
+                  className="flex items-center justify-center gap-1 p-2 rounded-lg bg-[#0074bd]/10 text-[#0074bd] text-sm font-bold hover:bg-[#0074bd]/20 transition-colors cursor-pointer"
                 >
                   <span className="text-base">
                     <MdEdit />
@@ -275,13 +295,22 @@ const ExamListPage = () => {
                 <button
                   onClick={() => handleGenerateCode(exam.id)}
                   disabled={isGenerating}
-                  className="flex items-center justify-center gap-1 p-2 rounded-lg bg-purple-50 text-purple-600 text-sm font-bold hover:bg-purple-100 transition-colors"
+                  className="flex items-center justify-center gap-1 p-2 rounded-lg bg-purple-50 text-purple-600 text-sm font-bold hover:bg-purple-100 transition-colors cursor-pointer"
                   title="Tạo mã Code"
                 >
                   <span className="text-lg">
                     {exam.code ? <MdRefresh /> : <FaKey />}
                   </span>
                   {exam.code ? "Đổi mã" : "Tạo mã"}
+                </button>
+                <button
+                  onClick={() =>
+                    setDeleteModal({ isOpen: true, quizId: exam.id })
+                  }
+                  className="flex items-center justify-center p-2 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors cursor-pointer"
+                  title="Xóa đề thi"
+                >
+                  <MdDelete className="text-lg" />
                 </button>
                 {exam.code && (
                   <div className="flex items-center gap-1 p-1 px-2 bg-gray-50 rounded-lg border border-gray-200">
@@ -293,7 +322,7 @@ const ExamListPage = () => {
                         navigator.clipboard.writeText(exam.code!);
                         toast.success("Đã sao chép mã!");
                       }}
-                      className="text-gray-400 hover:text-[#1E90FF]"
+                      className="text-gray-400 hover:text-[#1E90FF] cursor-pointer"
                       title="Sao chép"
                     >
                       <span className="text-sm">
@@ -323,6 +352,18 @@ const ExamListPage = () => {
           />
         </div>
       )}
+
+      <ConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ isOpen: false, quizId: null })}
+        onConfirm={handleDeleteQuiz}
+        title="Xóa đề thị"
+        message="Bạn có chắc chắn muốn xóa bài kiểm tra này? Hành động này không thể hoàn tác."
+        variant="danger"
+        confirmLabel="Xóa"
+        cancelLabel="Hủy"
+        isLoading={isDeleting}
+      />
     </div>
   );
 };

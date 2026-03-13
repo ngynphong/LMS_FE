@@ -338,7 +338,7 @@ const StudentAvailableQuizzesPage = () => {
                         onClick={() =>
                           setHistoryQuiz({ id: quiz.id, title: quiz.title })
                         }
-                        className="flex-1 py-2.5 rounded-xl font-bold text-sm bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
+                        className="flex-1 py-2.5 rounded-xl font-bold text-sm bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 cursor-pointer"
                       >
                         <MdHistory className="text-lg" />
                         Lịch sử

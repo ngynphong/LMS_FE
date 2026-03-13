@@ -94,7 +94,7 @@ const ImportQuestionsModal = ({
           </h3>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
+            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors cursor-pointer"
           >
             <span className="text-2xl">
               <IoClose />
@@ -226,14 +226,14 @@ const ImportQuestionsModal = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
             >
               Hủy bỏ
             </button>
             <button
               type="submit"
               disabled={importLoading || !file}
-              className="px-4 py-2 text-sm font-bold text-white color-primary-bg hover:translate-y-[-2px] rounded-lg shadow-sm transition-all duration-300 disabled:opacity-50 flex items-center gap-2"
+              className="px-4 py-2 text-sm font-bold text-white color-primary-bg hover:translate-y-[-2px] rounded-lg shadow-sm transition-all duration-300 disabled:opacity-50 flex items-center gap-2 cursor-pointer"
             >
               {importLoading && (
                 <span className="animate-spin text-sm">

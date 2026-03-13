@@ -14,9 +14,10 @@ interface SettingsSectionProps {
     shuffleQuestions: boolean;
   };
   setFormData: (data: any) => void;
+  hasAttempts?: boolean;
 }
 
-const SettingsSection = ({ formData, setFormData }: SettingsSectionProps) => {
+const SettingsSection = ({ formData, setFormData, hasAttempts = false }: SettingsSectionProps) => {
   const today = format(new Date(), "yyyy-MM-dd");
 
   return (
@@ -56,7 +57,7 @@ const SettingsSection = ({ formData, setFormData }: SettingsSectionProps) => {
                     e.target.value === "" ? 1 : parseInt(e.target.value),
                 })
               }
-              disabled={formData.type === "PRACTICE"}
+              disabled={formData.type === "PRACTICE" || hasAttempts}
               className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none disabled:bg-slate-100 disabled:text-slate-500 font-medium"
             >
               {formData.type === "PRACTICE" && (
@@ -68,6 +69,11 @@ const SettingsSection = ({ formData, setFormData }: SettingsSectionProps) => {
                 </option>
               ))}
             </select>
+            {hasAttempts && formData.type !== "PRACTICE" && (
+                <p className="text-[10px] text-amber-600 font-bold mt-1">
+                    * Đã có bài làm, không thể sửa số lần thử
+                </p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-semibold text-[#111518] mb-2">

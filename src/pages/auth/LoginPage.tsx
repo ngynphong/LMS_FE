@@ -264,7 +264,7 @@ const LoginPage = () => {
                     required
                   />
                   <button
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                   >
@@ -305,7 +305,7 @@ const LoginPage = () => {
 
               {/* Submit Button */}
               <button
-                className="w-full h-9 color-primary-bg hover:opacity-90 text-white font-bold rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full h-9 color-primary-bg hover:opacity-90 text-white font-bold rounded-lg transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 type="submit"
                 disabled={loading}
               >

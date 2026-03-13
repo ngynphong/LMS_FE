@@ -40,6 +40,17 @@ export const getQuestions = async (params?: GetQuestionsParams): Promise<Questio
     }
 };
 
+export const getQuestionById = async (id: string): Promise<Question> => {
+    try {
+        const response = await axiosInstance.get<{ code: number; message: string; data: Question }>(`/questions/${id}`);
+        return response.data.data;
+    } catch (error) {
+        console.error('Failed to fetch question detail:', error);
+        throw error;
+    }
+};
+
+
 export const createQuestion = async (data: CreateQuestionRequest): Promise<Question> => {
     try {
         const response = await axiosInstance.post<{ code: number; message: string; data: Question }>('/questions', data);

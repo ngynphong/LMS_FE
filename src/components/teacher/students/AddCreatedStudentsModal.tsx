@@ -207,7 +207,7 @@ const AddCreatedStudentsModal = ({
                 </div>
                 <button
                   onClick={handleResetFilters}
-                  className="flex items-center gap-2 px-3 py-1.5 text-slate-500 hover:text-[#1E90FF] hover:bg-[#1E90FF]/5 rounded-lg transition-all text-xs font-bold border border-transparent hover:border-[#1E90FF]/20"
+                  className="flex items-center gap-2 px-3 py-1.5 text-slate-500 hover:text-[#1E90FF] hover:bg-[#1E90FF]/5 rounded-lg transition-all text-xs font-bold border border-transparent hover:border-[#1E90FF]/20 cursor-pointer"
                 >
                   <FaSync
                     className={`text-[10px] ${isFetching ? "animate-spin" : ""}`}
@@ -360,7 +360,7 @@ const AddCreatedStudentsModal = ({
         <div className="px-6 py-4 border-t border-slate-100 flex justify-end gap-3 bg-slate-50/50">
           <button
             onClick={onClose}
-            className="px-6 py-2.5 rounded-xl text-slate-600 font-bold hover:bg-slate-200 transition-all shrink-0"
+            className="px-6 py-2.5 rounded-xl text-slate-600 font-bold hover:bg-slate-200 transition-all shrink-0 cursor-pointer"
           >
             Hủy
           </button>
@@ -371,7 +371,7 @@ const AddCreatedStudentsModal = ({
               addMutation.isPending ||
               referMutation.isPending
             }
-            className="px-8 py-2.5 rounded-xl color-primary-bg text-white font-bold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md shadow-blue-200 flex items-center gap-2 shrink-0"
+            className="px-8 py-2.5 rounded-xl color-primary-bg text-white font-bold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md shadow-blue-200 flex items-center gap-2 shrink-0 cursor-pointer"
           >
             {(addMutation.isPending || referMutation.isPending) && (
               <FaCircleNotch className="animate-spin" />

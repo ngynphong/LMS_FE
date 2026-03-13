@@ -99,7 +99,7 @@ const TeacherNotificationPage = () => {
             <button
               onClick={() => markAllRead.mutate()}
               disabled={markAllRead.isPending}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 font-medium transition-colors text-sm shadow-sm disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 font-medium transition-colors text-sm shadow-sm disabled:opacity-50 cursor-pointer"
             >
               <span className="text-[18px]">
                 <MdDoneAll />

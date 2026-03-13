@@ -23,6 +23,7 @@ const CourseListPage = () => {
     keyword: "",
     status: "",
     visibility: "",
+    tag: "",
   });
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -45,6 +46,7 @@ const CourseListPage = () => {
     ...filters,
     status: filters.status === "all" ? undefined : filters.status,
     visibility: filters.visibility === "all" ? undefined : filters.visibility,
+    tag: filters.tag === "" ? undefined : filters.tag,
   });
 
   const courses = coursesData?.items || [];
@@ -261,7 +263,7 @@ const CourseListPage = () => {
               </h3>
               <button
                 onClick={() => setShowInviteModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 cursor-pointer"
               >
                 <span className="text-lg">
                   <IoClose />
@@ -288,7 +290,7 @@ const CourseListPage = () => {
                       navigator.clipboard.writeText(createdCode);
                       toast.success("Đã sao chép mã!");
                     }}
-                    className="p-2 hover:bg-green-100 rounded-full text-green-700"
+                    className="p-2 hover:bg-green-100 rounded-full text-green-700 cursor-pointer"
                     title="Sao chép"
                   >
                     <span className="text-sm">
@@ -310,7 +312,7 @@ const CourseListPage = () => {
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowInviteModal(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg"
+                className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg cursor-pointer"
               >
                 Đóng
               </button>
@@ -318,7 +320,7 @@ const CourseListPage = () => {
                 <button
                   onClick={handleCreateCode}
                   disabled={creatingCode}
-                  className="px-4 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg disabled:opacity-50 flex items-center gap-2"
+                  className="px-4 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg disabled:opacity-50 flex items-center gap-2 cursor-pointer"
                 >
                   {creatingCode ? (
                     <span className="animate-spin text-sm">

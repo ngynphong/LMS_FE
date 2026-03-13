@@ -96,7 +96,7 @@ export const InContentBanner: React.FC<InContentBannerProps> = ({ banner }) => {
           )}
 
           <div className="mt-auto pt-2 flex items-center justify-between">
-            <button className="px-6 py-2.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold rounded-xl shadow-sm transition-all flex items-center gap-2 group/btn border border-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+            <button className="px-6 py-2.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold rounded-xl shadow-sm transition-all flex items-center gap-2 group/btn border border-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer">
               Tìm hiểu thêm
               <ArrowRight
                 size={18}
