@@ -11,6 +11,7 @@ interface DynamicConfigSectionProps {
   setDynamicConfigs: (configs: DynamicConfig[]) => void;
   lessons: ApiLesson[];
   selectedLessonId: string;
+  hasAttempts?: boolean;
 }
 
 const DynamicConfigSection = ({
@@ -21,12 +22,13 @@ const DynamicConfigSection = ({
   setDynamicConfigs,
   lessons,
   selectedLessonId,
+  hasAttempts = false,
 }: DynamicConfigSectionProps) => {
   return (
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-300">
       <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
         <h3 className="text-lg font-bold text-[#111518]">Cấu hình câu hỏi</h3>
-        {!isEditMode && (
+        {(!isEditMode || (isEditMode && !hasAttempts)) && (
           <div className="flex items-center gap-2">
             <span
               className={`text-sm font-bold ${!isDynamic ? "text-[#0074bd]" : "text-slate-400"}`}
@@ -49,6 +51,11 @@ const DynamicConfigSection = ({
             </span>
           </div>
         )}
+        {isEditMode && hasAttempts && (
+           <span className="text-sm font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+             Chế độ {isDynamic ? "Tự động" : "Thủ công"} (Đã có bài làm - Không thể đổi)
+           </span>
+        )}
       </div>
       <div className="p-6">
         <div className="space-y-4 font-black">
@@ -57,26 +64,28 @@ const DynamicConfigSection = ({
               Hệ thống sẽ tự động chọn câu hỏi ngẫu nhiên dựa trên các cấu hình
               dưới đây.
             </p>
-            <button
-              type="button"
-              onClick={() =>
-                setDynamicConfigs([
-                  ...dynamicConfigs,
-                  {
-                    targetLessonId: "",
-                    difficulty: "EASY",
-                    quantity: 10,
-                    scorePerQuestion: 1,
-                  },
-                ])
-              }
-              className="text-sm font-bold text-[#1E90FF] hover:text-[#0074bd] flex items-center gap-1 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors border border-blue-100 cursor-pointer"
-            >
-              <span className="text-base">
-                <IoIosAddCircle />
-              </span>
-              Thêm cấu hình
-            </button>
+            {!hasAttempts && (
+              <button
+                type="button"
+                onClick={() =>
+                  setDynamicConfigs([
+                    ...dynamicConfigs,
+                    {
+                      targetLessonId: "",
+                      difficulty: "EASY",
+                      quantity: 10,
+                      scorePerQuestion: 1,
+                    },
+                  ])
+                }
+                className="text-sm font-bold text-[#1E90FF] hover:text-[#0074bd] flex items-center gap-1 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors border border-blue-100 cursor-pointer"
+              >
+                <span className="text-base">
+                  <IoIosAddCircle />
+                </span>
+                Thêm cấu hình
+              </button>
+            )}
           </div>
 
           <div className="space-y-4">
@@ -85,7 +94,7 @@ const DynamicConfigSection = ({
                 key={index}
                 className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border rounded-xl bg-slate-50 relative group"
               >
-                {dynamicConfigs.length > 1 && (
+                {dynamicConfigs.length > 1 && !hasAttempts && (
                   <button
                     type="button"
                     onClick={() => {
@@ -132,8 +141,9 @@ const DynamicConfigSection = ({
                         parseInt(e.target.value) || 0;
                       setDynamicConfigs(newConfigs);
                     }}
-                    className="w-full h-10 rounded-lg border border-slate-200 px-3 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF] font-medium"
+                    className="w-full h-10 rounded-lg border border-slate-200 px-3 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF] font-medium disabled:bg-slate-100 disabled:text-slate-500"
                     min={1}
+                    disabled={hasAttempts}
                   />
                 </div>
                 <div>
@@ -149,9 +159,10 @@ const DynamicConfigSection = ({
                         parseFloat(e.target.value) || 0;
                       setDynamicConfigs(newConfigs);
                     }}
-                    className="w-full h-10 rounded-lg border border-slate-200 px-3 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF] font-medium"
+                    className="w-full h-10 rounded-lg border border-slate-200 px-3 text-sm focus:ring-[#1E90FF] focus:border-[#1E90FF] font-medium disabled:bg-slate-100 disabled:text-slate-500"
                     min={0.5}
                     step={0.5}
+                    disabled={hasAttempts}
                   />
                 </div>
                 <div>

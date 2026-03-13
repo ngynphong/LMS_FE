@@ -408,5 +408,6 @@ export const useExamFormLogic = (id: string | undefined) => {
     courses,
     lessons,
     lessonItems,
+    hasAttempts: quizDetail?.hasAttempts || false,
   };
 };

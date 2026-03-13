@@ -6,15 +6,18 @@ import {
   useTeacherQuizzes,
   useGenerateQuizCode,
   usePublishQuiz,
+  useDeleteQuiz,
 } from "@/hooks/useQuizzes";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal";
 import { useHostLiveQuiz } from "@/hooks/useLiveQuiz";
 import { useDebounce } from "@/hooks/useDebounce";
 import { toast } from "@/components/common/Toast";
 import PaginationControl from "@/components/common/PaginationControl";
 import { IoIosAddCircle } from "react-icons/io";
 import { IoCalendarSharp, IoSearch } from "react-icons/io5";
-import { MdAllInclusive, MdEdit, MdOutlinePublicOff, MdPublic, MdQuiz, MdRefresh, MdTimer } from "react-icons/md";
+import { MdAllInclusive, MdDelete, MdEdit, MdOutlinePublicOff, MdPublic, MdQuiz, MdRefresh, MdTimer } from "react-icons/md";
 import { FaCopy, FaKey } from "react-icons/fa";
+import LoadingOverlay from "@/components/common/LoadingOverlay";
 
 const ExamListPage = () => {
   const [page, setPage] = useState(1);
@@ -41,8 +44,13 @@ const ExamListPage = () => {
   const { mutateAsync: generate, isPending: isGenerating } =
     useGenerateQuizCode();
   const { mutateAsync: publish, isPending: isPublishing } = usePublishQuiz();
+  const { mutateAsync: deleteQuiz, isPending: isDeleting } = useDeleteQuiz();
   const hostLiveQuiz = useHostLiveQuiz();
   const navigate = useNavigate();
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    quizId: string | null;
+  }>({ isOpen: false, quizId: null });
 
   const handleGenerateCode = async (quizId: string) => {
     try {
@@ -64,6 +72,18 @@ const ExamListPage = () => {
     }
   };
 
+  const handleDeleteQuiz = async () => {
+    if (!deleteModal.quizId) return;
+    try {
+      await deleteQuiz(deleteModal.quizId);
+      toast.success("Đã xóa bài kiểm tra");
+    } catch (error) {
+      toast.error("Xóa bài kiểm tra thất bại");
+    } finally {
+      setDeleteModal({ isOpen: false, quizId: null });
+    }
+  };
+
   const handleHostLiveQuiz = async (quizId: string) => {
     try {
       const res = await hostLiveQuiz.mutateAsync(quizId);
@@ -82,7 +102,7 @@ const ExamListPage = () => {
 
   if (loading)
     return (
-      <div className="p-8 text-center text-slate-500">Đang tải dữ liệu...</div>
+      <LoadingOverlay isLoading={loading} message="Đang tải"/>
     );
   if (error)
     return (
@@ -283,6 +303,15 @@ const ExamListPage = () => {
                   </span>
                   {exam.code ? "Đổi mã" : "Tạo mã"}
                 </button>
+                <button
+                  onClick={() =>
+                    setDeleteModal({ isOpen: true, quizId: exam.id })
+                  }
+                  className="flex items-center justify-center p-2 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors"
+                  title="Xóa đề thi"
+                >
+                  <MdDelete className="text-lg" />
+                </button>
                 {exam.code && (
                   <div className="flex items-center gap-1 p-1 px-2 bg-gray-50 rounded-lg border border-gray-200">
                     <span className="font-mono font-bold text-[#1A2B3C]">
@@ -323,6 +352,18 @@ const ExamListPage = () => {
           />
         </div>
       )}
+
+      <ConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ isOpen: false, quizId: null })}
+        onConfirm={handleDeleteQuiz}
+        title="Xóa đề thị"
+        message="Bạn có chắc chắn muốn xóa bài kiểm tra này? Hành động này không thể hoàn tác."
+        variant="danger"
+        confirmLabel="Xóa"
+        cancelLabel="Hủy"
+        isLoading={isDeleting}
+      />
     </div>
   );
 };

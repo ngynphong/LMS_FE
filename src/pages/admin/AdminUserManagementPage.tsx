@@ -37,13 +37,13 @@ const AdminUserManagementPage = () => {
   const handleIsVerifiedChange = (val: "All" | "true" | "false") => {
     setIsVerifiedFilter(val);
     const isVerified = val === "All" ? undefined : val === "true";
-    updateParams({ isVerified, pageNo: 0 });
+    updateParams({ isVerified, pageNo: 1 });
   };
 
   const handleIsLockedChange = (val: "All" | "true" | "false") => {
     setIsLockedFilter(val);
     const isLocked = val === "All" ? undefined : val === "true";
-    updateParams({ isLocked, pageNo: 0 });
+    updateParams({ isLocked, pageNo: 1 });
   };
   const [pageSize, setPageSize] = useState(10);
 
@@ -73,7 +73,7 @@ const AdminUserManagementPage = () => {
 
   const { data, loading, updateParams, deleteUser, updateUserRoles } = useUsers(
     {
-      pageNo: 0,
+      pageNo: 1,
       pageSize: 10,
       keyword: "",
       role: "All",
@@ -151,7 +151,7 @@ const AdminUserManagementPage = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
     // Debounce can be added here
-    updateParams({ keyword: e.target.value, pageNo: 0 });
+    updateParams({ keyword: e.target.value, pageNo: 1 });
   };
 
   const handleRoleChange = (role: UserRole | "All") => {
@@ -165,30 +165,30 @@ const AdminUserManagementPage = () => {
     ) {
       setActiveTab(role as "All" | UserRole);
     }
-    updateParams({ role: role, pageNo: 0 });
+    updateParams({ role: role, pageNo: 1 });
   };
 
   // Tab change handler
   const handleTabChange = (tab: "All" | UserRole) => {
     setActiveTab(tab);
     setRoleFilter(tab);
-    updateParams({ role: tab, pageNo: 0 });
+    updateParams({ role: tab, pageNo: 1 });
   };
 
-  // PaginationControl dùng 1-indexed, API dùng 0-indexed
+  // PaginationControl và API đều dùng 1-indexed
   const handlePageChange = (page: number) => {
-    updateParams({ pageNo: page - 1 });
+    updateParams({ pageNo: page });
   };
 
   const handlePageSizeChange = (size: number) => {
     setPageSize(size);
-    updateParams({ pageSize: size, pageNo: 0 });
+    updateParams({ pageSize: size, pageNo: 1 });
   };
 
   const filteredUsers = data?.items || [];
   const totalElements = data?.totalElement || 0;
   const totalPages = data?.totalPage || 0;
-  const currentPage = data?.pageNo || 0;
+  const currentPage = data?.pageNo || 1;
 
   const getRoleBadgeColor = (role: UserRole) => {
     switch (role) {
@@ -354,7 +354,7 @@ const AdminUserManagementPage = () => {
                     role: "All",
                     isVerified: undefined,
                     isLocked: undefined,
-                    pageNo: 0,
+                    pageNo: 1,
                   });
                 }}
                 className="px-4 py-2.5 text-slate-500 hover:text-[#1E90FF] font-medium text-sm flex items-center gap-1 transition-colors cursor-pointer"
@@ -577,7 +577,7 @@ const AdminUserManagementPage = () => {
           {/* Pagination */}
           <div className="p-4 bg-slate-50 border-t border-slate-100">
             <PaginationControl
-              currentPage={currentPage + 1}
+              currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={handlePageChange}
               pageSize={pageSize}

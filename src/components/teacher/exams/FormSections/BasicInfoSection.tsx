@@ -17,6 +17,7 @@ interface BasicInfoSectionProps {
   lessonItems: any[];
   selectedLessonItemId: string;
   setSelectedLessonItemId: (id: string) => void;
+  hasAttempts?: boolean;
 }
 
 const BasicInfoSection = ({
@@ -31,6 +32,7 @@ const BasicInfoSection = ({
   lessonItems,
   selectedLessonItemId,
   setSelectedLessonItemId,
+  hasAttempts = false,
 }: BasicInfoSectionProps) => {
   return (
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-300">
@@ -82,11 +84,17 @@ const BasicInfoSection = ({
                   type: e.target.value as "PRACTICE" | "QUIZ",
                 })
               }
-              className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none transition-all font-medium"
+              className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none transition-all font-medium disabled:bg-slate-100 disabled:text-slate-500"
+              disabled={hasAttempts}
             >
               <option value="PRACTICE">Luyện tập (Practice)</option>
               <option value="QUIZ">Kiểm tra (Quiz)</option>
             </select>
+            {hasAttempts && (
+              <p className="text-[10px] text-amber-600 font-bold mt-1">
+                * Đã có sinh viên làm bài, không thể thay đổi loại bài thi
+              </p>
+            )}
           </div>
         </div>
 
@@ -111,13 +119,14 @@ const BasicInfoSection = ({
               Khóa học <span className="text-red-500">*</span>
             </label>
             <select
-              className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none transition-all font-medium"
+              className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none transition-all font-medium disabled:bg-slate-100 disabled:text-slate-500"
               value={selectedCourseId}
               onChange={(e) => {
                 setSelectedCourseId(e.target.value);
                 setSelectedLessonId("");
                 setSelectedLessonItemId("");
               }}
+              disabled={hasAttempts}
               required
             >
               <option value="">-- Chọn khóa học --</option>
@@ -133,13 +142,13 @@ const BasicInfoSection = ({
               Bài học (Module) <span className="text-red-500">*</span>
             </label>
             <select
-              className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none transition-all font-medium"
+              className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none transition-all font-medium disabled:bg-slate-100 disabled:text-slate-500"
               value={selectedLessonId}
               onChange={(e) => {
                 setSelectedLessonId(e.target.value);
                 setSelectedLessonItemId("");
               }}
-              disabled={!selectedCourseId}
+              disabled={!selectedCourseId || hasAttempts}
               required
             >
               <option value="">-- Chọn bài học --</option>
@@ -155,10 +164,10 @@ const BasicInfoSection = ({
               Nội dung (Quiz) <span className="text-red-500">*</span>
             </label>
             <select
-              className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none transition-all font-medium"
+              className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 focus:outline-none focus:ring-2 focus:ring-[#1E90FF] focus:border-[#1E90FF] outline-none transition-all font-medium disabled:bg-slate-100 disabled:text-slate-500"
               value={selectedLessonItemId}
               onChange={(e) => setSelectedLessonItemId(e.target.value)}
-              disabled={!selectedLessonId}
+              disabled={!selectedLessonId || hasAttempts}
               required
             >
               <option value="">-- Chọn nội dung --</option>
@@ -170,6 +179,14 @@ const BasicInfoSection = ({
             </select>
           </div>
         </div>
+        {hasAttempts && (
+          <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+            <p className="text-xs text-amber-700 font-semibold">
+              Đã có sinh viên làm bài, không thể thay đổi khóa học/bài học/nội
+              dung
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

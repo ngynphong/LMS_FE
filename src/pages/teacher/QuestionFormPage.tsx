@@ -8,7 +8,7 @@ import type {
 import {
   useCreateQuestion,
   useUpdateQuestion,
-  useQuestions,
+  useQuestion,
 } from "@/hooks/useQuestions";
 import { useMyCourses, useCourseDetail } from "@/hooks/useCourses";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
@@ -28,13 +28,9 @@ const QuestionFormPage = () => {
   const { mutateAsync: updateQuestion, isPending: updateLoading } =
     useUpdateQuestion();
 
-  // Try to get question from location state first, otherwise we might need to find it from the list
-  // Since we don't have getQuestionById API, we rely on the list or passed state.
-  // Ideally, if a user goes directly to the URL, we might need to fetch the full list to find it (fallback).
   // useQuestions now returns response object with items
   // Previously: const { data: qList } = useQuestions();
-  const { data: questionsResponse } = useQuestions();
-  const qList = questionsResponse?.items;
+  const { data: questionData, isLoading: fetchLoading } = useQuestion(id);
 
   // New hooks for selecting lesson
   const { data: coursesData } = useMyCourses({ pageSize: 100 }); // Fetch all courses for selection
@@ -70,12 +66,11 @@ const QuestionFormPage = () => {
     if (isEditMode) {
       if (location.state?.question) {
         populateForm(location.state.question);
-      } else if (qList) {
-        const found = qList.find((q) => q.id === id);
-        if (found) populateForm(found);
+      } else if (questionData) {
+        populateForm(questionData);
       }
     }
-  }, [id, isEditMode, qList, location.state]);
+  }, [id, isEditMode, questionData, location.state]);
 
   const populateForm = (question: Question) => {
     let newOptions = ["", "", "", ""];
@@ -182,7 +177,7 @@ const QuestionFormPage = () => {
     }
   };
 
-  const isLoading = createLoading || updateLoading;
+  const isLoading = createLoading || updateLoading || fetchLoading;
 
   return (
     <div className="min-h-screen">

@@ -52,6 +52,7 @@ const ExamFormPage = () => {
     courses,
     lessons,
     lessonItems,
+    hasAttempts,
   } = logic;
 
   return (
@@ -97,10 +98,11 @@ const ExamFormPage = () => {
           lessonItems={lessonItems}
           selectedLessonItemId={selectedLessonItemId}
           setSelectedLessonItemId={setSelectedLessonItemId}
+          hasAttempts={hasAttempts}
         />
 
         {/* Section 2: Cấu hình */}
-        <SettingsSection formData={formData} setFormData={setFormData} />
+        <SettingsSection formData={formData} setFormData={setFormData} hasAttempts={hasAttempts} />
 
         {/* Section 3: Chọn câu hỏi */}
         {formData.isDynamic ? (
@@ -112,6 +114,7 @@ const ExamFormPage = () => {
             setDynamicConfigs={setDynamicConfigs}
             lessons={lessons}
             selectedLessonId={selectedLessonId}
+            hasAttempts={hasAttempts}
           />
         ) : (
           <StaticQuestionSelectionSection
@@ -137,6 +140,7 @@ const ExamFormPage = () => {
             moveQuestion={moveQuestion}
             updateStaticQuestion={updateStaticQuestion}
             questionContentCache={questionContentCache}
+            hasAttempts={hasAttempts}
           />
         )}
       </form>

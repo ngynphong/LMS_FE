@@ -84,6 +84,7 @@ export interface QuizDetailResponse {
     staticQuestions: QuizDetailStaticQuestion[];
     createdAt: string;
     attemptsCount?: number;
+    hasAttempts: boolean;
 }
 
 export interface GenerateCodeResponse {
@@ -131,6 +132,7 @@ export interface QuizSummary {
     closeTime?: string;
     showScoreAfterSubmit?: boolean;
     showResultAfterSubmit?: boolean;
+    hasAttempts?: boolean;
 }
 
 export interface TeacherQuizzesResponse {

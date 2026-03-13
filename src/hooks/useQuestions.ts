@@ -8,7 +8,8 @@ import {
     importQuestions, 
     getQuestionTemplate,
     getMyQuestions,
-    getMyLessonNames
+    getMyLessonNames,
+    getQuestionById
 } from '@/services/questionService';
 import type { 
     // Question, 
@@ -26,6 +27,15 @@ export const useQuestions = (params?: GetQuestionsParams) => {
         placeholderData: keepPreviousData,
     });
 };
+
+export const useQuestion = (id?: string) => {
+    return useQuery({
+        queryKey: ['question', id],
+        queryFn: () => id ? getQuestionById(id) : Promise.reject(new Error("Missing ID")),
+        enabled: !!id,
+    });
+};
+
 
 export const useCreateQuestion = () => {
     const queryClient = useQueryClient();

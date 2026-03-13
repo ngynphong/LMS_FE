@@ -30,6 +30,16 @@ export const createQuiz = async (data: CreateQuizRequest): Promise<void> => {
     }
 };
 
+export const deleteQuizApi = async (id: string): Promise<void> => {
+    try {
+        await axiosInstance.delete(`/quiz/${id}`);
+    } catch (error) {
+        console.error('Failed to delete quiz:', error);
+        throw error;
+    }
+};
+
+
 export const getQuizStudentStatistics = async (
     quizId: string,
     params?: {

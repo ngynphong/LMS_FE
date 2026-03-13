@@ -27,7 +27,7 @@ const PaginationControl = ({
       <button
         key={1}
         onClick={() => onPageChange(1)}
-        className={`flex min-w-8 h-8 px-2 items-center justify-center rounded-lg font-bold transition-colors text-sm ${
+        className={`flex min-w-8 h-8 px-2 items-center justify-center rounded-lg font-bold transition-colors text-sm cursor-pointer ${
           currentPage === 1
             ? "color-primary-bg text-white"
             : "border border-gray-100 hover:bg-gray-100 text-slate-600"
@@ -56,7 +56,7 @@ const PaginationControl = ({
         <button
           key={i}
           onClick={() => onPageChange(i)}
-          className={`flex min-w-8 h-8 px-2 items-center justify-center rounded-lg font-bold transition-colors text-sm ${
+          className={`flex min-w-8 h-8 px-2 items-center justify-center rounded-lg font-bold transition-colors text-sm cursor-pointer ${
             currentPage === i
               ? "color-primary-bg text-white"
               : "border border-gray-100 hover:bg-gray-100 text-slate-600"
@@ -125,7 +125,7 @@ const PaginationControl = ({
         <button
           onClick={() => onPageChange(Math.max(1, currentPage - 1))}
           disabled={currentPage <= 1}
-          className="flex size-8 items-center justify-center rounded-lg border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-slate-600 transition-colors"
+          className="flex size-8 items-center justify-center rounded-lg border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-slate-600 transition-colors cursor-pointer"
         >
           <span className="text-sm">
             <IoIosArrowBack />
@@ -137,7 +137,7 @@ const PaginationControl = ({
         <button
           onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage >= totalPages}
-          className="flex size-8 items-center justify-center rounded-lg border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-slate-600 transition-colors"
+          className="flex size-8 items-center justify-center rounded-lg border border-gray-200 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-slate-600 transition-colors cursor-pointer"
         >
           <span className="text-sm">
             <IoIosArrowForward />

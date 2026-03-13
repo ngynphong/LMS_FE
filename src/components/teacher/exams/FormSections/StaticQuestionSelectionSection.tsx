@@ -31,6 +31,7 @@ interface StaticQuestionSelectionSectionProps {
     value: any,
   ) => void;
   questionContentCache: Record<string, string>;
+  hasAttempts?: boolean;
 }
 
 const StaticQuestionSelectionSection = ({
@@ -56,6 +57,7 @@ const StaticQuestionSelectionSection = ({
   moveQuestion,
   updateStaticQuestion,
   questionContentCache,
+  hasAttempts = false,
 }: StaticQuestionSelectionSectionProps) => {
   const isAllDisplayedSelected =
     availableQuestions.length > 0 &&
@@ -67,7 +69,7 @@ const StaticQuestionSelectionSection = ({
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-300">
       <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
         <h3 className="text-lg font-bold text-[#111518]">Cấu hình câu hỏi</h3>
-        {!isEditMode && (
+        {(!isEditMode || (isEditMode && !hasAttempts)) && (
           <div className="flex items-center gap-2">
             <span
               className={`text-sm font-bold ${!isDynamic ? "text-[#0074bd]" : "text-slate-400"}`}
@@ -89,6 +91,11 @@ const StaticQuestionSelectionSection = ({
               Tự động (Dynamic)
             </span>
           </div>
+        )}
+        {isEditMode && hasAttempts && (
+            <span className="text-sm font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+             Chế độ {isDynamic ? "Tự động" : "Thủ công"} (Đã có bài làm - Không thể đổi)
+           </span>
         )}
       </div>
       <div className="p-6">
@@ -135,10 +142,10 @@ const StaticQuestionSelectionSection = ({
                       checked={isAllDisplayedSelected}
                       onChange={handleSelectAllDisplayed}
                       disabled={
-                        !availableQuestions || availableQuestions.length === 0
+                        !availableQuestions || availableQuestions.length === 0 || hasAttempts
                       }
                       className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer disabled:cursor-not-allowed"
-                      title="Chọn tất cả trang này"
+                      title={hasAttempts ? "Không thể thay đổi khi đã có bài làm" : "Chọn tất cả trang này"}
                     />
                   </th>
                   <th className="px-4 py-3">Nội dung câu hỏi</th>
@@ -186,7 +193,8 @@ const StaticQuestionSelectionSection = ({
                             type="checkbox"
                             checked={isSelected}
                             onChange={() => toggleStaticQuestion(q)}
-                            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                            disabled={hasAttempts}
+                            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                           />
                         </td>
                         <td className="px-4 py-3">
@@ -305,6 +313,7 @@ const StaticQuestionSelectionSection = ({
                           onDelete={(questionId) =>
                             toggleStaticQuestion({ id: questionId } as any)
                           }
+                          hasAttempts={hasAttempts}
                         />
                       ))}
                     </tbody>

@@ -22,7 +22,8 @@ import {
     getQuizStudentStatistics,
     getQuizTitlesForTeacher,
     getTeacherStudentQuizzesAPI,
-    getTeacherStudentAttempts
+    getTeacherStudentAttempts,
+    deleteQuizApi
 } from '@/services/quizService';
 import type { 
     CreateQuizRequest, 
@@ -52,6 +53,17 @@ export const useUpdateQuiz = () => {
         },
     });
 };
+
+export const useDeleteQuiz = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (id: string) => deleteQuizApi(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['teacher-quizzes'] });
+        },
+    });
+};
+
 
 export const useQuiz = (id?: string) => {
     return useQuery({

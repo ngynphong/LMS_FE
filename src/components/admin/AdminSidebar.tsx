@@ -245,8 +245,8 @@ const AdminSidebar = ({
           </div>
           {/* Bottom Section */}
           <div
-            className={`flex flex-col justify-center items-center p-4 pt-0 space-y-2 ${
-              isCollapsed ? "lg:px-2" : ""
+            className={`p-4 pt-0 space-y-2 ${
+              isCollapsed ? "lg:px-2 flex flex-col justify-center items-center" : ""
             }`}
           >
             {/* Role Switcher */}
