@@ -45,10 +45,20 @@ const QuizAttemptResultPage = () => {
     );
   }
 
-  const correctCount = review.details?.filter((q) => q.isCorrect)?.length ?? 0;
+  const hasResultData = review.details?.some(
+    (q) => q.isCorrect !== null && q.isCorrect !== undefined,
+  );
+  const correctCount = hasResultData
+    ? (review.details?.filter((q) => q.isCorrect)?.length ?? 0)
+    : null;
   const totalCount = review.details?.length ?? 0;
-  const scorePercent =
-    totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0;
+  const scorePercent = hasResultData
+    ? totalCount > 0
+      ? Math.round(((correctCount ?? 0) / totalCount) * 100)
+      : 0
+    : review.totalScore != null
+      ? Math.round((review.totalScore / 10) * 100)
+      : 0;
 
   return (
     <div className="flex flex-col gap-6 max-w-4xl mx-auto">
@@ -112,7 +122,9 @@ const QuizAttemptResultPage = () => {
             <div>
               <p className="text-sm text-slate-500">Số câu đúng</p>
               <p className="text-xl font-bold text-green-600">
-                {correctCount}/{totalCount}
+                {correctCount !== null
+                  ? `${correctCount}/${totalCount}`
+                  : "N/A"}
               </p>
             </div>
             <div>

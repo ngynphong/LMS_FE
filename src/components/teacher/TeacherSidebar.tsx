@@ -1,7 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPreloadHandler } from "@/utils/routePreloader";
 import { FaTimes } from "react-icons/fa";
-import { GoHomeFill } from "react-icons/go";
 import {
   MdAddCircle,
   MdDashboard,
@@ -170,14 +169,13 @@ const TeacherSidebar = ({
             {/* Profile Section */}
             <Link
               to="/"
-              className={`flex items-center gap-4 mt-4 cursor-pointer transition-all duration-300 ${
+              className={`flex items-center ml-2 gap-2 mt-4 cursor-pointer transition-all duration-300 ${
                 isCollapsed ? "lg:justify-center lg:px-2 px-6" : "px-4"
               } ${isMobileOpen ? "px-6" : ""}`}
             >
-              <GoHomeFill className="text-2xl color-primary shrink-0" />
+              <img src="/img/logo-edu.png" alt="Logo IES" className="w-10" />
               {(!isCollapsed || isMobileOpen) && (
                 <div className="lg:flex hidden items-center">
-                  <img src="/img/logo-edu.png" alt="Logo IES" className="w-10" />
                   <p className="text-xl color-primary font-bold truncate">
                     IES Focus
                   </p>
@@ -185,7 +183,11 @@ const TeacherSidebar = ({
               )}
               {isMobileOpen && (
                 <div className="flex items-center lg:hidden">
-                  <img src="/img/logo-edu.png" alt="Logo IES" className="w-10" />
+                  <img
+                    src="/img/logo-edu.png"
+                    alt="Logo IES"
+                    className="w-10"
+                  />
                   <p className="text-xl color-primary font-bold truncate">
                     IES Focus
                   </p>
@@ -316,10 +318,12 @@ const TeacherSidebar = ({
             <button
               onClick={handleLogoutClick}
               className={`flex items-center justify-center text-sm text-red-500 hover:bg-red-50 hover:text-red-600 hover:cursor-pointer transition-all rounded-lg ${
-                isCollapsed ? "lg:size-10 lg:p-0" : "gap-2 px-3 py-2.5 w-full"
+                isCollapsed
+                  ? "lg:size-10 lg:p-0"
+                  : "gap-2 px-3 py-2.5 w-full"
               }`}
               title={isCollapsed ? "Đăng xuất" : ""}
-            >
+            > 
               <LogOut animateOnHover size={18} />
               {(!isCollapsed || isMobileOpen) && (
                 <span className="font-medium lg:block hidden">Đăng xuất</span>

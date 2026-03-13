@@ -9,6 +9,7 @@ interface Instructor {
   id: number;
   name: string;
   title: string;
+  subTitle: string;
   rating: number;
   reviews: number;
   image: string;
@@ -23,6 +24,7 @@ const instructors: Instructor[] = [
     name: "TS. Tô Hoài Thắng",
     role: "Viện trưởng",
     title: "Tiến sĩ chuyên ngành Quản trị Kinh doanh",
+    subTitle: "",
     rating: 4.9,
     reviews: 128,
     image: "/img/thay-thang-avatar.jpg",
@@ -33,7 +35,8 @@ const instructors: Instructor[] = [
     id: 2,
     name: "TS. Đào Lê Hòa An",
     role: "Phó Viện trưởng",
-    title: "Diễn giả nổi tiếng về lĩnh vực Tâm lý học ứng dụng.",
+    title: "Diễn giả nổi tiếng về lĩnh vực ",
+    subTitle: "Tâm lý học ứng dụng.",
     rating: 4.8,
     reviews: 210,
     image: "/img/hoa-an-avatar.jpg",
@@ -45,6 +48,7 @@ const instructors: Instructor[] = [
     name: "ThS. Vũ Huy Hoàng",
     role: "Phó Viện trưởng",
     title: "Thạc sĩ chuyên ngành Quản trị Kinh doanh",
+    subTitle: "",
     rating: 4.9,
     reviews: 85,
     image: "/img/huy-hoang-avatar.jpg",
@@ -56,6 +60,7 @@ const instructors: Instructor[] = [
     name: "ThS. Nguyễn Thị Huỳnh Giao",
     role: "Phó Viện trưởng",
     title: "Nhà Báo",
+    subTitle: "",
     rating: 4.9,
     reviews: 85,
     image: "/img/huynh-giao-avatar.jpg",
@@ -68,6 +73,7 @@ const instructors: Instructor[] = [
     name: "ThS. Nguyễn Thanh Điềm",
     role: "Giảng viên",
     title: "Thạc sĩ chuyên ngành Công nghệ Sinh học",
+    subTitle: "",
     rating: 4.8,
     reviews: 210,
     image: "/img/thanh-diem-avatar.jpg",
@@ -157,8 +163,11 @@ const InstructorsSection = () => {
                   {instructor.role}
                 </p>
                 <div className="h-px w-12 bg-gray-100 mx-auto mb-4"></div>
-                <p className="text-gray-900 font-semibold text-sm mb-4 min-h-[40px] flex items-center justify-center italic">
+                <p className="text-gray-900 font-semibold text-sm min-h-[40px] flex items-center justify-center italic wrap-break-word">
                   {instructor.title}
+                </p>
+                <p className="text-gray-900 font-semibold text-sm mt-[-10px] mb-4 flex items-center justify-center italic wrap-break-word">
+                  {instructor.subTitle}
                 </p>
                 <p className="text-gray-500 text-sm leading-relaxed line-clamp-4 mt-auto">
                   "{instructor.exp}"

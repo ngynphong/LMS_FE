@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useStudentDetail, useUpdateStudent } from "@/hooks/useTeacher";
 import type { UpdateStudentRequest } from "@/types/student";
 import { FaCircleNotch } from "react-icons/fa";
@@ -9,6 +9,8 @@ import { IoClose } from "react-icons/io5";
 
 const StudentDetailPage = () => {
   const { id } = useParams<{ id: string }>();
+  const location = useLocation();
+  const isAdminContext = location.pathname.startsWith("/admin");
 
   // React Query hooks
   const { data: student, isLoading: loading } = useStudentDetail(id);
@@ -76,18 +78,29 @@ const StudentDetailPage = () => {
 
   const firstChar = student.firstName ? student.firstName[0] : "S";
 
+  const breadcrumbItems = isAdminContext
+    ? [
+        { label: "Hệ thống", url: "/admin/dashboard" },
+        { label: "Quản lý người dùng", url: "/admin/users" },
+        { label: "Chi tiết học viên" },
+        {
+          label: `${student.firstName || "IES"} ${student.lastName || ""}`,
+        },
+      ]
+    : [
+        { label: "Quản lý học viên", url: "/teacher/students" },
+        { label: "Chi tiết học viên", url: `/teacher/students/${id}` },
+        {
+          label: `${student.firstName || "IES Focus"} ${student.lastName || ""}`,
+        },
+      ];
+
   return (
     <div className="space-y-6">
       {/* Breadcrumbs */}
       <div className="bg-white border-b border-slate-200 -mx-8 -mt-8 px-8 py-4 mb-6">
         <Breadcrumb
-          items={[
-            { label: "Quản lý học viên", url: "/teacher/students" },
-            { label: "Chi tiết học viên", url: `/teacher/students/${id}` },
-            {
-              label: `${student.firstName || "IES Focus"} ${student.lastName || ""}`,
-            },
-          ]}
+          items={breadcrumbItems}
           className="flex flex-wrap items-center gap-2"
           itemClassName="text-slate-500 text-sm font-medium hover:text-[#0074bd] transition-colors"
           activeItemClassName="text-[#101518] text-sm font-bold"
@@ -156,15 +169,15 @@ const StudentDetailPage = () => {
           </div>
           <div className="mt-4 space-y-2 text-sm">
             <div className="flex justify-between border-b border-slate-50 pb-2">
-              <span className="text-slate-500">Phone:</span>
+              <span className="text-slate-500">Số điện thoại:</span>
               <span className="font-medium">{student.phone || "-"}</span>
             </div>
             <div className="flex justify-between border-b border-slate-50 pb-2">
-              <span className="text-slate-500">DOB:</span>
+              <span className="text-slate-500">Ngày sinh:</span>
               <span className="font-medium">{student.dob || "-"}</span>
             </div>
             <div className="flex justify-between border-b border-slate-50 pb-2">
-              <span className="text-slate-500">Created At:</span>
+              <span className="text-slate-500">Ngày tạo:</span>
               <span className="font-medium">
                 {student.createdAt
                   ? new Date(student.createdAt).toLocaleDateString("vi-VN")
@@ -172,7 +185,7 @@ const StudentDetailPage = () => {
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500">Created By:</span>
+              <span className="text-slate-500">Người tạo:</span>
               <span className="font-medium">
                 {student.createdByTeacherName || "-"}
               </span>

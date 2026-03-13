@@ -34,7 +34,7 @@ const CourseQuizTab = ({
     return (
       <div className="flex items-center justify-center h-48 bg-slate-50 rounded-xl border border-dashed border-slate-300">
         <div className="text-center text-gray-500">
-          <span className="text-4xl mb-2 opacity-50">
+          <span className="text-4xl mb-2 opacity-50 flex justify-center">
             <MdQuiz />
           </span>
           <p>Không có bài kiểm tra nào cho nội dung này.</p>

@@ -500,7 +500,8 @@ const QuestionFormPage = () => {
       {/* Footer */}
       <footer className="p-8 text-center">
         <p className="text-xs text-slate-400">
-          © 2026 IES-EDU Learning Management System
+          © {new Date().getFullYear()} IES Viện Khoa Học Công Nghệ & Sáng Tạo
+          Khởi Nghiệp. All rights reserved.
         </p>
       </footer>
     </div>

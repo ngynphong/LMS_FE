@@ -116,8 +116,8 @@ export const useReferStudents = () => {
     return useMutation({
         mutationFn: ({ courseId, data }: { courseId: string; data: CourseReferralRequest }) => 
             referStudents(courseId, data),
-        onSuccess: (_data, variables) => {
-            queryClient.invalidateQueries({ queryKey: ['referral-requests', 'pending', variables.courseId] });
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['referral-requests'] });
         },
     });
 };
@@ -127,7 +127,7 @@ export const useAcceptReferralRequest = () => {
     return useMutation({
         mutationFn: (requestId: string) => acceptReferralRequest(requestId),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['referral-requests', 'pending'] });
+            queryClient.invalidateQueries({ queryKey: ['referral-requests'] });
             queryClient.invalidateQueries({ queryKey: ['course-students'] });
         },
     });
@@ -138,7 +138,7 @@ export const useRejectReferralRequest = () => {
     return useMutation({
         mutationFn: (requestId: string) => rejectReferralRequest(requestId),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['referral-requests', 'pending'] });
+            queryClient.invalidateQueries({ queryKey: ['referral-requests'] });
         },
     });
 };
@@ -148,7 +148,7 @@ export const useCancelReferralRequest = () => {
     return useMutation({
         mutationFn: (requestId: string) => cancelReferralRequest(requestId),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['referral-requests', 'pending'] });
+            queryClient.invalidateQueries({ queryKey: ['referral-requests'] });
         },
     });
 };

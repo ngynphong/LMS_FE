@@ -33,6 +33,10 @@ const AdminUserManualPage = React.lazy(
   () => import("@/pages/admin/AdminUserManualPage"),
 );
 
+const StudentDetailPage = React.lazy(
+  () => import("@/pages/teacher/StudentDetailPage"),
+);
+
 // Banner Admin Pages
 const BannerListPage = React.lazy(() =>
   import("@/pages/admin/banners/BannerListPage").then((module) => ({
@@ -70,6 +74,10 @@ const adminRoutes: RouteObject[] = [
       {
         path: "users",
         element: <AdminUserManagementPage />,
+      },
+      {
+        path: "users/student/:id",
+        element: <StudentDetailPage />,
       },
       {
         path: "courses",

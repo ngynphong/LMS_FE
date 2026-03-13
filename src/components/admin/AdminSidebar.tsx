@@ -220,7 +220,8 @@ const AdminSidebar = ({
                 <img
                   alt="Admin avatar"
                   className="size-full object-cover"
-                  src={user?.urlImg || "/img/admin.png"}/>
+                  src={user?.urlImg || "/img/admin.png"}
+                />
               </div>
               {(!isCollapsed || isMobileOpen) && (
                 <div className="whitespace-nowrap overflow-hidden lg:block hidden">
@@ -243,15 +244,24 @@ const AdminSidebar = ({
             </div>
           </div>
           {/* Bottom Section */}
-          <div className={`p-4 pt-0 space-y-2 ${isCollapsed ? "lg:px-2" : ""}`}>
+          <div
+            className={`flex flex-col justify-center items-center p-4 pt-0 space-y-2 ${
+              isCollapsed ? "lg:px-2" : ""
+            }`}
+          >
             {/* Role Switcher */}
-            <RoleSwitcher isCollapsed={isCollapsed} isMobileOpen={isMobileOpen} />
+            <RoleSwitcher
+              isCollapsed={isCollapsed}
+              isMobileOpen={isMobileOpen}
+            />
 
             {/* Logout Button */}
             <button
               onClick={handleLogoutClick}
               className={`flex items-center justify-center text-sm text-red-500 hover:bg-red-50 hover:text-red-600 hover:cursor-pointer transition-all rounded-lg ${
-                isCollapsed ? "lg:size-10 lg:p-0" : "gap-2 px-3 py-2.5 w-full"
+                isCollapsed
+                  ? "lg:size-10 lg:p-0"
+                  : "gap-2 px-3 py-2.5 w-full"
               }`}
               title={isCollapsed ? "Đăng xuất" : ""}
             >
