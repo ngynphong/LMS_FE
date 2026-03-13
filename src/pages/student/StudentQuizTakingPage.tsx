@@ -324,7 +324,7 @@ const StudentQuizTakingPage = () => {
       await submitQuiz({ attemptId: attempt.id, answers: formattedAnswers });
       localStorage.removeItem(`ies_quiz_answers_${attempt.id}`);
       toast.success("Nộp bài thành công!");
-      navigate("/student/quizzes"); // Or result page?
+      navigate(`/student/quiz/attempts/${attempt.id}`);
     } catch (error) {
       toast.error("Nộp bài thất bại");
     } finally {
