@@ -103,7 +103,7 @@ export const QuizHistoryModal = ({
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-500 transition-colors p-1"
+            className="text-gray-400 hover:text-gray-500 transition-colors p-1 cursor-pointer"
           >
             <MdClose className="text-2xl" />
           </button>
@@ -175,7 +175,7 @@ export const QuizHistoryModal = ({
                       {attempt.status !== "IN_PROGRESS" && (
                         <button
                           onClick={() => onReview(attempt.id)}
-                          className="inline-flex items-center gap-1 text-sm font-bold text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors"
+                          className="inline-flex items-center gap-1 text-sm font-bold text-blue-600 hover:text-blue-700 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
                         >
                           Xem chi tiết
                           <MdPlayArrow className="text-lg" />
@@ -193,7 +193,7 @@ export const QuizHistoryModal = ({
         <div className="flex items-center justify-end gap-3 p-4 bg-gray-50 border-t border-gray-100 shrink-0">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
+            className="px-4 py-2 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-all cursor-pointer"
           >
             Đóng
           </button>

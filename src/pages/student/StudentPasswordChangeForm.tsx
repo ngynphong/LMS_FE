@@ -86,7 +86,7 @@ export const StudentPasswordChangeForm = () => {
           />
           <button
             type="button"
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 cursor-pointer"
             onClick={() => toggleVisibility("current")}
           >
             {showPassword.current ? <FaEyeSlash /> : <FaEye />}
@@ -110,7 +110,7 @@ export const StudentPasswordChangeForm = () => {
           />
           <button
             type="button"
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 cursor-pointer"
             onClick={() => toggleVisibility("new")}
           >
             {showPassword.new ? <FaEyeSlash /> : <FaEye />}
@@ -134,7 +134,7 @@ export const StudentPasswordChangeForm = () => {
           />
           <button
             type="button"
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 cursor-pointer"
             onClick={() => toggleVisibility("confirm")}
           >
             {showPassword.confirm ? <FaEyeSlash /> : <FaEye />}
@@ -144,7 +144,7 @@ export const StudentPasswordChangeForm = () => {
 
       <div className="flex justify-end pt-4">
         <button
-          className="flex items-center justify-center min-w-[140px] px-6 py-3 rounded-lg color-primary-bg text-white font-semibold hover:bg-[#0066a3] transition-all shadow-md shadow-[#0077BE]/20 disabled:opacity-70 disabled:cursor-not-allowed"
+          className="flex items-center justify-center min-w-[140px] px-6 py-3 rounded-lg color-primary-bg text-white font-semibold hover:bg-[#0066a3] transition-all shadow-md shadow-[#0077BE]/20 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
           type="submit"
           disabled={loading}
         >

@@ -36,7 +36,7 @@ const QuizAttemptResultPage = () => {
         </p>
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 px-4 py-2 color-primary-bg text-white rounded-lg hover:opacity-90 transition-opacity"
+          className="flex items-center gap-2 px-4 py-2 color-primary-bg text-white rounded-lg hover:opacity-90 transition-opacity cursor-pointer"
         >
           <MdArrowBack />
           Quay lại
@@ -66,7 +66,7 @@ const QuizAttemptResultPage = () => {
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}
-          className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+          className="p-2 hover:bg-slate-100 rounded-full transition-colors cursor-pointer"
           title="Quay lại"
         >
           <MdArrowBack className="text-xl text-slate-600" />

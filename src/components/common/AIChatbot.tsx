@@ -104,7 +104,7 @@ const AIChatbot = () => {
                 e.stopPropagation();
                 setIsMinimized(false);
               }}
-              className="text-white/80 hover:text-white transition-colors"
+              className="text-white/80 hover:text-white transition-colors cursor-pointer"
             >
               <span className="text-[20px]">
                 <MdExpandLess />
@@ -115,7 +115,7 @@ const AIChatbot = () => {
                 e.stopPropagation();
                 setIsOpen(false);
               }}
-              className="text-white/80 hover:text-white transition-colors"
+              className="text-white/80 hover:text-white transition-colors cursor-pointer"
             >
               <span className="text-[20px]">
                 <IoClose />
@@ -292,7 +292,7 @@ const AIChatbot = () => {
           <button
             onClick={handleSend}
             disabled={!isAuthenticated || isLoading || !inputValue.trim()}
-            className="flex items-center justify-center color-primary hover:scale-110 transition-transform disabled:opacity-50 disabled:hover:scale-100"
+            className="flex items-center justify-center color-primary hover:scale-110 transition-transform disabled:opacity-50 disabled:hover:scale-100 cursor-pointer"
             aria-label="Gửi tin nhắn"
           >
             <span className="text-[24px]">

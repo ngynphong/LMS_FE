@@ -28,7 +28,7 @@ const StudentLayout = ({ children }: StudentLayoutProps) => {
           <button
             type="button"
             onClick={() => setIsMobileSidebarOpen(true)}
-            className="text-gray-600 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="text-gray-600 p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
             aria-label="Toggle sidebar"
           >
             <FaBars className="text-xl" />

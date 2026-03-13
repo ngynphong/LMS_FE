@@ -174,14 +174,14 @@ const LessonSidebar = ({
               {lessons.length} bài học
             </p>
           </div>
-          <button onClick={onClose} className="lg:hidden text-gray-500">
+          <button onClick={onClose} className="lg:hidden text-gray-500 cursor-pointer">
             <span className="text-[24px]">
               <IoClose />
             </span>
           </button>
           <button
             onClick={onDesktopToggle}
-            className="hidden lg:block text-gray-500 hover:text-[#1E90FF]"
+            className="hidden lg:block text-gray-500 hover:text-[#1E90FF] cursor-pointer"
             title="Thu gọn"
           >
             <span className="text-[24px]">
@@ -270,7 +270,7 @@ const LessonSidebar = ({
                       e.stopPropagation();
                       toggleLesson(lesson.id);
                     }}
-                    className="size-6 flex items-center justify-center rounded-full hover:bg-black/5 text-slate-400"
+                    className="size-6 flex items-center justify-center rounded-full hover:bg-black/5 text-slate-400 cursor-pointer"
                   >
                     <span
                       className={`text-xl transition-transform duration-400 ${

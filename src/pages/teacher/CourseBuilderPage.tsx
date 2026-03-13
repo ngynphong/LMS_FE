@@ -71,9 +71,9 @@ const CourseBuilderPage = () => {
   }, [selectedItem]);
 
   // Hooks
-  const { mutateAsync: createCourse, isPending: creatingCourse } =
+  const { mutateAsync: createCourseMutation, isPending: creatingCourse } =
     useCreateCourse();
-  const { mutateAsync: updateCourse, isPending: updatingCourse } =
+  const { mutateAsync: updateCourseMutation, isPending: updatingCourse } =
     useUpdateCourse();
   const {
     data: courseData,
@@ -170,7 +170,6 @@ const CourseBuilderPage = () => {
     const lessonIds = currentLessons.map((l) => l.id);
     try {
       await reorderLessons({ courseId, lessonIds });
-      // toast.success("Đã cập nhật thứ tự bài học"); // Optional, maybe too noisy
     } catch (e) {
       toast.error("Lỗi cập nhật thứ tự bài học");
     }
@@ -183,7 +182,6 @@ const CourseBuilderPage = () => {
     const itemIds = currentItems.map((i) => i.id);
     try {
       await reorderItems({ lessonId, itemIds });
-      // toast.success("Đã cập nhật thứ tự nội dung");
     } catch (e) {
       toast.error("Lỗi cập nhật thứ tự nội dung");
     }
@@ -210,19 +208,19 @@ const CourseBuilderPage = () => {
     description: string;
     thumbnailUrl: string;
     visibility: "PUBLIC" | "PRIVATE";
+    tagNames: string[];
   }) => {
     try {
       if (isEditMode && courseId) {
-        await updateCourse({ id: courseId, data });
+        await updateCourseMutation({ id: courseId, data });
         setCourse((prev) => (prev ? { ...prev, ...data } : null));
         toast.success("Đã cập nhật khóa học!");
       } else {
-        const newCourse = await createCourse(data);
+        const newCourse = await createCourseMutation(data);
         setCourse(newCourse);
         setCourseId(newCourse.id);
         setLessons(newCourse.lessons || []);
         toast.success("Đã tạo khóa học! Bạn có thể thêm bài học.");
-        // Update URL without page reload
         window.history.replaceState(
           null,
           "",
@@ -241,7 +239,6 @@ const CourseBuilderPage = () => {
   const handleLessonSubmit = async (data: { title: string }) => {
     try {
       if (selectedItem?.id === "new") {
-        // Create new lesson
         if (!courseId) return;
         const newLesson = await createLesson({ courseId, data });
         setLessons((prev) => [...prev, newLesson]);
@@ -252,7 +249,6 @@ const CourseBuilderPage = () => {
         });
         toast.success("Đã thêm bài học!");
       } else if (selectedItem?.id) {
-        // Update existing lesson
         await updateLesson({ lessonId: selectedItem.id, title: data.title });
         setLessons((prev) =>
           prev.map((l) =>
@@ -315,7 +311,6 @@ const CourseBuilderPage = () => {
 
     try {
       if (selectedItem?.id === "new") {
-        // Create new item
         await createLessonItem({
           lessonId,
           data: {
@@ -325,7 +320,6 @@ const CourseBuilderPage = () => {
             file: data.file,
           },
         });
-        // Fetch lesson detail to get updated items
         const updatedLesson = await getLessonById(lessonId);
         if (updatedLesson) {
           setLessons((prev) =>
@@ -334,7 +328,6 @@ const CourseBuilderPage = () => {
         }
         toast.success("Đã thêm nội dung!");
       } else if (selectedItem?.id) {
-        // Update existing item
         await updateLessonItem({
           id: selectedItem.id,
           data: {
@@ -344,7 +337,6 @@ const CourseBuilderPage = () => {
             file: data.file,
           },
         });
-        // Fetch lesson detail to get updated items
         const updatedLesson = await getLessonById(lessonId);
         if (updatedLesson) {
           setLessons((prev) =>
@@ -374,7 +366,6 @@ const CourseBuilderPage = () => {
       const lessonId = selectedItem.lessonId;
       await deleteLessonItem(deletedItemId);
 
-      // Cập nhật state trực tiếp: loại bỏ item đã xoá khỏi lesson tương ứng
       setLessons((prev) =>
         prev.map((l) => {
           if (l.id === lessonId && l.lessonItems) {
@@ -440,6 +431,7 @@ const CourseBuilderPage = () => {
                     thumbnailUrl: course.thumbnailUrl || "",
                     visibility:
                       (course.visibility as "PUBLIC" | "PRIVATE") || "PUBLIC",
+                    tagNames: course.tags?.map(t => t.name) || [],
                   }
                 : undefined
             }
@@ -472,7 +464,6 @@ const CourseBuilderPage = () => {
           (i: LessonItem) => i.id === selectedItem.id,
         );
 
-        // Use detailed item if available and matches selection
         const displayItem =
           itemDetail && itemDetail.id === selectedItem.id
             ? itemDetail
@@ -512,20 +503,16 @@ const CourseBuilderPage = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="min-h-screen bg-slate-50 flex">
-        {/* Left Navigation Sidebar */}
         <TeacherSidebar
           isCollapsed={isSidebarCollapsed}
           onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         />
 
-        {/* Main Content */}
         <div
           className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? "ml-20" : "ml-64"}`}
         >
-          {/* Header */}
           <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
             <div className="px-8 py-4">
-              {/* Breadcrumbs */}
               <Breadcrumb
                 items={[
                   { label: "Khóa học", url: "/teacher/courses" },
@@ -541,7 +528,6 @@ const CourseBuilderPage = () => {
                 }
               />
 
-              {/* Title & Actions */}
               <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold text-slate-900">
                   {course?.name || "Khóa học mới"}
@@ -570,10 +556,8 @@ const CourseBuilderPage = () => {
             </div>
           </header>
 
-          {/* Split View Content */}
           <div className="p-8">
             <div className="grid grid-cols-12 gap-6 max-w-7xl mx-auto">
-              {/* Left Column - Course Outline */}
               <div className="col-span-4">
                 <div className="sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2 scrollbar-thin scrollbar-webkit">
                   <CourseOutline
@@ -592,13 +576,11 @@ const CourseBuilderPage = () => {
                 </div>
               </div>
 
-              {/* Right Column - Form Editor */}
               <div className="col-span-8">{renderForm()}</div>
             </div>
           </div>
         </div>
 
-        {/* Delete Confirmation Modal */}
         {deleteModal.open && (
           <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div
@@ -634,14 +616,14 @@ const CourseBuilderPage = () => {
                   onClick={() =>
                     setDeleteModal({ open: false, type: "lesson", title: "" })
                   }
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors"
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
                 >
                   Hủy
                 </button>
                 <button
                   onClick={handleConfirmDelete}
                   disabled={deletingLesson || deletingItem}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 transition-colors"
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 transition-colors cursor-pointer"
                 >
                   {deletingLesson || deletingItem ? "Đang xóa..." : "Xóa"}
                 </button>

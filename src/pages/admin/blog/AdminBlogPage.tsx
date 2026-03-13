@@ -232,7 +232,7 @@ const AdminBlogPage: React.FC = () => {
                             onClick={() =>
                               handleDeleteClick(post.id, post.title)
                             }
-                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all cursor-pointer"
                             title="Xóa bài viết"
                           >
                             <Trash2 size={18} />

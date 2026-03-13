@@ -128,13 +128,13 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
           <div className="flex flex-col gap-2 mt-2">
             <button
               onClick={handleApply}
-              className="w-full flex items-center justify-center rounded-lg h-11 color-primary-bg text-white text-sm font-bold shadow-md hover:color-primary/90 transition-all"
+              className="w-full flex items-center justify-center rounded-lg h-11 color-primary-bg text-white text-sm font-bold shadow-md hover:color-primary/90 transition-all cursor-pointer"
             >
               <span>Áp dụng</span>
             </button>
             <button
               onClick={handleClear}
-              className="w-full flex items-center justify-center rounded-lg h-11 bg-gray-100 text-gray-700 text-sm font-bold hover:bg-gray-200 transition-all"
+              className="w-full flex items-center justify-center rounded-lg h-11 bg-gray-100 text-gray-700 text-sm font-bold hover:bg-gray-200 transition-all cursor-pointer"
             >
               <span>Xóa bộ lọc</span>
             </button>

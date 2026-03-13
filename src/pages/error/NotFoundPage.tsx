@@ -59,7 +59,7 @@ const NotFoundPage: React.FC = () => {
 
           <button
             onClick={() => window.history.back()}
-            className="w-full sm:w-auto px-8 py-3.5 bg-white border-2 border-blue-200 text-blue-500 font-semibold rounded-xl hover:bg-blue-50 hover:border-blue-300 transition-all duration-300"
+            className="w-full sm:w-auto px-8 py-3.5 bg-white border-2 border-blue-200 text-blue-500 font-semibold rounded-xl hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 cursor-pointer"
           >
             Quay lại trang trước
           </button>

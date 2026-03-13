@@ -124,7 +124,7 @@ const StudentSidebar = ({
         {/* Toggle Button - Placed outside the scrolling container so it's not clipped */}
         <button
           onClick={onToggle}
-          className="absolute -right-3 top-8 bg-white border border-gray-200 rounded-full p-1 text-gray-500 hover:color-primary shadow-sm z-50 text-xs hidden lg:flex items-center justify-center transition-colors"
+          className="absolute -right-3 top-8 bg-white border border-gray-200 rounded-full p-1 text-gray-500 hover:color-primary shadow-sm z-50 text-xs hidden lg:flex items-center justify-center transition-colors cursor-pointer"
         >
           {isCollapsed ? (
             <ChevronRight animateOnHover animation="path-loop" size={14} />
@@ -138,7 +138,7 @@ const StudentSidebar = ({
           {/* Mobile Close Button */}
           <button
             onClick={onMobileClose}
-            className="absolute right-4 top-4 lg:hidden text-gray-500 hover:text-red-500 transition-colors z-50"
+            className="absolute right-4 top-4 lg:hidden text-gray-500 hover:text-red-500 transition-colors z-50 cursor-pointer"
           >
             <FaTimes className="text-xl" />
           </button>

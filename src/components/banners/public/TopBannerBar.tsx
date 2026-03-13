@@ -156,7 +156,7 @@ export const TopBannerBar: React.FC<TopBannerBarProps> = ({ banner }) => {
             <div className="flex items-center gap-2 shrink-0 z-10 bg-transparent">
               <button
                 onClick={handleClose}
-                className="p-2 rounded-xl text-white/70 hover:text-white hover:bg-white/20 transition-all focus:outline-none border border-transparent hover:border-white/20"
+                className="p-2 rounded-xl text-white/70 hover:text-white hover:bg-white/20 transition-all focus:outline-none border border-transparent hover:border-white/20 cursor-pointer"
                 aria-label="Close banner"
               >
                 <X size={20} />

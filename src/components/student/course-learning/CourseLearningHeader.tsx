@@ -31,7 +31,7 @@ const CourseLearningHeader = ({
       <div className="flex items-center gap-3 md:gap-6">
         <button
           onClick={onToggleMobileSidebar}
-          className="lg:hidden text-gray-500 hover:color-primary"
+          className="lg:hidden text-gray-500 hover:color-primary cursor-pointer"
         >
           <span className="text-2xl">
             <IoMenu />
@@ -41,7 +41,7 @@ const CourseLearningHeader = ({
         {!isDesktopSidebarOpen && (
           <button
             onClick={onToggleDesktopSidebar}
-            className="hidden lg:block text-gray-500 hover:color-primary transition-colors mr-2"
+            className="hidden lg:block text-gray-500 hover:color-primary transition-colors mr-2 cursor-pointer"
             title="Mở rộng nội dung"
           >
             <span className="text-2xl">

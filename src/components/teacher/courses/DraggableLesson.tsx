@@ -128,7 +128,7 @@ const DraggableLesson = ({
             e.stopPropagation();
             toggleLesson(lesson.id);
           }}
-          className="p-0.5 hover:bg-slate-200 rounded transition-colors"
+          className="p-0.5 hover:bg-slate-200 rounded transition-colors cursor-pointer"
         >
           <span className="text-2xl text-slate-500">
             {expandedLessons.has(lesson.id) ? (
@@ -149,7 +149,7 @@ const DraggableLesson = ({
             e.stopPropagation();
             onAddItem(lesson.id);
           }}
-          className="p-1 hover:bg-blue-100 rounded transition-colors opacity-0 group-hover:opacity-100"
+          className="p-1 hover:bg-blue-100 rounded transition-colors opacity-0 group-hover:opacity-100 cursor-pointer"
           title="Thêm nội dung"
         >
           <span className="text-2xl text-blue-600">

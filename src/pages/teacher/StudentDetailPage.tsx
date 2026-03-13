@@ -144,7 +144,7 @@ const StudentDetailPage = () => {
           </div>
           <button
             onClick={() => setIsEditModalOpen(true)}
-            className="flex items-center justify-center gap-2 rounded-lg h-11 px-6 bg-[#0074bd] text-white text-sm font-bold hover:bg-[#0074bd]/90 transition-all shadow-lg shadow-[#0074bd]/25"
+            className="flex items-center justify-center gap-2 rounded-lg h-11 px-6 bg-[#0074bd] text-white text-sm font-bold hover:bg-[#0074bd]/90 transition-all shadow-lg shadow-[#0074bd]/25 cursor-pointer"
           >
             <span className="text-lg">
               <MdEdit />
@@ -220,7 +220,7 @@ const StudentDetailPage = () => {
               </h3>
               <button
                 onClick={() => setIsEditModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600"
+                className="text-slate-400 hover:text-slate-600 cursor-pointer"
               >
                 <span className="text-xl">
                   <IoClose />
@@ -297,14 +297,14 @@ const StudentDetailPage = () => {
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
-                  className="px-4 py-2 rounded-lg text-slate-600 font-medium hover:bg-slate-50"
+                  className="px-4 py-2 rounded-lg text-slate-600 font-medium hover:bg-slate-50 cursor-pointer"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={updating}
-                  className="px-4 py-2 rounded-lg bg-[#0074bd] text-white font-bold hover:bg-[#0074bd]/90 disabled:opacity-50 flex items-center gap-2"
+                  className="px-4 py-2 rounded-lg bg-[#0074bd] text-white font-bold hover:bg-[#0074bd]/90 disabled:opacity-50 flex items-center gap-2 cursor-pointer"
                 >
                   {updating && (
                     <span className="animate-spin text-sm">

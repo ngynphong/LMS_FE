@@ -82,7 +82,7 @@ const PaginationControl = ({
         <button
           key={totalPages}
           onClick={() => onPageChange(totalPages)}
-          className={`flex min-w-8 h-8 px-2 items-center justify-center rounded-lg font-bold transition-colors text-sm ${
+          className={`flex min-w-8 h-8 px-2 items-center justify-center rounded-lg font-bold transition-colors text-sm cursor-pointer ${
             currentPage === totalPages
               ? "color-primary-bg text-white"
               : "border border-gray-100 hover:bg-gray-100 text-slate-600"

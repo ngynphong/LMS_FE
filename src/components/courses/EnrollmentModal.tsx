@@ -115,14 +115,14 @@ const EnrollmentModal = ({
         <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:translate-y-[-2px] transition-all duration-300 rounded-lg"
+            className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:translate-y-[-2px] transition-all duration-300 rounded-lg cursor-pointer"
           >
             Hủy
           </button>
           <button
             onClick={handleEnrollSubmit}
             disabled={enrolling || (!isPublicCourse && !enrollmentCode)}
-            className="px-4 py-2 text-sm font-bold text-white color-primary-bg hover:translate-y-[-2px] transition-all duration-300 rounded-lg disabled:opacity-50 flex items-center gap-2"
+            className="px-4 py-2 text-sm font-bold text-white color-primary-bg hover:translate-y-[-2px] transition-all duration-300 rounded-lg disabled:opacity-50 flex items-center gap-2 cursor-pointer"
           >
             {enrolling && (
               <span className="animate-spin text-sm">

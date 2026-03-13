@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { FaUser, FaLock } from "react-icons/fa";
+import { FaUser } from "react-icons/fa";
 import { AvatarUpload } from "@/components/common/AvatarUpload";
 import { updateProfileApi } from "@/services/authService";
 import { useUpdateTeacherProfile } from "@/hooks/useProfile";
@@ -130,7 +130,7 @@ const TeacherSettingsPage = () => {
           <nav className="flex flex-col gap-1">
             <button
               onClick={() => setActiveTab("info")}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors cursor-pointer ${
                 activeTab === "info"
                   ? "color-primary/10 color-primary font-semibold"
                   : "text-gray-700 hover:bg-gray-50"
@@ -139,9 +139,9 @@ const TeacherSettingsPage = () => {
               <FaUser />
               <span className="text-sm">Thông tin cá nhân</span>
             </button>
-            <button
+            {/* <button
               onClick={() => setActiveTab("password")}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors cursor-pointer ${
                 activeTab === "password"
                   ? "color-primary/10 color-primary font-semibold"
                   : "text-gray-700 hover:bg-gray-50"
@@ -149,7 +149,7 @@ const TeacherSettingsPage = () => {
             >
               <FaLock />
               <span className="text-sm">Đổi mật khẩu</span>
-            </button>
+            </button> */}
           </nav>
         </div>
       </aside>
@@ -316,7 +316,7 @@ const TeacherSettingsPage = () => {
 
               <div className="flex justify-end pt-4">
                 <button
-                  className="flex items-center justify-center min-w-[140px] px-6 py-3 rounded-lg color-primary-bg text-white font-semibold hover:bg-[#0066a3] transition-all shadow-md shadow-[#0077BE]/20 disabled:opacity-50"
+                  className="flex items-center justify-center min-w-[140px] px-6 py-3 rounded-lg color-primary-bg text-white font-semibold hover:bg-[#0066a3] transition-all shadow-md shadow-[#0077BE]/20 disabled:opacity-50 cursor-pointer"
                   type="submit"
                   disabled={updatingProfile}
                 >

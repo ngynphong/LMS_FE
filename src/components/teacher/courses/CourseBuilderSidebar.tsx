@@ -249,7 +249,7 @@ const CourseBuilderSidebar = ({ lessonType }: CourseBuilderSidebarProps) => {
                 Học viên chưa đăng ký có thể xem
               </p>
             </div>
-            <button className="relative w-11 h-6 bg-slate-200 rounded-full transition-colors">
+            <button className="relative w-11 h-6 bg-slate-200 rounded-full transition-colors cursor-pointer">
               <span className="absolute left-1 top-1 size-4 bg-white rounded-full shadow transition-transform" />
             </button>
           </div>
@@ -265,7 +265,7 @@ const CourseBuilderSidebar = ({ lessonType }: CourseBuilderSidebarProps) => {
             Hoàn tất
           </span>
         </div>
-        <button className="w-full py-3 rounded-lg bg-[#0074bd] text-white font-bold shadow-lg shadow-[#0074bd]/20 hover:scale-[1.02] active:scale-95 transition-all">
+        <button className="w-full py-3 rounded-lg bg-[#0074bd] text-white font-bold shadow-lg shadow-[#0074bd]/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer">
           Lưu thay đổi
         </button>
       </div>

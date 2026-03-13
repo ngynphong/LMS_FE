@@ -103,7 +103,7 @@ const CourseReferralRequestsSection = ({
                 setStatus(s);
                 setPage(1);
               }}
-              className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 status === s
                   ? "bg-white color-primary shadow-sm"
                   : "text-slate-500 hover:text-slate-700"
@@ -194,7 +194,7 @@ const CourseReferralRequestsSection = ({
                           });
                           setShowStudentListModal(true);
                         }}
-                        className="text-xs font-bold text-[#0074bd] hover:underline"
+                        className="text-xs font-bold text-[#0074bd] hover:underline cursor-pointer"
                       >
                         Xem danh sách học sinh
                       </button>
@@ -215,7 +215,7 @@ const CourseReferralRequestsSection = ({
                       <button
                         onClick={() => handleAccept(req.id)}
                         disabled={acceptMutation.isPending}
-                        className="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 bg-[#0074bd] text-white rounded-xl text-sm font-bold hover:bg-[#0074bd]/90 shadow-lg shadow-blue-100 transition-all active:scale-95 disabled:opacity-50"
+                        className="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 bg-[#0074bd] text-white rounded-xl text-sm font-bold hover:bg-[#0074bd]/90 shadow-lg shadow-blue-100 transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
                       >
                         {acceptMutation.isPending ? (
                           <FaCircleNotch className="animate-spin" />
@@ -227,7 +227,7 @@ const CourseReferralRequestsSection = ({
                       <button
                         onClick={() => handleReject(req.id)}
                         disabled={rejectMutation.isPending}
-                        className="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 bg-white border border-rose-200 text-rose-600 rounded-xl text-sm font-bold hover:bg-rose-50 transition-all active:scale-95 disabled:opacity-50"
+                        className="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 bg-white border border-rose-200 text-rose-600 rounded-xl text-sm font-bold hover:bg-rose-50 transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
                       >
                         {rejectMutation.isPending ? (
                           <FaCircleNotch className="animate-spin" />

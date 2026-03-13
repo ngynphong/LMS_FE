@@ -48,7 +48,7 @@ const AdminSettingsPage = () => {
       <div className="flex border-b border-slate-200">
         <button
           onClick={() => handleTabChange("general")}
-          className={`px-6 py-3 text-sm font-medium flex items-center gap-2 transition-colors border-b-2 ${
+          className={`px-6 py-3 text-sm font-medium flex items-center gap-2 transition-colors border-b-2 cursor-pointer ${
             activeTab === "general"
               ? "border-[#0078bd] text-[#0078bd]"
               : "border-transparent text-slate-500 hover:text-slate-700"
@@ -59,7 +59,7 @@ const AdminSettingsPage = () => {
         </button>
         <button
           onClick={() => handleTabChange("logs")}
-          className={`px-6 py-3 text-sm font-medium flex items-center gap-2 transition-colors border-b-2 ${
+          className={`px-6 py-3 text-sm font-medium flex items-center gap-2 transition-colors border-b-2 cursor-pointer ${
             activeTab === "logs"
               ? "border-[#0078bd] text-[#0078bd]"
               : "border-transparent text-slate-500 hover:text-slate-700"

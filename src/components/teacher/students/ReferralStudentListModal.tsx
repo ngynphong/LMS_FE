@@ -94,7 +94,7 @@ const ReferralStudentListModal = ({
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-colors"
+            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
           >
             <FaTimes />
           </button>
@@ -128,7 +128,7 @@ const ReferralStudentListModal = ({
                   <button
                     onClick={handleRemove}
                     disabled={isMutating}
-                    className="flex items-center gap-2 px-3 py-1.5 bg-rose-50 text-rose-600 text-xs font-bold rounded-lg hover:bg-rose-100 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 px-3 py-1.5 bg-rose-50 text-rose-600 text-xs font-bold rounded-lg hover:bg-rose-100 transition-colors disabled:opacity-50 cursor-pointer"
                   >
                     {isMutating ? (
                       <FaCircleNotch className="animate-spin" />

@@ -16,6 +16,7 @@ const StudentMyCoursesPage = () => {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [sortOption, setSortOption] = useState("createdAt:desc");
   const [pageNo, setPageNo] = useState(0);
+  const [selectedTag, setSelectedTag] = useState<string | undefined>(undefined);
   const pageSize = 12; // Adjust as needed
 
   // Debounce search
@@ -47,6 +48,7 @@ const StudentMyCoursesPage = () => {
     sorts: sortOption,
     keyword: debouncedSearch,
     completed: completedStatus,
+    tag: selectedTag,
   });
 
   const courses = coursesData?.items || null;
@@ -222,9 +224,10 @@ const StudentMyCoursesPage = () => {
                 onClick={() => {
                   setSearchQuery("");
                   setActiveTab("all");
+                  setSelectedTag(undefined);
                   setPageNo(0);
                 }}
-                className="mt-2 text-blue-600 hover:underline text-sm"
+                className="mt-2 color-primary hover:underline text-sm cursor-pointer"
               >
                 Xóa bộ lọc
               </button>

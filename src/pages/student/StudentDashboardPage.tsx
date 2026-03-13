@@ -309,7 +309,7 @@ const StudentDashboardPage = () => {
               </div>
             ))}
           </div>
-          <button className="w-full mt-6 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+          <button className="w-full mt-6 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors cursor-pointer">
             Xem toàn bộ thông báo
           </button>
         </div>

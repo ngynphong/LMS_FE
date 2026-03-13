@@ -253,7 +253,7 @@ const ExamListPage = () => {
                     )
                   }
                   disabled={isPublishing}
-                  className={`flex items-center justify-center gap-1 p-2 rounded-lg text-sm font-bold transition-colors ${
+                  className={`flex items-center justify-center gap-1 p-2 rounded-lg text-sm font-bold transition-colors cursor-pointer ${
                     exam.isPublished
                       ? "bg-green-50 text-green-600 hover:bg-green-100"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -271,7 +271,7 @@ const ExamListPage = () => {
                   <button
                     onClick={() => handleHostLiveQuiz(exam.id)}
                     disabled={hostLiveQuiz.isPending}
-                    className="flex items-center justify-center gap-1 p-2 rounded-lg bg-indigo-50 text-indigo-600 font-bold hover:bg-indigo-100 transition-colors shadow-sm ml-auto border border-indigo-200 group"
+                    className="flex items-center justify-center gap-1 p-2 rounded-lg bg-indigo-50 text-indigo-600 font-bold hover:bg-indigo-100 transition-colors shadow-sm ml-auto border border-indigo-200 group cursor-pointer"
                     title="Mở phòng chơi trực tiếp"
                   >
                     <span className="text-lg group-hover:animate-spin-slow">
@@ -285,7 +285,7 @@ const ExamListPage = () => {
               <div className="flex gap-2 pt-3 border-t border-slate-100 mt-3">
                 <Link
                   to={`/teacher/quizzes/${exam.id}/edit`}
-                  className="flex items-center justify-center gap-1 p-2 rounded-lg bg-[#0074bd]/10 text-[#0074bd] text-sm font-bold hover:bg-[#0074bd]/20 transition-colors"
+                  className="flex items-center justify-center gap-1 p-2 rounded-lg bg-[#0074bd]/10 text-[#0074bd] text-sm font-bold hover:bg-[#0074bd]/20 transition-colors cursor-pointer"
                 >
                   <span className="text-base">
                     <MdEdit />
@@ -295,7 +295,7 @@ const ExamListPage = () => {
                 <button
                   onClick={() => handleGenerateCode(exam.id)}
                   disabled={isGenerating}
-                  className="flex items-center justify-center gap-1 p-2 rounded-lg bg-purple-50 text-purple-600 text-sm font-bold hover:bg-purple-100 transition-colors"
+                  className="flex items-center justify-center gap-1 p-2 rounded-lg bg-purple-50 text-purple-600 text-sm font-bold hover:bg-purple-100 transition-colors cursor-pointer"
                   title="Tạo mã Code"
                 >
                   <span className="text-lg">
@@ -307,7 +307,7 @@ const ExamListPage = () => {
                   onClick={() =>
                     setDeleteModal({ isOpen: true, quizId: exam.id })
                   }
-                  className="flex items-center justify-center p-2 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors"
+                  className="flex items-center justify-center p-2 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors cursor-pointer"
                   title="Xóa đề thi"
                 >
                   <MdDelete className="text-lg" />
@@ -322,7 +322,7 @@ const ExamListPage = () => {
                         navigator.clipboard.writeText(exam.code!);
                         toast.success("Đã sao chép mã!");
                       }}
-                      className="text-gray-400 hover:text-[#1E90FF]"
+                      className="text-gray-400 hover:text-[#1E90FF] cursor-pointer"
                       title="Sao chép"
                     >
                       <span className="text-sm">

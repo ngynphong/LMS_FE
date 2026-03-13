@@ -119,7 +119,7 @@ const VideoPlayer = ({
         <div className="absolute inset-0 flex items-center justify-center">
           <button
             onClick={handlePlayClick}
-            className="flex size-20 items-center justify-center rounded-full color-primary/90 text-white shadow-xl hover:scale-110 transition-transform"
+            className="flex size-20 items-center justify-center rounded-full color-primary/90 text-white shadow-xl hover:scale-110 transition-transform cursor-pointer"
           >
             <span className="text-[48px]">
               <FaPlayCircle />

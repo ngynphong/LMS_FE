@@ -84,7 +84,7 @@ const TeacherLessonItemPreviewPage = () => {
         </p>
         <button
           onClick={() => navigate(`/teacher/courses/${courseId}`)}
-          className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 cursor-pointer"
         >
           Quay lại khóa học
         </button>
@@ -100,7 +100,7 @@ const TeacherLessonItemPreviewPage = () => {
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate(`/teacher/courses/${courseId}`)}
-              className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors"
+              className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
             >
               <span className="text-xl">
                 <IoIosArrowBack />
@@ -114,9 +114,7 @@ const TeacherLessonItemPreviewPage = () => {
                   item.type,
                 )}`}
               >
-                <span className="text-xl">
-                  {getItemTypeIcon(item.type)}
-                </span>
+                <span className="text-xl">{getItemTypeIcon(item.type)}</span>
               </div>
               <div>
                 <h1 className="text-lg font-bold text-slate-900">
