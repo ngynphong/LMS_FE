@@ -11,6 +11,7 @@ import {
   useQuestion,
 } from "@/hooks/useQuestions";
 import { useMyCourses, useCourseDetail } from "@/hooks/useCourses";
+import { useLessonDetail } from "@/hooks/useLessons";
 import LoadingOverlay from "@/components/common/LoadingOverlay";
 import { toast } from "@/components/common/Toast";
 import { IoIosArrowBack } from "react-icons/io";
@@ -60,6 +61,17 @@ const QuestionFormPage = () => {
     defaultScore: 1,
     lessonId: "", // Optional
   });
+
+  // Fetch lesson details to auto-select course in edit mode
+  const { data: lessonDetail } = useLessonDetail(
+    formData.lessonId && !selectedCourseId ? formData.lessonId : undefined
+  );
+
+  useEffect(() => {
+    if (lessonDetail?.courseId && !selectedCourseId) {
+      setSelectedCourseId(lessonDetail.courseId);
+    }
+  }, [lessonDetail, selectedCourseId]);
 
   // Load data for edit mode
   useEffect(() => {
@@ -352,6 +364,12 @@ const QuestionFormPage = () => {
                           ? "Đang tải bài học..."
                           : "-- Chọn bài học --"}
                       </option>
+                      {/* Temporary option to show lesson name when course is not yet loaded */}
+                      {!selectedCourseId && formData.lessonId && (
+                        <option value={formData.lessonId}>
+                          {location.state?.question?.lessonName || questionData?.lessonName || "Bài học hiện tại"}
+                        </option>
+                      )}
                       {lessons &&
                         lessons.map((lesson) => (
                           <option key={lesson.id} value={lesson.id}>
